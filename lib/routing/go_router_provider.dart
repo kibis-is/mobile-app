@@ -51,12 +51,11 @@ class RouterNotifier extends ChangeNotifier {
   Future<String?> _redirectLogic(BuildContext context, GoRouterState state) {
     final loginState = _ref.read(loginControllerProvider);
     List<String> validLoggedOutLocations = [
-      '/createPin',
-      '/addAccount',
-      '/createAccount',
-      '/importAccountViaSeed',
+      '/setup/createPin',
+      '/setup/addAccount',
+      '/setup/createAccount',
+      '/setup/importAccountViaSeed',
     ];
-
     List<String> validLoggedInLocations = [
       '/',
       '/sendVOI',
@@ -65,26 +64,21 @@ class RouterNotifier extends ChangeNotifier {
       '/addNetwork',
       '/settings',
     ];
+
     if (loginState is LoginStateSuccess) {
       if (validLoggedInLocations.contains(state.uri.toString())) {
-        return Future.value(
-            null); // don't redirect if already on a valid location
+        return Future.value(null);
       } else {
-        return Future.value('/'); // redirect to '/' if on an invalid location
+        return Future.value('/');
       }
     }
     if (loginState is LoginStateInitial) {
       if (validLoggedOutLocations.contains(state.uri.toString())) {
-        return Future.value(
-            null); // don't redirect if already on a valid location
+        return Future.value(null);
       } else {
-        return Future.value(
-            '/createPin'); // redirect to '/' if on an invalid location
+        return Future.value('/setup/createPin');
       }
     }
-    // if (loginState is LoginStateInitial) {
-    //   return Future.value('/$createPinRouteName');
-    // }
     return Future.value(null);
   }
 
@@ -92,35 +86,32 @@ class RouterNotifier extends ChangeNotifier {
         GoRoute(
           name: createPinRouteName,
           path: '/$createPinRouteName',
-          builder: (context, state) => LoginScreen(key: state.pageKey),
+          // builder: (context, state) => CreatePinScreen(key: state.pageKey),
           pageBuilder: (context, state) {
-            return defaultTransitionPage(const LoginScreen(), state);
+            return defaultTransitionPage(const CreatePinScreen(), state);
           },
-          routes: [
-            GoRoute(
-              name: addAccountRouteName,
-              path: addAccountRouteName,
-              pageBuilder: (context, state) {
-                return defaultTransitionPage(const AddAccountScreen(), state);
-              },
-            ),
-            GoRoute(
-              name: createAccountRouteName,
-              path: createAccountRouteName,
-              pageBuilder: (context, state) {
-                return defaultTransitionPage(
-                    const CreateAccountScreen(), state);
-              },
-            ),
-            GoRoute(
-              name: importAccountViaSeedRouteName,
-              path: importAccountViaSeedRouteName,
-              pageBuilder: (context, state) {
-                return defaultTransitionPage(
-                    const ImportAccountViaSeedScreen(), state);
-              },
-            ),
-          ],
+        ),
+        GoRoute(
+          name: addAccountRouteName,
+          path: '/$addAccountRouteName',
+          pageBuilder: (context, state) {
+            return defaultTransitionPage(const AddAccountScreen(), state);
+          },
+        ),
+        GoRoute(
+          name: createAccountRouteName,
+          path: '/$createAccountRouteName',
+          pageBuilder: (context, state) {
+            return defaultTransitionPage(const CreateAccountScreen(), state);
+          },
+        ),
+        GoRoute(
+          name: importAccountViaSeedRouteName,
+          path: '/$importAccountViaSeedRouteName',
+          pageBuilder: (context, state) {
+            return defaultTransitionPage(
+                const ImportAccountViaSeedScreen(), state);
+          },
         ),
         GoRoute(
           path: '/',

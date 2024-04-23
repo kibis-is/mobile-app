@@ -2,8 +2,6 @@ import 'package:flutter/material.dart' hide Orientation;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
-import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/create_pin/logic/pin_validation.dart';
 import 'package:kibisis/providers/login_controller_provider.dart';
@@ -12,15 +10,15 @@ import 'package:kibisis/theme/color_palette.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
+class CreatePinScreen extends ConsumerStatefulWidget {
   static String title = "Login";
-  const LoginScreen({super.key});
+  const CreatePinScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<CreatePinScreen> createState() => _CreatePinScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _CreatePinScreenState extends ConsumerState<CreatePinScreen> {
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginControllerProvider);
@@ -102,12 +100,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             onChanged: (pin) {
                               pin.length == kPinLength
-                                  ? PinValidation.pinValidation(pin, context)
+                                  ? PinValidation.pinValidation(
+                                      pin, context, ref)
                                   : null;
                             },
                             onSubmit: (pin) {
                               debugPrint('submit via Input Field:$pin');
-                              PinValidation.pinValidation(pin, context);
+                              PinValidation.pinValidation(pin, context, ref);
                             },
                           ),
                         ),

@@ -1,9 +1,9 @@
-const String rootRouteName = '/';
-const String createPinRouteName = 'createPin';
-const String addAccountRouteName = 'addAccount';
-const String createAccountRouteName = 'createAccount';
-const String importAccountViaSeedRouteName = 'importAccountViaSeed';
+const String createPinRouteName = 'setup/createPin';
+const String addAccountRouteName = 'setup/addAccount';
+const String createAccountRouteName = 'setup/createAccount';
+const String importAccountViaSeedRouteName = 'setup/importAccountViaSeed';
 
+const String rootRouteName = '/';
 const String sendVOIRouteName = 'sendVOI';
 const String addAssetRouteName = 'addAsset';
 const String addWalletRouteName = 'addWallet';
