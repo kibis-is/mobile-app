@@ -5,8 +5,8 @@ class AuthRepository {
   final AuthService _authService;
   AuthRepository(this._authService);
 
-  Future<String> login(String email, String password) async {
-    return _authService.login(email, password);
+  Future<String> login(String pin) async {
+    return _authService.login(pin);
   }
 }
 
