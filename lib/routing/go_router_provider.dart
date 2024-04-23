@@ -37,21 +37,10 @@ class RouterNotifier extends ChangeNotifier {
     );
   }
 
-  // Future<String?> _redirectLogic(BuildContext context, GoRouterState state) {
-  //   final loginState = _ref.read(loginControllerProvider);
-
-  //   if (loginState is LoginStateSuccess) return Future.value('/');
-
-  //   if (loginState is LoginStateInitial) {
-  //     return Future.value('/$loginRouteName');
-  //   }
-  //   return Future.value(null);
-  // }
-
   Future<String?> _redirectLogic(BuildContext context, GoRouterState state) {
     final loginState = _ref.read(loginControllerProvider);
     List<String> validLoggedOutLocations = [
-      '/setup/createPin',
+      '/setup',
       '/setup/addAccount',
       '/setup/createAccount',
       '/setup/importAccountViaSeed',
@@ -76,7 +65,7 @@ class RouterNotifier extends ChangeNotifier {
       if (validLoggedOutLocations.contains(state.uri.toString())) {
         return Future.value(null);
       } else {
-        return Future.value('/setup/createPin');
+        return Future.value('/setup');
       }
     }
     return Future.value(null);
@@ -90,28 +79,31 @@ class RouterNotifier extends ChangeNotifier {
           pageBuilder: (context, state) {
             return defaultTransitionPage(const CreatePinScreen(), state);
           },
-        ),
-        GoRoute(
-          name: addAccountRouteName,
-          path: '/$addAccountRouteName',
-          pageBuilder: (context, state) {
-            return defaultTransitionPage(const AddAccountScreen(), state);
-          },
-        ),
-        GoRoute(
-          name: createAccountRouteName,
-          path: '/$createAccountRouteName',
-          pageBuilder: (context, state) {
-            return defaultTransitionPage(const CreateAccountScreen(), state);
-          },
-        ),
-        GoRoute(
-          name: importAccountViaSeedRouteName,
-          path: '/$importAccountViaSeedRouteName',
-          pageBuilder: (context, state) {
-            return defaultTransitionPage(
-                const ImportAccountViaSeedScreen(), state);
-          },
+          routes: [
+            GoRoute(
+              name: addAccountRouteName,
+              path: addAccountRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(const AddAccountScreen(), state);
+              },
+            ),
+            GoRoute(
+              name: createAccountRouteName,
+              path: createAccountRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const CreateAccountScreen(), state);
+              },
+            ),
+            GoRoute(
+              name: importAccountViaSeedRouteName,
+              path: importAccountViaSeedRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const ImportAccountViaSeedScreen(), state);
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: '/',
