@@ -57,6 +57,7 @@ final ThemeData lightTheme = ThemeData(
     ),
   ),
   pageTransitionsTheme: pageTransitions(),
+  disabledColor: ColorPalette.lightThemeFrenchGray,
 );
 
 // Dark Theme
@@ -104,4 +105,5 @@ final ThemeData darkTheme = ThemeData(
     ),
   ),
   pageTransitionsTheme: pageTransitions(),
+  disabledColor: ColorPalette.darkThemeGray,
 );
