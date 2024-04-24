@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 
 class WalletDrawer extends StatelessWidget {
@@ -73,34 +74,14 @@ class WalletDrawer extends StatelessWidget {
                   Expanded(
                     child: ListView.separated(
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(kScreenPadding / 2),
-                              child: Icon(Icons.account_balance_wallet,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  size: kScreenPadding * 1.5),
-                            ),
-                          ),
-                          title: Text(
-                            'Personal $index',
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          subtitle: Text(
-                            'Personal $index',
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          trailing: const Padding(
-                            padding: EdgeInsets.all(kScreenPadding),
-                            child: Icon(Icons.edit),
-                          ),
+                        return CustomListTile(
+                          title: "Title",
+                          subtitle: 'Subtitle',
+                          leadingIcon: Icons.person,
+                          trailingIcon: Icons.ac_unit,
+                          onTap: () {
+                            debugPrint('Wallet Selected');
+                          },
                         );
                       },
                       separatorBuilder: (context, index) => const SizedBox(
