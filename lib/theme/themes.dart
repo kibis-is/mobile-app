@@ -20,7 +20,7 @@ final ThemeData lightTheme = ThemeData(
   ),
   scaffoldBackgroundColor: ColorPalette.lightThemeWhite,
   cardColor: ColorPalette.lightThemeWhiteSmoke,
-  appBarTheme: appBarTheme(),
+  appBarTheme: appBarThemeLight(),
   listTileTheme: ListTileThemeData(
     tileColor: ColorPalette.lightThemeWhiteSmoke,
     contentPadding: const EdgeInsets.all(kSizedBoxSpacing),
@@ -68,7 +68,7 @@ final ThemeData darkTheme = ThemeData(
   elevatedButtonTheme: elevatedButtonThemeDark(),
   scaffoldBackgroundColor: ColorPalette.darkThemeRaisinBlack,
   cardColor: ColorPalette.darkThemeGunmetal,
-  appBarTheme: appBarTheme(),
+  appBarTheme: appBarThemeDark(),
   listTileTheme: ListTileThemeData(
     tileColor: ColorPalette.darkThemeGunmetal,
     contentPadding: const EdgeInsets.all(kSizedBoxSpacing),
