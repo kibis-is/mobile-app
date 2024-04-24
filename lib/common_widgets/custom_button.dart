@@ -5,14 +5,15 @@ class CustomButton extends StatelessWidget {
   final Function onPressed;
   final Icon? prefixIcon;
   final bool isFullWidth;
+  final bool isSecondary;
 
-  const CustomButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.prefixIcon,
-    this.isFullWidth = false,
-  });
+  const CustomButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.prefixIcon,
+      this.isFullWidth = false,
+      this.isSecondary = false});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +29,19 @@ class CustomButton extends StatelessWidget {
         ),
         onPressed: onPressed as void Function()?,
         style: ButtonStyle(
-          backgroundColor:
-              MaterialStateProperty.all(theme.colorScheme.secondary),
-          foregroundColor:
-              MaterialStateProperty.all(theme.colorScheme.onSecondary),
+          backgroundColor: isSecondary
+              ? MaterialStateProperty.all(Colors.transparent)
+              : MaterialStateProperty.all(theme.colorScheme.secondary),
+          foregroundColor: isSecondary
+              ? MaterialStateProperty.all(theme.colorScheme.secondary)
+              : MaterialStateProperty.all(theme.colorScheme.onSecondary),
+          side: isSecondary
+              ? MaterialStateProperty.all(BorderSide(
+                  color: Theme.of(context).colorScheme.secondary,
+                  width: 2.0,
+                  style: BorderStyle.solid,
+                ))
+              : null,
         ),
       ),
     );
