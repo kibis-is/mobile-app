@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final Function onPressed;
+  final VoidCallback? onPressed;
   final Icon? prefixIcon;
   final bool isFullWidth;
   final bool isSecondary;
@@ -27,11 +27,13 @@ class CustomButton extends StatelessWidget {
           text,
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
-        onPressed: onPressed as void Function()?,
+        onPressed: onPressed,
         style: ButtonStyle(
-          backgroundColor: isSecondary
-              ? MaterialStateProperty.all(Colors.transparent)
-              : MaterialStateProperty.all(theme.colorScheme.secondary),
+          backgroundColor: onPressed == null
+              ? MaterialStateProperty.all(Theme.of(context).disabledColor)
+              : isSecondary
+                  ? MaterialStateProperty.all(Colors.transparent)
+                  : MaterialStateProperty.all(theme.colorScheme.secondary),
           foregroundColor: isSecondary
               ? MaterialStateProperty.all(theme.colorScheme.secondary)
               : MaterialStateProperty.all(theme.colorScheme.onSecondary),

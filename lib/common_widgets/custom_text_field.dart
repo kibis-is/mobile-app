@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 
-class CustomTextField extends ConsumerWidget {
+class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
     required this.controller,
@@ -16,7 +15,7 @@ class CustomTextField extends ConsumerWidget {
     this.keyboardType = TextInputType.text,
     this.maxLength,
     this.maxLines = 1,
-    this.isPin = false,
+    this.validator,
   });
 
   final TextEditingController controller;
@@ -30,47 +29,40 @@ class CustomTextField extends ConsumerWidget {
   final TextInputType? keyboardType;
   final int? maxLength;
   final int maxLines;
-  final bool isPin;
+  final FormFieldValidator<String>? validator;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return TextField(
+  Widget build(BuildContext context) {
+    return TextFormField(
       autocorrect: autoCorrect,
       textInputAction: textInputAction,
-      keyboardType: isPin ? TextInputType.number : keyboardType,
-      maxLength: isPin ? 1 : maxLength,
+      keyboardType: keyboardType,
+      maxLength: maxLength,
       maxLines: maxLines,
       enabled: isEnabled,
-      textAlign: isPin ? TextAlign.center : TextAlign.center,
+      textAlign: TextAlign.left,
       controller: controller,
-      obscureText: isObscureText || isPin,
-      style: isPin ? Theme.of(context).textTheme.titleLarge : null,
+      obscureText: isObscureText,
       decoration: InputDecoration(
         counterText: "",
-        prefixIcon: isPin
-            ? null
-            : leadingIcon != null
-                ? Icon(leadingIcon)
-                : null,
-        labelText: isPin ? "-" : labelText,
+        prefixIcon: leadingIcon != null ? Icon(leadingIcon) : null,
+        labelText: labelText,
         contentPadding: const EdgeInsets.symmetric(
             horizontal: kScreenPadding, vertical: kScreenPadding / 2),
-        floatingLabelBehavior:
-            isPin ? FloatingLabelBehavior.never : FloatingLabelBehavior.auto,
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
         errorText: errorText.isEmpty
             ? null
             : controller.text.isNotEmpty
                 ? null
                 : errorText,
-        suffixIcon: isPin
-            ? null
-            : isObscureText
-                ? IconButton(
-                    icon: const Icon(Icons.visibility),
-                    onPressed: () {},
-                  )
-                : null,
+        suffixIcon: isObscureText
+            ? IconButton(
+                icon: const Icon(Icons.visibility),
+                onPressed: () {},
+              )
+            : null,
       ),
+      validator: validator,
     );
   }
 }
