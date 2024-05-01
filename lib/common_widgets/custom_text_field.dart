@@ -16,6 +16,7 @@ class CustomTextField extends StatelessWidget {
     this.maxLength,
     this.maxLines = 1,
     this.validator,
+    this.onChanged,
   });
 
   final TextEditingController controller;
@@ -30,6 +31,7 @@ class CustomTextField extends StatelessWidget {
   final int? maxLength;
   final int maxLines;
   final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class CustomTextField extends StatelessWidget {
             : null,
       ),
       validator: validator,
+      onChanged: onChanged,
     );
   }
 }

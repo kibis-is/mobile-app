@@ -31,6 +31,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
     final checkboxValue = ref.watch(checkboxProvider);
     final mnemonicList = ref.watch(mnemonicProvider);
     final loginState = ref.watch(loginControllerProvider);
+
     return LoadingOverlay(
       isLoading: loginState is LoginStateLoading,
       color: ColorPalette.darkThemeBlack,
@@ -143,6 +144,9 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                   CustomTextField(
                     controller: accountNameController,
                     labelText: 'Account Name',
+                    onChanged: (value) {
+                      ref.read(accountProvider.notifier).state = value;
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter some text';
