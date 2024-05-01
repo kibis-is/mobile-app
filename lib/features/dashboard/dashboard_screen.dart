@@ -11,9 +11,9 @@ import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/providers/network_provider.dart';
 
-class Dashboard extends ConsumerWidget {
+class DashboardScreen extends ConsumerWidget {
   static String title = 'Dashboard';
-  const Dashboard({super.key});
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -104,7 +104,7 @@ class Dashboard extends ConsumerWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.settings),
-                  onPressed: () {},
+                  onPressed: () => GoRouter.of(context).go('/settings'),
                 ),
                 IconButton(
                   icon: const Icon(Icons.account_balance_wallet),

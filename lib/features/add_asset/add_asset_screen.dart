@@ -3,9 +3,9 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 
-class AddAsset extends StatelessWidget {
+class AddAssetScreen extends StatelessWidget {
   static String title = 'Add Asset';
-  AddAsset({super.key});
+  AddAssetScreen({super.key});
   final accountController = TextEditingController(text: '');
 
   @override

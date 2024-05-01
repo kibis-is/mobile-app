@@ -3,9 +3,9 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 
-class AddWallet extends StatelessWidget {
+class AddWalletScreen extends StatelessWidget {
   static String title = 'Add Wallet';
-  AddWallet({super.key});
+  AddWalletScreen({super.key});
   final walletController = TextEditingController(text: '');
 
   @override

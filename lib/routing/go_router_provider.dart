@@ -6,6 +6,13 @@ import 'package:kibisis/features/add_wallet/add_wallet_screen.dart';
 import 'package:kibisis/features/dashboard/dashboard_screen.dart';
 import 'package:kibisis/features/dashboard/wallet_screen.dart';
 import 'package:kibisis/features/error/error_screen.dart';
+import 'package:kibisis/features/settings/about/about_screen.dart';
+import 'package:kibisis/features/settings/advanced/advanced_screen.dart';
+import 'package:kibisis/features/settings/appearance/appearance_screen.dart';
+import 'package:kibisis/features/settings/general/general_screen.dart';
+import 'package:kibisis/features/settings/security/security_screen.dart';
+import 'package:kibisis/features/settings/sessions/sessions_screen.dart';
+import 'package:kibisis/features/settings/settings_screen.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_screen.dart';
 import 'package:kibisis/features/setup_account/create_account/create_account_screen.dart';
 import 'package:kibisis/features/setup_account/create_pin/create_pin_screen.dart';
@@ -52,8 +59,14 @@ class RouterNotifier extends ChangeNotifier {
       '/addAsset',
       '/addWallet',
       '/addNetwork',
-      '/settings',
       '/wallets',
+      '/settings',
+      '/settings/general',
+      '/settings/about',
+      '/settings/security',
+      '/settings/advanced',
+      '/settings/sessions',
+      '/settings/appearance',
     ];
 
     if (loginState is LoginStateSuccess) {
@@ -111,7 +124,7 @@ class RouterNotifier extends ChangeNotifier {
           path: '/',
           name: rootRouteName,
           pageBuilder: (context, state) {
-            return defaultTransitionPage(const Dashboard(), state);
+            return defaultTransitionPage(const DashboardScreen(), state);
           },
           routes: [
             GoRoute(
@@ -125,22 +138,74 @@ class RouterNotifier extends ChangeNotifier {
               name: addAssetRouteName,
               path: addAssetRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(AddAsset(), state);
+                return defaultTransitionPage(AddAssetScreen(), state);
               },
             ),
             GoRoute(
               name: addWalletRouteName,
               path: addWalletRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(AddWallet(), state);
+                return defaultTransitionPage(AddWalletScreen(), state);
               },
             ),
             GoRoute(
               name: sendVOIRouteName,
               path: sendVOIRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const SendVOI(), state);
+                return defaultTransitionPage(const SendVOIScreen(), state);
               },
+            ),
+            GoRoute(
+              path: settingsRouteName,
+              name: settingsRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(const SettingsScreen(), state);
+              },
+              routes: [
+                GoRoute(
+                  name: generalRouteName,
+                  path: generalRouteName,
+                  pageBuilder: (context, state) {
+                    return defaultTransitionPage(const GeneralScreen(), state);
+                  },
+                ),
+                GoRoute(
+                  name: securityRouteName,
+                  path: securityRouteName,
+                  pageBuilder: (context, state) {
+                    return defaultTransitionPage(const SecurityScreen(), state);
+                  },
+                ),
+                GoRoute(
+                  name: appearanceRouteName,
+                  path: appearanceRouteName,
+                  pageBuilder: (context, state) {
+                    return defaultTransitionPage(
+                        const AppearanceScreen(), state);
+                  },
+                ),
+                GoRoute(
+                  name: sessionsRouteName,
+                  path: sessionsRouteName,
+                  pageBuilder: (context, state) {
+                    return defaultTransitionPage(const SessionsScreen(), state);
+                  },
+                ),
+                GoRoute(
+                  name: advancedRouteName,
+                  path: advancedRouteName,
+                  pageBuilder: (context, state) {
+                    return defaultTransitionPage(const AdvancedScreen(), state);
+                  },
+                ),
+                GoRoute(
+                  name: aboutRouteName,
+                  path: aboutRouteName,
+                  pageBuilder: (context, state) {
+                    return defaultTransitionPage(const AboutScreen(), state);
+                  },
+                ),
+              ],
             ),
           ],
         ),

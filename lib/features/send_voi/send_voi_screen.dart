@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 
-class SendVOI extends StatelessWidget {
+class SendVOIScreen extends StatelessWidget {
   static String title = 'Send VOI';
-  const SendVOI({super.key});
+  const SendVOIScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

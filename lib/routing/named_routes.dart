@@ -9,6 +9,13 @@ const String sendVOIRouteName = 'sendVOI';
 const String addAssetRouteName = 'addAsset';
 const String addWalletRouteName = 'addWallet';
 const String addNetworkRouteName = 'addNetwork';
-const String settingsRouteName = 'settingsNetwork';
-const String profileRouteName = 'profileNetwork';
+
+const String settingsRouteName = 'settings';
+const String generalRouteName = 'general';
+const String securityRouteName = 'security';
+const String appearanceRouteName = 'appearance';
+const String sessionsRouteName = 'sessions';
+const String advancedRouteName = 'advanced';
+const String aboutRouteName = 'about';
+
 const String errorRouteName = 'error';

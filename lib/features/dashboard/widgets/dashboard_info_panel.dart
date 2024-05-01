@@ -36,8 +36,9 @@ class DashboardInfoPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-                child: Text('Personal',
-                    style: Theme.of(context).textTheme.bodyLarge)),
+              child: Text('Personal',
+                  style: Theme.of(context).textTheme.bodyLarge),
+            ),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,

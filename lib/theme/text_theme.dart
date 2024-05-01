@@ -72,15 +72,15 @@ TextTheme textThemeLight() {
 TextTheme textThemeDark() {
   return const TextTheme(
     displayLarge: TextStyle(
-        fontSize: 64.0,
+        fontSize: 32.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.darkThemeAntiflashWhite),
     displayMedium: TextStyle(
-        fontSize: 48.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.darkThemeAntiflashWhite),
     displaySmall: TextStyle(
-        fontSize: 32.0,
+        fontSize: 16.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.darkThemeAntiflashWhite),
     headlineLarge: TextStyle(
