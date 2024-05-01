@@ -1,9 +1,9 @@
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
-import 'package:kibisis/common_widgets/models/menu_item.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/menu_item.dart';
+import 'package:kibisis/models/network.dart';
 
 class DashboardInfoPanel extends StatelessWidget {
   const DashboardInfoPanel({
@@ -11,7 +11,7 @@ class DashboardInfoPanel extends StatelessWidget {
     required this.networks,
   });
 
-  final List<MenuItem> networks;
+  final List<Network> networks;
 
   List<MenuItem> get items => [
         MenuItem(
@@ -69,53 +69,6 @@ class DashboardInfoPanel extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text('Balance:',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall!
-                      .copyWith(fontWeight: FontWeight.bold)),
-            ),
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.info_outline),
-                  color: Theme.of(context).colorScheme.primary,
-                  iconSize: kScreenPadding,
-                  onPressed: () {
-                    customBottomSheet(
-                        context: context,
-                        items: [],
-                        header: "Info",
-                        isIcon: true);
-                  },
-                ),
-                const SizedBox(
-                  width: kScreenPadding,
-                ),
-                Text(
-                  "0.999",
-                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  width: kScreenPadding / 2,
-                ),
-                SvgPicture.asset(
-                  networks[0].image,
-                  semanticsLabel: networks[0].name,
-                  height: kSizedBoxSpacing / 2 * 3,
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.primary, BlendMode.srcATop),
-                ),
-              ],
             ),
           ],
         ),

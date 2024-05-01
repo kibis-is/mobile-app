@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/features/add_asset/add_asset_screen.dart';
 import 'package:kibisis/features/add_wallet/add_wallet_screen.dart';
 import 'package:kibisis/features/dashboard/dashboard_screen.dart';
+import 'package:kibisis/features/dashboard/wallet_screen.dart';
 import 'package:kibisis/features/error/error_screen.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_screen.dart';
 import 'package:kibisis/features/setup_account/create_account/create_account_screen.dart';
@@ -52,6 +53,7 @@ class RouterNotifier extends ChangeNotifier {
       '/addWallet',
       '/addNetwork',
       '/settings',
+      '/wallets',
     ];
 
     if (loginState is LoginStateSuccess) {
@@ -112,6 +114,13 @@ class RouterNotifier extends ChangeNotifier {
             return defaultTransitionPage(const Dashboard(), state);
           },
           routes: [
+            GoRoute(
+              name: walletsRouteName,
+              path: walletsRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(const WalletsScreen(), state);
+              },
+            ),
             GoRoute(
               name: addAssetRouteName,
               path: addAssetRouteName,

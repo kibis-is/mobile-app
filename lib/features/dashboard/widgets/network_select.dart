@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kibisis/common_widgets/models/menu_item.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/network.dart';
 
 class NetworkSelect extends StatelessWidget {
   const NetworkSelect({
@@ -9,7 +9,7 @@ class NetworkSelect extends StatelessWidget {
     required this.networks,
   });
 
-  final List<MenuItem> networks;
+  final List<Network> networks;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class NetworkSelect extends StatelessWidget {
       child: Row(
         children: [
           SvgPicture.asset(
-            networks[0].image,
+            networks[0].logoPath,
             height: kScreenPadding,
             colorFilter: ColorFilter.mode(
                 Theme.of(context).colorScheme.onBackground, BlendMode.srcATop),

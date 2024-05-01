@@ -10,7 +10,7 @@ class ColorPalette {
   static const Color lightThemePaynesGray = Color(0xFF4A5568);
   static const Color lightThemeCadetGray = Color(0xFF9299A4);
   static const Color lightThemeFrenchGray = Color(0xFFBABEC5);
-  static const Color lightThemeError = Color(0xFFFF0000);
+  static const Color lightThemeError = Color(0xFFF57D56);
   static const Color lightThemeShadow = Color(0xFF000000);
 
   static const Color darkThemeMauve = Color(0xFFE0B0FF);
@@ -23,6 +23,9 @@ class ColorPalette {
   static const Color darkThemeCadetGray = Color(0xFFA3A6AB);
   static const Color darkThemeGray = Color(0xFF71757C);
   static const Color darkThemeWhite = Color(0xFFFFFFFF);
-  static const Color darkThemeError = Color(0xFFFF0000);
+  static const Color darkThemeError = Color(0xFFF57D56);
   static const Color darkThemeBlack = Color(0xFF000000);
+
+  static const Color cardGradientPurpleA = Color(0xFF8048A5);
+  static const Color cardGradientPurpleB = Color(0xFF522E6A);
 }

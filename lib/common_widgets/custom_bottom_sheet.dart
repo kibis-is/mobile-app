@@ -47,7 +47,7 @@ Future<dynamic> customBottomSheet({
                                   int.tryParse(items[index].image) ?? 0xe237,
                                   fontFamily: 'MaterialIcons'))
                               : SvgPicture.asset(
-                                  items[index].image,
+                                  items[index].logoPath,
                                   semanticsLabel: items[index].name,
                                   height: kSizedBoxSpacing * 2,
                                   colorFilter: ColorFilter.mode(

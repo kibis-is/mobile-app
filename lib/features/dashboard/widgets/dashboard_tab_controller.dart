@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_tab_bar.dart';
-import 'package:kibisis/common_widgets/models/asset.dart';
+import 'package:kibisis/models/asset.dart';
 import 'package:kibisis/constants/constants.dart';
 
 class DashboardTabController extends StatelessWidget {

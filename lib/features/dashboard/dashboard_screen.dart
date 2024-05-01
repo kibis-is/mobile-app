@@ -1,32 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
-import 'package:kibisis/common_widgets/models/asset.dart';
-import 'package:kibisis/common_widgets/models/menu_item.dart';
+import 'package:kibisis/models/asset.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
-import 'package:kibisis/features/dashboard/widgets/wallet_drawer.dart';
+import 'package:kibisis/providers/network_provider.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends ConsumerWidget {
   static String title = 'Dashboard';
   const Dashboard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    //TODO: get real data for networks
-    List<MenuItem> networks = [
-      MenuItem(
-        name: "Algorand",
-        image: 'assets/images/algorand-logo.svg',
-      ),
-      MenuItem(
-        name: "Optimism",
-        image: 'assets/images/optimism-logo.svg',
-      ),
-    ];
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final networks = ref.watch(networkProvider).getNetworks();
     List<Asset> assets = [
       Asset(
           name: "USDC",
@@ -40,34 +31,57 @@ class Dashboard extends StatelessWidget {
           value: 0),
     ];
 
-    List<String> tabs = ['Assets', 'NTFS', 'Activity'];
+    List<String> tabs = ['Assets', 'NTFs', 'Activity'];
 
     return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: kScreenPadding),
-            child: MaterialButton(
-              hoverColor: Theme.of(context).colorScheme.surface,
-              color: Theme.of(context).colorScheme.surface,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100),
-              ),
+      appBar: SplitAppBar(
+        leadingWidget: Row(
+          children: [
+            Text('Balance:', style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              "0.999",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+            SvgPicture.asset(
+              networks[0].logoPath,
+              semanticsLabel: networks[0].name,
+              height: 12,
+              colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onBackground,
+                  BlendMode.srcATop),
+            ),
+            IconButton(
+              icon: const Icon(Icons.info_outline),
+              color: Theme.of(context).colorScheme.primary,
+              iconSize: kScreenPadding,
               onPressed: () {
                 customBottomSheet(
-                    context: context,
-                    header: "Select Network",
-                    items: networks,
-                    hasButton: true,
-                    buttonText: "Add Network",
-                    onPressed: () => GoRouter.of(context).go('/addAsset'));
+                    context: context, items: [], header: "Info", isIcon: true);
               },
-              child: NetworkSelect(networks: networks),
             ),
+          ],
+        ),
+        actionWidget: MaterialButton(
+          hoverColor: Theme.of(context).colorScheme.surface,
+          color: Theme.of(context).colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100),
           ),
-        ],
+          onPressed: () {
+            customBottomSheet(
+                context: context,
+                header: "Select Network",
+                items: networks,
+                hasButton: true,
+                buttonText: "Add Network",
+                onPressed: () => GoRouter.of(context).go('/addAsset'));
+          },
+          child: NetworkSelect(networks: networks),
+        ),
       ),
-      drawer: const WalletDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
@@ -84,6 +98,19 @@ class Dashboard extends StatelessWidget {
             ),
             const SizedBox(
               height: kScreenPadding,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.account_balance_wallet),
+                  onPressed: () => GoRouter.of(context).push('/wallets'),
+                )
+              ],
             ),
           ],
         ),
