@@ -6,6 +6,7 @@ class CustomButton extends StatelessWidget {
   final Icon? prefixIcon;
   final bool isFullWidth;
   final bool isSecondary;
+  final bool isWarning;
 
   const CustomButton(
       {super.key,
@@ -13,7 +14,8 @@ class CustomButton extends StatelessWidget {
       required this.onPressed,
       this.prefixIcon,
       this.isFullWidth = false,
-      this.isSecondary = false});
+      this.isSecondary = false,
+      this.isWarning = false});
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +33,16 @@ class CustomButton extends StatelessWidget {
         style: ButtonStyle(
           backgroundColor: onPressed == null
               ? MaterialStateProperty.all(Theme.of(context).disabledColor)
+              : isWarning
+                  ? MaterialStateProperty.all(theme.colorScheme.error)
+                  : isSecondary
+                      ? MaterialStateProperty.all(Colors.transparent)
+                      : MaterialStateProperty.all(theme.colorScheme.secondary),
+          foregroundColor: isWarning
+              ? MaterialStateProperty.all(theme.colorScheme.onSecondary)
               : isSecondary
-                  ? MaterialStateProperty.all(Colors.transparent)
-                  : MaterialStateProperty.all(theme.colorScheme.secondary),
-          foregroundColor: isSecondary
-              ? MaterialStateProperty.all(theme.colorScheme.secondary)
-              : MaterialStateProperty.all(theme.colorScheme.onSecondary),
+                  ? MaterialStateProperty.all(theme.colorScheme.secondary)
+                  : MaterialStateProperty.all(theme.colorScheme.onSecondary),
           side: isSecondary
               ? MaterialStateProperty.all(BorderSide(
                   color: Theme.of(context).colorScheme.secondary,
