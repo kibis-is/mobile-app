@@ -29,7 +29,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   @override
   Widget build(BuildContext context) {
     final checkboxValue = ref.watch(checkboxProvider);
-    final mnemonicList = ref.watch(mnemonicProvider);
+    final wallet = ref.watch(walletManagerProvider);
     final loginState = ref.watch(loginControllerProvider);
 
     return LoadingOverlay(
@@ -62,13 +62,14 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                   const SizedBox(
                     height: kScreenPadding,
                   ),
-                  mnemonicList.isEmpty
+                  wallet.mnemonic.isEmpty
                       ? const Center(child: CircularProgressIndicator())
                       : SingleChildScrollView(
                           child: Wrap(
                             spacing: kScreenPadding / 2,
                             runSpacing: kScreenPadding / 2,
-                            children: mnemonicList.asMap().entries.map((word) {
+                            children:
+                                wallet.mnemonic.asMap().entries.map((word) {
                               return Container(
                                 width: (MediaQuery.of(context).size.width / 2) -
                                     20,
@@ -118,7 +119,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                     text: 'Copy',
                     onPressed: () {
                       String mnemonicString = ref
-                          .read(mnemonicProvider.notifier)
+                          .read(walletManagerProvider.notifier)
                           .getConcatenatedMnemonic();
                       copyToClipboard(context, mnemonicString);
                     },
@@ -218,7 +219,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                                     ref.read(pinProvider),
                                     ref.read(accountProvider),
                                     ref
-                                        .read(mnemonicProvider.notifier)
+                                        .read(walletManagerProvider.notifier)
                                         .getConcatenatedMnemonic(),
                                   );
                             }

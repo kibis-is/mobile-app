@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/wallet.dart';
 
-final walletProvider = Provider<WalletNotifier>((ref) {
+final mockWalletProvider = Provider<WalletNotifier>((ref) {
   return WalletNotifier();
 });
 

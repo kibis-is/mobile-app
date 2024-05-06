@@ -20,7 +20,7 @@ class NetworkSelect extends StatelessWidget {
       child: Row(
         children: [
           SvgPicture.asset(
-            networks[0].logoPath,
+            networks[0].icon,
             height: kScreenPadding,
             colorFilter: ColorFilter.mode(
                 Theme.of(context).colorScheme.onBackground, BlendMode.srcATop),

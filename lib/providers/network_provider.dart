@@ -10,8 +10,8 @@ class NetworkNotifier extends StateNotifier<List<Network>> {
 
   List<Network> getNetworks() {
     List<Network> networks = [
-      Network(name: 'VOI', logoPath: 'assets/images/algorand-logo.svg'),
-      Network(name: 'Algorand', logoPath: 'assets/images/algorand-logo.svg'),
+      Network(name: 'VOI', icon: 'assets/images/algorand-logo.svg'),
+      Network(name: 'Algorand', icon: 'assets/images/algorand-logo.svg'),
     ];
     return networks;
   }

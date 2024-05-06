@@ -1,9 +1,9 @@
 class Network {
   final String name;
-  final String logoPath;
+  final String icon;
 
   Network({
     required this.name,
-    required this.logoPath,
+    required this.icon,
   });
 }

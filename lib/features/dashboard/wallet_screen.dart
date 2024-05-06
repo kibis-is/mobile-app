@@ -15,7 +15,7 @@ class WalletsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Wallet> wallets = ref.watch(walletProvider).getWallets();
+    List<Wallet> wallets = ref.watch(mockWalletProvider).getWallets();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select an Account'),
