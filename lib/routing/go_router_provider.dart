@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/features/add_asset/add_asset_screen.dart';
@@ -50,15 +51,22 @@ class RouterNotifier extends ChangeNotifier {
 
     // If the wallet is not initialized and the user is not on a setup page, redirect to setup.
     if (!isWalletInitialized && !state.uri.toString().startsWith('/setup')) {
-      return Future.value('/setup');
+      return Future.value('/setup').then((_) {
+        FlutterNativeSplash.remove();
+        return '/setup';
+      });
     }
 
     // If the wallet is initialized and the user is still on a setup page, redirect to the home page.
     else if (isWalletInitialized && state.uri.toString().startsWith('/setup')) {
-      return Future.value('/');
+      return Future.value('/').then((_) {
+        FlutterNativeSplash.remove();
+        return '/';
+      });
     }
 
     // No redirection needed; stay on the current route.
+    FlutterNativeSplash.remove();
     return Future.value(null);
   }
 
