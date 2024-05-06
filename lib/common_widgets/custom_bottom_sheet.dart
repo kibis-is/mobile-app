@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
 
@@ -12,6 +11,7 @@ Future<dynamic> customBottomSheet({
   bool hasButton = false,
   String? buttonText,
   Function()? onPressed,
+  Function()? buttonOnPressed,
 }) {
   return showModalBottomSheet(
     context: context,
@@ -19,6 +19,7 @@ Future<dynamic> customBottomSheet({
       return Padding(
         padding: const EdgeInsets.all(kScreenPadding),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsets.all(kSizedBoxSpacing),
@@ -30,11 +31,13 @@ Future<dynamic> customBottomSheet({
             ),
             Expanded(
               child: ListView.builder(
-                shrinkWrap: true,
                 itemCount: items.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
+                      if (onPressed != null) {
+                        onPressed();
+                      }
                       Navigator.of(context).pop();
                     },
                     child: Padding(
@@ -43,11 +46,10 @@ Future<dynamic> customBottomSheet({
                       child: Row(
                         children: [
                           isIcon
-                              ? Icon(IconData(
-                                  int.tryParse(items[index].image) ?? 0xe237,
-                                  fontFamily: 'MaterialIcons'))
+                              ? const Icon(Icons
+                                  .widgets) // Example static icon, adjust as needed
                               : SvgPicture.asset(
-                                  items[index].logoPath,
+                                  items[index].icon,
                                   semanticsLabel: items[index].name,
                                   height: kSizedBoxSpacing * 2,
                                   colorFilter: ColorFilter.mode(
@@ -72,10 +74,12 @@ Future<dynamic> customBottomSheet({
             ),
             hasButton
                 ? CustomButton(
-                    text: "Add Network",
+                    text: buttonText ?? "Confirm",
                     onPressed: () {
+                      if (buttonOnPressed != null) {
+                        buttonOnPressed();
+                      }
                       Navigator.of(context).pop();
-                      GoRouter.of(context).go('/addWallet');
                     },
                     isFullWidth: true,
                   )

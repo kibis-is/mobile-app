@@ -46,7 +46,7 @@ class DashboardScreen extends ConsumerWidget {
                   .copyWith(fontWeight: FontWeight.bold),
             ),
             SvgPicture.asset(
-              networks[0].logoPath,
+              networks[0].icon,
               semanticsLabel: networks[0].name,
               height: 12,
               colorFilter: ColorFilter.mode(
@@ -77,7 +77,7 @@ class DashboardScreen extends ConsumerWidget {
                 items: networks,
                 hasButton: true,
                 buttonText: "Add Network",
-                onPressed: () => GoRouter.of(context).go('/addAsset'));
+                buttonOnPressed: () => GoRouter.of(context).go('/addAsset'));
           },
           child: NetworkSelect(networks: networks),
         ),

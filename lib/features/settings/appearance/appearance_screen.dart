@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/common_widgets/settings_toggle.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/theme/providers/theme_provider.dart';
+import 'package:kibisis/features/settings/providers/settings_providers.dart';
 
 class AppearanceScreen extends ConsumerWidget {
   static String title = 'Appearance';
@@ -9,7 +10,6 @@ class AppearanceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -21,12 +21,9 @@ class AppearanceScreen extends ConsumerWidget {
             const SizedBox(
               height: kScreenPadding,
             ),
-            Switch(
-              value: ref.watch(themeProvider) == ThemeMode.dark,
-              onChanged: (newValue) {
-                ref.read(themeProvider.notifier).update(
-                    (state) => newValue ? ThemeMode.dark : ThemeMode.light);
-              },
+            SettingsToggle(
+              title: 'Dark Mode',
+              provider: isDarkModeProvider,
             ),
           ],
         ),

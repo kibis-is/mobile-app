@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kibisis/common_widgets/settings_toggle.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/settings/providers/settings_providers.dart';
 
 class AdvancedScreen extends StatelessWidget {
   static String title = 'Advanced';
@@ -11,12 +13,44 @@ class AdvancedScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: kScreenPadding),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: kScreenPadding,
+            ),
+            SettingsToggle(
+              title: 'Debug Logging',
+              provider: isDebugLoggingProvider,
+              description:
+                  'Debugging information will be output to the extension console.',
+            ),
+            const SizedBox(
+              height: kScreenPadding,
+            ),
+            SettingsToggle(
+              title: 'Allow Mainnet Networks',
+              provider: allowMainNetNetworksProvider,
+              description: 'Let MainNet networks appear in the networks list.',
+            ),
+            const SizedBox(
+              height: kScreenPadding,
+            ),
+            SettingsToggle(
+              title: 'Allow BetaNet Networks',
+              provider: allowBetaNetNetworksProvider,
+              description:
+                  'Let the BetaNet networks appear in the networks list.',
+            ),
+            const SizedBox(
+              height: kScreenPadding,
+            ),
+            SettingsToggle(
+              title: 'Allow DID Token Format in Address Sharing',
+              provider: allowDIDTokenFormatInAddressSharingProvider,
+              description:
+                  'The DID token format “did algo:<public_address>” will be an option when sharing an address.',
             ),
           ],
         ),

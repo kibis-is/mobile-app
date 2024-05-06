@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/transparent_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/menu.dart';
 
@@ -27,28 +28,11 @@ class SettingsScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(kScreenPadding / 2),
                 itemCount: settingsMenu.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    horizontalTitleGap: 32,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 0, vertical: kScreenPadding),
-                    tileColor: Colors.transparent,
-                    leading: Icon(
-                      color: Theme.of(context).colorScheme.primary,
-                      IconData(int.tryParse(settingsMenu[index].icon) ?? 0xe237,
-                          fontFamily: 'MaterialIcons'),
-                    ),
-                    title: Text(
-                      settingsMenu[index].name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                    onTap: () {
-                      GoRouter.of(context)
-                          .go('/settings${settingsMenu[index].path}');
-                    },
+                  return TransparentListTile(
+                    icon: settingsMenu[index].icon,
+                    title: settingsMenu[index].name,
+                    onTap: () => GoRouter.of(context)
+                        .go('/settings${settingsMenu[index].path}'),
                   );
                 },
               ),
