@@ -18,8 +18,7 @@ import 'package:kibisis/features/setup_account/create_account/create_account_scr
 import 'package:kibisis/features/setup_account/create_pin/create_pin_screen.dart';
 import 'package:kibisis/features/send_voi/send_voi_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
-import 'package:kibisis/providers/login_controller_provider.dart';
-import 'package:kibisis/providers/states/login_states.dart';
+import 'package:kibisis/providers/wallet_manager_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -39,50 +38,27 @@ class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
 
   RouterNotifier(this._ref) {
-    _ref.listen<LoginState>(
-      loginControllerProvider,
+    _ref.listen<WalletState>(
+      walletManagerProvider,
       (_, __) => notifyListeners(),
     );
   }
 
   Future<String?> _redirectLogic(BuildContext context, GoRouterState state) {
-    final loginState = _ref.read(loginControllerProvider);
-    List<String> validLoggedOutLocations = [
-      '/setup',
-      '/setup/addAccount',
-      '/setup/createAccount',
-      '/setup/importAccountViaSeed',
-    ];
-    List<String> validLoggedInLocations = [
-      '/',
-      '/sendVOI',
-      '/addAsset',
-      '/addWallet',
-      '/addNetwork',
-      '/wallets',
-      '/settings',
-      '/settings/general',
-      '/settings/about',
-      '/settings/security',
-      '/settings/advanced',
-      '/settings/sessions',
-      '/settings/appearance',
-    ];
+    final walletState = _ref.read(walletManagerProvider);
+    bool isWalletInitialized = walletState.accountName?.isNotEmpty ?? false;
 
-    if (loginState is LoginStateSuccess) {
-      if (validLoggedInLocations.contains(state.uri.toString())) {
-        return Future.value(null);
-      } else {
-        return Future.value('/');
-      }
+    // If the wallet is not initialized and the user is not on a setup page, redirect to setup.
+    if (!isWalletInitialized && !state.uri.toString().startsWith('/setup')) {
+      return Future.value('/setup');
     }
-    if (loginState is LoginStateInitial) {
-      if (validLoggedOutLocations.contains(state.uri.toString())) {
-        return Future.value(null);
-      } else {
-        return Future.value('/setup');
-      }
+
+    // If the wallet is initialized and the user is still on a setup page, redirect to the home page.
+    else if (isWalletInitialized && state.uri.toString().startsWith('/setup')) {
+      return Future.value('/');
     }
+
+    // No redirection needed; stay on the current route.
     return Future.value(null);
   }
 

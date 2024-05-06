@@ -1,4 +1,4 @@
-class Wallet {
+class MockWallet {
   final String name;
   final String address;
   final String network;
@@ -6,7 +6,7 @@ class Wallet {
   final String privateKey;
   final List<String> assets;
 
-  Wallet({
+  MockWallet({
     required this.name,
     required this.address,
     required this.network,

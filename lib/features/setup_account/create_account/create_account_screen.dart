@@ -5,10 +5,8 @@ import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/create_account/providers/checkbox_provider.dart';
 import 'package:kibisis/features/setup_account/create_pin/providers/pin_provider.dart';
-import 'package:kibisis/providers/account_provider.dart';
-import 'package:kibisis/providers/login_controller_provider.dart';
-import 'package:kibisis/providers/mnemonic_provider.dart';
-import 'package:kibisis/providers/states/login_states.dart';
+import 'package:kibisis/providers/pin_provider.dart';
+import 'package:kibisis/providers/wallet_manager_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -30,10 +28,10 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   Widget build(BuildContext context) {
     final checkboxValue = ref.watch(checkboxProvider);
     final wallet = ref.watch(walletManagerProvider);
-    final loginState = ref.watch(loginControllerProvider);
+    final pin = ref.watch(pinProvider);
 
     return LoadingOverlay(
-      isLoading: loginState is LoginStateLoading,
+      isLoading: wallet.isLoading,
       color: ColorPalette.darkThemeBlack,
       child: Scaffold(
         appBar: AppBar(
@@ -215,13 +213,10 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                     onPressed: checkboxValue
                         ? () {
                             if (_formKey.currentState!.validate()) {
-                              ref.read(loginControllerProvider.notifier).login(
-                                    ref.read(pinProvider),
-                                    ref.read(accountProvider),
-                                    ref
-                                        .read(walletManagerProvider.notifier)
-                                        .getConcatenatedMnemonic(),
-                                  );
+                              ref
+                                  .read(walletManagerProvider.notifier)
+                                  .finaliseAccount(
+                                      pin, accountNameController.text);
                             }
                           }
                         : null,

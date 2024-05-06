@@ -5,8 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/models/wallet.dart';
-import 'package:kibisis/providers/wallet_provider.dart';
+import 'package:kibisis/models/mock_wallet.dart';
+import 'package:kibisis/providers/mock_wallet_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 
 class WalletsScreen extends ConsumerWidget {
@@ -15,7 +15,7 @@ class WalletsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Wallet> wallets = ref.watch(mockWalletProvider).getWallets();
+    List<MockWallet> wallets = ref.watch(mockWalletProvider).getWallets();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select an Account'),

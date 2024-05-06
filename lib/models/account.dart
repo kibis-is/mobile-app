@@ -1,11 +1,11 @@
-import 'package:kibisis/models/wallet.dart';
+import 'package:kibisis/models/mock_wallet.dart';
 
 class Account {
   final String name;
   final String address;
   final String pin;
   final String mnemonic;
-  final List<Wallet> wallets;
+  final List<MockWallet> wallets;
 
   Account(
       {required this.name,

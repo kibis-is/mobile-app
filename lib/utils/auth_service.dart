@@ -1,10 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AuthService {
-  Future<String> login(String pin) async {
-    return Future.delayed(const Duration(milliseconds: 1000))
-        .then((onValue) => 'authToken');
-  }
-}
+// class AuthService {
+//   Future<String> login(String pin) async {
+//     return Future.delayed(const Duration(milliseconds: 1000))
+//         .then((onValue) => 'authToken');
+//   }
+// }
 
-final authServiceProvider = Provider<AuthService>((ref) => AuthService());
+// final authServiceProvider = Provider<AuthService>((ref) => AuthService());
