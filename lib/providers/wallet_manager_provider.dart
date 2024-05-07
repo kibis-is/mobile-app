@@ -7,12 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:convert/convert.dart';
+import 'package:kibisis/providers/app_lifecycle_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final algorandProvider = Provider<Algorand>((ref) => Algorand());
 final walletManagerProvider =
     StateNotifierProvider<WalletManager, WalletState>((ref) {
-  return WalletManager(ref.watch(algorandProvider));
+  return WalletManager(ref.watch(algorandProvider), ref);
 });
 
 class WalletState {
@@ -55,35 +56,72 @@ class WalletState {
   }
 }
 
-class WalletManager extends StateNotifier<WalletState> {
+class WalletManager extends StateNotifier<WalletState>
+    with WidgetsBindingObserver {
+  final StateNotifierProviderRef<WalletManager, WalletState> ref;
   final Algorand algorand;
   final FlutterSecureStorage storage = const FlutterSecureStorage();
   SharedPreferences? _prefs;
 
-  WalletManager(this.algorand) : super(WalletState()) {
+  WalletManager(this.algorand, this.ref) : super(WalletState()) {
     debugPrint('Wallet Manager Initialising...');
+    WidgetsBinding.instance.addObserver(this);
     init();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    final appLifecycleNotifier = ref.read(appLifecycleProvider.notifier);
+
+    if (state == AppLifecycleState.paused) {
+      appLifecycleNotifier.updateLastPausedTime(DateTime.now());
+      debugPrint('App is paused - might clear or secure sensitive data here');
+    } else if (state == AppLifecycleState.resumed) {
+      final appState = ref.read(appLifecycleProvider);
+      final lastPausedTime = appState.lastPausedTime;
+
+      if (lastPausedTime != null &&
+          DateTime.now().difference(lastPausedTime) >
+              appState.timeoutDuration) {
+        this.state = WalletState();
+        debugPrint("Timeout exceeded, sensitive data cleared");
+      }
+      debugPrint(
+          'App is resumed - might prompt for authentication or refresh data');
+    }
+  }
+
+  @override
+  dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<void> init() async {
     await _loadPreferences();
-    await checkForWallet();
+    bool walletExists = await hasAccountFromStorage();
+    if (walletExists) {
+      initializeAccount();
+    } else {
+      createAccount();
+    }
   }
 
   Future<void> _loadPreferences() async {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  Future<void> checkForWallet() async {
+  Future<bool> hasAccountFromStorage() async {
     try {
       final existingAccount = _prefs?.getString('accountName');
       if (existingAccount != null) {
-        initializeWallet();
-      } else {
-        createAccount();
+        return true;
       }
+      return false;
     } catch (e) {
       debugPrint('Error initializing wallet: $e');
+      return false;
     }
   }
 
@@ -134,7 +172,7 @@ class WalletManager extends StateNotifier<WalletState> {
     }
   }
 
-  Future<void> initializeWallet() async {
+  Future<void> initializeAccount() async {
     try {
       if (_prefs == null) await _loadPreferences();
       final pin = await storage.read(key: 'pin');

@@ -18,4 +18,6 @@ const String sessionsRouteName = 'sessions';
 const String advancedRouteName = 'advanced';
 const String aboutRouteName = 'about';
 
+const String pinPadRouteName = 'pinPad';
+
 const String errorRouteName = 'error';

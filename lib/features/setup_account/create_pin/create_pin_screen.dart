@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart' hide Orientation;
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/features/setup_account/create_pin/logic/pin_validation.dart';
-import 'package:pin_input_text_field/pin_input_text_field.dart';
 
 class CreatePinScreen extends ConsumerStatefulWidget {
   static String title = "Login";
@@ -17,8 +14,6 @@ class CreatePinScreen extends ConsumerStatefulWidget {
 class _CreatePinScreenState extends ConsumerState<CreatePinScreen> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController pinEditingController =
-        TextEditingController(text: '');
     String kibisisLogo = Theme.of(context).brightness == Brightness.dark
         ? 'assets/images/kibisis-logo-dark.svg'
         : 'assets/images/kibisis-logo-light.svg';
@@ -62,46 +57,8 @@ class _CreatePinScreenState extends ConsumerState<CreatePinScreen> {
                       const SizedBox(
                         height: kSizedBoxSpacing,
                       ),
-                      SizedBox(
-                        height: kInputHeight,
-                        child: PinInputTextField(
-                          controller: pinEditingController,
-                          pinLength: kPinLength,
-                          autoFocus: true,
-                          textInputAction: TextInputAction.done,
-                          cursor: Cursor(
-                            orientation: Orientation.vertical,
-                            height: kInputHeight / 2,
-                            width: 2,
-                            color: Theme.of(context).colorScheme.primary,
-                            radius: const Radius.circular(1),
-                            enabled: true,
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          decoration: BoxLooseDecoration(
-                            gapSpace: kScreenPadding / 2,
-                            strokeColorBuilder: PinListenColorBuilder(
-                                Theme.of(context).colorScheme.primary,
-                                Theme.of(context).colorScheme.onBackground),
-                            obscureStyle: ObscureStyle(
-                              isTextObscure: true,
-                            ),
-                          ),
-                          onChanged: (pin) {
-                            pin.length == kPinLength
-                                ? PinValidation.pinValidation(pin, context, ref)
-                                : null;
-                          },
-                          onSubmit: (pin) {
-                            debugPrint('submit via Input Field:$pin');
-
-                            PinValidation.pinValidation(pin, context, ref);
-                          },
-                        ),
-                      ),
+                      // PinPad(
+                      //     pinEditingController: pinEditingController, ref: ref),
                     ],
                   ),
                 ],

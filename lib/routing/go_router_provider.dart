@@ -7,6 +7,7 @@ import 'package:kibisis/features/add_wallet/add_wallet_screen.dart';
 import 'package:kibisis/features/dashboard/dashboard_screen.dart';
 import 'package:kibisis/features/dashboard/wallet_screen.dart';
 import 'package:kibisis/features/error/error_screen.dart';
+import 'package:kibisis/features/pin_pad/pin_pad_screen.dart';
 import 'package:kibisis/features/settings/about/about_screen.dart';
 import 'package:kibisis/features/settings/advanced/advanced_screen.dart';
 import 'package:kibisis/features/settings/appearance/appearance_screen.dart';
@@ -29,9 +30,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     routes: router._routes,
     redirect: router._redirectLogic,
     initialLocation: '/$createPinRouteName',
-    errorPageBuilder: (context, state) => const MaterialPage(
-      child: ErrorScreen(),
-    ),
+    errorPageBuilder: (context, state) {
+      // Retrieve the error message from the state
+      final errorMessage =
+          state.error?.toString() ?? 'No specific error message provided.';
+      return MaterialPage(
+        key: state
+            .pageKey, // Ensure to pass the pageKey for proper state management
+        child: ErrorScreen(errorMessage: errorMessage),
+      );
+    },
   );
 });
 
@@ -45,36 +53,41 @@ class RouterNotifier extends ChangeNotifier {
     );
   }
 
-  Future<String?> _redirectLogic(BuildContext context, GoRouterState state) {
+  Future<String?> _redirectLogic(
+      BuildContext context, GoRouterState state) async {
     final walletState = _ref.read(walletManagerProvider);
     bool isWalletInitialized = walletState.accountName?.isNotEmpty ?? false;
+    final hasAccountFromStorage =
+        await _ref.read(walletManagerProvider.notifier).hasAccountFromStorage();
+    FlutterNativeSplash.remove();
 
-    // If the wallet is not initialized and the user is not on a setup page, redirect to setup.
-    if (!isWalletInitialized && !state.uri.toString().startsWith('/setup')) {
-      return Future.value('/setup').then((_) {
-        FlutterNativeSplash.remove();
-        return '/setup';
-      });
+    // If there is no account from storage, and user is not on a setup page, redirect to setup.
+    if (!hasAccountFromStorage && !state.uri.toString().startsWith('/setup')) {
+      return '/setup';
     }
 
-    // If the wallet is initialized and the user is still on a setup page, redirect to the home page.
-    else if (isWalletInitialized && state.uri.toString().startsWith('/setup')) {
-      return Future.value('/').then((_) {
-        FlutterNativeSplash.remove();
-        return '/';
-      });
+    // If an account exists in storage but is not initialized, and user is not on the pin screen, Redirect to the PIN screen
+    else if (hasAccountFromStorage &&
+        !isWalletInitialized &&
+        !state.uri.toString().startsWith('/pinPad')) {
+      return '/pinPad';
+    }
+
+    // If the wallet is initialized and the user is on either the setup page or the pin page, redirect to the home page.
+    else if (isWalletInitialized &&
+        (state.uri.toString().startsWith('/setup') ||
+            state.uri.toString().startsWith('/pinPad'))) {
+      return '/';
     }
 
     // No redirection needed; stay on the current route.
-    FlutterNativeSplash.remove();
-    return Future.value(null);
+    return null;
   }
 
   List<GoRoute> get _routes => [
         GoRoute(
           name: createPinRouteName,
           path: '/$createPinRouteName',
-          // builder: (context, state) => CreatePinScreen(key: state.pageKey),
           pageBuilder: (context, state) {
             return defaultTransitionPage(const CreatePinScreen(), state);
           },
@@ -103,6 +116,13 @@ class RouterNotifier extends ChangeNotifier {
               },
             ),
           ],
+        ),
+        GoRoute(
+          path: '/$pinPadRouteName',
+          name: pinPadRouteName,
+          pageBuilder: (context, state) {
+            return defaultTransitionPage(const PinPadScreen(), state);
+          },
         ),
         GoRoute(
           path: '/',
