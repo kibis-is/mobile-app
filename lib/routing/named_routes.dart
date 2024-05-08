@@ -1,4 +1,4 @@
-const String createPinRouteName = 'setup';
+const String welcomeRouteName = 'setup';
 const String addAccountRouteName = 'addAccount';
 const String createAccountRouteName = 'createAccount';
 const String importAccountViaSeedRouteName = 'importAccountViaSeed';
@@ -19,5 +19,6 @@ const String advancedRouteName = 'advanced';
 const String aboutRouteName = 'about';
 
 const String pinPadRouteName = 'pinPad';
+const String setupPinPadRouteName = 'setupPinPad';
 
 const String errorRouteName = 'error';

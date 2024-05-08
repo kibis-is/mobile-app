@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/add_asset/add_asset_screen.dart';
 import 'package:kibisis/features/add_wallet/add_wallet_screen.dart';
 import 'package:kibisis/features/dashboard/dashboard_screen.dart';
@@ -17,7 +18,7 @@ import 'package:kibisis/features/settings/sessions/sessions_screen.dart';
 import 'package:kibisis/features/settings/settings_screen.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_screen.dart';
 import 'package:kibisis/features/setup_account/create_account/create_account_screen.dart';
-import 'package:kibisis/features/setup_account/create_pin/create_pin_screen.dart';
+import 'package:kibisis/features/setup_account/welcome/welcome_screen.dart';
 import 'package:kibisis/features/send_voi/send_voi_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
 import 'package:kibisis/providers/wallet_manager_provider.dart';
@@ -29,7 +30,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     refreshListenable: router,
     routes: router._routes,
     redirect: router._redirectLogic,
-    initialLocation: '/$createPinRouteName',
+    initialLocation: '/$welcomeRouteName',
     errorPageBuilder: (context, state) {
       // Retrieve the error message from the state
       final errorMessage =
@@ -86,12 +87,23 @@ class RouterNotifier extends ChangeNotifier {
 
   List<GoRoute> get _routes => [
         GoRoute(
-          name: createPinRouteName,
-          path: '/$createPinRouteName',
+          name: welcomeRouteName,
+          path: '/$welcomeRouteName',
           pageBuilder: (context, state) {
-            return defaultTransitionPage(const CreatePinScreen(), state);
+            return defaultTransitionPage(const WelcomeScreen(), state);
           },
           routes: [
+            GoRoute(
+              path: setupPinPadRouteName,
+              name: setupPinPadRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const PinPadScreen(
+                      mode: PinPadMode.setup,
+                    ),
+                    state);
+              },
+            ),
             GoRoute(
               name: addAccountRouteName,
               path: addAccountRouteName,
@@ -121,7 +133,11 @@ class RouterNotifier extends ChangeNotifier {
           path: '/$pinPadRouteName',
           name: pinPadRouteName,
           pageBuilder: (context, state) {
-            return defaultTransitionPage(const PinPadScreen(), state);
+            return defaultTransitionPage(
+                const PinPadScreen(
+                  mode: PinPadMode.unlock,
+                ),
+                state);
           },
         ),
         GoRoute(

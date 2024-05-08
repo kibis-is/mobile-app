@@ -30,7 +30,7 @@ ElevatedButtonThemeData elevatedButtonThemeLight() {
       padding: MaterialStateProperty.all(const EdgeInsets.all(kButtonPadding)),
       shape: MaterialStateProperty.all(
         RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kButtonRadius),
+          borderRadius: BorderRadius.circular(kWidgetRadius),
         ),
       ),
     ),
@@ -47,7 +47,7 @@ ElevatedButtonThemeData elevatedButtonThemeDark() {
       padding: MaterialStateProperty.all(const EdgeInsets.all(kButtonPadding)),
       shape: MaterialStateProperty.all(
         RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kButtonRadius),
+          borderRadius: BorderRadius.circular(kWidgetRadius),
         ),
       ),
     ),

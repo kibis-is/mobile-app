@@ -126,8 +126,8 @@ class WalletManager extends StateNotifier<WalletState>
   }
 
   Future<void> createAccount() async {
-    state = state.copyWith(isLoading: true);
     try {
+      state = state.copyWith(isLoading: true);
       final account = await algorand.createAccount();
       final mnemonicWords = await account.seedPhrase;
       final privateKeyBytes = await account.keyPair.extractPrivateKeyBytes();
@@ -157,9 +157,8 @@ class WalletManager extends StateNotifier<WalletState>
   }
 
   Future<void> finaliseAccount(String pin, String accountName) async {
-    state = state.copyWith(isLoading: true);
-
     try {
+      state = state.copyWith(isLoading: true);
       setPin(pin);
       await _prefs?.setString('accountName', accountName);
       state = state.copyWith(
@@ -172,12 +171,19 @@ class WalletManager extends StateNotifier<WalletState>
     }
   }
 
-  Future<void> initializeAccount() async {
+  Future<void> initializeAccount({String newAccountName = ''}) async {
     try {
+      state = state.copyWith(isLoading: true);
       if (_prefs == null) await _loadPreferences();
       final pin = await storage.read(key: 'pin');
       final mnemonic = await storage.read(key: 'mnemonic');
-      final accountName = _prefs?.getString('accountName');
+      String? accountName = '';
+      if (newAccountName != '') {
+        accountName = newAccountName;
+        _prefs?.setString('accountName', newAccountName);
+      } else {
+        accountName = _prefs!.getString('accountName');
+      }
 
       // Fetch public address only if it's not already set in the state or is empty
       String? publicAddress = state.currentAccount?.publicAddress;
@@ -215,6 +221,7 @@ class WalletManager extends StateNotifier<WalletState>
       state = state.copyWith(error: e.toString());
       debugPrint('Initialize Wallet Error: $e');
     }
+    state = state.copyWith(isLoading: false);
   }
 
   Future<void> setPin(String pin) async {
@@ -240,8 +247,8 @@ class WalletManager extends StateNotifier<WalletState>
   }
 
   Future<bool> changePin(String oldPin, String newPin) async {
-    state = state.copyWith(isLoading: true);
     try {
+      state = state.copyWith(isLoading: true);
       bool isOldPinValid = await verifyPin(oldPin);
       if (isOldPinValid) {
         final newPinHash = hashPin(newPin);
@@ -260,8 +267,8 @@ class WalletManager extends StateNotifier<WalletState>
   }
 
   Future<void> restoreAccount(List<String> mnemonic) async {
-    state = state.copyWith(isLoading: true);
     try {
+      state = state.copyWith(isLoading: true);
       final account = await algorand.restoreAccount(mnemonic);
       final privateKeyBytes = await account.keyPair.extractPrivateKeyBytes();
       final privateKeyHex = hex.encode(privateKeyBytes);
@@ -289,8 +296,8 @@ class WalletManager extends StateNotifier<WalletState>
   }
 
   Future<void> loadAccountFromPrivateKey(String privateKey) async {
-    state = state.copyWith(isLoading: true);
     try {
+      state = state.copyWith(isLoading: true);
       final account = await algorand.loadAccountFromPrivateKey(privateKey);
       state = state.copyWith(currentAccount: account, isLoading: false);
     } catch (e) {
@@ -299,20 +306,20 @@ class WalletManager extends StateNotifier<WalletState>
   }
 
   Future<void> sendPayment(String recipientAddress, double amount) async {
-    state = state.copyWith(isLoading: true);
     try {
+      state = state.copyWith(isLoading: true);
       final recipient = Address.fromAlgorandAddress(address: recipientAddress);
       final transactionId = await algorand.sendPayment(
           account: state.currentAccount!,
           recipient: recipient,
           amount: Algo.toMicroAlgos(amount));
+      state = state.copyWith(isLoading: false);
       debugPrint("Transaction successful: $transactionId");
     } catch (e) {
       debugPrint("Transaction failed: ${e.toString()}");
       state = state.copyWith(error: e.toString(), isLoading: false);
       return;
     }
-    state = state.copyWith(isLoading: false);
   }
 
   Future<void> loadAccountBalance() async {
@@ -322,7 +329,6 @@ class WalletManager extends StateNotifier<WalletState>
           error: "Public address not available.", isLoading: false);
       return;
     }
-    state = state.copyWith(isLoading: true);
     try {
       final accountInfo = await algorand
           .getBalance(state.currentAccount!.address.encodedAddress);
@@ -333,24 +339,28 @@ class WalletManager extends StateNotifier<WalletState>
   }
 
   Future<void> resetWallet() async {
-    if (Platform.isWindows) {
-      // Windows does not support deleteAll(), delete each key one at a time
-      List<String> keys = ['mnemonic', 'pin', 'privateKey'];
-      for (var key in keys) {
-        await storage.delete(key: key);
-        if (await storage.read(key: key) == null) {
-          debugPrint('Reset Wallet: $key confirm deleted.');
+    try {
+      if (Platform.isWindows) {
+        // Windows does not support deleteAll(), delete each key one at a time
+        List<String> keys = ['mnemonic', 'pin', 'privateKey'];
+        for (var key in keys) {
+          await storage.delete(key: key);
+          if (await storage.read(key: key) == null) {
+            debugPrint('Reset Wallet: $key confirm deleted.');
+          }
         }
+      } else {
+        await storage.deleteAll();
+        debugPrint('Reset Wallet: All keys deleted.');
       }
-    } else {
-      await storage.deleteAll();
-      debugPrint('Reset Wallet: All keys deleted.');
+
+      // Clear all data from shared preferences
+      await _prefs?.clear();
+
+      state = WalletState();
+    } catch (e) {
+      debugPrint('Error: $e');
     }
-
-    // Clear all data from shared preferences
-    await _prefs?.clear();
-
-    state = WalletState();
   }
 
   String getConcatenatedMnemonic() {

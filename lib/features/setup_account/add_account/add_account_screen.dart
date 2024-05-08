@@ -30,7 +30,6 @@ class AddAccountScreen extends StatelessWidget {
               leadingIcon: Icons.person_add,
               trailingIcon: Icons.arrow_forward_ios_rounded,
               onTap: () {
-                debugPrint('Create New Account');
                 GoRouter.of(context).go('/setup/createAccount');
               },
             ),

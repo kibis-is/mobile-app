@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/pin_state.dart';
 import 'package:kibisis/providers/wallet_manager_provider.dart';
 
@@ -12,24 +13,35 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
   final StateNotifierProviderRef<PinEntryStateNotifier, PinState> ref;
   PinEntryStateNotifier(this.ref) : super(PinState());
 
-  void addKey(String key) async {
+  bool addKey(String key) {
     if (state.pin.length < 6) {
       String newPin = state.pin + key;
       if (newPin.length == 6) {
-        debugPrint('Pin Entry Complete: $newPin');
-        bool isPinValid =
-            await ref.read(walletManagerProvider.notifier).verifyPin(newPin);
-        if (isPinValid) {
-          debugPrint('valid pin entered');
-          ref.read(walletManagerProvider.notifier).initializeAccount();
-        } else {
-          debugPrint('invalid pin entered');
-          state = state.copyWith(error: 'Invalid PIN. Try again.', pin: '');
-        }
+        return true;
       } else {
         state = state.copyWith(pin: newPin);
       }
     }
+    return false;
+  }
+
+  void pinComplete(PinPadMode mode) async {
+    try {
+      await ref.read(walletManagerProvider.notifier).setPin(state.pin);
+      if (mode == PinPadMode.unlock) {
+        await ref.read(walletManagerProvider.notifier).initializeAccount();
+      }
+    } catch (e) {
+      debugPrint('invalid pin entered');
+      if (mode == PinPadMode.setup) {
+        await ref.read(walletManagerProvider.notifier).resetWallet();
+      }
+      state = state.copyWith(error: 'Invalid PIN. Try again.', pin: '');
+    }
+  }
+
+  void clearPin() {
+    state = state.copyWith(pin: '');
   }
 
   void removeLastKey() {

@@ -25,7 +25,7 @@ final ThemeData lightTheme = ThemeData(
     tileColor: ColorPalette.lightThemeWhiteSmoke,
     contentPadding: const EdgeInsets.all(kSizedBoxSpacing),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(kButtonRadius), // Corner radius
+      borderRadius: BorderRadius.circular(kWidgetRadius), // Corner radius
     ),
   ),
   colorScheme: const ColorScheme.light(
@@ -44,15 +44,15 @@ final ThemeData lightTheme = ThemeData(
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kButtonRadius),
+      borderRadius: BorderRadius.circular(kWidgetRadius),
       borderSide: const BorderSide(color: ColorPalette.lightThemeFrenchGray),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kButtonRadius),
+      borderRadius: BorderRadius.circular(kWidgetRadius),
       borderSide: const BorderSide(color: ColorPalette.lightThemeCadetGray),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kButtonRadius),
+      borderRadius: BorderRadius.circular(kWidgetRadius),
       borderSide: const BorderSide(color: ColorPalette.lightThemePurple),
     ),
   ),
@@ -74,7 +74,7 @@ final ThemeData darkTheme = ThemeData(
     tileColor: ColorPalette.darkThemeGunmetal,
     contentPadding: const EdgeInsets.all(kSizedBoxSpacing),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(kButtonRadius),
+      borderRadius: BorderRadius.circular(kWidgetRadius),
     ),
   ),
   drawerTheme: const DrawerThemeData(
@@ -96,11 +96,11 @@ final ThemeData darkTheme = ThemeData(
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kButtonRadius),
+      borderRadius: BorderRadius.circular(kWidgetRadius),
       borderSide: const BorderSide(color: ColorPalette.darkThemeGray),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kButtonRadius),
+      borderRadius: BorderRadius.circular(kWidgetRadius),
       borderSide: const BorderSide(color: ColorPalette.darkThemeMauve),
     ),
   ),

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 
 class PinPad extends ConsumerWidget {
   final int pinLength;
-  final Function(String) onComplete;
+  final PinPadMode mode;
 
   const PinPad({
     super.key,
     this.pinLength = 6,
-    required this.onComplete,
+    required this.mode,
   });
 
   @override
@@ -77,18 +78,35 @@ class PinPad extends ConsumerWidget {
                         if (index == 9) {
                           return const SizedBox.shrink();
                         }
-                        String key = index == 11
-                            ? '<'
-                            : index == 10
-                                ? '0'
-                                : (index + 1).toString();
+                        if (index == 11) {
+                          return IconButton(
+                            icon: const Icon(Icons.backspace),
+                            onPressed: () {
+                              ref
+                                  .read(pinEntryStateNotifierProvider.notifier)
+                                  .removeLastKey();
+                            },
+                            color: Theme.of(context).colorScheme.onSurface,
+                            iconSize: kScreenPadding * 2,
+                          );
+                        }
+                        String key = index == 10 ? '0' : (index + 1).toString();
                         return Padding(
                           padding: const EdgeInsets.all(kScreenPadding / 2),
                           child: ElevatedButton(
                             onPressed: () {
-                              ref
+                              bool isPinComplete = ref
                                   .read(pinEntryStateNotifierProvider.notifier)
                                   .addKey(key);
+                              isPinComplete
+                                  ? ref
+                                      .read(pinEntryStateNotifierProvider
+                                          .notifier)
+                                      .pinComplete(mode)
+                                  : null;
+                              if (mode == PinPadMode.setup && isPinComplete) {
+                                GoRouter.of(context).go('/setup/addAccount');
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),
