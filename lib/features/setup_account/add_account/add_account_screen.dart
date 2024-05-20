@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/account_provider.dart';
 
-class AddAccountScreen extends StatelessWidget {
+class AddAccountScreen extends ConsumerWidget {
+  static String title = "Add Account";
   const AddAccountScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Account"),
+        title: Text(title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(kScreenPadding),
@@ -30,7 +33,8 @@ class AddAccountScreen extends StatelessWidget {
               leadingIcon: Icons.person_add,
               trailingIcon: Icons.arrow_forward_ios_rounded,
               onTap: () {
-                GoRouter.of(context).go('/setup/createAccount');
+                ref.read(accountProvider.notifier).createAccount();
+                GoRouter.of(context).push('/setup/copySeed');
               },
             ),
             const SizedBox(
@@ -43,7 +47,7 @@ class AddAccountScreen extends StatelessWidget {
               trailingIcon: Icons.arrow_forward_ios_rounded,
               onTap: () {
                 debugPrint('Import Via Seed.');
-                GoRouter.of(context).go('/setup/importViaSeed');
+                GoRouter.of(context).push('/setup/importSeed');
               },
             ),
           ],

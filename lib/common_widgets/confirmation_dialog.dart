@@ -23,39 +23,44 @@ class ConfirmationDialog extends StatelessWidget {
         title,
         style: Theme.of(context).textTheme.titleLarge,
       ),
-      actionsPadding: const EdgeInsets.all(0),
       actionsAlignment: MainAxisAlignment.spaceBetween,
       content: Text(content, style: Theme.of(context).textTheme.bodySmall),
       actions: <Widget>[
-        Expanded(
-          child: TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(kScreenPadding),
-              child: Text(
-                yesText,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+        Row(
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(kScreenPadding),
+                  child: Text(
+                    yesText,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(false);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(kScreenPadding),
-            child: Text(
-              noText,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary),
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(kScreenPadding),
+                  child: Text(
+                    noText,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ],
     );

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/providers/wallet_manager_provider.dart';
+import 'package:kibisis/utils/app_reset_util.dart';
 
 class GeneralScreen extends ConsumerWidget {
   static String title = 'General';
@@ -45,20 +45,21 @@ class GeneralScreen extends ConsumerWidget {
               isFullWidth: true,
               onPressed: () async {
                 bool confirm = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return const ConfirmationDialog(
-                      yesText: 'Reset',
-                      noText: 'Cancel',
-                      content:
-                          'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
-                    );
-                  },
-                );
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const ConfirmationDialog(
+                          yesText: 'Reset',
+                          noText: 'Cancel',
+                          content:
+                              'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
+                        );
+                      },
+                    ) ??
+                    false;
 
-                confirm
-                    ? ref.read(walletManagerProvider.notifier).resetWallet()
-                    : null;
+                if (confirm) {
+                  AppResetUtil.resetApp(ref);
+                }
               },
             )
           ],

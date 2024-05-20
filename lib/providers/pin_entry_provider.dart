@@ -2,24 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/pin_state.dart';
-import 'package:kibisis/providers/wallet_manager_provider.dart';
+import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/authentication_provider.dart';
+import 'package:kibisis/providers/pin_provider.dart';
 
 final pinEntryStateNotifierProvider =
     StateNotifierProvider<PinEntryStateNotifier, PinState>((ref) {
-  return PinEntryStateNotifier(ref);
+  // Access the notifier of the pinProvider for operations
+  final pinStateNotifier = ref.watch(pinProvider.notifier);
+  return PinEntryStateNotifier(
+      ref, pinStateNotifier); // Correctly pass ref here
 });
 
 class PinEntryStateNotifier extends StateNotifier<PinState> {
-  final StateNotifierProviderRef<PinEntryStateNotifier, PinState> ref;
-  PinEntryStateNotifier(this.ref) : super(PinState());
+  final StateNotifierProviderRef<PinEntryStateNotifier, PinState>
+      ref; // Use the correct Ref type
+  final PinStateNotifier pinStateNotifier;
+
+  PinEntryStateNotifier(this.ref, this.pinStateNotifier) : super(PinState());
 
   bool addKey(String key) {
     if (state.pin.length < 6) {
       String newPin = state.pin + key;
+      state = state.copyWith(pin: newPin);
       if (newPin.length == 6) {
         return true;
-      } else {
-        state = state.copyWith(pin: newPin);
       }
     }
     return false;
@@ -27,15 +34,27 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
 
   void pinComplete(PinPadMode mode) async {
     try {
-      await ref.read(walletManagerProvider.notifier).setPin(state.pin);
       if (mode == PinPadMode.unlock) {
-        await ref.read(walletManagerProvider.notifier).initializeAccount();
+        bool isPinVerified = await pinStateNotifier.verifyPin(state.pin);
+        if (isPinVerified) {
+          debugPrint('PIN verified successfully');
+          await ref
+              .read(accountProvider.notifier)
+              .loadAccountFromPrivateKey()
+              .then((_) {
+            ref.read(isAuthenticatedProvider.notifier).state = true;
+            debugPrint('THEN set auth to true.');
+            // Optionally, trigger navigation or further actions here
+          });
+        } else {
+          throw Exception('Incorrect PIN');
+        }
+      } else if (mode == PinPadMode.setup) {
+        await pinStateNotifier.setPin(state.pin);
+        debugPrint('PIN set successfully');
       }
     } catch (e) {
-      debugPrint('invalid pin entered');
-      if (mode == PinPadMode.setup) {
-        await ref.read(walletManagerProvider.notifier).resetWallet();
-      }
+      debugPrint('Invalid PIN entered: $e');
       state = state.copyWith(error: 'Invalid PIN. Try again.', pin: '');
     }
   }

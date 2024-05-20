@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/authentication_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
+import 'package:kibisis/providers/pin_provider.dart';
+import 'package:kibisis/utils/storage_service.dart';
 
 class PinPad extends ConsumerWidget {
   final int pinLength;
@@ -54,12 +58,11 @@ class PinPad extends ConsumerWidget {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 double width = constraints.maxWidth;
-                double height =
-                    width * 4 / 3; // Height based on the aspect ratio
+                double height = width * 4 / 3;
 
                 if (height > constraints.maxHeight) {
                   height = constraints.maxHeight;
-                  width = height * 3 / 4; // Width based on the adjusted height
+                  width = height * 3 / 4;
                 }
 
                 return Center(
@@ -95,18 +98,36 @@ class PinPad extends ConsumerWidget {
                           padding: const EdgeInsets.all(kScreenPadding / 2),
                           child: ElevatedButton(
                             onPressed: () {
+                              ref.read(loadingProvider.notifier).startLoading();
+
                               bool isPinComplete = ref
                                   .read(pinEntryStateNotifierProvider.notifier)
                                   .addKey(key);
-                              isPinComplete
-                                  ? ref
-                                      .read(pinEntryStateNotifierProvider
-                                          .notifier)
-                                      .pinComplete(mode)
-                                  : null;
-                              if (mode == PinPadMode.setup && isPinComplete) {
-                                GoRouter.of(context).go('/setup/addAccount');
+                              if (isPinComplete) {
+                                ref
+                                    .read(
+                                        pinEntryStateNotifierProvider.notifier)
+                                    .pinComplete(mode);
+                                ref
+                                    .read(
+                                        pinEntryStateNotifierProvider.notifier)
+                                    .clearPin();
+                                if (mode != PinPadMode.setup) {
+                                  ref
+                                      .read(pinProvider.notifier)
+                                      .clearPinState();
+                                }
+                                ref
+                                    .read(isAuthenticatedProvider.notifier)
+                                    .state = true;
+                                ref.refresh(storageProvider).accountExists();
                               }
+                              if (mode == PinPadMode.setup && isPinComplete) {
+                                ref.refresh(storageProvider).accountExists();
+                                GoRouter.of(context).push('/setup/addAccount');
+                              }
+
+                              ref.read(loadingProvider.notifier).stopLoading();
                             },
                             style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),

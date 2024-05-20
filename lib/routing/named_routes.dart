@@ -1,7 +1,8 @@
 const String welcomeRouteName = 'setup';
 const String addAccountRouteName = 'addAccount';
-const String createAccountRouteName = 'createAccount';
-const String importAccountViaSeedRouteName = 'importAccountViaSeed';
+const String copySeedRouteName = 'copySeed';
+const String importSeedRouteName = 'importSeed';
+const String nameAccountRouteName = 'nameAccount';
 
 const String rootRouteName = '/';
 const String walletsRouteName = 'wallets';
@@ -18,7 +19,7 @@ const String sessionsRouteName = 'sessions';
 const String advancedRouteName = 'advanced';
 const String aboutRouteName = 'about';
 
-const String pinPadRouteName = 'pinPad';
-const String setupPinPadRouteName = 'setupPinPad';
+const String pinPadUnlockRouteName = 'pinPadUnlock';
+const String pinPadSetupRouteName = 'pinPadSetup';
 
 const String errorRouteName = 'error';

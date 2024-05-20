@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart' hide Orientation;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
 
-class WelcomeScreen extends ConsumerStatefulWidget {
+class WelcomeScreen extends StatelessWidget {
   static String title = "Login";
   const WelcomeScreen({super.key});
 
-  @override
-  ConsumerState<WelcomeScreen> createState() => _CreatePinScreenState();
-}
-
-class _CreatePinScreenState extends ConsumerState<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     String kibisisLogo = Theme.of(context).brightness == Brightness.dark
@@ -37,7 +31,7 @@ class _CreatePinScreenState extends ConsumerState<WelcomeScreen> {
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 Text(
-                  'v0.0.1',
+                  kVersionNumber,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
@@ -67,7 +61,7 @@ class _CreatePinScreenState extends ConsumerState<WelcomeScreen> {
                             .uri
                             .path;
                         debugPrint(currentPath);
-                        GoRouter.of(context).go('/setup/setupPinPad');
+                        GoRouter.of(context).push('/setup/pinPadSetup');
                       },
                     )
                   ],

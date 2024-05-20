@@ -17,12 +17,16 @@ import 'package:kibisis/features/settings/security/security_screen.dart';
 import 'package:kibisis/features/settings/sessions/sessions_screen.dart';
 import 'package:kibisis/features/settings/settings_screen.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_screen.dart';
-import 'package:kibisis/features/setup_account/create_account/create_account_screen.dart';
+import 'package:kibisis/features/setup_account/copy_seed_screen/copy_seed_screen.dart';
+import 'package:kibisis/features/setup_account/name_account/name_account_screen.dart';
 import 'package:kibisis/features/setup_account/welcome/welcome_screen.dart';
 import 'package:kibisis/features/send_voi/send_voi_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
-import 'package:kibisis/providers/wallet_manager_provider.dart';
+import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/authentication_provider.dart';
+import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/storage_service.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final router = RouterNotifier(ref);
@@ -45,43 +49,54 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 });
 
 class RouterNotifier extends ChangeNotifier {
-  final Ref _ref;
+  final Ref ref;
 
-  RouterNotifier(this._ref) {
-    _ref.listen<WalletState>(
-      walletManagerProvider,
+  RouterNotifier(this.ref) {
+    ref.listen<AccountState>(
+      accountProvider,
       (_, __) => notifyListeners(),
     );
   }
-
+  // If there is no account from storage, and user is not on a setup page, redirect to setup.
   Future<String?> _redirectLogic(
       BuildContext context, GoRouterState state) async {
-    final walletState = _ref.read(walletManagerProvider);
-    bool isWalletInitialized = walletState.accountName?.isNotEmpty ?? false;
-    final hasAccountFromStorage =
-        await _ref.read(walletManagerProvider.notifier).hasAccountFromStorage();
-    FlutterNativeSplash.remove();
+    // Create a ProviderContainer to read the providers outside of the async context
+    final container = ProviderScope.containerOf(context);
 
+    final isSetupComplete = container.read(setupCompleteProvider);
+    final isAuthenticated = container.read(isAuthenticatedProvider);
+
+    bool hasAccount = await container.read(storageProvider).accountExists();
+
+    FlutterNativeSplash.remove();
+    debugPrint('refresh the routing');
     // If there is no account from storage, and user is not on a setup page, redirect to setup.
-    if (!hasAccountFromStorage && !state.uri.toString().startsWith('/setup')) {
+    if (!hasAccount &&
+        !state.uri.toString().startsWith('/setup') &&
+        !isSetupComplete) {
+      debugPrint('redirect to /setup');
       return '/setup';
     }
 
-    // If an account exists in storage but is not initialized, and user is not on the pin screen, Redirect to the PIN screen
-    else if (hasAccountFromStorage &&
-        !isWalletInitialized &&
-        !state.uri.toString().startsWith('/pinPad')) {
-      return '/pinPad';
+    // If an account exists in storage but the PIN is not verified, and user is not on the pin screen, redirect to the PIN screen
+    else if (hasAccount &&
+        !isAuthenticated &&
+        !state.uri.toString().startsWith('/pinPadUnlock')) {
+      debugPrint('redirect to /pinPadUnlock');
+      return '/pinPadUnlock';
     }
 
     // If the wallet is initialized and the user is on either the setup page or the pin page, redirect to the home page.
-    else if (isWalletInitialized &&
+    else if (hasAccount &&
+        isAuthenticated &&
         (state.uri.toString().startsWith('/setup') ||
             state.uri.toString().startsWith('/pinPad'))) {
+      debugPrint('redirect to /');
       return '/';
     }
 
     // No redirection needed; stay on the current route.
+    debugPrint('No redirection needed');
     return null;
   }
 
@@ -94,8 +109,8 @@ class RouterNotifier extends ChangeNotifier {
           },
           routes: [
             GoRoute(
-              path: setupPinPadRouteName,
-              name: setupPinPadRouteName,
+              path: pinPadSetupRouteName,
+              name: pinPadSetupRouteName,
               pageBuilder: (context, state) {
                 return defaultTransitionPage(
                     const PinPadScreen(
@@ -112,26 +127,31 @@ class RouterNotifier extends ChangeNotifier {
               },
             ),
             GoRoute(
-              name: createAccountRouteName,
-              path: createAccountRouteName,
+              name: copySeedRouteName,
+              path: copySeedRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(
-                    const CreateAccountScreen(), state);
+                return defaultTransitionPage(const CopySeedScreen(), state);
               },
             ),
             GoRoute(
-              name: importAccountViaSeedRouteName,
-              path: importAccountViaSeedRouteName,
+              name: importSeedRouteName,
+              path: importSeedRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(
-                    const ImportAccountViaSeedScreen(), state);
+                return defaultTransitionPage(const ImportSeedScreen(), state);
+              },
+            ),
+            GoRoute(
+              name: nameAccountRouteName,
+              path: nameAccountRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(const NameAccountScreen(), state);
               },
             ),
           ],
         ),
         GoRoute(
-          path: '/$pinPadRouteName',
-          name: pinPadRouteName,
+          path: '/$pinPadUnlockRouteName',
+          name: pinPadUnlockRouteName,
           pageBuilder: (context, state) {
             return defaultTransitionPage(
                 const PinPadScreen(
@@ -236,9 +256,8 @@ class RouterNotifier extends ChangeNotifier {
     return CustomTransitionPage(
       key: state.pageKey,
       child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return child;
-      },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          child,
     );
   }
 }

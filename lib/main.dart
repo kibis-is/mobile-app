@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/settings/providers/settings_providers.dart';
-import 'package:kibisis/providers/wallet_manager_provider.dart';
+import 'package:kibisis/providers/error_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
 import 'package:kibisis/theme/themes.dart';
+import 'package:kibisis/utils/storage_service.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
-void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
-  runApp(const ProviderScope(
-    child: Kibisis(),
-  ));
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const ProviderScope(child: Kibisis()));
 }
 
 class Kibisis extends ConsumerWidget {
@@ -21,27 +21,53 @@ class Kibisis extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(goRouterProvider);
-    final isDarkTheme = ref.watch(isDarkModeProvider);
-    final walletManager = ref.watch(walletManagerProvider);
+    // Correct placement of ref.listen
+    ref.listen<String?>(errorProvider, (previous, next) {
+      if (next != null && next.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          rootScaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
+              content: Text(next), duration: const Duration(seconds: 5)));
+        });
+        ref.read(errorProvider.notifier).state = null; // Reset the error
+      }
+    });
 
-    return MaterialApp.router(
-      routerConfig: router,
-      title: 'Kibisis',
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-      builder: (context, widget) => ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 600),
-        child: LoadingOverlay(
-          isLoading: walletManager.isLoading,
-          color: Theme.of(context).colorScheme.background,
-          opacity: 0.5,
-          child: Center(
-            child: widget,
-          ),
-        ),
-      ),
+    return FutureBuilder(
+      future: ref.read(sharedPreferencesProvider.future),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          final router = ref.watch(goRouterProvider);
+          final isDarkTheme = ref.watch(isDarkModeProvider);
+          final isLoading = ref.watch(loadingProvider);
+
+          return MaterialApp.router(
+            scaffoldMessengerKey: rootScaffoldMessengerKey,
+            routerConfig: router,
+            title: 'Kibisis',
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+            builder: (context, widget) => ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: LoadingOverlay(
+                isLoading: isLoading,
+                color: Theme.of(context).colorScheme.background,
+                opacity: 0.5,
+                child: Center(child: widget),
+              ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return const Material(
+            child: Center(
+                child: Text('Initialization error, please restart the app.')),
+          );
+        } else {
+          return const Material(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+      },
     );
   }
 }

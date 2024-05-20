@@ -2,21 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 
-class ImportAccountViaSeedScreen extends ConsumerStatefulWidget {
-  static String title = "Import Account Via Seed";
-  const ImportAccountViaSeedScreen({super.key});
+class ImportSeedScreen extends ConsumerWidget {
+  static String title = 'Import Seed';
+  const ImportSeedScreen({super.key});
 
   @override
-  ConsumerState<ImportAccountViaSeedScreen> createState() =>
-      _ImportAccountViaSeedScreenState();
-}
-
-class _ImportAccountViaSeedScreenState
-    extends ConsumerState<ImportAccountViaSeedScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Padding(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: const Padding(
         padding: EdgeInsets.all(kScreenPadding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,

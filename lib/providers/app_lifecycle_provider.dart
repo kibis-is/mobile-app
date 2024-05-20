@@ -4,7 +4,7 @@ import 'package:kibisis/models/app_lifecycle_state.dart';
 final appLifecycleProvider =
     StateNotifierProvider<AppLifecycleNotifier, AppLifecycleState>((ref) {
   return AppLifecycleNotifier(
-      AppLifecycleState(timeoutDuration: const Duration(minutes: 5)));
+      AppLifecycleState(timeoutDuration: const Duration(minutes: 1)));
 });
 
 class AppLifecycleNotifier extends StateNotifier<AppLifecycleState> {
