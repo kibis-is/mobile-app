@@ -22,7 +22,6 @@ import 'package:kibisis/features/setup_account/name_account/name_account_screen.
 import 'package:kibisis/features/setup_account/welcome/welcome_screen.dart';
 import 'package:kibisis/features/send_voi/send_voi_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
-import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -52,8 +51,12 @@ class RouterNotifier extends ChangeNotifier {
   final Ref ref;
 
   RouterNotifier(this.ref) {
-    ref.listen<AccountState>(
-      accountProvider,
+    ref.listen<bool>(
+      setupCompleteProvider,
+      (_, __) => notifyListeners(),
+    );
+    ref.listen<bool>(
+      isAuthenticatedProvider,
       (_, __) => notifyListeners(),
     );
   }
