@@ -1,10 +1,10 @@
-class Asset {
+class MockAsset {
   final String name;
   final String subtitle;
   final String image;
   final int value;
 
-  Asset(
+  MockAsset(
       {required this.name,
       required this.subtitle,
       required this.image,

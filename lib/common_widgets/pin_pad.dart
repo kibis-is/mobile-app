@@ -8,7 +8,7 @@ import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/utils/storage_service.dart';
 
-class PinPad extends ConsumerWidget {
+class PinPad extends ConsumerStatefulWidget {
   final int pinLength;
   final PinPadMode mode;
 
@@ -19,7 +19,12 @@ class PinPad extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  PinPadState createState() => PinPadState();
+}
+
+class PinPadState extends ConsumerState<PinPad> {
+  @override
+  Widget build(BuildContext context) {
     final pinEntryProvider = ref.watch(pinEntryStateNotifierProvider);
 
     return Column(
@@ -32,7 +37,7 @@ class PinPad extends ConsumerWidget {
             padding: const EdgeInsets.all(kScreenPadding),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(pinLength, (index) {
+              children: List.generate(widget.pinLength, (index) {
                 return Padding(
                   padding: const EdgeInsets.all(kScreenPadding / 2),
                   child: CircleAvatar(
@@ -70,9 +75,8 @@ class PinPad extends ConsumerWidget {
                     width: width,
                     height: height,
                     child: GridView.builder(
-                      physics:
-                          const NeverScrollableScrollPhysics(), // To prevent scrolling inside GridView
-                      itemCount: 12, // 0-9 + empty + backspace
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 12,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
@@ -97,42 +101,52 @@ class PinPad extends ConsumerWidget {
                         return Padding(
                           padding: const EdgeInsets.all(kScreenPadding / 2),
                           child: ElevatedButton(
-                            onPressed: () {
+                            style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface),
+                            onPressed: () async {
                               ref.read(loadingProvider.notifier).startLoading();
 
                               bool isPinComplete = ref
                                   .read(pinEntryStateNotifierProvider.notifier)
                                   .addKey(key);
+
                               if (isPinComplete) {
                                 ref
                                     .read(
                                         pinEntryStateNotifierProvider.notifier)
-                                    .pinComplete(mode);
-                                ref
-                                    .read(
-                                        pinEntryStateNotifierProvider.notifier)
-                                    .clearPin();
-                                if (mode != PinPadMode.setup) {
+                                    .pinComplete(widget.mode);
+
+                                if (widget.mode == PinPadMode.setup &&
+                                    isPinComplete) {
+                                  ref.refresh(storageProvider).accountExists();
+                                  if (mounted) {
+                                    GoRouter.of(context)
+                                        .push('/setup/addAccount');
+                                  }
+                                }
+
+                                if (widget.mode == PinPadMode.unlock &&
+                                    ref.read(isAuthenticatedProvider)) {
+                                  if (mounted) {
+                                    // Navigate to the next screen if needed
+                                  }
+                                }
+
+                                if (widget.mode != PinPadMode.setup) {
                                   ref
                                       .read(pinProvider.notifier)
                                       .clearPinState();
                                 }
                                 ref
-                                    .read(isAuthenticatedProvider.notifier)
-                                    .state = true;
-                                ref.refresh(storageProvider).accountExists();
-                              }
-                              if (mode == PinPadMode.setup && isPinComplete) {
-                                ref.refresh(storageProvider).accountExists();
-                                GoRouter.of(context).push('/setup/addAccount');
+                                    .read(
+                                        pinEntryStateNotifierProvider.notifier)
+                                    .clearPin();
                               }
 
                               ref.read(loadingProvider.notifier).stopLoading();
                             },
-                            style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface),
                             child: Text(
                               key,
                               style: Theme.of(context).textTheme.titleLarge,

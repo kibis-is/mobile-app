@@ -38,14 +38,9 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
         bool isPinVerified = await pinStateNotifier.verifyPin(state.pin);
         if (isPinVerified) {
           debugPrint('PIN verified successfully');
-          await ref
-              .read(accountProvider.notifier)
-              .loadAccountFromPrivateKey()
-              .then((_) {
-            ref.read(isAuthenticatedProvider.notifier).state = true;
-            debugPrint('THEN set auth to true.');
-            // Optionally, trigger navigation or further actions here
-          });
+          await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
+          ref.read(isAuthenticatedProvider.notifier).state = true;
+          debugPrint('Authentication state set to true.');
         } else {
           throw Exception('Incorrect PIN');
         }

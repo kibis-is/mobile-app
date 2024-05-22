@@ -6,8 +6,11 @@ import 'package:algorand_dart/algorand_dart.dart';
 final algorandProvider = Provider<Algorand>((ref) {
   return Algorand(); // Assuming Algorand() constructor sets up the necessary Algorand client
 });
+final algorandServiceProvider = Provider<AlgorandService>((ref) {
+  final algorand = ref.watch(algorandProvider);
+  return AlgorandService(algorand);
+});
 
-// Using AlgorandProvider in a consumer, where you can access and use the Algorand instance
 class AlgorandService {
   final Algorand algorand;
 
@@ -35,6 +38,20 @@ class AlgorandService {
     } catch (e) {
       debugPrint("Failed to execute transaction: $e");
       throw Exception("Failed to execute transaction: $e");
+    }
+  }
+
+  Future<String> getAccountBalance(String address) async {
+    try {
+      final accountInfo = await algorand.getAccountByAddress(address);
+      final balance = accountInfo.amount;
+      return Algo.fromMicroAlgos(balance).toString();
+    } on AlgorandException catch (e) {
+      debugPrint('AlgorandException: ${e.message}');
+      throw Exception('Failed to get account balance: ${e.message}');
+    } catch (e) {
+      debugPrint('General Exception: $e');
+      throw Exception('Failed to get account balance: $e');
     }
   }
 }

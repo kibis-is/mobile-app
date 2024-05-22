@@ -9,6 +9,9 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
+import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/algorand_provider.dart';
+
 import 'package:kibisis/providers/network_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -18,32 +21,51 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final networks = ref.watch(networkProvider).getNetworks();
-    List<Asset> assets = [
-      Asset(
+    List<MockAsset> assets = [
+      MockAsset(
           name: "USDC",
-          subtitle: 'USDC',
+          subtitle: 'Test Data 1',
           image: 'assets/images/usd-coin-logo.svg',
           value: 0),
-      Asset(
+      MockAsset(
           name: "USDC",
-          subtitle: 'USDC',
+          subtitle: 'Test Data 2',
           image: 'assets/images/usd-coin-logo.svg',
           value: 0),
     ];
 
     List<String> tabs = ['Assets', 'NTFs', 'Activity'];
 
+    final accountState = ref.watch(accountProvider);
+
+    final algorandService = ref.watch(algorandServiceProvider);
+
     return Scaffold(
       appBar: SplitAppBar(
         leadingWidget: Row(
           children: [
             Text('Balance:', style: Theme.of(context).textTheme.bodySmall),
-            Text(
-              "0.999",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(fontWeight: FontWeight.bold),
+            FutureBuilder<String>(
+              future: algorandService
+                  .getAccountBalance(accountState.account?.publicAddress ?? ''),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(); // Show a loading indicator while waiting
+                } else if (snapshot.hasError) {
+                  return const Text('Error'); // Handle the error case
+                } else if (snapshot.hasData) {
+                  return Text(
+                    snapshot.data!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  );
+                } else {
+                  return const Text(
+                      'No Data'); // Handle the case where there's no data
+                }
+              },
             ),
             SvgPicture.asset(
               networks[0].icon,
@@ -89,7 +111,7 @@ class DashboardScreen extends ConsumerWidget {
             const SizedBox(
               height: kScreenPadding,
             ),
-            DashboardInfoPanel(networks: networks),
+            DashboardInfoPanel(networks: networks, accountState: accountState),
             const SizedBox(
               height: kScreenPadding,
             ),

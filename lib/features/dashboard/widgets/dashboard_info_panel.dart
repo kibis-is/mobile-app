@@ -4,14 +4,18 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/menu_item.dart';
 import 'package:kibisis/models/network.dart';
+import 'package:kibisis/providers/account_provider.dart';
 
 class DashboardInfoPanel extends StatelessWidget {
   const DashboardInfoPanel({
     super.key,
     required this.networks,
+    required this.accountState,
   });
 
   final List<Network> networks;
+
+  final AccountState accountState;
 
   List<MenuItem> get items => [
         MenuItem(
@@ -36,7 +40,7 @@ class DashboardInfoPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Text('Personal',
+              child: Text(accountState.accountName ?? 'No Account Name',
                   style: Theme.of(context).textTheme.bodyLarge),
             ),
             Expanded(
@@ -45,7 +49,7 @@ class DashboardInfoPanel extends StatelessWidget {
                 children: [
                   Expanded(
                     child: EllipsizedText(
-                      "TESTKHUQASDHASDHASDSDJAFDFSDCSDCSDDJ",
+                      accountState.account?.publicAddress ?? '',
                       type: EllipsisType.middle,
                       textAlign: TextAlign.end,
                       style: Theme.of(context).textTheme.bodySmall,
