@@ -8,13 +8,27 @@ import 'package:kibisis/features/setup_account/name_account/providers/checkbox_p
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 
-class CopySeedScreen extends StatelessWidget {
+class CopySeedScreen extends ConsumerStatefulWidget {
   const CopySeedScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
+  CopySeedScreenState createState() => CopySeedScreenState();
+}
 
+class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
+  final formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Reset the checkbox provider state when the screen is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(checkboxProvider.notifier).state = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Copy Seed"),
@@ -117,7 +131,7 @@ class CopySeedScreen extends StatelessWidget {
                             },
                             builder: (FormFieldState<bool> state) {
                               return Checkbox(
-                                value: state.value,
+                                value: checkboxValue,
                                 onChanged: (bool? value) {
                                   state.didChange(value);
                                   ref.read(checkboxProvider.notifier).state =
@@ -155,6 +169,8 @@ class CopySeedScreen extends StatelessWidget {
                       onPressed: checkboxValue
                           ? () {
                               if (formKey.currentState?.validate() ?? false) {
+                                ref.read(checkboxProvider.notifier).state =
+                                    false;
                                 GoRouter.of(context).push('/setup/nameAccount');
                               }
                             }
