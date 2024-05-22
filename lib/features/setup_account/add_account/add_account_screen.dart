@@ -3,17 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/temporary_account_provider.dart';
 
-class AddAccountScreen extends ConsumerWidget {
+class AddAccountScreen extends ConsumerStatefulWidget {
   static String title = "Add Account";
   const AddAccountScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  AddAccountScreenState createState() => AddAccountScreenState();
+}
+
+class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(AddAccountScreen.title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(kScreenPadding),
@@ -32,9 +38,8 @@ class AddAccountScreen extends ConsumerWidget {
               subtitle: 'You will be prompted to save a seed.',
               leadingIcon: Icons.person_add,
               trailingIcon: Icons.arrow_forward_ios_rounded,
-              onTap: () {
-                ref.read(accountProvider.notifier).createAccount();
-                GoRouter.of(context).push('/setup/copySeed');
+              onTap: () async {
+                await _createNewAccount(ref);
               },
             ),
             const SizedBox(
@@ -46,7 +51,6 @@ class AddAccountScreen extends ConsumerWidget {
               leadingIcon: Icons.import_export,
               trailingIcon: Icons.arrow_forward_ios_rounded,
               onTap: () {
-                debugPrint('Import Via Seed.');
                 GoRouter.of(context).push('/setup/importSeed');
               },
             ),
@@ -54,5 +58,18 @@ class AddAccountScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _createNewAccount(WidgetRef ref) async {
+    final algorand = ref.read(algorandProvider);
+    await ref
+        .read(temporaryAccountProvider.notifier)
+        .createTemporaryAccount(algorand);
+    _navigateToCopySeed();
+  }
+
+  void _navigateToCopySeed() {
+    if (!mounted) return;
+    GoRouter.of(context).push('/setup/copySeed');
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,8 @@ import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
-import 'package:kibisis/utils/storage_service.dart';
+import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/app_reset_util.dart';
 
 class PinPad extends ConsumerStatefulWidget {
   final int pinLength;
@@ -83,7 +85,26 @@ class PinPadState extends ConsumerState<PinPad> {
                       ),
                       itemBuilder: (context, index) {
                         if (index == 9) {
-                          return const SizedBox.shrink();
+                          // Add reset button in debug mode
+                          if (kDebugMode) {
+                            return IconButton(
+                              style: IconButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.error,
+                              ),
+                              icon: Icon(
+                                Icons.refresh,
+                                color: Theme.of(context).colorScheme.onError,
+                              ),
+                              onPressed: () {
+                                _handleResetApp();
+                              },
+                              color: Theme.of(context).colorScheme.onSurface,
+                              iconSize: kScreenPadding * 2,
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
                         }
                         if (index == 11) {
                           return IconButton(
@@ -105,47 +126,8 @@ class PinPadState extends ConsumerState<PinPad> {
                                 shape: const CircleBorder(),
                                 backgroundColor:
                                     Theme.of(context).colorScheme.surface),
-                            onPressed: () async {
-                              ref.read(loadingProvider.notifier).startLoading();
-
-                              bool isPinComplete = ref
-                                  .read(pinEntryStateNotifierProvider.notifier)
-                                  .addKey(key);
-
-                              if (isPinComplete) {
-                                ref
-                                    .read(
-                                        pinEntryStateNotifierProvider.notifier)
-                                    .pinComplete(widget.mode);
-
-                                if (widget.mode == PinPadMode.setup &&
-                                    isPinComplete) {
-                                  ref.refresh(storageProvider).accountExists();
-                                  if (mounted) {
-                                    GoRouter.of(context)
-                                        .push('/setup/addAccount');
-                                  }
-                                }
-
-                                if (widget.mode == PinPadMode.unlock &&
-                                    ref.read(isAuthenticatedProvider)) {
-                                  if (mounted) {
-                                    // Navigate to the next screen if needed
-                                  }
-                                }
-
-                                if (widget.mode != PinPadMode.setup) {
-                                  ref
-                                      .read(pinProvider.notifier)
-                                      .clearPinState();
-                                }
-                                ref
-                                    .read(
-                                        pinEntryStateNotifierProvider.notifier)
-                                    .clearPin();
-                              }
-
-                              ref.read(loadingProvider.notifier).stopLoading();
+                            onPressed: () {
+                              _handlePinKeyPressed(key);
                             },
                             child: Text(
                               key,
@@ -163,5 +145,54 @@ class PinPadState extends ConsumerState<PinPad> {
         ),
       ],
     );
+  }
+
+  void _handleResetApp() async {
+    await AppResetUtil.resetApp(ref);
+    if (!mounted) return;
+    _navigateToSetup();
+  }
+
+  void _navigateToSetup() {
+    if (!mounted) return;
+    GoRouter.of(context).go('/setup');
+  }
+
+  void _handlePinKeyPressed(String key) async {
+    ref.read(loadingProvider.notifier).startLoading();
+
+    bool isPinComplete =
+        ref.read(pinEntryStateNotifierProvider.notifier).addKey(key);
+
+    if (isPinComplete) {
+      await handlePinComplete();
+    }
+
+    ref.read(loadingProvider.notifier).stopLoading();
+  }
+
+  Future<void> handlePinComplete() async {
+    final pinNotifier = ref.read(pinEntryStateNotifierProvider.notifier);
+    pinNotifier.pinComplete(widget.mode);
+
+    if (widget.mode == PinPadMode.setup) {
+      await ref.refresh(storageProvider).accountExists();
+      if (!mounted) return;
+      _navigateToAddAccount();
+    } else if (widget.mode == PinPadMode.unlock) {
+      if (ref.read(isAuthenticatedProvider) && mounted) {
+        // Optionally navigate to the home screen or another screen
+      }
+    }
+
+    if (widget.mode != PinPadMode.setup) {
+      ref.read(pinProvider.notifier).clearPinState();
+    }
+    pinNotifier.clearPin();
+  }
+
+  void _navigateToAddAccount() {
+    if (!mounted) return;
+    GoRouter.of(context).push('/setup/addAccount');
   }
 }

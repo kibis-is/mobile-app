@@ -173,4 +173,18 @@ class StorageService {
   String? getError() {
     return _prefs?.getString('error');
   }
+
+  // New method to get the account name
+  Future<String?> getAccountName() async {
+    final activeAccountId = getActiveAccount();
+    if (activeAccountId == null) return null;
+    return await getAccountData(activeAccountId, 'accountName');
+  }
+
+  // New method to get the private key
+  Future<String?> getPrivateKey() async {
+    final activeAccountId = getActiveAccount();
+    if (activeAccountId == null) return null;
+    return await getAccountData(activeAccountId, 'privateKey');
+  }
 }

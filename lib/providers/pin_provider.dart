@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/pin_state.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/crypto_utils.dart';
-import 'package:kibisis/utils/storage_service.dart';
 
 final pinProvider = StateNotifierProvider<PinStateNotifier, PinState>((ref) {
   final storageService = ref.read(storageProvider);

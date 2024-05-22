@@ -24,8 +24,8 @@ import 'package:kibisis/features/send_voi/send_voi_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
-import 'package:kibisis/utils/storage_service.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final router = RouterNotifier(ref);

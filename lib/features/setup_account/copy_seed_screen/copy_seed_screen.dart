@@ -5,7 +5,7 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/copy_seed_screen/widgets/custom_seed_chip.dart';
 import 'package:kibisis/features/setup_account/name_account/providers/checkbox_provider.dart';
-import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 
 class CopySeedScreen extends StatelessWidget {
@@ -39,7 +39,7 @@ class CopySeedScreen extends StatelessWidget {
                   builder: (context, ref, child) {
                     return FutureBuilder<String>(
                       future: ref
-                          .read(accountProvider.notifier)
+                          .read(temporaryAccountProvider.notifier)
                           .getSeedPhraseAsString(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
@@ -69,7 +69,7 @@ class CopySeedScreen extends StatelessWidget {
                   builder: (context, ref, child) {
                     return FutureBuilder<List<String>>(
                       future: ref
-                          .read(accountProvider.notifier)
+                          .read(temporaryAccountProvider.notifier)
                           .getSeedPhraseAsList(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==

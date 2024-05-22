@@ -5,7 +5,7 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
-import 'package:kibisis/utils/storage_service.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 
 class AppResetUtil {
   static Future<void> resetApp(WidgetRef ref) async {

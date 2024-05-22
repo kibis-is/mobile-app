@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/settings/providers/settings_providers.dart';
 import 'package:kibisis/providers/error_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
 import 'package:kibisis/theme/themes.dart';
-import 'package:kibisis/utils/storage_service.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
