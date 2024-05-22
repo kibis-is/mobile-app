@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
+import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/models/asset.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
@@ -11,7 +12,6 @@ import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
-
 import 'package:kibisis/providers/network_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -50,7 +50,7 @@ class DashboardScreen extends ConsumerWidget {
                   .getAccountBalance(accountState.account?.publicAddress ?? ''),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // Show a loading indicator while waiting
+                  return const AnimatedDots(); // Show animated dots while waiting
                 } else if (snapshot.hasError) {
                   return const Text('Error'); // Handle the error case
                 } else if (snapshot.hasData) {

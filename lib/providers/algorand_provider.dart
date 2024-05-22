@@ -4,8 +4,21 @@ import 'package:algorand_dart/algorand_dart.dart';
 
 // Define a provider for managing the Algorand instance
 final algorandProvider = Provider<Algorand>((ref) {
-  return Algorand(); // Assuming Algorand() constructor sets up the necessary Algorand client
+  final algodClient = AlgodClient(
+    apiUrl: "https://testnet-api.voi.nodly.io",
+    apiKey: "",
+    tokenKey: "",
+  );
+
+  final indexerClient = IndexerClient(
+    apiUrl: "https://testnet-idx.voi.nodly.io",
+    apiKey: "",
+    tokenKey: "",
+  );
+
+  return Algorand(algodClient: algodClient, indexerClient: indexerClient);
 });
+
 final algorandServiceProvider = Provider<AlgorandService>((ref) {
   final algorand = ref.watch(algorandProvider);
   return AlgorandService(algorand);
@@ -48,7 +61,7 @@ class AlgorandService {
       return Algo.fromMicroAlgos(balance).toString();
     } on AlgorandException catch (e) {
       debugPrint('AlgorandException: ${e.message}');
-      throw Exception('Failed to get account balance: ${e.message}');
+      return '0'; // Return 0 balance in case of AlgorandException
     } catch (e) {
       debugPrint('General Exception: $e');
       throw Exception('Failed to get account balance: $e');

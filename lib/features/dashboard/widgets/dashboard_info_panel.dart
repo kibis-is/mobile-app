@@ -35,14 +35,17 @@ class DashboardInfoPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        EllipsizedText(
+          accountState.accountName ?? 'No Account Name',
+          type: EllipsisType.end,
+          textAlign: TextAlign.start,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Text(accountState.accountName ?? 'No Account Name',
-                  style: Theme.of(context).textTheme.bodyLarge),
-            ),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,

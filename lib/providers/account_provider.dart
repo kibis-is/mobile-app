@@ -61,15 +61,28 @@ class AccountNotifier extends StateNotifier<AccountState> {
   }
 
   Future<void> _initializeAccountFromStorage() async {
+    final activeAccountId = storageService.getActiveAccount();
+    if (activeAccountId == null) {
+      state = state.copyWith(error: 'No active account found');
+      return;
+    }
+
     try {
-      final accountName = await storageService.getAccountName();
-      final accountId = storageService.getActiveAccount();
-      if (accountName != null && accountId != null) {
-        state = state.copyWith(accountName: accountName, accountId: accountId);
+      final accountName =
+          await storageService.getAccountData(activeAccountId, 'accountName');
+      final privateKey =
+          await storageService.getAccountData(activeAccountId, 'privateKey');
+
+      if (privateKey != null) {
+        final account = await algorand.loadAccountFromPrivateKey(privateKey);
+        state = state.copyWith(
+          accountId: activeAccountId,
+          accountName: accountName,
+          account: account,
+        );
       }
     } catch (e) {
-      ref.read(errorProvider.notifier).state =
-          'Failed to initialize account name from storage: $e';
+      state = state.copyWith(error: 'Failed to initialize account: $e');
     }
   }
 
@@ -143,6 +156,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
       state = state.copyWith(
         accountId: activeAccountId,
         accountName: accountName,
+        account: account,
         privateKey: privateKey,
         seedPhrase: seedPhrase.join(' '),
         error: null,
