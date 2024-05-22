@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/features/settings/providers/settings_providers.dart';
 import 'package:kibisis/providers/error_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -25,8 +26,9 @@ class Kibisis extends ConsumerWidget {
     ref.listen<String?>(errorProvider, (previous, next) {
       if (next != null && next.isNotEmpty) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          rootScaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
-              content: Text(next), duration: const Duration(seconds: 5)));
+          rootScaffoldMessengerKey.currentState?.showSnackBar(
+            customSnackbar(context, next),
+          );
         });
         ref.read(errorProvider.notifier).state = null; // Reset the error
       }
