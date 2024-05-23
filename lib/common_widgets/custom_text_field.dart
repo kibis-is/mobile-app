@@ -17,6 +17,8 @@ class CustomTextField extends StatelessWidget {
     this.maxLines = 1,
     this.validator,
     this.onChanged,
+    this.onFieldSubmitted,
+    this.focusNode,
   });
 
   final TextEditingController controller;
@@ -32,6 +34,8 @@ class CustomTextField extends StatelessWidget {
   final int maxLines;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,7 @@ class CustomTextField extends StatelessWidget {
       enabled: isEnabled,
       textAlign: TextAlign.left,
       controller: controller,
+      focusNode: focusNode,
       obscureText: isObscureText,
       decoration: InputDecoration(
         counterText: "",
@@ -66,6 +71,7 @@ class CustomTextField extends StatelessWidget {
       ),
       validator: validator,
       onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted,
     );
   }
 }

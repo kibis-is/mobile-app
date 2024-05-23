@@ -4,13 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/complete_account_setup.dart';
 import 'package:kibisis/providers/account_provider.dart';
-import 'package:kibisis/providers/authentication_provider.dart';
-import 'package:kibisis/providers/loading_provider.dart';
-import 'package:kibisis/providers/setup_complete_provider.dart';
-import 'package:kibisis/providers/storage_provider.dart';
-import 'package:kibisis/providers/temporary_account_provider.dart';
-import 'package:kibisis/providers/active_account_provider.dart';
 
 class NameAccountScreen extends ConsumerStatefulWidget {
   static String title = 'Name Account';
@@ -88,7 +83,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                         ),
                         const Spacer(),
                         CustomButton(
-                          text: 'Create',
+                          text: widget.isSetupFlow ? 'Create' : 'Import',
                           isFullWidth: true,
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
@@ -109,44 +104,15 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   }
 
   Future<void> _handleAccountCreation() async {
-    try {
-      ref.read(loadingProvider.notifier).startLoading();
-
-      final accountName = accountNameController.text;
-
-      // Finalize account creation
-      await ref
-          .read(accountProvider.notifier)
-          .finalizeAccountCreation(accountName);
-
-      // Set the newly created account as the active account
-      final newAccountId =
-          await ref.read(accountProvider.notifier).getAccountId();
-      if (newAccountId != null) {
-        await ref
-            .read(activeAccountProvider.notifier)
-            .setActiveAccount(newAccountId);
-      }
-
-      // Clear the temporary account state
-      ref.read(temporaryAccountProvider.notifier).clear();
-
-      // Ensure the latest state is fetched
-      await ref.refresh(storageProvider).accountExists();
-
-      // Set setup complete and authenticate the user
-      if (widget.isSetupFlow) {
-        ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
-        ref.read(isAuthenticatedProvider.notifier).state = true;
-      }
-
-      ref.read(loadingProvider.notifier).stopLoading();
-
-      _navigateToHome();
-    } catch (e) {
-      await ref.read(storageProvider).setError(e.toString());
-      ref.read(loadingProvider.notifier).stopLoading();
+    final accountName = accountNameController.text;
+    if (widget.isSetupFlow) {
+      await completeAccountSetup(ref, accountName, widget.isSetupFlow);
+    } else {
+      await ref.read(accountProvider.notifier).restoreAccountFromSeedPhrase(
+          ref.read(accountProvider).seedPhrase!.split(' '), accountName);
+      await completeAccountSetup(ref, accountName, widget.isSetupFlow);
     }
+    _navigateToHome();
   }
 
   void _navigateToHome() {

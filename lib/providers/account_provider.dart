@@ -130,6 +130,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
       );
     } catch (e) {
       state = state.copyWith(error: 'Failed to restore account: $e');
+      throw Exception('Failed to restore account: $e');
     }
   }
 

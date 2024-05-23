@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
@@ -65,10 +64,7 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
   }
 
   Future<void> _createNewAccount(WidgetRef ref) async {
-    final algorand = ref.read(algorandProvider);
-    await ref
-        .read(temporaryAccountProvider.notifier)
-        .createTemporaryAccount(algorand);
+    await ref.read(temporaryAccountProvider.notifier).createTemporaryAccount();
     _navigateToCopySeed();
   }
 
