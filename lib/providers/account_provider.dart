@@ -129,9 +129,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
         error: null,
       );
     } catch (e) {
-      Future(() {
-        state = state.copyWith(error: 'Failed to restore account: $e');
-      });
+      state = state.copyWith(error: 'Failed to restore account: $e');
     }
   }
 
@@ -162,10 +160,8 @@ class AccountNotifier extends StateNotifier<AccountState> {
         error: null,
       );
     } catch (e) {
-      Future(() {
-        state = state.copyWith(
-            error: 'Failed to load account from private key: $e');
-      });
+      state =
+          state.copyWith(error: 'Failed to load account from private key: $e');
     }
   }
 
@@ -233,7 +229,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
         error: null,
       );
 
-      // Clear the temporary account data
       ref.read(temporaryAccountProvider.notifier).clear();
     } catch (e) {
       state = state.copyWith(error: 'Failed to finalize account creation: $e');

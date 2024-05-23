@@ -4,7 +4,9 @@ import 'package:kibisis/constants/constants.dart';
 
 class ImportSeedScreen extends ConsumerWidget {
   static String title = 'Import Seed';
-  const ImportSeedScreen({super.key});
+  final bool isSetupFlow;
+
+  const ImportSeedScreen({super.key, this.isSetupFlow = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

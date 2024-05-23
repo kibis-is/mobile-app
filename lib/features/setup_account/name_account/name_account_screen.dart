@@ -14,7 +14,9 @@ import 'package:kibisis/providers/active_account_provider.dart';
 
 class NameAccountScreen extends ConsumerStatefulWidget {
   static String title = 'Name Account';
-  const NameAccountScreen({super.key});
+  final bool isSetupFlow;
+
+  const NameAccountScreen({super.key, this.isSetupFlow = true});
 
   @override
   NameAccountScreenState createState() => NameAccountScreenState();
@@ -133,8 +135,10 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
       await ref.refresh(storageProvider).accountExists();
 
       // Set setup complete and authenticate the user
-      ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
-      ref.read(isAuthenticatedProvider.notifier).state = true;
+      if (widget.isSetupFlow) {
+        ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
+        ref.read(isAuthenticatedProvider.notifier).state = true;
+      }
 
       ref.read(loadingProvider.notifier).stopLoading();
 

@@ -193,6 +193,6 @@ class PinPadState extends ConsumerState<PinPad> {
 
   void _navigateToAddAccount() {
     if (!mounted) return;
-    GoRouter.of(context).push('/setup/addAccount');
+    GoRouter.of(context).push('/setup/setupAddAccount');
   }
 }

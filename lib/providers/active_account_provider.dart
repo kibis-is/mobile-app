@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
-// Active Account Provider
 final activeAccountProvider =
     StateNotifierProvider<ActiveAccountNotifier, String?>((ref) {
   final storageService = ref.watch(storageProvider);

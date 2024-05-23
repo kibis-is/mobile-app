@@ -9,7 +9,9 @@ import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 
 class CopySeedScreen extends ConsumerStatefulWidget {
-  const CopySeedScreen({super.key});
+  final bool isSetupFlow;
+
+  const CopySeedScreen({super.key, this.isSetupFlow = true});
 
   @override
   CopySeedScreenState createState() => CopySeedScreenState();
@@ -171,7 +173,9 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                               if (formKey.currentState?.validate() ?? false) {
                                 ref.read(checkboxProvider.notifier).state =
                                     false;
-                                GoRouter.of(context).push('/setup/nameAccount');
+                                GoRouter.of(context).push(widget.isSetupFlow
+                                    ? '/setup/setupNameAccount'
+                                    : '/addAccount/addAccountNameAccount');
                               }
                             }
                           : null,

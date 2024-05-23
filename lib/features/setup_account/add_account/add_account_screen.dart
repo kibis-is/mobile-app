@@ -8,7 +8,9 @@ import 'package:kibisis/providers/temporary_account_provider.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
   static String title = "Add Account";
-  const AddAccountScreen({super.key});
+  final bool isSetupFlow;
+
+  const AddAccountScreen({super.key, this.isSetupFlow = true});
 
   @override
   AddAccountScreenState createState() => AddAccountScreenState();
@@ -51,7 +53,9 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
               leadingIcon: Icons.import_export,
               trailingIcon: Icons.arrow_forward_ios_rounded,
               onTap: () {
-                GoRouter.of(context).push('/setup/importSeed');
+                GoRouter.of(context).push(widget.isSetupFlow
+                    ? '/setup/setupImportSeed'
+                    : '/addAccount/addAccountImportSeed');
               },
             ),
           ],
@@ -70,6 +74,8 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
 
   void _navigateToCopySeed() {
     if (!mounted) return;
-    GoRouter.of(context).push('/setup/copySeed');
+    GoRouter.of(context).push(widget.isSetupFlow
+        ? '/setup/setupCopySeed'
+        : '/addAccount/addAccountCopySeed');
   }
 }

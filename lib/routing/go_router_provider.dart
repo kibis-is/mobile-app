@@ -60,6 +60,7 @@ class RouterNotifier extends ChangeNotifier {
       (_, __) => notifyListeners(),
     );
   }
+
   // If there is no account from storage, and user is not on a setup page, redirect to setup.
   Future<String?> _redirectLogic(
       BuildContext context, GoRouterState state) async {
@@ -112,8 +113,8 @@ class RouterNotifier extends ChangeNotifier {
           },
           routes: [
             GoRoute(
-              path: pinPadSetupRouteName,
               name: pinPadSetupRouteName,
+              path: pinPadSetupRouteName,
               pageBuilder: (context, state) {
                 return defaultTransitionPage(
                     const PinPadScreen(
@@ -123,38 +124,92 @@ class RouterNotifier extends ChangeNotifier {
               },
             ),
             GoRoute(
-              name: addAccountRouteName,
-              path: addAccountRouteName,
+              name: setupAddAccountRouteName,
+              path: setupAddAccountRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const AddAccountScreen(), state);
+                return defaultTransitionPage(
+                  const AddAccountScreen(isSetupFlow: true),
+                  state,
+                );
               },
             ),
             GoRoute(
-              name: copySeedRouteName,
-              path: copySeedRouteName,
+              name: setupCopySeedRouteName,
+              path: setupCopySeedRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const CopySeedScreen(), state);
+                return defaultTransitionPage(
+                  const CopySeedScreen(isSetupFlow: true),
+                  state,
+                );
               },
             ),
             GoRoute(
-              name: importSeedRouteName,
-              path: importSeedRouteName,
+              name: setupImportSeedRouteName,
+              path: setupImportSeedRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const ImportSeedScreen(), state);
+                return defaultTransitionPage(
+                  const ImportSeedScreen(isSetupFlow: true),
+                  state,
+                );
               },
             ),
             GoRoute(
-              name: nameAccountRouteName,
-              path: nameAccountRouteName,
+              name: setupNameAccountRouteName,
+              path: setupNameAccountRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const NameAccountScreen(), state);
+                return defaultTransitionPage(
+                  const NameAccountScreen(isSetupFlow: true),
+                  state,
+                );
               },
             ),
           ],
         ),
         GoRoute(
-          path: '/$pinPadUnlockRouteName',
+          name: mainAddAccountRouteName,
+          path: '/$mainAddAccountRouteName',
+          pageBuilder: (context, state) {
+            return defaultTransitionPage(
+              const AddAccountScreen(isSetupFlow: false),
+              state,
+            );
+          },
+          routes: [
+            GoRoute(
+              name: mainCopySeedRouteName,
+              path: mainCopySeedRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                  const CopySeedScreen(isSetupFlow: false),
+                  state,
+                );
+              },
+            ),
+            GoRoute(
+              name: mainImportSeedRouteName,
+              path: mainImportSeedRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                  const ImportSeedScreen(isSetupFlow: false),
+                  state,
+                );
+              },
+            ),
+            GoRoute(
+              name: mainNameAccountRouteName,
+              path: mainNameAccountRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                  const NameAccountScreen(isSetupFlow: false),
+                  state,
+                );
+              },
+            ),
+          ],
+        ),
+        GoRoute(
           name: pinPadUnlockRouteName,
+          path: '/$pinPadUnlockRouteName',
           pageBuilder: (context, state) {
             return defaultTransitionPage(
                 const PinPadScreen(
@@ -164,8 +219,8 @@ class RouterNotifier extends ChangeNotifier {
           },
         ),
         GoRoute(
-          path: '/',
           name: rootRouteName,
+          path: '/',
           pageBuilder: (context, state) {
             return defaultTransitionPage(const DashboardScreen(), state);
           },
@@ -199,8 +254,8 @@ class RouterNotifier extends ChangeNotifier {
               },
             ),
             GoRoute(
-              path: settingsRouteName,
               name: settingsRouteName,
+              path: settingsRouteName,
               pageBuilder: (context, state) {
                 return defaultTransitionPage(const SettingsScreen(), state);
               },

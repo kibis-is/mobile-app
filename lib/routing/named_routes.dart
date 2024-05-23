@@ -1,10 +1,15 @@
 const String welcomeRouteName = 'setup';
-const String addAccountRouteName = 'addAccount';
-const String copySeedRouteName = 'copySeed';
-const String importSeedRouteName = 'importSeed';
-const String nameAccountRouteName = 'nameAccount';
+const String setupAddAccountRouteName = 'setupAddAccount';
+const String setupCopySeedRouteName = 'setupCopySeed';
+const String setupImportSeedRouteName = 'setupImportSeed';
+const String setupNameAccountRouteName = 'setupNameAccount';
 
-const String rootRouteName = '/';
+const String rootRouteName = 'root';
+const String mainAddAccountRouteName = 'addAccount';
+const String mainCopySeedRouteName = 'addAccountCopySeed';
+const String mainImportSeedRouteName = 'addAccountImportSeed';
+const String mainNameAccountRouteName = 'addAccountNameAccount';
+
 const String walletsRouteName = 'wallets';
 const String sendVOIRouteName = 'sendVOI';
 const String addAssetRouteName = 'addAsset';

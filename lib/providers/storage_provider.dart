@@ -175,16 +175,12 @@ class StorageService {
   }
 
   // New method to get the account name
-  Future<String?> getAccountName() async {
-    final activeAccountId = getActiveAccount();
-    if (activeAccountId == null) return null;
-    return await getAccountData(activeAccountId, 'accountName');
+  Future<String?> getAccountName(String accountId) async {
+    return await getAccountData(accountId, 'accountName');
   }
 
   // New method to get the private key
-  Future<String?> getPrivateKey() async {
-    final activeAccountId = getActiveAccount();
-    if (activeAccountId == null) return null;
-    return await getAccountData(activeAccountId, 'privateKey');
+  Future<String?> getPrivateKey(String accountId) async {
+    return await getAccountData(accountId, 'privateKey');
   }
 }
