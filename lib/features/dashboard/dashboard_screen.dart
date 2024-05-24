@@ -5,13 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
-import 'package:kibisis/models/asset.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -21,22 +21,12 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final networks = ref.watch(networkProvider).getNetworks();
-    List<MockAsset> assets = [
-      MockAsset(
-          name: "USDC",
-          subtitle: 'Test Data 1',
-          image: 'assets/images/usd-coin-logo.svg',
-          value: 0),
-      MockAsset(
-          name: "USDC",
-          subtitle: 'Test Data 2',
-          image: 'assets/images/usd-coin-logo.svg',
-          value: 0),
-    ];
+    final accountState = ref.watch(accountProvider);
+
+    final assets =
+        ref.watch(assetsProvider(accountState.account?.publicAddress ?? ''));
 
     List<String> tabs = ['Assets', 'NTFs', 'Activity'];
-
-    final accountState = ref.watch(accountProvider);
 
     final algorandService = ref.watch(algorandServiceProvider);
 
@@ -116,7 +106,13 @@ class DashboardScreen extends ConsumerWidget {
               height: kScreenPadding,
             ),
             Expanded(
-              child: DashboardTabController(tabs: tabs, assets: assets),
+              child: assets.when(
+                data: (assets) =>
+                    DashboardTabController(tabs: tabs, assets: assets),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) =>
+                    Center(child: Text('Error: $error')),
+              ),
             ),
             const SizedBox(
               height: kScreenPadding,

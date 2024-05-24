@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
+import 'package:kibisis/models/asset.dart';
 
 // Define a provider for managing the Algorand instance
 final algorandProvider = Provider<Algorand>((ref) {
@@ -51,6 +52,30 @@ class AlgorandService {
     } catch (e) {
       debugPrint("Failed to execute transaction: $e");
       throw Exception("Failed to execute transaction: $e");
+    }
+  }
+
+  Future<List<AccountAsset>> getAccountAssets(String address) async {
+    try {
+      final accountInfo = await algorand.getAccountByAddress(address);
+      final createdAssets = accountInfo.createdAssets;
+
+      if (createdAssets.isEmpty) {
+        return [];
+      }
+
+      // Map the created assets to MockAsset objects
+      return createdAssets.map((asset) {
+        return AccountAsset(
+          name: asset.params.name ?? 'Unnamed Asset',
+          subtitle: 'ID: ${asset.index}',
+          image:
+              'assets/images/asset-logo.svg', // Replace with actual asset image if available
+          value: asset.params.total, // or another relevant field
+        );
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch assets: $e');
     }
   }
 

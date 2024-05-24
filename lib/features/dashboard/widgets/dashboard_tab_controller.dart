@@ -14,7 +14,7 @@ class DashboardTabController extends StatelessWidget {
   });
 
   final List<String> tabs;
-  final List<MockAsset> assets;
+  final List<AccountAsset> assets;
 
   @override
   Widget build(BuildContext context) {
