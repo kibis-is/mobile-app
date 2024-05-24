@@ -85,7 +85,7 @@ class AlgorandService {
       final balance = accountInfo.amount;
       return Algo.fromMicroAlgos(balance).toString();
     } on AlgorandException catch (e) {
-      debugPrint('AlgorandException: ${e.message}');
+      debugPrint('Algorand Exception: ${e.message}');
       return '0'; // Return 0 balance in case of AlgorandException
     } catch (e) {
       debugPrint('General Exception: $e');

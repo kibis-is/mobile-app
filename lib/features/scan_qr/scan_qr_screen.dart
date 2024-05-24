@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kibisis/main.dart';
+import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -20,6 +20,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? controller;
+  bool _processing = false;
 
   @override
   void reassemble() {
@@ -76,35 +77,38 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
+  Future<void> _onQRViewCreated(QRViewController controller) async {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) async {
-      result = scanData;
-      final uri = Uri.parse(scanData.code!);
-      if (uri.scheme == 'avm' &&
-          uri.host == 'account' &&
-          uri.path == '/import') {
-        final encoding = uri.queryParameters['encoding'];
+      if (_processing) {
+        return;
+      }
+
+      _processing = true;
+      final qrData = scanData.code;
+      try {
+        final uri = Uri.parse(qrData!);
         final privateKey = uri.queryParameters['privatekey'];
-        if (encoding == 'hex' && privateKey != null) {
-          try {
-            await ref
-                .read(temporaryAccountProvider.notifier)
-                .restoreAccountFromPrivateKey(privateKey);
-            if (!mounted) return;
-            GoRouter.of(context).push(widget.isSetupFlow
-                ? '/setup/setupNameAccount'
-                : '/addAccount/addAccountNameAccount');
-          } catch (e) {
-            if (!mounted) return;
-            rootScaffoldMessengerKey.currentState?.showSnackBar(
-              SnackBar(
-                content: Text('Invalid QR code: ${e.toString()}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
+        if (privateKey != null) {
+          await ref
+              .read(temporaryAccountProvider.notifier)
+              .restoreAccountFromPrivateKey(privateKey);
+          if (!mounted) return;
+          GoRouter.of(context).push(widget.isSetupFlow
+              ? '/setup/setupNameAccount'
+              : '/addAccount/addAccountNameAccount');
+        } else {
+          throw Exception('Invalid QR code format');
         }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            context,
+            e.toString(),
+          ),
+        );
+      } finally {
+        _processing = false;
       }
     });
   }

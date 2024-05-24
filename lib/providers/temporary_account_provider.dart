@@ -2,6 +2,7 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:convert/convert.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 
 final temporaryAccountProvider =
     StateNotifierProvider<TemporaryAccountNotifier, TemporaryAccountState>(
@@ -68,6 +69,10 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     try {
       final account = await algorand.loadAccountFromPrivateKey(hexPrivateKey);
 
+      if (await _accountExists(account.publicAddress)) {
+        throw Exception('Account already exists');
+      }
+
       final seedPhrase = await account.seedPhrase;
       final seedPhraseString = seedPhrase.join(' ');
 
@@ -93,6 +98,10 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       final encodedPrivateKey = hex.encode(privateKeyBytes);
       final seedPhraseString = seedPhrase.join(' ');
 
+      if (await _accountExists(encodedPrivateKey)) {
+        throw Exception('Account already exists');
+      }
+
       state = state.copyWith(
         account: account,
         privateKey: encodedPrivateKey,
@@ -106,6 +115,22 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       );
       throw Exception('Failed to restore account: $e');
     }
+  }
+
+  Future<bool> _accountExists(String privateKey) async {
+    final storageService = ref.read(storageProvider);
+    final existingAccounts = await storageService.getAccounts();
+    if (existingAccounts == null) return false;
+
+    // Check if the provided private key matches any stored private key
+    for (var accountData in existingAccounts.values) {
+      final storedPrivateKey = accountData['privateKey'];
+      if (storedPrivateKey != null && storedPrivateKey == privateKey) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   Future<String> getSeedPhraseAsString() async {

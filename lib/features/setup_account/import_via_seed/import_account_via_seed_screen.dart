@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
+import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
@@ -144,22 +145,19 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
     final seedPhrase = seedPhraseControllers
         .map((controller) => controller.text.trim())
         .toList();
-
     try {
       await ref
           .read(temporaryAccountProvider.notifier)
           .restoreAccountFromSeedPhrase(seedPhrase);
-
       if (!mounted) return;
-
       GoRouter.of(context).push(widget.isSetupFlow
           ? '/setup/setupNameAccount'
           : '/addAccount/addAccountNameAccount');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Invalid seed phrase: ${e.toString()}'),
-          backgroundColor: Colors.red,
+        customSnackbar(
+          context,
+          e.toString(),
         ),
       );
     }
