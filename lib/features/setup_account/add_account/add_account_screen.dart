@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +29,7 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'You can either create a new account or import an existing account via seed.',
+              'You can either create a new account or import an existing account.',
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(
@@ -57,6 +58,22 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                     : '/addAccount/addAccountImportSeed');
               },
             ),
+            const SizedBox(
+              height: kScreenPadding,
+            ),
+            if (defaultTargetPlatform == TargetPlatform.android ||
+                defaultTargetPlatform == TargetPlatform.iOS)
+              CustomListTile(
+                title: "Import Via QR Code",
+                subtitle: 'Scan a QR code to import an existing account.',
+                leadingIcon: Icons.qr_code_scanner,
+                trailingIcon: Icons.arrow_forward_ios_rounded,
+                onTap: () {
+                  GoRouter.of(context).push(widget.isSetupFlow
+                      ? '/setup/setupImportQRCode'
+                      : '/addAccount/addAccountImportQRCode');
+                },
+              ),
           ],
         ),
       ),

@@ -3,12 +3,14 @@ const String setupAddAccountRouteName = 'setupAddAccount';
 const String setupCopySeedRouteName = 'setupCopySeed';
 const String setupImportSeedRouteName = 'setupImportSeed';
 const String setupNameAccountRouteName = 'setupNameAccount';
+const String setupImportQrRouteName = 'setupImportQr';
 
 const String rootRouteName = 'root';
 const String mainAddAccountRouteName = 'addAccount';
 const String mainCopySeedRouteName = 'addAccountCopySeed';
 const String mainImportSeedRouteName = 'addAccountImportSeed';
 const String mainNameAccountRouteName = 'addAccountNameAccount';
+const String mainImportQrRouteName = 'addAccountImportQr';
 
 const String walletsRouteName = 'wallets';
 const String sendVOIRouteName = 'sendVOI';

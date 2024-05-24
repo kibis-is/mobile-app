@@ -9,6 +9,7 @@ import 'package:kibisis/features/dashboard/dashboard_screen.dart';
 import 'package:kibisis/features/dashboard/wallet_screen.dart';
 import 'package:kibisis/features/error/error_screen.dart';
 import 'package:kibisis/features/pin_pad/pin_pad_screen.dart';
+import 'package:kibisis/features/scan_qr/scan_qr_screen.dart';
 import 'package:kibisis/features/settings/about/about_screen.dart';
 import 'package:kibisis/features/settings/advanced/advanced_screen.dart';
 import 'package:kibisis/features/settings/appearance/appearance_screen.dart';
@@ -117,10 +118,11 @@ class RouterNotifier extends ChangeNotifier {
               path: pinPadSetupRouteName,
               pageBuilder: (context, state) {
                 return defaultTransitionPage(
-                    const PinPadScreen(
-                      mode: PinPadMode.setup,
-                    ),
-                    state);
+                  const PinPadScreen(
+                    mode: PinPadMode.setup,
+                  ),
+                  state,
+                );
               },
             ),
             GoRoute(
@@ -137,30 +139,29 @@ class RouterNotifier extends ChangeNotifier {
               name: setupCopySeedRouteName,
               path: setupCopySeedRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(
-                  const CopySeedScreen(isSetupFlow: true),
-                  state,
-                );
+                return defaultTransitionPage(const CopySeedScreen(), state);
               },
             ),
             GoRoute(
               name: setupImportSeedRouteName,
               path: setupImportSeedRouteName,
               pageBuilder: (context, state) {
+                return defaultTransitionPage(const ImportSeedScreen(), state);
+              },
+            ),
+            GoRoute(
+              name: setupImportQrRouteName,
+              path: setupImportQrRouteName,
+              pageBuilder: (context, state) {
                 return defaultTransitionPage(
-                  const ImportSeedScreen(isSetupFlow: true),
-                  state,
-                );
+                    const QrCodeScannerScreen(isSetupFlow: true), state);
               },
             ),
             GoRoute(
               name: setupNameAccountRouteName,
               path: setupNameAccountRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(
-                  const NameAccountScreen(isSetupFlow: true),
-                  state,
-                );
+                return defaultTransitionPage(const NameAccountScreen(), state);
               },
             ),
           ],
@@ -179,30 +180,29 @@ class RouterNotifier extends ChangeNotifier {
               name: mainCopySeedRouteName,
               path: mainCopySeedRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(
-                  const CopySeedScreen(isSetupFlow: false),
-                  state,
-                );
+                return defaultTransitionPage(const CopySeedScreen(), state);
               },
             ),
             GoRoute(
               name: mainImportSeedRouteName,
               path: mainImportSeedRouteName,
               pageBuilder: (context, state) {
+                return defaultTransitionPage(const ImportSeedScreen(), state);
+              },
+            ),
+            GoRoute(
+              name: mainImportQrRouteName,
+              path: mainImportQrRouteName,
+              pageBuilder: (context, state) {
                 return defaultTransitionPage(
-                  const ImportSeedScreen(isSetupFlow: false),
-                  state,
-                );
+                    const QrCodeScannerScreen(isSetupFlow: false), state);
               },
             ),
             GoRoute(
               name: mainNameAccountRouteName,
               path: mainNameAccountRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(
-                  const NameAccountScreen(isSetupFlow: false),
-                  state,
-                );
+                return defaultTransitionPage(const NameAccountScreen(), state);
               },
             ),
           ],

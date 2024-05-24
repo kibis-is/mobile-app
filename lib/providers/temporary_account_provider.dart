@@ -64,6 +64,28 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     }
   }
 
+  Future<void> restoreAccountFromPrivateKey(String hexPrivateKey) async {
+    try {
+      final account = await algorand.loadAccountFromPrivateKey(hexPrivateKey);
+
+      final seedPhrase = await account.seedPhrase;
+      final seedPhraseString = seedPhrase.join(' ');
+
+      state = state.copyWith(
+        account: account,
+        privateKey: hexPrivateKey,
+        seedPhrase: seedPhraseString,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        account: null,
+        privateKey: null,
+        seedPhrase: null,
+      );
+      throw Exception('Failed to restore account: $e');
+    }
+  }
+
   Future<void> restoreAccountFromSeedPhrase(List<String> seedPhrase) async {
     try {
       final account = await algorand.restoreAccount(seedPhrase);
