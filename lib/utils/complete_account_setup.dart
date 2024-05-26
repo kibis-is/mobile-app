@@ -1,7 +1,8 @@
-// In account_provider.dart or a separate utilities file
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -9,12 +10,10 @@ import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 
-// In utils/account_setup_utils.dart
-
 Future<void> completeAccountSetup(
   WidgetRef ref,
   String accountName,
-  bool isSetupFlow,
+  AccountFlow accountFlow,
 ) async {
   try {
     ref.read(loadingProvider.notifier).startLoading();
@@ -32,17 +31,19 @@ Future<void> completeAccountSetup(
           .setActiveAccount(newAccountId);
     }
 
+    // Refresh the accounts list
+    await ref.read(accountsListProvider.notifier).refreshAccounts();
+
+    if (accountFlow == AccountFlow.setup) {
+      ref.read(isAuthenticatedProvider.notifier).state = true;
+      await ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
+    }
+
     // Clear the temporary account state
     ref.read(temporaryAccountProvider.notifier).clear();
 
     // Ensure the latest state is fetched
     await ref.refresh(storageProvider).accountExists();
-
-    // Set setup complete and authenticate the user
-    if (isSetupFlow) {
-      ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
-      ref.read(isAuthenticatedProvider.notifier).state = true;
-    }
 
     ref.read(loadingProvider.notifier).stopLoading();
   } catch (e) {

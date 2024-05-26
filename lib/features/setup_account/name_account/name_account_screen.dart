@@ -4,14 +4,22 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/utils/complete_account_setup.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/accounts_list_provider.dart';
+import 'package:kibisis/providers/active_account_provider.dart';
+import 'package:kibisis/utils/complete_account_setup.dart';
 
 class NameAccountScreen extends ConsumerStatefulWidget {
-  static String title = 'Name Account';
-  final bool isSetupFlow;
+  final AccountFlow accountFlow;
+  final String? initialAccountName;
+  final String? accountId;
 
-  const NameAccountScreen({super.key, this.isSetupFlow = true});
+  const NameAccountScreen({
+    super.key,
+    required this.accountFlow,
+    this.initialAccountName,
+    this.accountId,
+  });
 
   @override
   NameAccountScreenState createState() => NameAccountScreenState();
@@ -24,7 +32,9 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   @override
   void initState() {
     super.initState();
-    accountNameController = TextEditingController();
+    accountNameController = TextEditingController(
+      text: widget.initialAccountName ?? '',
+    );
   }
 
   @override
@@ -37,7 +47,26 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(NameAccountScreen.title),
+        title: Text(widget.accountFlow == AccountFlow.edit
+            ? 'Edit Account'
+            : 'Name Account'),
+        actions: [
+          if (widget.accountFlow == AccountFlow.edit)
+            Consumer(
+              builder: (context, ref, child) {
+                final accountsList = ref.watch(accountsListProvider);
+                if (accountsList.accounts.length > 1) {
+                  return IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () async {
+                      await _deleteAccount(widget.accountId!);
+                    },
+                  );
+                }
+                return Container();
+              },
+            ),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -54,7 +83,9 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                       children: [
                         const SizedBox(height: kScreenPadding),
                         Text(
-                          'Name your account',
+                          widget.accountFlow == AccountFlow.edit
+                              ? 'Edit your account name'
+                              : 'Name your account',
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -66,7 +97,9 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                         ),
                         const SizedBox(height: kScreenPadding),
                         Text(
-                          'Give your account a nickname. Don’t worry, you can change this later.',
+                          widget.accountFlow == AccountFlow.edit
+                              ? 'You can change your account name below.'
+                              : 'Give your account a nickname. Don’t worry, you can change this later.',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         const SizedBox(height: kScreenPadding),
@@ -83,11 +116,17 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                         ),
                         const Spacer(),
                         CustomButton(
-                          text: widget.isSetupFlow ? 'Create' : 'Import',
+                          text: widget.accountFlow == AccountFlow.edit
+                              ? 'Save'
+                              : 'Create',
                           isFullWidth: true,
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              await _handleAccountCreation();
+                              if (widget.accountFlow == AccountFlow.edit) {
+                                await _updateAccountName();
+                              } else {
+                                await _handleAccountCreation();
+                              }
                             }
                           },
                         ),
@@ -105,18 +144,54 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
 
   Future<void> _handleAccountCreation() async {
     final accountName = accountNameController.text;
-    if (widget.isSetupFlow) {
-      await completeAccountSetup(ref, accountName, widget.isSetupFlow);
-    } else {
-      await ref.read(accountProvider.notifier).restoreAccountFromSeedPhrase(
-          ref.read(accountProvider).seedPhrase!.split(' '), accountName);
-      await completeAccountSetup(ref, accountName, widget.isSetupFlow);
-    }
+    await ref
+        .read(accountProvider.notifier)
+        .finalizeAccountCreation(accountName);
     _navigateToHome();
+  }
+
+  Future<void> _updateAccountName() async {
+    final accountName = accountNameController.text;
+    await ref.read(accountProvider.notifier).setAccountName(accountName);
+
+    // Get the active account ID
+    final accountId = ref.read(activeAccountProvider);
+    if (accountId == null) {
+      throw Exception('No active account ID found');
+    }
+
+    // Update the account name using the accounts list provider
+    await ref
+        .read(accountsListProvider.notifier)
+        .updateAccountName(accountId, accountName);
+
+    // Complete the account setup
+    await completeAccountSetup(ref, accountName, widget.accountFlow);
+
+    // Navigate to home or appropriate screen
+    _navigateToHome();
+  }
+
+  Future<void> _deleteAccount(String accountId) async {
+    try {
+      await ref.read(accountProvider.notifier).deleteAccount(accountId);
+      if (!mounted) return;
+      _navigateToWallets();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete account: $e')),
+      );
+    }
   }
 
   void _navigateToHome() {
     if (!mounted) return;
     GoRouter.of(context).go('/');
+  }
+
+  void _navigateToWallets() {
+    if (!mounted) return;
+    GoRouter.of(context).go('/wallets');
   }
 }

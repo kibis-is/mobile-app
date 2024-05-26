@@ -105,7 +105,7 @@ class StorageService {
     return accounts[accountId]?[key];
   }
 
-  Future<void> removeAccount(String accountId) async {
+  Future<void> deleteAccount(String accountId) async {
     final accounts = await getAccounts() ?? {};
     accounts.remove(accountId);
     await setAccounts(accounts);

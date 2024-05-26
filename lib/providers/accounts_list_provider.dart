@@ -1,30 +1,75 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
-// Accounts List Provider
 final accountsListProvider =
-    FutureProvider<List<Map<String, String>>>((ref) async {
-  final storageService = ref.read(storageProvider);
-  final accountsMap = await storageService.getAccounts();
+    StateNotifierProvider<AccountsListNotifier, AccountsListState>((ref) {
+  return AccountsListNotifier(ref);
+});
 
-  // Convert the Map<String, Map<String, String>>? to a List<Map<String, String>>
-  if (accountsMap == null) return [];
+class AccountsListState {
+  final List<Map<String, String>> accounts;
+  final bool isLoading;
+  final String? error;
 
-  final accountsList = accountsMap.entries.map((entry) {
-    final accountId = entry.key;
-    final accountData = entry.value;
-    return {
-      'accountId': accountId,
-      ...accountData,
-    };
-  }).toList();
+  AccountsListState({
+    required this.accounts,
+    required this.isLoading,
+    this.error,
+  });
 
-  // Debugging: Print accounts fetched from storage
-  for (var account in accountsList) {
-    debugPrint(
-        'Fetched account: ${account['accountName']} with ID: ${account['accountId']}');
+  AccountsListState copyWith({
+    List<Map<String, String>>? accounts,
+    bool? isLoading,
+    String? error,
+  }) {
+    return AccountsListState(
+      accounts: accounts ?? this.accounts,
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+    );
+  }
+}
+
+class AccountsListNotifier extends StateNotifier<AccountsListState> {
+  final Ref ref;
+
+  AccountsListNotifier(this.ref)
+      : super(AccountsListState(accounts: [], isLoading: true)) {
+    loadAccounts();
   }
 
-  return accountsList;
-});
+  Future<void> loadAccounts() async {
+    try {
+      final storageService = ref.read(storageProvider);
+      final accountsMap = await storageService.getAccounts();
+
+      if (accountsMap == null) {
+        state = state.copyWith(accounts: [], isLoading: false);
+        return;
+      }
+
+      final accountsList = accountsMap.entries.map((entry) {
+        final accountId = entry.key;
+        final accountData = entry.value;
+        return {
+          'accountId': accountId,
+          ...accountData,
+        };
+      }).toList();
+
+      state = state.copyWith(accounts: accountsList, isLoading: false);
+    } catch (e) {
+      state = state.copyWith(error: e.toString(), isLoading: false);
+    }
+  }
+
+  Future<void> updateAccountName(String accountId, String accountName) async {
+    final storageService = ref.read(storageProvider);
+    await storageService.setAccountData(accountId, 'accountName', accountName);
+    await loadAccounts(); // Trigger reload
+  }
+
+  Future<void> refreshAccounts() async {
+    await loadAccounts();
+  }
+}

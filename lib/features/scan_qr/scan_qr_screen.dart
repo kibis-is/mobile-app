@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_snackbar.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrCodeScannerScreen extends ConsumerStatefulWidget {
   static String title = 'Import via QR Code';
-  final bool isSetupFlow;
+  final AccountFlow accountFlow;
 
-  const QrCodeScannerScreen({super.key, this.isSetupFlow = true});
+  const QrCodeScannerScreen({super.key, required this.accountFlow});
 
   @override
   QrCodeScannerScreenState createState() => QrCodeScannerScreenState();
@@ -94,7 +95,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
               .read(temporaryAccountProvider.notifier)
               .restoreAccountFromPrivateKey(privateKey);
           if (!mounted) return;
-          GoRouter.of(context).push(widget.isSetupFlow
+          GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
               ? '/setup/setupNameAccount'
               : '/addAccount/addAccountNameAccount');
         } else {

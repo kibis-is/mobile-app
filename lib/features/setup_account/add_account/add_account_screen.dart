@@ -8,9 +8,9 @@ import 'package:kibisis/providers/temporary_account_provider.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
   static String title = "Add Account";
-  final bool isSetupFlow;
+  final AccountFlow accountFlow;
 
-  const AddAccountScreen({super.key, this.isSetupFlow = true});
+  const AddAccountScreen({super.key, required this.accountFlow});
 
   @override
   AddAccountScreenState createState() => AddAccountScreenState();
@@ -53,9 +53,10 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
               leadingIcon: Icons.import_export,
               trailingIcon: Icons.arrow_forward_ios_rounded,
               onTap: () {
-                GoRouter.of(context).push(widget.isSetupFlow
-                    ? '/setup/setupImportSeed'
-                    : '/addAccount/addAccountImportSeed');
+                GoRouter.of(context).push(
+                    widget.accountFlow == AccountFlow.setup
+                        ? '/setup/setupImportSeed'
+                        : '/addAccount/addAccountImportSeed');
               },
             ),
             const SizedBox(
@@ -69,9 +70,10 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                 leadingIcon: Icons.qr_code_scanner,
                 trailingIcon: Icons.arrow_forward_ios_rounded,
                 onTap: () {
-                  GoRouter.of(context).push(widget.isSetupFlow
-                      ? '/setup/setupImportQRCode'
-                      : '/addAccount/addAccountImportQRCode');
+                  GoRouter.of(context).push(
+                      widget.accountFlow == AccountFlow.setup
+                          ? '/setup/setupImportQRCode'
+                          : '/addAccount/addAccountImportQRCode');
                 },
               ),
           ],
@@ -87,7 +89,7 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
 
   void _navigateToCopySeed() {
     if (!mounted) return;
-    GoRouter.of(context).push(widget.isSetupFlow
+    GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
         ? '/setup/setupCopySeed'
         : '/addAccount/addAccountCopySeed');
   }

@@ -10,9 +10,9 @@ import 'package:kibisis/providers/temporary_account_provider.dart';
 
 class ImportSeedScreen extends ConsumerStatefulWidget {
   static String title = 'Import Seed';
-  final bool isSetupFlow;
+  final AccountFlow accountFlow;
 
-  const ImportSeedScreen({super.key, this.isSetupFlow = true});
+  const ImportSeedScreen({super.key, required this.accountFlow});
 
   @override
   ImportSeedScreenState createState() => ImportSeedScreenState();
@@ -150,7 +150,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
           .read(temporaryAccountProvider.notifier)
           .restoreAccountFromSeedPhrase(seedPhrase);
       if (!mounted) return;
-      GoRouter.of(context).push(widget.isSetupFlow
+      GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
           ? '/setup/setupNameAccount'
           : '/addAccount/addAccountNameAccount');
     } catch (e) {

@@ -7,3 +7,9 @@ const kPinLength = 6;
 const kVersionNumber = 'v0.0.1';
 
 enum PinPadMode { setup, unlock }
+
+enum AccountFlow {
+  setup,
+  addNew,
+  edit,
+}

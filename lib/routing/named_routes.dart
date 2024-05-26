@@ -12,6 +12,8 @@ const String mainImportSeedRouteName = 'addAccountImportSeed';
 const String mainNameAccountRouteName = 'addAccountNameAccount';
 const String mainImportQrRouteName = 'addAccountImportQr';
 
+const String editNameAccountRouteName = 'editAccount';
+
 const String walletsRouteName = 'wallets';
 const String sendVOIRouteName = 'sendVOI';
 const String addAssetRouteName = 'addAsset';

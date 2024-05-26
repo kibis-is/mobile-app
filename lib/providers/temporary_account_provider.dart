@@ -67,11 +67,12 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
 
   Future<void> restoreAccountFromPrivateKey(String hexPrivateKey) async {
     try {
-      final account = await algorand.loadAccountFromPrivateKey(hexPrivateKey);
-
-      if (await _accountExists(account.publicAddress)) {
-        throw Exception('Account already exists');
+      final accountExists = await _accountExists(hexPrivateKey);
+      if (accountExists) {
+        throw Exception('Account with this private key already exists.');
       }
+
+      final account = await algorand.loadAccountFromPrivateKey(hexPrivateKey);
 
       final seedPhrase = await account.seedPhrase;
       final seedPhraseString = seedPhrase.join(' ');
@@ -96,11 +97,13 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       final account = await algorand.restoreAccount(seedPhrase);
       final privateKeyBytes = await account.keyPair.extractPrivateKeyBytes();
       final encodedPrivateKey = hex.encode(privateKeyBytes);
-      final seedPhraseString = seedPhrase.join(' ');
 
-      if (await _accountExists(encodedPrivateKey)) {
-        throw Exception('Account already exists');
+      final accountExists = await _accountExists(encodedPrivateKey);
+      if (accountExists) {
+        throw Exception('Account with this seed phrase already exists.');
       }
+
+      final seedPhraseString = seedPhrase.join(' ');
 
       state = state.copyWith(
         account: account,
@@ -120,17 +123,10 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
   Future<bool> _accountExists(String privateKey) async {
     final storageService = ref.read(storageProvider);
     final existingAccounts = await storageService.getAccounts();
-    if (existingAccounts == null) return false;
-
-    // Check if the provided private key matches any stored private key
-    for (var accountData in existingAccounts.values) {
-      final storedPrivateKey = accountData['privateKey'];
-      if (storedPrivateKey != null && storedPrivateKey == privateKey) {
-        return true;
-      }
-    }
-
-    return false;
+    final exists = existingAccounts?.values
+            .any((account) => account['privateKey'] == privateKey) ??
+        false;
+    return exists;
   }
 
   Future<String> getSeedPhraseAsString() async {

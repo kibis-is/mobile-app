@@ -2,6 +2,7 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -101,6 +102,47 @@ class AccountNotifier extends StateNotifier<AccountState> {
       state = state.copyWith(account: account);
     } catch (e) {
       ref.read(errorProvider.notifier).state = 'Failed to create account: $e';
+    }
+  }
+
+  Future<void> updateAccountName(String newAccountName) async {
+    final activeAccountId = state.accountId;
+    if (activeAccountId == null) {
+      throw Exception('No active account to update');
+    }
+
+    await storageService.setAccountData(
+        activeAccountId, 'accountName', newAccountName);
+    state = state.copyWith(accountName: newAccountName);
+  }
+
+  Future<void> deleteAccount(String accountId) async {
+    try {
+      final accounts = await storageService.getAccounts();
+      if (accounts == null || !accounts.containsKey(accountId)) {
+        throw Exception('Account not found');
+      }
+
+      if (state.accountId == accountId) {
+        final otherAccounts =
+            accounts.keys.where((id) => id != accountId).toList();
+        if (otherAccounts.isNotEmpty) {
+          await storageService.setActiveAccount(otherAccounts.first);
+          final accountData = await storageService.getAccountData(
+              otherAccounts.first, 'accountName');
+          state = state.copyWith(
+            accountId: otherAccounts.first,
+            accountName: accountData,
+          );
+        } else {
+          state = AccountState();
+        }
+      }
+
+      await storageService.deleteAccount(accountId);
+      await ref.read(accountsListProvider.notifier).refreshAccounts();
+    } catch (e) {
+      state = state.copyWith(error: 'Failed to delete account: $e');
     }
   }
 
