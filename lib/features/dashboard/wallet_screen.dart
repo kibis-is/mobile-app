@@ -165,8 +165,7 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.add),
-              onPressed: () async {
-                await ref.read(accountsListProvider.notifier).refreshAccounts();
+              onPressed: () {
                 _navigateToAddAccount();
               },
             ),

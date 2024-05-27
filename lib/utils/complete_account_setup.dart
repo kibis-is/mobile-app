@@ -32,7 +32,7 @@ Future<void> completeAccountSetup(
     }
 
     // Refresh the accounts list
-    await ref.read(accountsListProvider.notifier).refreshAccounts();
+    await ref.read(accountsListProvider.notifier).loadAccounts();
 
     if (accountFlow == AccountFlow.setup) {
       ref.read(isAuthenticatedProvider.notifier).state = true;

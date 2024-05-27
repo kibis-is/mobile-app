@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
@@ -140,7 +141,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
       }
 
       await storageService.deleteAccount(accountId);
-      await ref.read(accountsListProvider.notifier).refreshAccounts();
+      await ref.read(accountsListProvider.notifier).loadAccounts();
     } catch (e) {
       state = state.copyWith(error: 'Failed to delete account: $e');
     }
@@ -254,6 +255,8 @@ class AccountNotifier extends StateNotifier<AccountState> {
           tempAccountState.seedPhrase == null) {
         throw Exception('Incomplete temporary account data');
       }
+
+      ref.read(isAuthenticatedProvider.notifier).state = true;
 
       final accountId = await storageService.generateNextAccountId();
       await storageService.setAccountData(

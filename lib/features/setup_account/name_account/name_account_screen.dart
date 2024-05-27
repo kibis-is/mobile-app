@@ -144,9 +144,13 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
 
   Future<void> _handleAccountCreation() async {
     final accountName = accountNameController.text;
+
     await ref
         .read(accountProvider.notifier)
         .finalizeAccountCreation(accountName);
+
+    ref.read(accountsListProvider.notifier).loadAccounts();
+
     _navigateToHome();
   }
 
@@ -167,7 +171,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
 
     // Complete the account setup
     await completeAccountSetup(ref, accountName, widget.accountFlow);
-
+    ref.read(accountsListProvider.notifier).loadAccounts();
     // Navigate to home or appropriate screen
     _navigateToHome();
   }

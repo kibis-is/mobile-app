@@ -66,10 +66,6 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
   Future<void> updateAccountName(String accountId, String accountName) async {
     final storageService = ref.read(storageProvider);
     await storageService.setAccountData(accountId, 'accountName', accountName);
-    await loadAccounts(); // Trigger reload
-  }
-
-  Future<void> refreshAccounts() async {
     await loadAccounts();
   }
 }
