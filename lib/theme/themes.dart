@@ -58,6 +58,11 @@ final ThemeData lightTheme = ThemeData(
   ),
   pageTransitionsTheme: pageTransitions(),
   disabledColor: ColorPalette.lightThemeFrenchGray,
+  bottomAppBarTheme: const BottomAppBarTheme(
+    color: ColorPalette.lightThemeWhite,
+    elevation: 0,
+    padding: EdgeInsets.symmetric(vertical: 0),
+  ),
 );
 
 // Dark Theme
@@ -106,4 +111,9 @@ final ThemeData darkTheme = ThemeData(
   ),
   pageTransitionsTheme: pageTransitions(),
   disabledColor: ColorPalette.darkThemeGray,
+  bottomAppBarTheme: const BottomAppBarTheme(
+      color: ColorPalette.darkThemeRaisinBlack,
+      elevation: 0,
+      padding: EdgeInsets.symmetric(vertical: 0),
+      height: kToolbarHeight),
 );
