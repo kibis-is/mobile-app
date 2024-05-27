@@ -36,7 +36,7 @@ class AnimatedDotsState extends State<AnimatedDots>
       builder: (context, child) {
         String dots = '.' * _dotCount.value;
         return Text(
-          'Initializing$dots',
+          'Init$dots',
           style: Theme.of(context).textTheme.bodySmall,
         );
       },
