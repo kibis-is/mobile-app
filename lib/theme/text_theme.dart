@@ -31,15 +31,15 @@ TextTheme textThemeLight() {
         fontWeight: FontWeight.w400,
         color: ColorPalette.lightThemePaynesGray),
     titleLarge: TextStyle(
-        fontSize: 20.0,
+        fontSize: 32.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.lightThemePaynesGray),
     titleMedium: TextStyle(
-        fontSize: 18.0,
+        fontSize: 24.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.lightThemePaynesGray),
     titleSmall: TextStyle(
-        fontSize: 16.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.lightThemePaynesGray),
     bodyLarge: TextStyle(
@@ -96,15 +96,15 @@ TextTheme textThemeDark() {
         fontWeight: FontWeight.w400,
         color: ColorPalette.darkThemeAntiflashWhite),
     titleLarge: TextStyle(
-        fontSize: 24.0,
+        fontSize: 32.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.darkThemeAntiflashWhite),
     titleMedium: TextStyle(
-        fontSize: 20.0,
+        fontSize: 24.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.darkThemeAntiflashWhite),
     titleSmall: TextStyle(
-        fontSize: 16.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.w400,
         color: ColorPalette.darkThemeAntiflashWhite),
     bodyLarge: TextStyle(
