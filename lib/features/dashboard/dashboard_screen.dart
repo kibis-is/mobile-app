@@ -13,6 +13,8 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/providers/active_account_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
   static String title = 'Dashboard';
@@ -21,12 +23,18 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final networks = ref.watch(networkProvider).getNetworks();
+    final activeAccountId = ref.watch(activeAccountProvider);
+    final storageService = ref.watch(storageProvider);
+
+    // Fetch the account state using the active account ID
+    final accountStateFuture =
+        storageService.getAccountData(activeAccountId ?? '', 'publicKey');
     final accountState = ref.watch(accountProvider);
 
     final assets =
         ref.watch(assetsProvider(accountState.account?.publicAddress ?? ''));
 
-    List<String> tabs = ['Assets', 'NTFs', 'Activity'];
+    List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
     final algorandService = ref.watch(algorandServiceProvider);
 
@@ -84,12 +92,13 @@ class DashboardScreen extends ConsumerWidget {
           ),
           onPressed: () {
             customBottomSheet(
-                context: context,
-                header: "Select Network",
-                items: networks,
-                hasButton: true,
-                buttonText: "Add Network",
-                buttonOnPressed: () => GoRouter.of(context).go('/addAsset'));
+              context: context,
+              header: "Select Network",
+              items: networks,
+              hasButton: true,
+              buttonText: "Add Network",
+              buttonOnPressed: () => GoRouter.of(context).go('/addAsset'),
+            );
           },
           child: NetworkSelect(networks: networks),
         ),
@@ -98,13 +107,27 @@ class DashboardScreen extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
           children: [
-            const SizedBox(
-              height: kScreenPadding,
+            const SizedBox(height: kScreenPadding),
+            FutureBuilder<String?>(
+              future: accountStateFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Text('Error fetching account data');
+                } else if (snapshot.hasData && snapshot.data != null) {
+                  final publicKey = snapshot.data!;
+                  return DashboardInfoPanel(
+                    networks: networks,
+                    accountState: accountState,
+                    publicKey: publicKey,
+                  );
+                } else {
+                  return const Text('No account data available');
+                }
+              },
             ),
-            DashboardInfoPanel(networks: networks, accountState: accountState),
-            const SizedBox(
-              height: kScreenPadding,
-            ),
+            const SizedBox(height: kScreenPadding),
             Expanded(
               child: assets.when(
                 data: (assets) =>
@@ -114,9 +137,7 @@ class DashboardScreen extends ConsumerWidget {
                     DashboardTabController(tabs: tabs, assets: const []),
               ),
             ),
-            const SizedBox(
-              height: kScreenPadding,
-            ),
+            const SizedBox(height: kScreenPadding),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -127,7 +148,7 @@ class DashboardScreen extends ConsumerWidget {
                 IconButton(
                   icon: const Icon(Icons.account_balance_wallet),
                   onPressed: () => GoRouter.of(context).push('/wallets'),
-                )
+                ),
               ],
             ),
           ],

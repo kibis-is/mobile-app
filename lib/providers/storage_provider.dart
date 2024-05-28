@@ -141,6 +141,10 @@ class StorageService {
     return (highestId + 1).toString();
   }
 
+  Future<String?> getPublicKey(String accountId) async {
+    return await getAccountData(accountId, 'publicKey');
+  }
+
   // PIN Management
   Future<void> setPinHash(String pinHash) async {
     await _retryOnException(() async {

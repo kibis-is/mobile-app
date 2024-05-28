@@ -1,3 +1,4 @@
+import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -41,10 +42,11 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                           final account = accountsListState.accounts[index];
                           final accountName =
                               account['accountName'] ?? 'Unnamed Account';
-                          final accountId = account['accountId'] ?? '';
+                          final publicKey =
+                              account['publicKey'] ?? 'No Public Key';
 
                           debugPrint(
-                              'Rendering account: $accountName with ID: $accountId');
+                              'Rendering account: $accountName with Public Key: $publicKey');
 
                           return InkWell(
                             child: Container(
@@ -87,7 +89,7 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                                       icon: const Icon(Icons.edit),
                                       onPressed: () {
                                         _navigateToEditAccount(
-                                            accountId, accountName);
+                                            account['accountId']!, accountName);
                                       },
                                     ),
                                   ),
@@ -137,20 +139,25 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                                         ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: kScreenPadding / 2),
-                                  Text(
-                                    accountId,
+                                  EllipsizedText(
+                                    type: EllipsisType.middle,
+                                    ellipsis: '...',
+                                    publicKey,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                        .titleSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
-                                  const SizedBox(height: kScreenPadding / 2),
                                 ],
                               ),
                             ),
                             onTap: () async {
-                              debugPrint('Tapped account ID: $accountId');
-                              await _handleAccountSelection(accountId);
+                              debugPrint(
+                                  'Tapped account Public Key: $publicKey');
+                              await _handleAccountSelection(
+                                  account['accountId']!);
                             },
                           );
                         },

@@ -48,14 +48,17 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
         return;
       }
 
-      final accountsList = accountsMap.entries.map((entry) {
+      final accountsList =
+          await Future.wait(accountsMap.entries.map((entry) async {
         final accountId = entry.key;
         final accountData = entry.value;
+        final publicKey = accountData['publicKey'] ?? 'No Public Key';
         return {
           'accountId': accountId,
-          ...accountData,
+          'accountName': accountData['accountName'] ?? 'Unnamed Account',
+          'publicKey': publicKey,
         };
-      }).toList();
+      }).toList());
 
       state = state.copyWith(accounts: accountsList, isLoading: false);
     } catch (e) {
@@ -66,6 +69,6 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
   Future<void> updateAccountName(String accountId, String accountName) async {
     final storageService = ref.read(storageProvider);
     await storageService.setAccountData(accountId, 'accountName', accountName);
-    await loadAccounts();
+    await loadAccounts(); // Trigger reload
   }
 }
