@@ -111,7 +111,7 @@ class DashboardScreen extends ConsumerWidget {
                     DashboardTabController(tabs: tabs, assets: assets),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stackTrace) =>
-                    Center(child: Text('Error: $error')),
+                    DashboardTabController(tabs: tabs, assets: const []),
               ),
             ),
             const SizedBox(
