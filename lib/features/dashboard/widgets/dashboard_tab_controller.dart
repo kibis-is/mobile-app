@@ -37,55 +37,62 @@ class DashboardTabController extends StatelessWidget {
                   Column(
                     children: [
                       Expanded(
-                        child: ListView.separated(
-                          itemCount: assets.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              contentPadding:
-                                  const EdgeInsets.all(kScreenPadding / 2),
-                              leading: SvgPicture.asset(
-                                assets[index].image,
-                                width: kScreenPadding * 3,
+                        child: assets.isEmpty
+                            ? const Center(child: Text('No Assets'))
+                            : ListView.separated(
+                                itemCount: assets.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    contentPadding: const EdgeInsets.all(
+                                        kScreenPadding / 2),
+                                    leading: SvgPicture.asset(
+                                      assets[index].image,
+                                      width: kScreenPadding * 3,
+                                    ),
+                                    title: Text(
+                                      assets[index].name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      assets[index].subtitle,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                    ),
+                                    trailing:
+                                        const Icon(Icons.arrow_forward_ios),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const SizedBox(
+                                      height: kScreenPadding / 2);
+                                },
                               ),
-                              title: Text(
-                                assets[index].name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(
-                                assets[index].subtitle,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface),
-                              ),
-                              trailing: const Icon(Icons.arrow_forward_ios),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return const SizedBox(height: kScreenPadding / 2);
-                          },
-                        ),
                       ),
                       CustomButton(
-                          text: "Add",
-                          isFullWidth: true,
-                          onPressed: () {
-                            GoRouter.of(context).go('/addAsset');
-                          }),
+                        text: "Add",
+                        isFullWidth: true,
+                        onPressed: () {
+                          GoRouter.of(context).go('/addAsset');
+                        },
+                      ),
                     ],
                   ),
                   const Center(
-                    child: Text('NFTs Tab'),
+                    child: Text('No NFTs'),
                   ),
                   const Center(
-                    child: Text('Activity Tab'),
+                    child: Text('No Activity'),
                   ),
                 ],
               ),
