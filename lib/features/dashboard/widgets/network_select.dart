@@ -32,10 +32,12 @@ class NetworkSelect extends StatelessWidget {
           const SizedBox(
             width: kScreenPadding / 2,
           ),
-          Icon(
-            Icons.arrow_drop_down,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          networks.length > 1
+              ? Icon(
+                  Icons.arrow_drop_down,
+                  color: Theme.of(context).colorScheme.onSurface,
+                )
+              : Container(),
         ],
       ),
     );

@@ -46,7 +46,7 @@ Future<dynamic> customBottomSheet({
                               ? const Icon(Icons
                                   .widgets) // Example static icon, adjust as needed
                               : SvgPicture.asset(
-                                  items[index].image,
+                                  items[index].icon,
                                   semanticsLabel: items[index].name,
                                   height: kSizedBoxSpacing * 2,
                                   colorFilter: ColorFilter.mode(

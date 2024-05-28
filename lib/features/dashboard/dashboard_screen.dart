@@ -88,18 +88,20 @@ class DashboardScreen extends ConsumerWidget {
           hoverColor: Theme.of(context).colorScheme.surface,
           color: Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
+            borderRadius: BorderRadius.circular(kScreenPadding / 2),
           ),
-          onPressed: () {
-            customBottomSheet(
-              context: context,
-              header: "Select Network",
-              items: networks,
-              hasButton: true,
-              buttonText: "Add Network",
-              buttonOnPressed: () => GoRouter.of(context).go('/addAsset'),
-            );
-          },
+          onPressed: networks.length > 1
+              ? () {
+                  customBottomSheet(
+                    context: context,
+                    header: "Select Network",
+                    items: networks,
+                    hasButton: true,
+                    buttonText: "Add Network",
+                    buttonOnPressed: () => GoRouter.of(context).go('/addAsset'),
+                  );
+                }
+              : null,
           child: NetworkSelect(networks: networks),
         ),
       ),
