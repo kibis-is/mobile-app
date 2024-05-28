@@ -35,10 +35,7 @@ Future<dynamic> customBottomSheet({
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
-                      if (onPressed != null) {
-                        onPressed();
-                      }
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(items[index].name);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -49,7 +46,7 @@ Future<dynamic> customBottomSheet({
                               ? const Icon(Icons
                                   .widgets) // Example static icon, adjust as needed
                               : SvgPicture.asset(
-                                  items[index].icon,
+                                  items[index].image,
                                   semanticsLabel: items[index].name,
                                   height: kSizedBoxSpacing * 2,
                                   colorFilter: ColorFilter.mode(
