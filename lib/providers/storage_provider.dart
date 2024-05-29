@@ -187,4 +187,20 @@ class StorageService {
   Future<String?> getPrivateKey(String accountId) async {
     return await getAccountData(accountId, 'privateKey');
   }
+
+  // Timeout Management
+  // Method to save the lock timeout setting
+  Future<void> setLockTimeout(int minutes) async {
+    await _prefs?.setInt('lockTimeout', minutes);
+  }
+
+  // Method to get the lock timeout setting
+  int? getLockTimeout() {
+    return _prefs?.getInt('lockTimeout');
+  }
+
+  Future<void> initialize() async {
+    await SharedPreferences.getInstance();
+    await const FlutterSecureStorage().readAll();
+  }
 }
