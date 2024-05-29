@@ -1,14 +1,12 @@
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
-import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/main.dart';
 import 'package:kibisis/models/menu_item.dart';
 import 'package:kibisis/models/network.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/utils/copy_to_clipboard.dart';
 
 class DashboardInfoPanel extends StatelessWidget {
   const DashboardInfoPanel({
@@ -32,19 +30,6 @@ class DashboardInfoPanel extends StatelessWidget {
           image: '0xe3c9',
         ),
       ];
-
-  void copyToClipboard(BuildContext context, String text) async {
-    ClipboardData data = ClipboardData(text: text);
-    await Clipboard.setData(data);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!context.mounted) return;
-      rootScaffoldMessengerKey.currentState?.showSnackBar(
-        customSnackbar(context, "Copied to clipboard"),
-      );
-    });
-    debugPrint('text: $text');
-    debugPrint('data: $data');
-  }
 
   @override
   Widget build(BuildContext context) {
