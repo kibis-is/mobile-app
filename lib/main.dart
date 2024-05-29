@@ -7,6 +7,7 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
 import 'package:kibisis/theme/themes.dart';
+import 'package:kibisis/utils/app_lifecycle_handler.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
@@ -17,12 +18,35 @@ void main() {
   runApp(const ProviderScope(child: Kibisis()));
 }
 
-class Kibisis extends ConsumerWidget {
+class Kibisis extends ConsumerStatefulWidget {
   const Kibisis({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Correct placement of ref.listen
+  ConsumerState<Kibisis> createState() => _KibisisState();
+}
+
+class _KibisisState extends ConsumerState<Kibisis> {
+  late AppLifecycleHandler _lifecycleHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycleHandler = AppLifecycleHandler(
+        ref: ref,
+        onResumed: (seconds) {
+          debugPrint('App was resumed after $seconds seconds');
+        });
+    _lifecycleHandler.initialize();
+  }
+
+  @override
+  void dispose() {
+    _lifecycleHandler.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ref.listen<String?>(errorProvider, (previous, next) {
       if (next != null && next.isNotEmpty) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -30,7 +54,7 @@ class Kibisis extends ConsumerWidget {
             customSnackbar(context, next),
           );
         });
-        ref.read(errorProvider.notifier).state = null; // Reset the error
+        ref.read(errorProvider.notifier).state = null;
       }
     });
 

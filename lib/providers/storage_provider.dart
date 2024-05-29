@@ -190,8 +190,8 @@ class StorageService {
 
   // Timeout Management
   // Method to save the lock timeout setting
-  Future<void> setLockTimeout(int minutes) async {
-    await _prefs?.setInt('lockTimeout', minutes);
+  Future<void> setLockTimeout(int seconds) async {
+    await _prefs?.setInt('lockTimeout', seconds);
   }
 
   // Method to get the lock timeout setting

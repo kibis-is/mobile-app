@@ -1,66 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/settings_toggle.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/models/timeout.dart';
 import 'package:kibisis/features/settings/providers/settings_providers.dart';
-import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/providers/lock_timeout_provider.dart';
 
 class SecurityScreen extends ConsumerWidget {
-  static String title = 'Security';
+  static const String title = 'Security';
   const SecurityScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedTimeout = ref.watch(lockTimeoutProvider);
+    final timeoutSeconds =
+        ref.watch(lockTimeoutProvider); // Get the current timeout in seconds
     final enablePasswordLock = ref.watch(enablePasswordLockProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: const Text(title),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
           children: [
-            const SizedBox(
-              height: kScreenPadding,
-            ),
+            const SizedBox(height: kScreenPadding),
             SettingsToggle(
-              title: 'Enable Password Lock',
-              provider: enablePasswordLockProvider,
-            ),
+                title: 'Enable Password Lock',
+                provider: enablePasswordLockProvider),
             if (enablePasswordLock) ...[
-              const SizedBox(
-                height: kScreenPadding,
-              ),
-              TextButton(
-                onPressed: () => customBottomSheet(
-                  context: context,
-                  header: "Select Lockout Time",
-                  items: Timeout.timeoutList,
-                  onPressed: () {
-                    ref.read(lockTimeoutProvider.notifier).state =
-                        selectedTimeout;
-                    ref
-                        .read(storageProvider)
-                        .setLockTimeout(selectedTimeout.time);
-                  },
-                ),
-                child: Text(selectedTimeout.name),
-              ),
+              const SizedBox(height: kScreenPadding),
               DropdownButton<Timeout>(
-                value: selectedTimeout,
-                hint: const Text('Select an option'),
+                value: Timeout.timeoutList.firstWhere(
+                    (item) => item.time == timeoutSeconds,
+                    orElse: () => Timeout.timeoutList.first),
                 onChanged: (Timeout? newValue) {
                   if (newValue != null) {
-                    ref.read(lockTimeoutProvider.notifier).state = newValue;
-                    // Save the selected timeout to SharedPreferences
-                    ref.read(storageProvider).setLockTimeout(newValue.time);
+                    ref
+                        .read(lockTimeoutProvider.notifier)
+                        .setTimeout(newValue.time);
                   }
                 },
-                items: Timeout.timeoutList
-                    .map<DropdownMenuItem<Timeout>>((Timeout timeout) {
+                items: Timeout.timeoutList.map((Timeout timeout) {
                   return DropdownMenuItem<Timeout>(
                     value: timeout,
                     child: Text(timeout.name),
