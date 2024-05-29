@@ -5,6 +5,7 @@ import 'package:kibisis/common_widgets/settings_toggle.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/models/timeout.dart';
 import 'package:kibisis/features/settings/providers/settings_providers.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 
 class SecurityScreen extends ConsumerWidget {
   static String title = 'Security';
@@ -41,6 +42,9 @@ class SecurityScreen extends ConsumerWidget {
                   onPressed: () {
                     ref.read(lockTimeoutProvider.notifier).state =
                         selectedTimeout;
+                    ref
+                        .read(storageProvider)
+                        .setLockTimeout(selectedTimeout.time);
                   },
                 ),
                 child: Text(selectedTimeout.name),
@@ -51,6 +55,8 @@ class SecurityScreen extends ConsumerWidget {
                 onChanged: (Timeout? newValue) {
                   if (newValue != null) {
                     ref.read(lockTimeoutProvider.notifier).state = newValue;
+                    // Save the selected timeout to SharedPreferences
+                    ref.read(storageProvider).setLockTimeout(newValue.time);
                   }
                 },
                 items: Timeout.timeoutList
