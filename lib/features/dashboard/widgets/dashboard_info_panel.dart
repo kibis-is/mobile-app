@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
 import 'package:kibisis/models/menu_item.dart';
 import 'package:kibisis/models/network.dart';
 import 'package:kibisis/providers/account_provider.dart';
@@ -23,6 +24,10 @@ class DashboardInfoPanel extends StatelessWidget {
   List<MenuItem> get items => [
         MenuItem(
           name: "Copy Address",
+          image: '0xe190',
+        ),
+        MenuItem(
+          name: "Share Address",
           image: '0xe190',
         ),
         MenuItem(
@@ -80,14 +85,18 @@ class DashboardInfoPanel extends StatelessWidget {
                           'accountName': accountState.accountName ?? '',
                         },
                       );
+                    } else if (value == "Share Address") {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => QrDialog(
+                          qrData: publicKey,
+                        ),
+                      );
                     }
                   });
                 },
                 child: const Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    kScreenPadding / 3,
-                    kScreenPadding / 3,
-                    0,
+                  padding: EdgeInsets.all(
                     kScreenPadding / 3,
                   ),
                   child: Icon(Icons.more_vert),
