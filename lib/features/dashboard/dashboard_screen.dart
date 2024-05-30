@@ -15,6 +15,7 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class DashboardScreen extends ConsumerWidget {
   static String title = 'Dashboard';
@@ -42,7 +43,7 @@ class DashboardScreen extends ConsumerWidget {
       appBar: SplitAppBar(
         leadingWidget: Row(
           children: [
-            Text('Balance:', style: Theme.of(context).textTheme.bodySmall),
+            Text('Balance:', style: context.textTheme.bodySmall),
             FutureBuilder<String>(
               future: algorandService
                   .getAccountBalance(accountState.account?.publicAddress ?? ''),
@@ -54,9 +55,7 @@ class DashboardScreen extends ConsumerWidget {
                 } else if (snapshot.hasData) {
                   return Text(
                     snapshot.data!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
+                    style: context.textTheme.bodySmall!
                         .copyWith(fontWeight: FontWeight.bold),
                   );
                 } else {
@@ -70,12 +69,11 @@ class DashboardScreen extends ConsumerWidget {
               semanticsLabel: networks[0].name,
               height: 12,
               colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onBackground,
-                  BlendMode.srcATop),
+                  context.colorScheme.onBackground, BlendMode.srcATop),
             ),
             IconButton(
               icon: const Icon(Icons.info_outline),
-              color: Theme.of(context).colorScheme.primary,
+              color: context.colorScheme.primary,
               iconSize: kScreenPadding,
               onPressed: () {
                 customBottomSheet(
@@ -85,8 +83,8 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
         actionWidget: MaterialButton(
-          hoverColor: Theme.of(context).colorScheme.surface,
-          color: Theme.of(context).colorScheme.surface,
+          hoverColor: context.colorScheme.surface,
+          color: context.colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(kScreenPadding / 2),
           ),
@@ -145,10 +143,28 @@ class DashboardScreen extends ConsumerWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.settings),
+                  color: context.colorScheme.onBackground,
                   onPressed: () => GoRouter.of(context).go('/settings'),
                 ),
                 IconButton(
+                  color: context.colorScheme.onBackground,
+                  icon: Container(
+                    padding: const EdgeInsets.all(
+                        kScreenPadding), // Adjust outer padding here
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.secondary,
+                      borderRadius: BorderRadius.circular(kWidgetRadius),
+                    ),
+                    child: Icon(
+                      Icons.payment,
+                      color: context.colorScheme.onSecondary,
+                    ),
+                  ),
+                  onPressed: () => GoRouter.of(context).go('/sendCurrency'),
+                ),
+                IconButton(
                   icon: const Icon(Icons.account_balance_wallet),
+                  color: context.colorScheme.onBackground,
                   onPressed: () => GoRouter.of(context).push('/wallets'),
                 ),
               ],
