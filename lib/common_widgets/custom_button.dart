@@ -1,51 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
+
+enum ButtonType { primary, secondary, warning }
 
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final Icon? prefixIcon;
   final bool isFullWidth;
-  final bool isSecondary;
-  final bool isWarning;
+  final bool isOutline;
+  final ButtonType buttonType;
 
-  const CustomButton(
-      {super.key,
-      required this.text,
-      required this.onPressed,
-      this.prefixIcon,
-      this.isFullWidth = false,
-      this.isSecondary = false,
-      this.isWarning = false});
+  const CustomButton({
+    super.key,
+    required this.text,
+    this.onPressed,
+    this.prefixIcon,
+    this.isFullWidth = false,
+    this.isOutline = false,
+    this.buttonType =
+        ButtonType.secondary, // Default to primary if not specified
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    Color backgroundColor;
+    Color foregroundColor;
+
+    switch (buttonType) {
+      case ButtonType.primary:
+        backgroundColor = context.colorScheme.primary;
+        foregroundColor = context.colorScheme.onPrimary;
+        break;
+      case ButtonType.secondary:
+        backgroundColor = context.colorScheme.secondary;
+        foregroundColor = context.colorScheme.onSecondary;
+        break;
+      case ButtonType.warning:
+        backgroundColor = context.colorScheme.error;
+        foregroundColor = context.colorScheme.onError;
+        break;
+    }
 
     return SizedBox(
       width: isFullWidth ? double.infinity : null,
       child: ElevatedButton.icon(
-        icon: prefixIcon ?? Container(),
+        icon: prefixIcon ?? const SizedBox.shrink(),
         label: Text(
           text,
-          style: const TextStyle(fontWeight: FontWeight.w700),
+          style: TextStyle(fontWeight: FontWeight.w700, color: foregroundColor),
         ),
         onPressed: onPressed,
         style: ButtonStyle(
-          backgroundColor: onPressed == null
-              ? MaterialStateProperty.all(Theme.of(context).disabledColor)
-              : isWarning
-                  ? MaterialStateProperty.all(theme.colorScheme.error)
-                  : isSecondary
-                      ? MaterialStateProperty.all(Colors.transparent)
-                      : MaterialStateProperty.all(theme.colorScheme.secondary),
-          foregroundColor: isWarning
-              ? MaterialStateProperty.all(theme.colorScheme.onSecondary)
-              : isSecondary
-                  ? MaterialStateProperty.all(theme.colorScheme.secondary)
-                  : MaterialStateProperty.all(theme.colorScheme.onSecondary),
-          side: isSecondary
+          backgroundColor: MaterialStateProperty.all(backgroundColor),
+          foregroundColor: MaterialStateProperty.all(foregroundColor),
+          side: isOutline
               ? MaterialStateProperty.all(BorderSide(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: context.colorScheme.secondary, // Adjust as needed
                   width: 2.0,
                   style: BorderStyle.solid,
                 ))
