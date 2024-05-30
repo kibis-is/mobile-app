@@ -5,6 +5,7 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_tab_bar.dart';
 import 'package:kibisis/models/asset.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class DashboardTabController extends StatelessWidget {
   const DashboardTabController({
@@ -36,9 +37,52 @@ class DashboardTabController extends StatelessWidget {
                 children: [
                   Column(
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () =>
+                                GoRouter.of(context).go('/addAsset'),
+                            icon: Icon(
+                              Icons.add,
+                              color: context.colorScheme.onBackground,
+                            ),
+                          ),
+                        ],
+                      ),
                       Expanded(
                         child: assets.isEmpty
-                            ? const Center(child: Text('No Assets'))
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'No Assets Found',
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  const SizedBox(
+                                    height: kScreenPadding / 2,
+                                  ),
+                                  Text(
+                                    'You have not added any assets. Try adding one now.',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(
+                                    height: kScreenPadding,
+                                  ),
+                                  CustomButton(
+                                    text: "Add",
+                                    prefixIcon: const Icon(Icons.add),
+                                    isOutline: false,
+                                    buttonType: ButtonType.primary,
+                                    onPressed: () {
+                                      GoRouter.of(context).go('/addAsset');
+                                    },
+                                  ),
+                                ],
+                              )
                             : ListView.separated(
                                 itemCount: assets.length,
                                 shrinkWrap: true,
@@ -78,13 +122,6 @@ class DashboardTabController extends StatelessWidget {
                                       height: kScreenPadding / 2);
                                 },
                               ),
-                      ),
-                      CustomButton(
-                        text: "Add",
-                        isFullWidth: true,
-                        onPressed: () {
-                          GoRouter.of(context).go('/addAsset');
-                        },
                       ),
                     ],
                   ),
