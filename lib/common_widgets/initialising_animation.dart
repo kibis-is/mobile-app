@@ -38,7 +38,8 @@ class AnimatedDotsState extends State<AnimatedDots>
         String dots = '.' * _dotCount.value;
         return Text(
           'Init$dots',
-          style: context.textTheme.bodySmall,
+          style: context.textTheme.bodySmall
+              ?.copyWith(color: context.colorScheme.onBackground),
         );
       },
     );

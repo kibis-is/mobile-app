@@ -53,31 +53,39 @@ class DashboardScreen extends ConsumerWidget {
                 } else if (snapshot.hasError) {
                   return const Text('Error'); // Handle the error case
                 } else if (snapshot.hasData) {
-                  return Text(
-                    snapshot.data!,
-                    style: context.textTheme.bodySmall!
-                        .copyWith(fontWeight: FontWeight.bold),
+                  return Row(
+                    children: [
+                      Text(
+                        snapshot.data!,
+                        style: context.textTheme.bodySmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.primary),
+                      ),
+                      SvgPicture.asset(
+                        networks[0].icon,
+                        semanticsLabel: networks[0].name,
+                        height: 12,
+                        colorFilter: ColorFilter.mode(
+                            context.colorScheme.primary, BlendMode.srcATop),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.info_outline),
+                        color: context.colorScheme.onBackground,
+                        iconSize: kScreenPadding,
+                        onPressed: () {
+                          customBottomSheet(
+                              context: context,
+                              items: [],
+                              header: "Info",
+                              isIcon: true);
+                        },
+                      ),
+                    ],
                   );
                 } else {
                   return const Text(
                       'No Data'); // Handle the case where there's no data
                 }
-              },
-            ),
-            SvgPicture.asset(
-              networks[0].icon,
-              semanticsLabel: networks[0].name,
-              height: 12,
-              colorFilter: ColorFilter.mode(
-                  context.colorScheme.onBackground, BlendMode.srcATop),
-            ),
-            IconButton(
-              icon: const Icon(Icons.info_outline),
-              color: context.colorScheme.primary,
-              iconSize: kScreenPadding,
-              onPressed: () {
-                customBottomSheet(
-                    context: context, items: [], header: "Info", isIcon: true);
               },
             ),
           ],
@@ -94,7 +102,7 @@ class DashboardScreen extends ConsumerWidget {
                     context: context,
                     header: "Select Network",
                     items: networks,
-                    hasButton: true,
+                    hasButton: false,
                     buttonText: "Add Network",
                     buttonOnPressed: () => GoRouter.of(context).go('/addAsset'),
                   );
