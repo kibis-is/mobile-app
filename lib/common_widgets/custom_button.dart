@@ -48,15 +48,21 @@ class CustomButton extends StatelessWidget {
         icon: prefixIcon ?? const SizedBox.shrink(),
         label: Text(
           text,
-          style: TextStyle(fontWeight: FontWeight.w700, color: foregroundColor),
+          style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: isOutline ? backgroundColor : foregroundColor),
         ),
         onPressed: onPressed,
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(backgroundColor),
-          foregroundColor: MaterialStateProperty.all(foregroundColor),
+          backgroundColor: isOutline
+              ? MaterialStateProperty.all(Colors.transparent)
+              : MaterialStateProperty.all(backgroundColor),
+          foregroundColor: isOutline
+              ? MaterialStateProperty.all(backgroundColor)
+              : MaterialStateProperty.all(foregroundColor),
           side: isOutline
               ? MaterialStateProperty.all(BorderSide(
-                  color: context.colorScheme.secondary, // Adjust as needed
+                  color: backgroundColor, // Adjust as needed
                   width: 2.0,
                   style: BorderStyle.solid,
                 ))
