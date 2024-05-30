@@ -67,13 +67,34 @@ class AssetsTab extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            IconButton(
-              onPressed: () => GoRouter.of(context).go('/addAsset'),
-              icon: Icon(
-                Icons.add,
-                color: context.colorScheme.onBackground,
-              ),
-            ),
+            TextButton(
+                style: ButtonStyle(
+                  side: MaterialStateProperty.all(
+                    BorderSide(color: context.colorScheme.primary),
+                  ),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(kWidgetRadius),
+                    ),
+                  ),
+                ),
+                onPressed: () => GoRouter.of(context).go('/addAsset'),
+                child: Row(
+                  children: [
+                    const Text('Add Asset'),
+                    Icon(
+                      Icons.add,
+                      color: context.colorScheme.primary,
+                    ),
+                  ],
+                )),
+            // IconButton(
+            //   onPressed: () => GoRouter.of(context).go('/addAsset'),
+            //   icon: Icon(
+            //     Icons.add,
+            //     color: context.colorScheme.primary,
+            //   ),
+            // ),
           ],
         ),
         Expanded(
@@ -81,6 +102,15 @@ class AssetsTab extends StatelessWidget {
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    SvgPicture.asset(
+                      'assets/images/empty.svg',
+                      semanticsLabel: 'Kibisis Logo',
+                      fit: BoxFit.fitHeight,
+                      width: MediaQuery.of(context).size.width / 4,
+                    ),
+                    const SizedBox(
+                      height: kScreenPadding / 2,
+                    ),
                     Text(
                       'No Assets Found',
                       style: context.textTheme.titleMedium,
@@ -96,15 +126,15 @@ class AssetsTab extends StatelessWidget {
                     const SizedBox(
                       height: kScreenPadding,
                     ),
-                    CustomButton(
-                      text: "Add",
-                      prefixIcon: const Icon(Icons.add),
-                      isOutline: true,
-                      buttonType: ButtonType.primary,
-                      onPressed: () {
-                        GoRouter.of(context).go('/addAsset');
-                      },
-                    ),
+                    // CustomButton(
+                    //   text: "Add",
+                    //   prefixIcon: const Icon(Icons.add),
+                    //   isOutline: true,
+                    //   buttonType: ButtonType.primary,
+                    //   onPressed: () {
+                    //     GoRouter.of(context).go('/addAsset');
+                    //   },
+                    // ),
                   ],
                 )
               : ListView.separated(
