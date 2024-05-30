@@ -156,8 +156,8 @@ class DashboardScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(kWidgetRadius),
                     ),
                     child: Icon(
-                      Icons.payment,
-                      color: context.colorScheme.onSecondary,
+                      Icons.send,
+                      color: context.colorScheme.onPrimary,
                     ),
                   ),
                   onPressed: () => GoRouter.of(context).go('/sendCurrency'),
