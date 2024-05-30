@@ -4,7 +4,6 @@ final isDarkModeProvider = StateProvider<bool>((ref) => true);
 
 final enablePasswordLockProvider = StateProvider<bool>((ref) => true);
 
-final isDebugLoggingProvider = StateProvider<bool>((ref) => false);
 final allowMainNetNetworksProvider = StateProvider<bool>((ref) => false);
 final allowBetaNetNetworksProvider = StateProvider<bool>((ref) => false);
 final allowDIDTokenFormatInAddressSharingProvider =

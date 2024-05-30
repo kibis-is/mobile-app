@@ -20,12 +20,6 @@ class AdvancedScreen extends StatelessWidget {
             const SizedBox(
               height: kScreenPadding,
             ),
-            SettingsToggle(
-              title: 'Debug Logging',
-              provider: isDebugLoggingProvider,
-              description:
-                  'Debugging information will be output to the extension console.',
-            ),
             const SizedBox(
               height: kScreenPadding,
             ),
