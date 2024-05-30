@@ -8,6 +8,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/utils/complete_account_setup.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class NameAccountScreen extends ConsumerStatefulWidget {
   final AccountFlow accountFlow;
@@ -86,21 +87,17 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                           widget.accountFlow == AccountFlow.edit
                               ? 'Edit your account name'
                               : 'Name your account',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            color: context.colorScheme.onSecondary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: kScreenPadding),
                         Text(
                           widget.accountFlow == AccountFlow.edit
                               ? 'You can change your account name below.'
                               : 'Give your account a nickname. Don’t worry, you can change this later.',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: context.textTheme.bodySmall,
                         ),
                         const SizedBox(height: kScreenPadding),
                         CustomTextField(

@@ -7,6 +7,7 @@ import 'package:kibisis/features/setup_account/copy_seed_screen/widgets/custom_s
 import 'package:kibisis/features/setup_account/name_account/providers/checkbox_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class CopySeedScreen extends ConsumerStatefulWidget {
   final AccountFlow accountFlow;
@@ -154,7 +155,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                     Expanded(
                       child: Text(
                         'Please confirm you have stored a backup of your seed phrase in a secure location.',
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: context.textTheme.bodySmall,
                       ),
                     ),
                   ],

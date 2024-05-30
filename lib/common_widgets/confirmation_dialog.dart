@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String title;
@@ -21,10 +22,10 @@ class ConfirmationDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.all(kScreenPadding),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.titleLarge,
+        style: context.textTheme.titleLarge,
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
-      content: Text(content, style: Theme.of(context).textTheme.bodySmall),
+      content: Text(content, style: context.textTheme.bodySmall),
       actions: <Widget>[
         Row(
           children: [
@@ -37,9 +38,9 @@ class ConfirmationDialog extends StatelessWidget {
                   padding: const EdgeInsets.all(kScreenPadding),
                   child: Text(
                     yesText,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -53,9 +54,9 @@ class ConfirmationDialog extends StatelessWidget {
                   padding: const EdgeInsets.all(kScreenPadding),
                   child: Text(
                     noText,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: context.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.secondary),
+                        color: context.colorScheme.secondary),
                   ),
                 ),
               ),

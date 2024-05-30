@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/pin_pad.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class PinPadScreen extends ConsumerWidget {
   final PinPadMode mode;
@@ -32,7 +33,7 @@ class PinPadScreen extends ConsumerWidget {
               visible: pinState.error.isNotEmpty,
               child: Text(
                 pinState.error,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                style: TextStyle(color: context.colorScheme.error),
               ),
             ),
           ),

@@ -57,16 +57,14 @@ class DashboardTabController extends StatelessWidget {
                                 children: [
                                   Text(
                                     'No Assets Found',
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
+                                    style: context.textTheme.titleMedium,
                                   ),
                                   const SizedBox(
                                     height: kScreenPadding / 2,
                                   ),
                                   Text(
                                     'You have not added any assets. Try adding one now.',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                    style: context.textTheme.bodyMedium,
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(
@@ -96,21 +94,16 @@ class DashboardTabController extends StatelessWidget {
                                     ),
                                     title: Text(
                                       assets[index].name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
+                                      style: context.textTheme.titleMedium!
                                           .copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
                                     subtitle: Text(
                                       assets[index].subtitle,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleSmall!
+                                      style: context.textTheme.titleSmall!
                                           .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface),
+                                              color: context
+                                                  .colorScheme.onSurface),
                                     ),
                                     trailing:
                                         const Icon(Icons.arrow_forward_ios),

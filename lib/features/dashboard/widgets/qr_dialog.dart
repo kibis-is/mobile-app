@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class QrDialog extends StatelessWidget {
@@ -21,7 +22,7 @@ class QrDialog extends StatelessWidget {
         child: Text(
           title!,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: context.textTheme.titleLarge,
         ),
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
@@ -45,9 +46,9 @@ class QrDialog extends StatelessWidget {
               padding: const EdgeInsets.all(kScreenPadding),
               child: Text(
                 'Close',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: context.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

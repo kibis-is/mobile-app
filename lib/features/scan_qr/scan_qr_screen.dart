@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrCodeScannerScreen extends ConsumerStatefulWidget {
@@ -44,7 +45,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         body: Center(
           child: Text(
             'QR Code scanning is not supported on this platform.',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: context.textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
         ),

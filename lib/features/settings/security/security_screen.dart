@@ -5,6 +5,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/models/timeout.dart';
 import 'package:kibisis/features/settings/providers/settings_providers.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class SecurityScreen extends ConsumerWidget {
   static const String title = 'Security';
@@ -34,7 +35,7 @@ class SecurityScreen extends ConsumerWidget {
                 isExpanded: true,
                 borderRadius: BorderRadius.circular(kWidgetRadius),
                 alignment: Alignment.centerRight,
-                dropdownColor: Theme.of(context).colorScheme.surface,
+                dropdownColor: context.colorScheme.surface,
                 padding: const EdgeInsets.symmetric(
                     vertical: kScreenPadding / 2, horizontal: kScreenPadding),
                 value: Timeout.timeoutList.firstWhere(

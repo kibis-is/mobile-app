@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/network.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class NetworkSelect extends StatelessWidget {
   const NetworkSelect({
@@ -23,19 +24,19 @@ class NetworkSelect extends StatelessWidget {
             networks[0].icon,
             height: kScreenPadding,
             colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.onBackground, BlendMode.srcATop),
+                context.colorScheme.onBackground, BlendMode.srcATop),
           ),
           const SizedBox(
             width: kScreenPadding / 2,
           ),
-          Text(networks[0].name, style: Theme.of(context).textTheme.bodySmall),
+          Text(networks[0].name, style: context.textTheme.bodySmall),
           const SizedBox(
             width: kScreenPadding / 2,
           ),
           networks.length > 1
               ? Icon(
                   Icons.arrow_drop_down,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: context.colorScheme.onSurface,
                 )
               : Container(),
         ],

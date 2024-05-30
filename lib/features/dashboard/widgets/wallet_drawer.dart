@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class WalletDrawer extends StatelessWidget {
   const WalletDrawer({
@@ -16,7 +17,7 @@ class WalletDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
+              color: context.colorScheme.background,
             ),
             child: Row(
               children: [
@@ -33,7 +34,7 @@ class WalletDrawer extends StatelessWidget {
                   child: Text(
                     'Kieran O\'Neill',
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: context.textTheme.titleLarge,
                   ),
                 ),
               ],
@@ -54,7 +55,7 @@ class WalletDrawer extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.add_circle_outline,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: context.colorScheme.secondary,
                             size: kScreenPadding * 2,
                           ),
                           const SizedBox(
@@ -62,7 +63,7 @@ class WalletDrawer extends StatelessWidget {
                           ),
                           Text(
                             'Add Wallet',
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: context.textTheme.titleLarge,
                           )
                         ],
                       ),
@@ -95,7 +96,7 @@ class WalletDrawer extends StatelessWidget {
             ),
           ),
           Container(
-            color: Theme.of(context).colorScheme.background,
+            color: context.colorScheme.background,
             padding: const EdgeInsets.all(kScreenPadding),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
   static String title = "Add Account";
@@ -30,7 +31,7 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
           children: [
             Text(
               'You can either create a new account or import an existing account.',
-              style: Theme.of(context).textTheme.bodySmall,
+              style: context.textTheme.bodySmall,
             ),
             const SizedBox(
               height: kScreenPadding,

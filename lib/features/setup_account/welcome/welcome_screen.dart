@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static String title = "Login";
@@ -28,11 +29,11 @@ class WelcomeScreen extends StatelessWidget {
                 const SizedBox(height: kSizedBoxSpacing),
                 Text(
                   'Kibisis',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: context.textTheme.headlineMedium,
                 ),
                 Text(
                   kVersionNumber,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
               ],
             ),

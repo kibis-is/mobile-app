@@ -9,6 +9,7 @@ import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class WalletsScreen extends ConsumerStatefulWidget {
   static String title = 'Wallets';
@@ -133,9 +134,7 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                                   const SizedBox(height: kScreenPadding / 2),
                                   Text(
                                     accountName,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge
+                                    style: context.textTheme.titleLarge
                                         ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: kScreenPadding / 2),
@@ -143,12 +142,10 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                                     type: EllipsisType.middle,
                                     ellipsis: '...',
                                     publicKey,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    style:
+                                        context.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),

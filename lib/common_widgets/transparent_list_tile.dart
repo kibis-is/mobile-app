@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class TransparentListTile extends StatelessWidget {
   final String icon;
@@ -20,14 +21,12 @@ class TransparentListTile extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: 0, vertical: kScreenPadding),
       tileColor: Colors.transparent,
       leading: Icon(
-        color: Theme.of(context).colorScheme.primary,
+        color: context.colorScheme.primary,
         IconData(int.tryParse(icon) ?? 0xe237, fontFamily: 'MaterialIcons'),
       ),
       title: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .displayLarge
+        style: context.textTheme.displayLarge
             ?.copyWith(fontWeight: FontWeight.bold),
       ),
       trailing: const Icon(Icons.keyboard_arrow_right_rounded),

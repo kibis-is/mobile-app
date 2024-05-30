@@ -9,6 +9,7 @@ import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class PinPad extends ConsumerStatefulWidget {
   final int pinLength;
@@ -89,17 +90,16 @@ class PinPadState extends ConsumerState<PinPad> {
                           if (kDebugMode) {
                             return IconButton(
                               style: IconButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.error,
+                                backgroundColor: context.colorScheme.error,
                               ),
                               icon: Icon(
                                 Icons.refresh,
-                                color: Theme.of(context).colorScheme.onError,
+                                color: context.colorScheme.onError,
                               ),
                               onPressed: () {
                                 _handleResetApp();
                               },
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: context.colorScheme.onSurface,
                               iconSize: kScreenPadding * 2,
                             );
                           } else {
@@ -114,7 +114,7 @@ class PinPadState extends ConsumerState<PinPad> {
                                   .read(pinEntryStateNotifierProvider.notifier)
                                   .removeLastKey();
                             },
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: context.colorScheme.onSurface,
                             iconSize: kScreenPadding * 2,
                           );
                         }
@@ -124,14 +124,13 @@ class PinPadState extends ConsumerState<PinPad> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface),
+                                backgroundColor: context.colorScheme.surface),
                             onPressed: () {
                               _handlePinKeyPressed(key);
                             },
                             child: Text(
                               key,
-                              style: Theme.of(context).textTheme.titleLarge,
+                              style: context.textTheme.titleLarge,
                             ),
                           ),
                         );

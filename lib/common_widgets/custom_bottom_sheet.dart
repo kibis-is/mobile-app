@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 Future<dynamic> customBottomSheet({
   required BuildContext context,
@@ -23,8 +24,7 @@ Future<dynamic> customBottomSheet({
           children: [
             Padding(
               padding: const EdgeInsets.all(kSizedBoxSpacing),
-              child:
-                  Text(header, style: Theme.of(context).textTheme.titleLarge),
+              child: Text(header, style: context.textTheme.titleLarge),
             ),
             const SizedBox(
               height: kScreenPadding,
@@ -50,9 +50,7 @@ Future<dynamic> customBottomSheet({
                                   semanticsLabel: items[index].name,
                                   height: kSizedBoxSpacing * 2,
                                   colorFilter: ColorFilter.mode(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .onBackground,
+                                      context.colorScheme.onBackground,
                                       BlendMode.srcATop),
                                 ),
                           const SizedBox(
@@ -60,7 +58,7 @@ Future<dynamic> customBottomSheet({
                           ),
                           Text(
                             items[index].name,
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: context.textTheme.titleLarge,
                           ),
                         ],
                       ),

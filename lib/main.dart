@@ -8,6 +8,7 @@ import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
 import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_lifecycle_handler.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
@@ -77,7 +78,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
               constraints: const BoxConstraints(maxWidth: 600),
               child: LoadingOverlay(
                 isLoading: isLoading,
-                color: Theme.of(context).colorScheme.background,
+                color: context.colorScheme.background,
                 opacity: 0.5,
                 child: Center(child: widget),
               ),

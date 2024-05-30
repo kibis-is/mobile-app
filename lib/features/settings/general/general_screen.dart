@@ -4,6 +4,7 @@ import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class GeneralScreen extends ConsumerWidget {
   static String title = 'General';
@@ -25,8 +26,8 @@ class GeneralScreen extends ConsumerWidget {
             ),
             Text(
               'Danger Zone',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.error,
+              style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colorScheme.error,
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(
@@ -34,7 +35,7 @@ class GeneralScreen extends ConsumerWidget {
             ),
             Text(
               'This will remove all accounts, settings, and security information.',
-              style: Theme.of(context).textTheme.bodySmall,
+              style: context.textTheme.bodySmall,
             ),
             const SizedBox(
               height: kScreenPadding,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/common_widgets/custom_tab.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class CustomTabBar extends StatelessWidget {
   const CustomTabBar({
@@ -24,7 +25,7 @@ class CustomTabBar extends StatelessWidget {
       padding: EdgeInsets.zero,
       indicatorPadding: EdgeInsets.zero,
       labelStyle: TextStyle(
-          fontSize: Theme.of(context).textTheme.labelLarge!.fontSize,
+          fontSize: context.textTheme.labelLarge!.fontSize,
           fontWeight: FontWeight.bold),
       tabs: [
         for (var i in tabs) CustomTab(text: i),

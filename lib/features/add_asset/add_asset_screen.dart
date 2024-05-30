@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class AddAssetScreen extends StatelessWidget {
   static String title = 'Add Asset';
@@ -20,7 +21,7 @@ class AddAssetScreen extends StatelessWidget {
           children: [
             const SizedBox(height: kScreenPadding),
             Text("Enter an assetID, name, asset, or symbol ID (for ARC-200).",
-                style: Theme.of(context).textTheme.bodyMedium),
+                style: context.textTheme.bodyMedium),
             const SizedBox(height: kScreenPadding),
             Expanded(
               child: CustomTextField(

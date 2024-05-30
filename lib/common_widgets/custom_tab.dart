@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class CustomTab extends StatelessWidget {
   const CustomTab({
@@ -13,7 +14,7 @@ class CustomTab extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: context.colorScheme.surface,
         borderRadius:
             BorderRadius.circular(kScreenPadding / 2), // Set rounded corners
       ),

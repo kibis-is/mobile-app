@@ -8,6 +8,7 @@ import 'package:kibisis/models/menu_item.dart';
 import 'package:kibisis/models/network.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class DashboardInfoPanel extends StatelessWidget {
   const DashboardInfoPanel({
@@ -45,10 +46,7 @@ class DashboardInfoPanel extends StatelessWidget {
           accountState.accountName ?? 'No Account Name',
           type: EllipsisType.end,
           textAlign: TextAlign.start,
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
-              ?.copyWith(letterSpacing: 1.3),
+          style: context.textTheme.titleLarge?.copyWith(letterSpacing: 1.3),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,10 +56,8 @@ class DashboardInfoPanel extends StatelessWidget {
                 publicKey,
                 type: EllipsisType.middle,
                 textAlign: TextAlign.start,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(letterSpacing: 1.5),
+                style:
+                    context.textTheme.bodySmall?.copyWith(letterSpacing: 1.5),
               ),
             ),
             MouseRegion(

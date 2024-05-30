@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class CustomListTile extends StatelessWidget {
   final String title;
@@ -24,32 +25,29 @@ class CustomListTile extends StatelessWidget {
       leading: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Theme.of(context).colorScheme.primary,
+          color: context.colorScheme.primary,
         ),
         child: Padding(
           padding: const EdgeInsets.all(kScreenPadding / 2),
           child: Icon(leadingIcon,
-              color: Theme.of(context).colorScheme.onPrimary,
-              size: kScreenPadding * 1.5),
+              color: context.colorScheme.onPrimary, size: kScreenPadding * 1.5),
         ),
       ),
       title: Text(
         title,
         overflow: TextOverflow.ellipsis,
-        style: Theme.of(context)
-            .textTheme
-            .titleMedium
+        style: context.textTheme.titleMedium
             ?.copyWith(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(
         subtitle,
-        style: Theme.of(context).textTheme.bodySmall,
+        style: context.textTheme.bodySmall,
       ),
       trailing: Padding(
         padding: const EdgeInsets.all(kScreenPadding),
         child: Icon(
           trailingIcon,
-          color: Theme.of(context).colorScheme.onBackground,
+          color: context.colorScheme.onBackground,
         ),
       ),
       onTap: onTap,

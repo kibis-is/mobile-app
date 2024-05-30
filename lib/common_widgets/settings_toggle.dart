@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class SettingsToggle extends ConsumerWidget {
   final String title;
@@ -24,8 +25,7 @@ class SettingsToggle extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-                child: Text(title,
-                    style: Theme.of(context).textTheme.displayMedium)),
+                child: Text(title, style: context.textTheme.displayMedium)),
             Switch(
               value: isSwitchedOn,
               onChanged: (newValue) {
@@ -36,7 +36,7 @@ class SettingsToggle extends ConsumerWidget {
         ),
         if (description != null) ...[
           const SizedBox(height: kScreenPadding / 2),
-          Text(description!, style: Theme.of(context).textTheme.bodySmall),
+          Text(description!, style: context.textTheme.bodySmall),
         ],
       ],
     );
