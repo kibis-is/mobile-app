@@ -31,6 +31,12 @@ class SecurityScreen extends ConsumerWidget {
             if (enablePasswordLock) ...[
               const SizedBox(height: kScreenPadding),
               DropdownButton<Timeout>(
+                isExpanded: true,
+                borderRadius: BorderRadius.circular(kWidgetRadius),
+                alignment: Alignment.centerRight,
+                dropdownColor: Theme.of(context).colorScheme.surface,
+                padding: const EdgeInsets.symmetric(
+                    vertical: kScreenPadding / 2, horizontal: kScreenPadding),
                 value: Timeout.timeoutList.firstWhere(
                     (item) => item.time == timeoutSeconds,
                     orElse: () => Timeout.timeoutList.first),
