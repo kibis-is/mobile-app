@@ -35,89 +35,7 @@ class DashboardTabController extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            onPressed: () =>
-                                GoRouter.of(context).go('/addAsset'),
-                            icon: Icon(
-                              Icons.add,
-                              color: context.colorScheme.onBackground,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: assets.isEmpty
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'No Assets Found',
-                                    style: context.textTheme.titleMedium,
-                                  ),
-                                  const SizedBox(
-                                    height: kScreenPadding / 2,
-                                  ),
-                                  Text(
-                                    'You have not added any assets. Try adding one now.',
-                                    style: context.textTheme.bodyMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(
-                                    height: kScreenPadding,
-                                  ),
-                                  CustomButton(
-                                    text: "Add",
-                                    prefixIcon: const Icon(Icons.add),
-                                    isOutline: false,
-                                    buttonType: ButtonType.primary,
-                                    onPressed: () {
-                                      GoRouter.of(context).go('/addAsset');
-                                    },
-                                  ),
-                                ],
-                              )
-                            : ListView.separated(
-                                itemCount: assets.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    contentPadding: const EdgeInsets.all(
-                                        kScreenPadding / 2),
-                                    leading: SvgPicture.asset(
-                                      assets[index].image,
-                                      width: kScreenPadding * 3,
-                                    ),
-                                    title: Text(
-                                      assets[index].name,
-                                      style: context.textTheme.titleMedium!
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: Text(
-                                      assets[index].subtitle,
-                                      style: context.textTheme.titleSmall!
-                                          .copyWith(
-                                              color: context
-                                                  .colorScheme.onSurface),
-                                    ),
-                                    trailing:
-                                        const Icon(Icons.arrow_forward_ios),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return const SizedBox(
-                                      height: kScreenPadding / 2);
-                                },
-                              ),
-                      ),
-                    ],
-                  ),
+                  AssetsTab(assets: assets),
                   const Center(
                     child: Text('No NFTs'),
                   ),
@@ -130,6 +48,94 @@ class DashboardTabController extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AssetsTab extends StatelessWidget {
+  const AssetsTab({
+    super.key,
+    required this.assets,
+  });
+
+  final List<AccountAsset> assets;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              onPressed: () => GoRouter.of(context).go('/addAsset'),
+              icon: Icon(
+                Icons.add,
+                color: context.colorScheme.onBackground,
+              ),
+            ),
+          ],
+        ),
+        Expanded(
+          child: assets.isEmpty
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No Assets Found',
+                      style: context.textTheme.titleMedium,
+                    ),
+                    const SizedBox(
+                      height: kScreenPadding / 2,
+                    ),
+                    Text(
+                      'You have not added any assets. Try adding one now.',
+                      style: context.textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: kScreenPadding,
+                    ),
+                    CustomButton(
+                      text: "Add",
+                      prefixIcon: const Icon(Icons.add),
+                      isOutline: true,
+                      buttonType: ButtonType.primary,
+                      onPressed: () {
+                        GoRouter.of(context).go('/addAsset');
+                      },
+                    ),
+                  ],
+                )
+              : ListView.separated(
+                  itemCount: assets.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      contentPadding: const EdgeInsets.all(kScreenPadding / 2),
+                      leading: SvgPicture.asset(
+                        assets[index].image,
+                        width: kScreenPadding * 3,
+                      ),
+                      title: Text(
+                        assets[index].name,
+                        style: context.textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        assets[index].subtitle,
+                        style: context.textTheme.titleSmall!
+                            .copyWith(color: context.colorScheme.onSurface),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(height: kScreenPadding / 2);
+                  },
+                ),
+        ),
+      ],
     );
   }
 }

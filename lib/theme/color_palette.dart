@@ -28,4 +28,7 @@ class ColorPalette {
 
   static const Color cardGradientPurpleA = Color(0xFF8048A5);
   static const Color cardGradientPurpleB = Color(0xFF522E6A);
+  static const Color cardGradientTurquoiseA = Color(0xFF00C2AF);
+  static const Color cardGradientLightBlue = Color(0xFF01EAF1);
+  static const Color cardGradientMediumBlue = Color(0xFF266CB9);
 }

@@ -26,7 +26,7 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select an Account'),
+        title: const Text('Select Account'),
         automaticallyImplyLeading: false,
       ),
       body: Padding(
@@ -72,11 +72,12 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                                 borderRadius:
                                     BorderRadius.circular(kScreenPadding),
                                 gradient: const LinearGradient(
-                                  begin: Alignment.bottomLeft,
-                                  end: Alignment.topRight,
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  stops: [0.0, 0.5],
                                   colors: [
+                                    ColorPalette.cardGradientTurquoiseA,
                                     ColorPalette.cardGradientPurpleB,
-                                    ColorPalette.cardGradientPurpleA,
                                   ],
                                 ),
                               ),
@@ -87,7 +88,9 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                                   Container(
                                     alignment: Alignment.centerRight,
                                     child: IconButton(
-                                      icon: const Icon(Icons.edit),
+                                      icon: Icon(Icons.edit,
+                                          color:
+                                              context.colorScheme.onSecondary),
                                       onPressed: () {
                                         _navigateToEditAccount(
                                             account['accountId']!, accountName);
@@ -147,6 +150,28 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text('0.0',
+                                            style: context.textTheme.bodyLarge
+                                                ?.copyWith(
+                                                    color: context
+                                                        .colorScheme.secondary,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                        SvgPicture.asset(
+                                          'assets/images/algorand-logo.svg',
+                                          colorFilter: ColorFilter.mode(
+                                              context.colorScheme.secondary,
+                                              BlendMode.srcATop),
+                                          height: 16,
+                                        )
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
