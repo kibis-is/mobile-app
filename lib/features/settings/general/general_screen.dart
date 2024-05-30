@@ -41,8 +41,8 @@ class GeneralScreen extends ConsumerWidget {
             ),
             CustomButton(
               text: 'Reset',
-              isWarning: true,
               isFullWidth: true,
+              buttonType: ButtonType.warning,
               onPressed: () async {
                 bool confirm = await showDialog(
                       context: context,
