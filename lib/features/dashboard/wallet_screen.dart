@@ -163,7 +163,7 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
                                                     fontWeight:
                                                         FontWeight.bold)),
                                         SvgPicture.asset(
-                                          'assets/images/algorand-logo.svg',
+                                          'assets/images/voi-asset-icon.svg',
                                           colorFilter: ColorFilter.mode(
                                               context.colorScheme.secondary,
                                               BlendMode.srcATop),
