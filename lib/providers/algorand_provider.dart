@@ -30,14 +30,15 @@ class AlgorandService {
 
   AlgorandService(this.algorand);
 
-  Future<String> sendPayment(Account senderAccount, Address recipientAddress,
+  Future<String> sendCurrency(Account senderAccount, String recipientAddress,
       double amountInAlgos) async {
     try {
+      Address address = Address.fromAlgorandAddress(address: recipientAddress);
       final amountInMicroAlgos = Algo.toMicroAlgos(amountInAlgos);
 
       final txId = await algorand.sendPayment(
         account: senderAccount,
-        recipient: recipientAddress,
+        recipient: address,
         amount: amountInMicroAlgos,
       );
 

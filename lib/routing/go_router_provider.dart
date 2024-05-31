@@ -271,7 +271,7 @@ class RouterNotifier extends ChangeNotifier {
               name: sendCurrencyRouteName,
               path: sendCurrencyRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const SendVOIScreen(), state);
+                return defaultTransitionPage(const SendCurrencyScreen(), state);
               },
             ),
             GoRoute(

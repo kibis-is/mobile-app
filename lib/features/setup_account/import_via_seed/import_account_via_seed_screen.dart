@@ -156,8 +156,9 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         customSnackbar(
-          context,
-          e.toString(),
+          context: context,
+          message: e.toString(),
+          snackType: SnackType.error,
         ),
       );
     }

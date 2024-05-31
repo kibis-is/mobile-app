@@ -9,10 +9,13 @@ class CustomTextField extends StatelessWidget {
     this.errorText = '',
     this.isEnabled = true,
     this.leadingIcon,
+    this.suffixIcon, // Ensure this is IconData?
+    this.onTrailingPressed, // Ensure this is VoidCallback?
     this.isObscureText = false,
     this.autoCorrect = true,
     this.textInputAction = TextInputAction.next,
     this.keyboardType = TextInputType.text,
+    this.textAlign = TextAlign.left,
     this.maxLength,
     this.maxLines = 1,
     this.validator,
@@ -25,11 +28,14 @@ class CustomTextField extends StatelessWidget {
   final String labelText;
   final String errorText;
   final bool isEnabled;
-  final bool isObscureText;
   final IconData? leadingIcon;
+  final IconData? suffixIcon; // Correct Type
+  final VoidCallback? onTrailingPressed; // Correct Type
+  final bool isObscureText;
   final bool autoCorrect;
   final TextInputAction? textInputAction;
   final TextInputType? keyboardType;
+  final TextAlign textAlign;
   final int? maxLength;
   final int maxLines;
   final FormFieldValidator<String>? validator;
@@ -46,10 +52,11 @@ class CustomTextField extends StatelessWidget {
       maxLength: maxLength,
       maxLines: maxLines,
       enabled: isEnabled,
-      textAlign: TextAlign.left,
+      textAlign: textAlign,
       controller: controller,
       focusNode: focusNode,
       obscureText: isObscureText,
+      textAlignVertical: TextAlignVertical.top,
       decoration: InputDecoration(
         counterText: "",
         prefixIcon: leadingIcon != null ? Icon(leadingIcon) : null,
@@ -59,15 +66,23 @@ class CustomTextField extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         errorText: errorText.isEmpty
             ? null
-            : controller.text.isNotEmpty
-                ? null
-                : errorText,
-        suffixIcon: isObscureText
-            ? IconButton(
-                icon: const Icon(Icons.visibility),
-                onPressed: () {},
+            : (controller.text.isNotEmpty ? null : errorText),
+        suffixIcon: suffixIcon != null
+            ? Padding(
+                padding: const EdgeInsets.only(right: kScreenPadding / 2),
+                child: IconButton(
+                  icon: Icon(suffixIcon),
+                  onPressed: onTrailingPressed,
+                ),
               )
-            : null,
+            : isObscureText
+                ? IconButton(
+                    icon: const Icon(Icons.visibility),
+                    onPressed: () {
+                      // Typically toggle password visibility
+                    },
+                  )
+                : null,
       ),
       validator: validator,
       onChanged: onChanged,

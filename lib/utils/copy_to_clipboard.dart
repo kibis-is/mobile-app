@@ -9,7 +9,10 @@ void copyToClipboard(BuildContext context, String text) async {
   WidgetsBinding.instance.addPostFrameCallback((_) {
     if (!context.mounted) return;
     rootScaffoldMessengerKey.currentState?.showSnackBar(
-      customSnackbar(context, "Copied to clipboard"),
+      customSnackbar(
+          context: context,
+          message: "Copied to clipboard",
+          snackType: SnackType.neutral),
     );
   });
   debugPrint('text: $text');

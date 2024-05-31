@@ -52,7 +52,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
       if (next != null && next.isNotEmpty) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           rootScaffoldMessengerKey.currentState?.showSnackBar(
-            customSnackbar(context, next),
+            customSnackbar(context: context, message: next),
           );
         });
         ref.read(errorProvider.notifier).state = null;
