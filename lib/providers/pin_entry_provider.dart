@@ -55,6 +55,10 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
     state = state.copyWith(error: error, pin: '');
   }
 
+  void clearError() {
+    state = state.copyWith(error: '');
+  }
+
   String getPin() {
     return state.pin;
   }

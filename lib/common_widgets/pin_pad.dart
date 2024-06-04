@@ -192,6 +192,7 @@ class PinPadState extends ConsumerState<PinPad> {
     if (widget.mode == PinPadMode.verifyTransaction) {
       final isPinValid = await ref.read(pinProvider.notifier).verifyPin(pin);
       if (isPinValid) {
+        pinNotifier.clearError();
         if (widget.onPinVerified != null) {
           widget.onPinVerified!();
         }
