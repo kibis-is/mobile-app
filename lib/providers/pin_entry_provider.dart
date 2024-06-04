@@ -8,15 +8,12 @@ import 'package:kibisis/providers/pin_provider.dart';
 
 final pinEntryStateNotifierProvider =
     StateNotifierProvider<PinEntryStateNotifier, PinState>((ref) {
-  // Access the notifier of the pinProvider for operations
   final pinStateNotifier = ref.watch(pinProvider.notifier);
-  return PinEntryStateNotifier(
-      ref, pinStateNotifier); // Correctly pass ref here
+  return PinEntryStateNotifier(ref, pinStateNotifier);
 });
 
 class PinEntryStateNotifier extends StateNotifier<PinState> {
-  final StateNotifierProviderRef<PinEntryStateNotifier, PinState>
-      ref; // Use the correct Ref type
+  final StateNotifierProviderRef<PinEntryStateNotifier, PinState> ref;
   final PinStateNotifier pinStateNotifier;
 
   PinEntryStateNotifier(this.ref, this.pinStateNotifier) : super(PinState());
@@ -52,6 +49,14 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
       debugPrint('Invalid PIN entered: $e');
       state = state.copyWith(error: 'Invalid PIN. Try again.', pin: '');
     }
+  }
+
+  void setError(String error) {
+    state = state.copyWith(error: error, pin: '');
+  }
+
+  String getPin() {
+    return state.pin;
   }
 
   void clearPin() {

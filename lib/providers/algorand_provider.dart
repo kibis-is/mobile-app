@@ -46,7 +46,8 @@ class AlgorandService {
       return txId;
     } catch (e) {
       debugPrint("Failed to send payment: $e");
-      rethrow;
+      //need to catch wrong address in here
+      return 'error';
     }
   }
 

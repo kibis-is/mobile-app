@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
-import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class PinPad extends ConsumerStatefulWidget {
   final int pinLength;
   final PinPadMode mode;
+  final VoidCallback? onPinVerified;
 
   const PinPad({
     super.key,
     this.pinLength = 6,
     required this.mode,
+    this.onPinVerified,
   });
 
   @override
@@ -29,11 +29,26 @@ class PinPadState extends ConsumerState<PinPad> {
   @override
   Widget build(BuildContext context) {
     final pinEntryProvider = ref.watch(pinEntryStateNotifierProvider);
+    final pinState = ref.watch(pinEntryStateNotifierProvider);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: [
+        const SizedBox(height: kScreenPadding),
+        Padding(
+          padding: const EdgeInsets.all(kScreenPadding),
+          child: Visibility(
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: pinState.error.isNotEmpty,
+            child: Text(
+              pinState.error,
+              style: TextStyle(color: context.colorScheme.error),
+            ),
+          ),
+        ),
         FittedBox(
           fit: BoxFit.fitWidth,
           child: Padding(
@@ -172,26 +187,24 @@ class PinPadState extends ConsumerState<PinPad> {
 
   Future<void> handlePinComplete() async {
     final pinNotifier = ref.read(pinEntryStateNotifierProvider.notifier);
-    pinNotifier.pinComplete(widget.mode);
+    final pin = pinNotifier.getPin();
 
-    if (widget.mode == PinPadMode.setup) {
-      await ref.refresh(storageProvider).accountExists();
-      if (!mounted) return;
-      _navigateToAddAccount();
-    } else if (widget.mode == PinPadMode.unlock) {
-      if (ref.read(isAuthenticatedProvider) && mounted) {
-        // Optionally navigate to the home screen or another screen
+    if (widget.mode == PinPadMode.verifyTransaction) {
+      final isPinValid = await ref.read(pinProvider.notifier).verifyPin(pin);
+      if (isPinValid) {
+        if (widget.onPinVerified != null) {
+          widget.onPinVerified!();
+        }
+      } else {
+        pinNotifier.setError('Incorrect PIN. Try again.');
+      }
+    } else {
+      pinNotifier.pinComplete(widget.mode);
+      if (widget.mode != PinPadMode.setup) {
+        ref.read(pinProvider.notifier).clearPinState();
       }
     }
 
-    if (widget.mode != PinPadMode.setup) {
-      ref.read(pinProvider.notifier).clearPinState();
-    }
     pinNotifier.clearPin();
-  }
-
-  void _navigateToAddAccount() {
-    if (!mounted) return;
-    GoRouter.of(context).push('/setup/setupAddAccount');
   }
 }

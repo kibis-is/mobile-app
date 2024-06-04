@@ -6,7 +6,7 @@ const kInputHeight = 64.0;
 const kPinLength = 6;
 const kVersionNumber = 'v0.0.1';
 
-enum PinPadMode { setup, unlock }
+enum PinPadMode { setup, unlock, verifyTransaction }
 
 enum AccountFlow {
   setup,

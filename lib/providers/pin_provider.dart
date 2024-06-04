@@ -14,7 +14,6 @@ class PinStateNotifier extends StateNotifier<PinState> {
 
   PinStateNotifier(this.ref, this.storageService) : super(PinState());
 
-  // Method to set the PIN hash
   Future<void> setPin(String pin) async {
     try {
       String hashedPin = CryptoUtils.hashPin(pin);
@@ -24,7 +23,6 @@ class PinStateNotifier extends StateNotifier<PinState> {
     }
   }
 
-  // Method to verify the PIN against the stored hash
   Future<bool> verifyPin(String enteredPin) async {
     try {
       String? storedHashedPin = await storageService.getPinHash();
@@ -39,7 +37,6 @@ class PinStateNotifier extends StateNotifier<PinState> {
     }
   }
 
-  // Method to change the PIN
   Future<bool> changePin(String oldPin, String newPin) async {
     try {
       bool isOldPinValid = await verifyPin(oldPin);
@@ -56,7 +53,6 @@ class PinStateNotifier extends StateNotifier<PinState> {
     }
   }
 
-  // Method to reset the PIN
   void clearPinState() {
     state = PinState();
   }

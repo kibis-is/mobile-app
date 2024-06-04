@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/pin_pad.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
-import 'package:kibisis/utils/theme_extensions.dart';
 
 class PinPadScreen extends ConsumerWidget {
   final PinPadMode mode;
@@ -14,7 +13,7 @@ class PinPadScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pinState = ref.watch(pinEntryStateNotifierProvider);
+    ref.watch(pinEntryStateNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -24,22 +23,7 @@ class PinPadScreen extends ConsumerWidget {
       body: Column(
         children: [
           const SizedBox(height: kScreenPadding),
-          Padding(
-            padding: const EdgeInsets.all(kScreenPadding),
-            child: Visibility(
-              maintainSize: true,
-              maintainAnimation: true,
-              maintainState: true,
-              visible: pinState.error.isNotEmpty,
-              child: Text(
-                pinState.error,
-                style: TextStyle(color: context.colorScheme.error),
-              ),
-            ),
-          ),
-          Expanded(
-            child: PinPad(mode: mode),
-          ),
+          Expanded(child: PinPad(mode: mode)),
           const SizedBox(height: kScreenPadding),
         ],
       ),

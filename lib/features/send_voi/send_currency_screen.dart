@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
+import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
@@ -36,23 +37,22 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
     double amountInAlgos = 0.0;
     try {
       amountInAlgos = double.parse(amountController.text);
+
+      final txId = await ref.read(algorandServiceProvider).sendCurrency(
+          account!, recipientAddressController.text, amountInAlgos);
+
+      if (mounted) {
+        _handleTransactionResult(txId);
+      }
     } catch (e) {
       debugPrint("Error: The string is not a valid double.");
-    }
-
-    final txId = await ref
-        .read(algorandServiceProvider)
-        .sendCurrency(account!, recipientAddressController.text, amountInAlgos);
-
-    if (mounted) {
-      _handleTransactionResult(txId);
     }
   }
 
   void _handleTransactionResult(String txId) {
     if (!mounted) return;
 
-    if (txId.isNotEmpty) {
+    if (txId.isNotEmpty && txId != 'error') {
       ScaffoldMessenger.of(context).showSnackBar(
         customSnackbar(
           context: context,
@@ -60,6 +60,7 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
           snackType: SnackType.success,
         ),
       );
+      GoRouter.of(context).go('/');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         customSnackbar(
@@ -69,8 +70,18 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
         ),
       );
     }
+  }
 
-    GoRouter.of(context).pop();
+  void _showPinPadDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => PinPadDialog(
+        title: 'Enter PIN',
+        onPinVerified: () async {
+          await _sendCurrency(ref);
+        },
+      ),
+    );
   }
 
   @override
@@ -112,7 +123,7 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
             CustomButton(
               isFullWidth: true,
               text: 'Send',
-              onPressed: () => _sendCurrency(ref),
+              onPressed: _showPinPadDialog,
             ),
           ],
         ),
