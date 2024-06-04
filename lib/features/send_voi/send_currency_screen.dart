@@ -125,6 +125,7 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
               text: 'Send',
               onPressed: _showPinPadDialog,
             ),
+            const SizedBox(height: kScreenPadding),
           ],
         ),
       ),
