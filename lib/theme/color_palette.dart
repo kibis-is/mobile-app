@@ -26,9 +26,13 @@ class ColorPalette {
   static const Color darkThemeError = Color(0xFFF57D56);
   static const Color darkThemeBlack = Color(0xFF000000);
 
+  static const Color darkThemeFrozenAssetBackground = Color(0xFF222F47);
+
   static const Color cardGradientPurpleA = Color(0xFF8048A5);
   static const Color cardGradientPurpleB = Color(0xFF522E6A);
   static const Color cardGradientTurquoiseA = Color(0xFF00C2AF);
   static const Color cardGradientLightBlue = Color(0xFF01EAF1);
   static const Color cardGradientMediumBlue = Color(0xFF266CB9);
+
+  static const Color voiPurple = Color(0xFF5A21B6);
 }

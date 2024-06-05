@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_tab_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class DashboardTabController extends StatelessWidget {
@@ -96,6 +97,9 @@ class AssetsTab extends StatelessWidget {
             // ),
           ],
         ),
+        const SizedBox(
+          height: kScreenPadding,
+        ),
         Expanded(
           child: assets.isEmpty
               ? Column(
@@ -141,24 +145,63 @@ class AssetsTab extends StatelessWidget {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     debugPrint('Assets length: ${assets.length}');
-                    return ListTile(
-                      contentPadding: const EdgeInsets.all(kScreenPadding),
-                      leading: Icon(
+                    return Stack(
+                      alignment: Alignment.topRight,
+                      children: [
                         assets[index].isFrozen
-                            ? Icons.ac_unit
-                            : Icons.attach_money,
-                      ),
-                      title: Text(
-                        assets[index].amount.toString(),
-                        style: context.textTheme.titleMedium!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        assets[index].creator ?? 'Unknown',
-                        style: context.textTheme.titleSmall!
-                            .copyWith(color: context.colorScheme.onSurface),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios),
+                            ? const Padding(
+                                padding: EdgeInsets.all(kScreenPadding / 2),
+                                child: Icon(
+                                  Icons.ac_unit,
+                                  size: kScreenPadding,
+                                ),
+                              )
+                            : Container(),
+                        ListTile(
+                          horizontalTitleGap: kScreenPadding * 2,
+                          leading: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: ColorPalette.voiPurple,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(kScreenPadding),
+                              child: SvgPicture.asset(
+                                'assets/images/voi-asset-icon.svg',
+                                semanticsLabel: 'VOI Logo',
+                                width: kScreenPadding,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcATop,
+                                ),
+                              ),
+                            ),
+                          ),
+                          title: Text(
+                            assets[index].assetId.toString(),
+                            style: context.textTheme.titleMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            assets[index].creator ?? 'Unknown',
+                            style: context.textTheme.titleSmall!
+                                .copyWith(color: context.colorScheme.onSurface),
+                          ),
+                          trailing: SizedBox(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  assets[index].amount.toString(),
+                                  style: context.textTheme.titleSmall?.copyWith(
+                                      color: context.colorScheme.secondary),
+                                ),
+                                const Icon(Icons.arrow_forward_ios),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
