@@ -146,36 +146,57 @@ class DashboardScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: kScreenPadding),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.settings),
-                  color: context.colorScheme.onBackground,
-                  onPressed: () => GoRouter.of(context).go('/settings'),
-                ),
-                IconButton(
-                  color: context.colorScheme.onBackground,
-                  icon: Container(
-                    padding: const EdgeInsets.all(
-                        kScreenPadding), // Adjust outer padding here
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(kWidgetRadius),
-                    ),
-                    child: Icon(
-                      Icons.send,
-                      color: context.colorScheme.onPrimary,
+            Container(
+              color: context.colorScheme.background,
+              child: Stack(
+                clipBehavior: Clip
+                    .none, // Allow children to render outside their parent widget's boundaries
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.settings),
+                        color: context.colorScheme.onBackground,
+                        onPressed: () => GoRouter.of(context).go('/settings'),
+                      ),
+                      Container(
+                          width: 80), // Invisible placeholder for alignment
+                      IconButton(
+                        icon: const Icon(Icons.account_balance_wallet),
+                        color: context.colorScheme.onBackground,
+                        onPressed: () => GoRouter.of(context).push('/wallets'),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    top: -kScreenPadding * 2,
+                    left: 0,
+                    right: 0,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: kScreenPadding * 5,
+                        height: kScreenPadding * 5,
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.secondary,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(kWidgetRadius),
+                          ), // Ensuring it's a perfect circle
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.send),
+                          iconSize: kScreenPadding *
+                              2, // You can adjust this size for better visibility
+                          color: context.colorScheme.onPrimary,
+                          onPressed: () =>
+                              GoRouter.of(context).go('/sendCurrency'),
+                        ),
+                      ),
                     ),
                   ),
-                  onPressed: () => GoRouter.of(context).go('/sendCurrency'),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.account_balance_wallet),
-                  color: context.colorScheme.onBackground,
-                  onPressed: () => GoRouter.of(context).push('/wallets'),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
