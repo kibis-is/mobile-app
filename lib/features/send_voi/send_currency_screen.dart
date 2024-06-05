@@ -8,6 +8,7 @@ import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 
 class SendCurrencyScreen extends ConsumerStatefulWidget {
   static String title = 'Send Currency';
@@ -46,6 +47,7 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
       }
     } catch (e) {
       debugPrint("Error: The string is not a valid double.");
+      ref.read(loadingProvider.notifier).stopLoading();
     }
   }
 
@@ -78,7 +80,13 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
       builder: (context) => PinPadDialog(
         title: 'Enter PIN',
         onPinVerified: () async {
+          if (mounted) {
+            ref.read(loadingProvider.notifier).startLoading();
+          }
           await _sendCurrency(ref);
+          if (mounted) {
+            ref.read(loadingProvider.notifier).stopLoading();
+          }
         },
       ),
     );

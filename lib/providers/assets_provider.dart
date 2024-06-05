@@ -6,6 +6,7 @@ import 'package:algorand_dart/algorand_dart.dart';
 final assetsProvider =
     FutureProvider.family<List<AccountAsset>, String>((ref, address) async {
   final algorandService = ref.watch(algorandServiceProvider);
+
   if (address.isEmpty) {
     return [];
   }

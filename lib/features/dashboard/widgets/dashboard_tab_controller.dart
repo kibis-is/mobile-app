@@ -140,6 +140,7 @@ class AssetsTab extends StatelessWidget {
                   itemCount: assets.length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
+                    debugPrint('Assets length: ${assets.length}');
                     return ListTile(
                       contentPadding: const EdgeInsets.all(kScreenPadding / 2),
                       leading: SvgPicture.asset(

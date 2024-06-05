@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
@@ -173,16 +172,12 @@ class PinPadState extends ConsumerState<PinPad> {
   }
 
   void _handlePinKeyPressed(String key) async {
-    ref.read(loadingProvider.notifier).startLoading();
-
     bool isPinComplete =
         ref.read(pinEntryStateNotifierProvider.notifier).addKey(key);
 
     if (isPinComplete) {
       await handlePinComplete();
     }
-
-    ref.read(loadingProvider.notifier).stopLoading();
   }
 
   Future<void> handlePinComplete() async {

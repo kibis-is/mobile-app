@@ -16,7 +16,7 @@ class CustomTab extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colorScheme.surface,
         borderRadius:
-            BorderRadius.circular(kScreenPadding / 2), // Set rounded corners
+            BorderRadius.circular(kWidgetRadius), // Set rounded corners
       ),
       child: Tab(text: text),
     );

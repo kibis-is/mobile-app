@@ -51,9 +51,9 @@ class AlgorandService {
     }
   }
 
-  Future<List<AccountAsset>> getAccountAssets(String address) async {
+  Future<List<AccountAsset>> getAccountAssets(String publicAddress) async {
     try {
-      final accountInfo = await algorand.getAccountByAddress(address);
+      final accountInfo = await algorand.getAccountByAddress(publicAddress);
       final createdAssets = accountInfo.createdAssets;
 
       if (createdAssets.isEmpty) {
