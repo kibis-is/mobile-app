@@ -1,8 +1,8 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_tab_bar.dart';
-import 'package:kibisis/models/asset.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -14,7 +14,7 @@ class DashboardTabController extends StatelessWidget {
   });
 
   final List<String> tabs;
-  final List<AccountAsset> assets;
+  final List<AssetHolding> assets;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class AssetsTab extends StatelessWidget {
     required this.assets,
   });
 
-  final List<AccountAsset> assets;
+  final List<AssetHolding> assets;
 
   @override
   Widget build(BuildContext context) {
@@ -142,18 +142,19 @@ class AssetsTab extends StatelessWidget {
                   itemBuilder: (context, index) {
                     debugPrint('Assets length: ${assets.length}');
                     return ListTile(
-                      contentPadding: const EdgeInsets.all(kScreenPadding / 2),
-                      leading: SvgPicture.asset(
-                        assets[index].image,
-                        width: kScreenPadding * 3,
+                      contentPadding: const EdgeInsets.all(kScreenPadding),
+                      leading: Icon(
+                        assets[index].isFrozen
+                            ? Icons.ac_unit
+                            : Icons.attach_money,
                       ),
                       title: Text(
-                        assets[index].name,
+                        assets[index].amount.toString(),
                         style: context.textTheme.titleMedium!
                             .copyWith(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        assets[index].subtitle,
+                        assets[index].creator ?? 'Unknown',
                         style: context.textTheme.titleSmall!
                             .copyWith(color: context.colorScheme.onSurface),
                       ),

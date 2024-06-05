@@ -1,7 +1,6 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/models/asset.dart';
 
 // Define a provider for managing the Algorand instance
 final algorandProvider = Provider<Algorand>((ref) {
@@ -51,7 +50,22 @@ class AlgorandService {
     }
   }
 
-  Future<List<AccountAsset>> getAccountAssets(String publicAddress) async {
+  Future<List<AssetHolding>> getAccountAssets(String publicAddress) async {
+    try {
+      final accountInfo = await algorand.getAccountByAddress(publicAddress);
+      final assets = accountInfo.assets;
+
+      if (assets.isEmpty) {
+        return [];
+      }
+
+      return assets;
+    } catch (e) {
+      throw Exception('Failed to fetch assets: $e');
+    }
+  }
+
+  Future<List<Asset>> getCreatedAssets(String publicAddress) async {
     try {
       final accountInfo = await algorand.getAccountByAddress(publicAddress);
       final createdAssets = accountInfo.createdAssets;
@@ -59,25 +73,15 @@ class AlgorandService {
       if (createdAssets.isEmpty) {
         return [];
       }
-
-      // Map the created assets to MockAsset objects
-      return createdAssets.map((asset) {
-        return AccountAsset(
-          name: asset.params.name ?? 'Unnamed Asset',
-          subtitle: 'ID: ${asset.index}',
-          image:
-              'assets/images/asset-logo.svg', // Replace with actual asset image if available
-          value: asset.params.total, // or another relevant field
-        );
-      }).toList();
+      return createdAssets;
     } catch (e) {
       throw Exception('Failed to fetch assets: $e');
     }
   }
 
-  Future<String> getAccountBalance(String address) async {
+  Future<String> getAccountBalance(String publicAddress) async {
     try {
-      final accountInfo = await algorand.getAccountByAddress(address);
+      final accountInfo = await algorand.getAccountByAddress(publicAddress);
       final balance = accountInfo.amount;
       return Algo.fromMicroAlgos(balance).toString();
     } on AlgorandException catch (e) {

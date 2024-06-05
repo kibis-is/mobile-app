@@ -1,10 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/models/asset.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 
 final assetsProvider =
-    FutureProvider.family<List<AccountAsset>, String>((ref, address) async {
+    FutureProvider.family<List<AssetHolding>, String>((ref, address) async {
   final algorandService = ref.watch(algorandServiceProvider);
 
   if (address.isEmpty) {
