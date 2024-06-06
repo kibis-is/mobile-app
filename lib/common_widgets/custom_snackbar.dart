@@ -115,29 +115,3 @@ SnackBar customSnackbar({
     ),
   );
 }
-
-void showCustomSnackbar({
-  required BuildContext context,
-  required String message,
-  SnackType snackType = SnackType.neutral,
-}) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    customSnackbar(
-      context: context,
-      message: message,
-      snackType: snackType,
-    ),
-  );
-}
-
-void showTopSnackBar(BuildContext context, SnackBar snackBar) {
-  OverlayEntry overlayEntry = OverlayEntry(
-    builder: (context) => TopSnackBar(snackBar: snackBar),
-  );
-
-  Overlay.of(context).insert(overlayEntry);
-
-  Future.delayed(snackBar.duration + const Duration(milliseconds: 500), () {
-    overlayEntry.remove();
-  });
-}
