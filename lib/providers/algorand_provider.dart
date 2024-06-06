@@ -217,4 +217,44 @@ class AlgorandService {
       throw Exception("Failed to revoke asset: $e");
     }
   }
+
+  Future<List<Transaction>> getTransactions(
+    String publicAddress, {
+    int? limit,
+    double? minAmount,
+    double? maxAmount,
+    int? assetId,
+    String? notePrefix,
+    TransactionType? transactionType,
+  }) async {
+    try {
+      var query = algorand
+          .indexer()
+          .transactions()
+          .whereAddress(Address.fromAlgorandAddress(address: publicAddress));
+
+      // Apply optional filters
+      if (minAmount != null) {
+        query = query.whereCurrencyIsGreaterThan(Algo.toMicroAlgos(minAmount));
+      }
+      if (maxAmount != null) {
+        query = query.whereCurrencyIsLessThan(Algo.toMicroAlgos(maxAmount));
+      }
+      if (assetId != null) {
+        query = query.whereAssetId(assetId);
+      }
+      if (notePrefix != null) {
+        query = query.whereNotePrefix(notePrefix);
+      }
+      if (transactionType != null) {
+        query = query.whereTransactionType(transactionType);
+      }
+
+      final transactions = await query.search(limit: limit ?? 10);
+      return transactions.transactions;
+    } catch (e) {
+      debugPrint('Failed to fetch transactions: $e');
+      return [];
+    }
+  }
 }

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
-import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
