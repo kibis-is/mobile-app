@@ -1,10 +1,10 @@
-import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_tab_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/activity_tab.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
+import 'package:kibisis/models/detailed_asset.dart';
 
 class DashboardTabController extends ConsumerWidget {
   const DashboardTabController({
@@ -14,7 +14,7 @@ class DashboardTabController extends ConsumerWidget {
   });
 
   final List<String> tabs;
-  final List<AssetHolding> assets;
+  final List<DetailedAsset> assets;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

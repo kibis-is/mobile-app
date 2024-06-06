@@ -1,8 +1,8 @@
-import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -12,7 +12,7 @@ class AssetsTab extends StatelessWidget {
     required this.assets,
   });
 
-  final List<AssetHolding> assets;
+  final List<DetailedAsset> assets;
 
   @override
   Widget build(BuildContext context) {
@@ -133,12 +133,12 @@ class AssetsTab extends StatelessWidget {
                               ),
                             ),
                             title: Text(
-                              assets[index].assetId.toString(),
+                              assets[index].name ?? 'Unknown',
                               style: context.textTheme.titleMedium!
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
-                              assets[index].creator ?? 'Unknown',
+                              assets[index].unitName ?? 'Unknown',
                               style: context.textTheme.titleSmall!.copyWith(
                                   color: context.colorScheme.onSurface),
                             ),

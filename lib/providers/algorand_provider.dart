@@ -1,6 +1,7 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/models/detailed_asset.dart';
 
 // Define a provider for managing the Algorand instance
 final algorandProvider = Provider<Algorand>((ref) {
@@ -52,18 +53,45 @@ class AlgorandService {
     }
   }
 
-  Future<List<AssetHolding>> getAccountAssets(String publicAddress) async {
+  Future<List<DetailedAsset>> getAccountAssets(String publicAddress) async {
     try {
       final accountInfo = await algorand.getAccountByAddress(publicAddress);
-      final assets = accountInfo.assets;
+      final holdings = accountInfo.assets;
 
-      if (assets.isEmpty) {
-        return [];
+      List<DetailedAsset> detailedAssets = [];
+      for (var holding in holdings) {
+        final assetDetails = await getAssetDetails(holding.assetId);
+        final detailedAsset = DetailedAsset(
+          amount: holding.amount,
+          assetId: holding.assetId,
+          creator: holding.creator,
+          isFrozen: holding.isFrozen,
+          name: assetDetails.params.name,
+          unitName: assetDetails.params.unitName,
+          totalSupply: assetDetails.params.total,
+          manager: assetDetails.params.manager,
+          reserve: assetDetails.params.reserve,
+          freeze: assetDetails.params.freeze,
+          clawback: assetDetails.params.clawback,
+          url: assetDetails.params.url,
+          metadataHash: assetDetails.params.metadataHash,
+          defaultFrozen: assetDetails.params.defaultFrozen,
+        );
+        detailedAssets.add(detailedAsset);
       }
 
-      return assets;
+      return detailedAssets;
     } catch (e) {
       throw Exception('Failed to fetch assets: $e');
+    }
+  }
+
+  Future<Asset> getAssetDetails(int assetId) async {
+    try {
+      final response = await algorand.indexer().getAssetById(assetId);
+      return response.asset;
+    } catch (e) {
+      throw Exception('Failed to fetch asset details: $e');
     }
   }
 
