@@ -111,47 +111,51 @@ class AssetsTab extends StatelessWidget {
                                 ),
                               )
                             : Container(),
-                        ListTile(
-                          horizontalTitleGap: kScreenPadding * 2,
-                          leading: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: ColorPalette.voiPurple,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(kScreenPadding),
-                              child: SvgPicture.asset(
-                                'assets/images/voi-asset-icon.svg',
-                                semanticsLabel: 'VOI Logo',
-                                width: kScreenPadding,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcATop,
+                        Material(
+                          child: ListTile(
+                            horizontalTitleGap: kScreenPadding * 2,
+                            leading: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ColorPalette.voiPurple,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(kScreenPadding),
+                                child: SvgPicture.asset(
+                                  'assets/images/voi-asset-icon.svg',
+                                  semanticsLabel: 'VOI Logo',
+                                  width: kScreenPadding,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcATop,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          title: Text(
-                            assets[index].assetId.toString(),
-                            style: context.textTheme.titleMedium!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            assets[index].creator ?? 'Unknown',
-                            style: context.textTheme.titleSmall!
-                                .copyWith(color: context.colorScheme.onSurface),
-                          ),
-                          trailing: SizedBox(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(
-                                  assets[index].amount.toString(),
-                                  style: context.textTheme.titleSmall?.copyWith(
-                                      color: context.colorScheme.secondary),
-                                ),
-                                const Icon(Icons.arrow_forward_ios),
-                              ],
+                            title: Text(
+                              assets[index].assetId.toString(),
+                              style: context.textTheme.titleMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              assets[index].creator ?? 'Unknown',
+                              style: context.textTheme.titleSmall!.copyWith(
+                                  color: context.colorScheme.onSurface),
+                            ),
+                            trailing: SizedBox(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text(
+                                    assets[index].amount.toString(),
+                                    style: context.textTheme.titleSmall
+                                        ?.copyWith(
+                                            color:
+                                                context.colorScheme.secondary),
+                                  ),
+                                  const Icon(Icons.arrow_forward_ios),
+                                ],
+                              ),
                             ),
                           ),
                         ),

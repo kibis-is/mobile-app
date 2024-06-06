@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
+import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:algorand_dart/algorand_dart.dart';
+
+class ExpandedTransactionState extends StateNotifier<Map<int, bool>> {
+  ExpandedTransactionState() : super({});
+
+  void toggleExpanded(int index) {
+    state = {
+      ...state,
+      index: !(state[index] ?? false),
+    };
+  }
+}
+
+final expandedTransactionProvider =
+    StateNotifierProvider<ExpandedTransactionState, Map<int, bool>>(
+  (ref) => ExpandedTransactionState(),
+);
 
 class ActivityTab extends ConsumerWidget {
   const ActivityTab({super.key});
@@ -33,13 +51,25 @@ class ActivityTab extends ConsumerWidget {
               itemCount: transactions.length,
               itemBuilder: (context, index) {
                 final transaction = transactions[index];
-                final transactionDetails = _getTransactionDetails(transaction);
-                return ListTile(
-                  title: Text('Transaction ID: ${transaction.id}'),
-                  subtitle: Text(transactionDetails),
+                final isOutgoing = transaction.sender == publicAddress;
+                final otherPartyAddress = isOutgoing
+                    ? transaction.paymentTransaction?.receiver.toString() ?? ''
+                    : transaction.sender;
+                final amountInAlgos = transaction.paymentTransaction != null
+                    ? Algo.fromMicroAlgos(
+                        transaction.paymentTransaction!.amount)
+                    : 0.0;
+
+                return TransactionItem(
+                  transaction: transaction,
+                  isOutgoing: isOutgoing,
+                  otherPartyAddress: otherPartyAddress,
+                  amountInAlgos: amountInAlgos,
                 );
               },
-              separatorBuilder: (context, index) => const Divider(),
+              separatorBuilder: (context, index) => const SizedBox(
+                height: kScreenPadding / 2,
+              ),
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -52,13 +82,5 @@ class ActivityTab extends ConsumerWidget {
 
   Future<String> _getPublicAddress(WidgetRef ref) async {
     return await ref.watch(accountProvider.notifier).getPublicAddress();
-  }
-
-  String _getTransactionDetails(Transaction transaction) {
-    if (transaction.paymentTransaction != null) {
-      return 'Amount: ${transaction.paymentTransaction!.amount} microAlgos';
-    } else {
-      return 'Transaction Type: ${transaction.type}';
-    }
   }
 }
