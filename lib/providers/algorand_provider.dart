@@ -29,8 +29,9 @@ class AlgorandService {
 
   AlgorandService(this.algorand);
 
-  Future<String> sendCurrency(Account senderAccount, String recipientAddress,
-      double amountInAlgos) async {
+  Future<String> sendCurrency(
+      Account senderAccount, String recipientAddress, double amountInAlgos,
+      [String? note]) async {
     try {
       Address address = Address.fromAlgorandAddress(address: recipientAddress);
       final amountInMicroAlgos = Algo.toMicroAlgos(amountInAlgos);
@@ -39,6 +40,7 @@ class AlgorandService {
         account: senderAccount,
         recipient: address,
         amount: amountInMicroAlgos,
+        note: note,
       );
 
       debugPrint("Payment successful: Transaction ID: $txId");

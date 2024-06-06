@@ -40,7 +40,10 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
       amountInAlgos = double.parse(amountController.text);
 
       final txId = await ref.read(algorandServiceProvider).sendCurrency(
-          account!, recipientAddressController.text, amountInAlgos);
+          account!,
+          recipientAddressController.text,
+          amountInAlgos,
+          noteController.text);
 
       if (mounted) {
         _handleTransactionResult(txId);
