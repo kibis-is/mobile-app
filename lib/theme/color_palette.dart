@@ -18,7 +18,7 @@ class ColorPalette {
   static const Color darkThemeKeppel = Color(0xFF00C2AF);
   static const Color darkThemeFluorescentCyan = Color(0xFF01EAF1);
   static const Color darkThemeRaisinBlack = Color(0xFF1A202C);
-  static const Color darkThemeGunmetal = Color(0xFF303846);
+  static const Color darkThemeGunmetal = Color(0xFF222A39);
   static const Color darkThemeAntiflashWhite = Color(0xFFEDEEEE);
   static const Color darkThemeCadetGray = Color(0xFFA3A6AB);
   static const Color darkThemeGray = Color(0xFF71757C);
