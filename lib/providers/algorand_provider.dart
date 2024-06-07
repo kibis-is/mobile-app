@@ -60,7 +60,7 @@ class AlgorandService {
 
       List<DetailedAsset> detailedAssets = [];
       for (var holding in holdings) {
-        final assetDetails = await getAssetDetails(holding.assetId);
+        final assetDetails = await getAssetDetails(holding.assetId.toString());
         final detailedAsset = DetailedAsset(
           amount: holding.amount,
           assetId: holding.assetId,
@@ -86,10 +86,14 @@ class AlgorandService {
     }
   }
 
-  Future<Asset> getAssetDetails(int assetId) async {
+  Future<Asset> getAssetDetails(String assetId) async {
     try {
-      final response = await algorand.indexer().getAssetById(assetId);
+      final int id = int.parse(assetId);
+      final response = await algorand.indexer().getAssetById(id);
       return response.asset;
+    } on FormatException {
+      throw Exception(
+          'Invalid asset ID format. Asset ID must be a valid integer.');
     } catch (e) {
       throw Exception('Failed to fetch asset details: $e');
     }

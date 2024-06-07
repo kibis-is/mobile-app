@@ -19,6 +19,7 @@ const String sendCurrencyRouteName = 'sendCurrency';
 const String addAssetRouteName = 'addAsset';
 const String addWalletRouteName = 'addWallet';
 const String addNetworkRouteName = 'addNetwork';
+const String viewAssetRouteName = 'viewAsset';
 
 const String settingsRouteName = 'settings';
 const String generalRouteName = 'general';

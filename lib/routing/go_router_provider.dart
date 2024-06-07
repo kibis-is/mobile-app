@@ -22,6 +22,7 @@ import 'package:kibisis/features/setup_account/name_account/name_account_screen.
 import 'package:kibisis/features/setup_account/welcome/welcome_screen.dart';
 import 'package:kibisis/features/send_voi/send_currency_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
+import 'package:kibisis/features/view_asset/view_asset_screen.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -265,6 +266,15 @@ class RouterNotifier extends ChangeNotifier {
               path: addAssetRouteName,
               pageBuilder: (context, state) {
                 return defaultTransitionPage(AddAssetScreen(), state);
+              },
+            ),
+            GoRoute(
+              name: viewAssetRouteName,
+              path: '$viewAssetRouteName/:assetId',
+              pageBuilder: (context, state) {
+                final assetId = state.pathParameters['assetId']!;
+                return defaultTransitionPage(
+                    ViewAssetScreen(assetId: assetId), state);
               },
             ),
             GoRoute(
