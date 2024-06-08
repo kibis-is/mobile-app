@@ -281,7 +281,11 @@ class RouterNotifier extends ChangeNotifier {
               name: sendCurrencyRouteName,
               path: sendCurrencyRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const SendCurrencyScreen(), state);
+                final mode = state.pathParameters['mode'] == 'currency'
+                    ? SendScreenMode.currency
+                    : SendScreenMode.asset;
+                return defaultTransitionPage(
+                    SendCurrencyScreen(mode: mode), state);
               },
             ),
             GoRoute(

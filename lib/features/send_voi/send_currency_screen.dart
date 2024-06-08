@@ -8,8 +8,8 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 
 class SendCurrencyScreen extends ConsumerStatefulWidget {
-  static String title = 'Send Currency';
-  const SendCurrencyScreen({super.key});
+  final SendScreenMode mode;
+  const SendCurrencyScreen({this.mode = SendScreenMode.currency, super.key});
 
   @override
   SendCurrencyScreenState createState() => SendCurrencyScreenState();
@@ -78,7 +78,10 @@ class SendCurrencyScreenState extends ConsumerState<SendCurrencyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(SendCurrencyScreen.title)),
+      appBar: AppBar(
+        title: Text(
+            'Send ${widget.mode == SendScreenMode.currency ? 'Currency' : 'Asset'}'),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Form(

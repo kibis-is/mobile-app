@@ -222,14 +222,14 @@ class DashboardScreen extends ConsumerWidget {
                 color: context.colorScheme.secondary,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(kWidgetRadius),
-                ), // Ensuring it's a perfect circle
+                ),
               ),
               child: IconButton(
                 icon: const Icon(Icons.send),
-                iconSize: kScreenPadding *
-                    2, // You can adjust this size for better visibility
+                iconSize: kScreenPadding * 2,
                 color: context.colorScheme.onPrimary,
-                onPressed: () => GoRouter.of(context).go('/sendCurrency'),
+                onPressed: () =>
+                    GoRouter.of(context).go('/sendCurrency/currency'),
               ),
             ),
           ),

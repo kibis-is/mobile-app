@@ -2,7 +2,10 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
+import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 // For clipboard functionality
@@ -20,6 +23,7 @@ class ViewAssetScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final assetDetails = ref.watch(assetDetailsProvider(assetId));
+    final publicKey = ref.watch(accountProvider).account?.publicAddress ?? '';
 
     return Scaffold(
       appBar: AppBar(
@@ -29,14 +33,14 @@ class ViewAssetScreen extends ConsumerWidget {
         loading: () => const CircularProgressIndicator(),
         error: (e, st) => Text('Error: $e'),
         data: (asset) {
-          return buildAssetDetails(context, asset);
+          return buildAssetDetails(asset);
         },
       ),
-      // bottomNavigationBar: buildBottomNavigationBar(),
+      bottomNavigationBar: buildBottomNavigationBar(context, publicKey),
     );
   }
 
-  Widget buildAssetDetails(BuildContext context, Asset asset) {
+  Widget buildAssetDetails(Asset asset) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(kScreenPadding),
       child: Column(
@@ -99,20 +103,23 @@ class ViewAssetScreen extends ConsumerWidget {
     );
   }
 
-  Widget buildBottomNavigationBar() {
+  Widget buildBottomNavigationBar(BuildContext context, String publicKey) {
     return BottomAppBar(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           ElevatedButton(
-            onPressed: () {
-              // TODO: Implement send functionality
-            },
+            onPressed: () => GoRouter.of(context).push('/sendCurrency/asset'),
             child: const Text('Send'),
           ),
           ElevatedButton(
             onPressed: () {
-              // TODO: Implement receive functionality
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => QrDialog(
+                  qrData: publicKey,
+                ),
+              );
             },
             child: const Text('Receive'),
           ),

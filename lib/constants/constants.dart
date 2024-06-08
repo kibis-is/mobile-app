@@ -13,3 +13,8 @@ enum AccountFlow {
   addNew,
   edit,
 }
+
+enum SendScreenMode {
+  asset,
+  currency,
+}
