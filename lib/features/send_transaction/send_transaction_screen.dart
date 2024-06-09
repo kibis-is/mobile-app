@@ -217,7 +217,7 @@ class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
       showDialog(
         context: context,
         builder: (context) => PinPadDialog(
-          title: 'Enter PIN',
+          title: 'Verify PIN',
           onPinVerified: () async {
             if (mounted) {
               ref.read(loadingProvider.notifier).startLoading();
