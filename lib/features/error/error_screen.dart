@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -17,6 +19,7 @@ class ErrorScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(
               height: kScreenPadding,
@@ -25,6 +28,21 @@ class ErrorScreen extends StatelessWidget {
               errorMessage ??
                   'There was an error. No further details provided.',
               style: context.textTheme.bodySmall,
+            ),
+            const Expanded(
+              child: SizedBox(
+                height: kScreenPadding,
+              ),
+            ),
+            CustomButton(
+              text: 'Back',
+              isFullWidth: true,
+              onPressed: () {
+                GoRouter.of(context).go('/');
+              },
+            ),
+            const SizedBox(
+              height: kScreenPadding,
             ),
           ],
         ),
