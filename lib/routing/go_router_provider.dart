@@ -20,7 +20,7 @@ import 'package:kibisis/features/setup_account/add_account/add_account_screen.da
 import 'package:kibisis/features/setup_account/copy_seed_screen/copy_seed_screen.dart';
 import 'package:kibisis/features/setup_account/name_account/name_account_screen.dart';
 import 'package:kibisis/features/setup_account/welcome/welcome_screen.dart';
-import 'package:kibisis/features/send_voi/send_currency_screen.dart';
+import 'package:kibisis/features/send_transaction/send_transaction_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
 import 'package:kibisis/features/view_asset/view_asset_screen.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
@@ -278,14 +278,14 @@ class RouterNotifier extends ChangeNotifier {
               },
             ),
             GoRoute(
-              name: sendCurrencyRouteName,
-              path: sendCurrencyRouteName,
+              name: sendTransactionRouteName,
+              path: '$sendTransactionRouteName/:mode',
               pageBuilder: (context, state) {
                 final mode = state.pathParameters['mode'] == 'currency'
-                    ? SendScreenMode.currency
-                    : SendScreenMode.asset;
+                    ? SendTransactionScreenMode.currency
+                    : SendTransactionScreenMode.asset;
                 return defaultTransitionPage(
-                    SendCurrencyScreen(mode: mode), state);
+                    SendTransactionScreen(mode: mode), state);
               },
             ),
             GoRoute(

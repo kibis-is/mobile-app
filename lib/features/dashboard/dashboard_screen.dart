@@ -4,12 +4,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
+import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
-import 'package:kibisis/models/network.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
@@ -24,7 +24,7 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final networks = ref.watch(networkProvider).getNetworks();
+    final networks = networkOptions;
     final activeAccountId = ref.watch(activeAccountProvider);
     final storageService = ref.watch(storageProvider);
     final accountStateFuture =
@@ -71,20 +71,20 @@ class DashboardScreen extends ConsumerWidget {
   PreferredSizeWidget _buildAppBar(
       BuildContext context,
       WidgetRef ref,
-      List<Network> networks,
+      List<SelectItem> networks,
       AccountState accountState,
       AlgorandService algorandService) {
     return SplitAppBar(
       leadingWidget: _buildBalanceWidget(
           context, ref, networks, accountState, algorandService),
-      actionWidget: _buildNetworkSelectButton(context, networks),
+      actionWidget: _buildNetworkSelectButton(context, networks, ref),
     );
   }
 
   Widget _buildBalanceWidget(
       BuildContext context,
       WidgetRef ref,
-      List<Network> networks,
+      List<SelectItem> networks,
       AccountState accountState,
       AlgorandService algorandService) {
     return Row(
@@ -123,7 +123,8 @@ class DashboardScreen extends ConsumerWidget {
                           context: context,
                           items: [],
                           header: "Info",
-                          isIcon: true);
+                          isIcon: true,
+                          onPressed: (SelectItem item) {});
                     },
                   ),
                 ],
@@ -139,7 +140,7 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildNetworkSelectButton(
-      BuildContext context, List<Network> networks) {
+      BuildContext context, List<SelectItem> networks, WidgetRef ref) {
     return MaterialButton(
       hoverColor: context.colorScheme.surface,
       color: context.colorScheme.surface,
@@ -149,23 +150,29 @@ class DashboardScreen extends ConsumerWidget {
       onPressed: networks.length > 1
           ? () {
               customBottomSheet(
-                context: context,
-                header: "Select Network",
-                items: networks,
-                hasButton: false,
-                buttonText: "Add Network",
-                buttonOnPressed: () => GoRouter.of(context).go('/addAsset'),
-              );
+                  context: context,
+                  header: "Select Network",
+                  items: networks,
+                  hasButton: false,
+                  buttonText: "Add Network",
+                  buttonOnPressed: () {
+                    GoRouter.of(context).go('/addAsset');
+                  },
+                  onPressed: (SelectItem selectedNetwork) {
+                    ref
+                        .read(networkProvider.notifier)
+                        .setNetwork(selectedNetwork);
+                  });
             }
           : null,
-      child: NetworkSelect(networks: networks),
+      child: const NetworkSelect(),
     );
   }
 
   Widget _buildDashboardInfoPanel(
       BuildContext context,
       WidgetRef ref,
-      List<Network> networks,
+      List<SelectItem> networks,
       Future<String?> accountStateFuture,
       AccountState accountState) {
     return FutureBuilder<String?>(

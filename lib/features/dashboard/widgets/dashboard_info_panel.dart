@@ -2,10 +2,10 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
+import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
 import 'package:kibisis/models/menu_item.dart';
-import 'package:kibisis/models/network.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -18,7 +18,7 @@ class DashboardInfoPanel extends StatelessWidget {
     required this.publicKey,
   });
 
-  final List<Network> networks;
+  final List<SelectItem> networks;
   final AccountState accountState;
   final String publicKey;
 
@@ -69,8 +69,7 @@ class DashboardInfoPanel extends StatelessWidget {
                     items: items,
                     header: "Options",
                     isIcon: true,
-                    onPressed: () {}, // Placeholder for optional action
-                    buttonOnPressed: () {}, // Placeholder for optional button
+                    onPressed: (SelectItem item) {},
                   ).then((value) {
                     if (value == "Copy Address") {
                       copyToClipboard(context, publicKey);

@@ -1,46 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/models/network.dart';
+import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class NetworkSelect extends StatelessWidget {
-  const NetworkSelect({
-    super.key,
-    required this.networks,
-  });
+class NetworkSelect extends ConsumerWidget {
+  const NetworkSelect({super.key});
 
-  final List<Network> networks;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    SelectItem? currentNetwork = ref.watch(networkProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kScreenPadding / 6),
+      child: _NetworkDisplayRow(currentNetwork: currentNetwork),
+    );
+  }
+}
+
+class _NetworkDisplayRow extends StatelessWidget {
+  final SelectItem? currentNetwork;
+
+  const _NetworkDisplayRow({this.currentNetwork});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: kScreenPadding / 6,
-      ),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            networks[0].icon,
-            height: kScreenPadding,
-            colorFilter: ColorFilter.mode(
-                context.colorScheme.onBackground, BlendMode.srcATop),
-          ),
-          const SizedBox(
-            width: kScreenPadding / 2,
-          ),
-          Text(networks[0].name, style: context.textTheme.bodySmall),
-          const SizedBox(
-            width: kScreenPadding / 2,
-          ),
-          networks.length > 1
-              ? Icon(
-                  Icons.arrow_drop_down,
-                  color: context.colorScheme.onSurface,
-                )
-              : Container(),
-        ],
-      ),
+    return Row(
+      children: [
+        SvgPicture.asset(
+          currentNetwork?.icon ?? 'assets/images/default-icon.svg',
+          height: kScreenPadding,
+        ),
+        const SizedBox(width: kScreenPadding / 2),
+        Text(
+          currentNetwork?.name ?? 'No Network',
+          style: context.textTheme.bodySmall,
+        ),
+        const SizedBox(width: kScreenPadding / 2),
+        Icon(Icons.arrow_drop_down, color: context.colorScheme.onSurface),
+      ],
     );
   }
 }

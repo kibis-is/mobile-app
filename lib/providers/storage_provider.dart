@@ -119,6 +119,14 @@ class StorageService {
     return _prefs?.getString('activeAccount');
   }
 
+  String? getDefaultNetwork() {
+    return _prefs?.getString('defaultNetwork');
+  }
+
+  Future<void> setDefaultNetwork(String network) async {
+    _prefs?.setString('defaultNetwork', network);
+  }
+
   Future<void> clearAll() async {
     await _retryOnException(() async {
       if (_prefs == null) {

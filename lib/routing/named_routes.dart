@@ -15,7 +15,7 @@ const String mainImportQrRouteName = 'addAccountImportQr';
 const String editNameAccountRouteName = 'editAccount';
 
 const String walletsRouteName = 'wallets';
-const String sendCurrencyRouteName = 'sendCurrency';
+const String sendTransactionRouteName = 'sendCurrency';
 const String addAssetRouteName = 'addAsset';
 const String addWalletRouteName = 'addWallet';
 const String addNetworkRouteName = 'addNetwork';
