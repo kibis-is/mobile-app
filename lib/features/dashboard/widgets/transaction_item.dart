@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:kibisis/common_widgets/custom_snackbar.dart';
 
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/main.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -33,7 +34,8 @@ class TransactionItem extends ConsumerWidget {
             horizontalTitleGap: kScreenPadding * 2,
             onTap: () {
               Clipboard.setData(ClipboardData(text: transaction.id ?? 'No ID'));
-              ScaffoldMessenger.of(context).showSnackBar(
+
+              rootScaffoldMessengerKey.currentState?.showSnackBar(
                 customSnackbar(
                   context: context,
                   message: 'Transaction ID Copied',

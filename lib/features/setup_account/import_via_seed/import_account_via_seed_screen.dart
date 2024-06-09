@@ -6,6 +6,7 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/main.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 
 class ImportSeedScreen extends ConsumerStatefulWidget {
@@ -154,7 +155,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
           ? '/setup/setupNameAccount'
           : '/addAccount/addAccountNameAccount');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      rootScaffoldMessengerKey.currentState?.showSnackBar(
         customSnackbar(
           context: context,
           message: e.toString(),

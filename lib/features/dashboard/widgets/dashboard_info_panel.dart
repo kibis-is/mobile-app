@@ -5,7 +5,6 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
-import 'package:kibisis/models/menu_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -22,18 +21,21 @@ class DashboardInfoPanel extends StatelessWidget {
   final AccountState accountState;
   final String publicKey;
 
-  List<MenuItem> get items => [
-        MenuItem(
+  List<SelectItem> get items => [
+        SelectItem(
           name: "Copy Address",
-          image: '0xe190',
+          value: 'copy',
+          icon: '0xe190',
         ),
-        MenuItem(
+        SelectItem(
           name: "Share Address",
-          image: '0xe190',
+          value: 'share',
+          icon: '0xe190',
         ),
-        MenuItem(
+        SelectItem(
           name: "Edit",
-          image: '0xe3c9',
+          value: 'edit',
+          icon: '0xe3c9',
         ),
       ];
 

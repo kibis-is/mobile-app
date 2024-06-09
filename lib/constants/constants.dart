@@ -22,9 +22,9 @@ enum SendTransactionScreenMode {
 }
 
 List<SelectItem> timeoutList = [
-  SelectItem(name: '1 minute', value: 60, icon: '0xe3af'),
-  SelectItem(name: '2 minutes', value: 120, icon: '0xe3af'),
-  SelectItem(name: '5 minutes', value: 300, icon: '0xe3af'),
-  SelectItem(name: '10 minutes', value: 600, icon: '0xe3af'),
-  SelectItem(name: '15 minutes', value: 900, icon: '0xe3af'),
+  SelectItem(name: '1 minute', value: "60", icon: '0xe3af'),
+  SelectItem(name: '2 minutes', value: "120", icon: '0xe3af'),
+  SelectItem(name: '5 minutes', value: "300", icon: '0xe3af'),
+  SelectItem(name: '10 minutes', value: "600", icon: '0xe3af'),
+  SelectItem(name: '15 minutes', value: "900", icon: '0xe3af'),
 ];

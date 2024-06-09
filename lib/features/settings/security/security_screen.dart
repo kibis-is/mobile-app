@@ -27,7 +27,7 @@ class SecurityScreen extends ConsumerWidget {
             buildSettingsToggle(ref),
             if (enablePasswordLock) ...[
               const SizedBox(height: kScreenPadding),
-              buildTimeoutDropdown(ref, timeoutSeconds),
+              buildTimeoutDropdown(ref, timeoutSeconds.toString()),
             ],
           ],
         ),
@@ -42,7 +42,7 @@ class SecurityScreen extends ConsumerWidget {
     );
   }
 
-  Widget buildTimeoutDropdown(WidgetRef ref, int timeoutSeconds) {
+  Widget buildTimeoutDropdown(WidgetRef ref, String timeoutSeconds) {
     return CustomDropDown(
       label: 'Timeout',
       items: timeoutList,
@@ -52,7 +52,13 @@ class SecurityScreen extends ConsumerWidget {
       ),
       onChanged: (SelectItem? newValue) {
         if (newValue != null) {
-          ref.read(lockTimeoutProvider.notifier).setTimeout(newValue.value);
+          final int timeoutSeconds;
+          try {
+            timeoutSeconds = int.parse(newValue.value);
+          } on Exception {
+            return;
+          }
+          ref.read(lockTimeoutProvider.notifier).setTimeout(timeoutSeconds);
         }
       },
     );

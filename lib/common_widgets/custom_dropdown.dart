@@ -4,7 +4,7 @@ import 'package:kibisis/utils/theme_extensions.dart';
 
 class SelectItem {
   final String name;
-  final int value;
+  final String value;
   final String icon;
 
   SelectItem({required this.name, required this.value, required this.icon});

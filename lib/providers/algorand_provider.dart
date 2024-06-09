@@ -202,7 +202,6 @@ class AlgorandService {
     }
   }
 
-  // Transfer an asset
   Future<void> transferAsset(int assetId, Account senderAccount,
       String receiverAddress, int amount) async {
     try {
@@ -213,9 +212,19 @@ class AlgorandService {
         amount: amount,
       );
     } catch (e) {
-      debugPrint("Failed to transfer asset: $e");
-      throw Exception("Failed to transfer asset: $e");
+      debugPrint("Failed to transfer asset: ${e.toString()}");
+      if (e is AlgorandException) {
+        debugPrint("AlgorandException Details: ${e.message}");
+      }
+      throw Exception("Failed to transfer asset: ${e.toString()}");
     }
+  }
+
+  String parseAlgorandException(AlgorandException e) {
+    if (e.message.contains('frozen')) {
+      return 'The asset you are trying to send is frozen and cannot be transferred.';
+    }
+    return e.toString();
   }
 
   // Freeze an asset

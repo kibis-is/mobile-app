@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
+import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/main.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
@@ -180,8 +182,13 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
       _navigateToWallets();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete account: $e')),
+
+      rootScaffoldMessengerKey.currentState?.showSnackBar(
+        customSnackbar(
+          context: context,
+          message: 'Failed to delete account: $e',
+          snackType: SnackType.error,
+        ),
       );
     }
   }

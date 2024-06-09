@@ -69,7 +69,7 @@ Widget _buildItemList(
 
 Widget _buildListItem(
   BuildContext context,
-  dynamic item,
+  SelectItem item,
   bool isIcon,
   Function(SelectItem) onPressed,
 ) {

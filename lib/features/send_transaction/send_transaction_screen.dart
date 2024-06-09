@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
+import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/main.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -23,7 +26,7 @@ final selectedAssetProvider = StateProvider<SelectItem?>((ref) {
   final mode = ref.watch(sendTransactionScreenModeProvider);
 
   if (items.isEmpty) {
-    return SelectItem(name: 'No Items', value: -1, icon: '0xe3af');
+    return SelectItem(name: 'No Items', value: "-1", icon: '0xe3af');
   }
   if (mode == SendTransactionScreenMode.currency) {
     return items[0];
@@ -84,7 +87,7 @@ class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
     List<SelectItem> combinedList = assets.map((asset) {
       return SelectItem(
           name: asset.name ?? 'Unnamed Asset',
-          value: asset.assetId,
+          value: asset.assetId.toString(),
           icon: '0xf02b2');
     }).toList();
 
@@ -94,7 +97,7 @@ class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
       network ??
           SelectItem(
             name: 'No Network',
-            value: -1,
+            value: "-1",
             icon: '0xe3af',
           ),
     );
@@ -134,7 +137,7 @@ class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
     return null;
   }
 
-  Future<void> _sendCurrency(WidgetRef ref) async {
+  Future<void> _executeTransaction(WidgetRef ref) async {
     if (!_formKey.currentState!.validate()) return;
 
     ref.read(loadingProvider.notifier).startLoading();
@@ -142,30 +145,67 @@ class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
       final account = ref.read(accountProvider).account;
       double amountInAlgos = double.parse(amountController.text);
 
-      final txId = await ref.read(algorandServiceProvider).sendCurrency(
-          account!,
-          recipientAddressController.text,
-          amountInAlgos,
-          noteController.text);
+      final selectedItem = ref.read(selectedAssetProvider);
+      if (selectedItem == null) {
+        throw Exception("No item selected for the transaction.");
+      }
 
-      if (txId.isNotEmpty && txId != 'error') {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Transaction successful: $txId')),
-          );
+      if (selectedItem.value.startsWith("network")) {
+        final txId = await ref.read(algorandServiceProvider).sendCurrency(
+            account!,
+            recipientAddressController.text,
+            amountInAlgos,
+            noteController.text);
+
+        if (txId.isNotEmpty && txId != 'error') {
+          _showSuccessSnackbar(txId);
+        } else {
+          throw Exception('Transaction failed');
         }
       } else {
-        throw Exception('Transaction failed');
+        await ref.read(algorandServiceProvider).transferAsset(
+            int.parse(selectedItem.value),
+            account!,
+            recipientAddressController.text,
+            int.parse(amountController.text));
+
+        _showSuccessSnackbar("Asset transfer successful.");
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+      if (e is AlgorandException) {
+        String userFriendlyMessage =
+            ref.read(algorandServiceProvider).parseAlgorandException(e);
+        _showErrorSnackbar(userFriendlyMessage);
       }
+
+      _showErrorSnackbar(e.toString());
       debugPrint('Transaction error: $e');
     } finally {
       ref.read(loadingProvider.notifier).stopLoading();
+    }
+  }
+
+  void _showSuccessSnackbar(String message) {
+    if (mounted) {
+      rootScaffoldMessengerKey.currentState?.showSnackBar(
+        customSnackbar(
+          context: context,
+          message: 'Transaction successful: $message',
+          snackType: SnackType.success,
+        ),
+      );
+    }
+  }
+
+  void _showErrorSnackbar(String message) {
+    if (mounted) {
+      rootScaffoldMessengerKey.currentState?.showSnackBar(
+        customSnackbar(
+          context: context,
+          message: 'Error: $message',
+          snackType: SnackType.error,
+        ),
+      );
     }
   }
 
@@ -182,7 +222,7 @@ class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
             if (mounted) {
               ref.read(loadingProvider.notifier).startLoading();
             }
-            await _sendCurrency(ref);
+            await _executeTransaction(ref);
             if (mounted) {
               ref.read(loadingProvider.notifier).stopLoading();
             }

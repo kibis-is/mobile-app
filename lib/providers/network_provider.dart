@@ -5,9 +5,14 @@ import 'package:kibisis/providers/storage_provider.dart';
 
 // Network options
 final List<SelectItem> networkOptions = [
-  SelectItem(name: 'VOI', value: 0, icon: 'assets/images/voi-asset-icon.svg'),
   SelectItem(
-      name: 'Algorand', value: 1, icon: 'assets/images/algorand-logo.svg'),
+      name: 'VOI',
+      value: "network-voi",
+      icon: 'assets/images/voi-asset-icon.svg'),
+  SelectItem(
+      name: 'Algorand',
+      value: "network-algorand",
+      icon: 'assets/images/algorand-logo.svg'),
 ];
 
 final networkProvider =

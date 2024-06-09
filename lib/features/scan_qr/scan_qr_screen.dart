@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/main.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -103,7 +104,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           throw Exception('Invalid QR code format');
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        rootScaffoldMessengerKey.currentState?.showSnackBar(
           customSnackbar(
             context: context,
             message: e.toString(),
