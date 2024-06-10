@@ -31,14 +31,17 @@ class _NetworkDisplayRow extends StatelessWidget {
       children: [
         SvgPicture.asset(
           currentNetwork?.icon ?? 'assets/images/default-icon.svg',
-          height: kScreenPadding,
+          height: 12,
+          semanticsLabel: currentNetwork?.name ?? 'No Network',
+          colorFilter: ColorFilter.mode(
+              context.colorScheme.onSurface, BlendMode.srcATop),
         ),
         const SizedBox(width: kScreenPadding / 2),
         Text(
           currentNetwork?.name ?? 'No Network',
-          style: context.textTheme.bodySmall,
+          style: context.textTheme.bodySmall
+              ?.copyWith(color: context.colorScheme.onSurface),
         ),
-        const SizedBox(width: kScreenPadding / 2),
         Icon(Icons.arrow_drop_down, color: context.colorScheme.onSurface),
       ],
     );
