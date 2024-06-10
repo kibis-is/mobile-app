@@ -136,7 +136,8 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
           const EdgeInsets.only(left: kScreenPadding, bottom: kScreenPadding),
       alignment: Alignment.centerRight,
       child: IconButton(
-        icon: Icon(Icons.edit, color: context.colorScheme.onSecondary),
+        icon:
+            const Icon(Icons.edit, color: ColorPalette.darkThemeAntiflashWhite),
         onPressed: () {
           _navigateToEditAccount(accountId, accountName);
         },
