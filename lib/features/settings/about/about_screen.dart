@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class AboutScreen extends StatelessWidget {
   static String title = 'About';
@@ -11,12 +12,28 @@ class AboutScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: kScreenPadding),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: kScreenPadding,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'App Version:',
+                  style: context.textTheme.displayMedium,
+                ),
+                const SizedBox(
+                  width: kScreenPadding,
+                ),
+                Text(
+                  kVersionNumber,
+                  style: context.textTheme.displayMedium,
+                ),
+              ],
             ),
           ],
         ),
