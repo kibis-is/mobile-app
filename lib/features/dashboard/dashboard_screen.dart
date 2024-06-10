@@ -156,6 +156,7 @@ class DashboardScreen extends ConsumerWidget {
     return MaterialButton(
       hoverColor: context.colorScheme.surface,
       color: context.colorScheme.surface,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(kScreenPadding / 2),
       ),
