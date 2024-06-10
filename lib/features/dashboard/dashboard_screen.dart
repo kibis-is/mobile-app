@@ -218,31 +218,35 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
         Positioned(
-          top: -kScreenPadding * 2,
+          bottom: -kWidgetRadius,
           left: 0,
           right: 0,
           child: Align(
             alignment: Alignment.center,
-            child: Container(
-              width: kScreenPadding * 5,
-              height: kScreenPadding * 5,
-              decoration: BoxDecoration(
-                color: context.colorScheme.secondary,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(kWidgetRadius),
-                ),
+            child: InkWell(
+              onTap: () => context.goNamed(
+                sendTransactionRouteName,
+                pathParameters: {
+                  'mode': 'currency',
+                },
               ),
-              child: IconButton(
-                icon: const Icon(Icons.send),
-                iconSize: kScreenPadding * 2,
-                color: context.colorScheme.onPrimary,
-                onPressed: () => context.goNamed(
-                  sendTransactionRouteName,
-                  pathParameters: {
-                    'mode': 'currency',
-                  },
+              borderRadius: const BorderRadius.all(
+                Radius.circular(kWidgetRadius),
+              ),
+              child: Ink(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.secondary,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(kWidgetRadius),
+                  ),
                 ),
-                //                  GoRouter.of(context).go('/sendTransaction/currency'),
+                child: Icon(
+                  Icons.send,
+                  size: kScreenPadding * 2,
+                  color: context.colorScheme.onPrimary,
+                ),
               ),
             ),
           ),
