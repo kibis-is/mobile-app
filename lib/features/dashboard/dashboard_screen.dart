@@ -57,7 +57,6 @@ class DashboardScreen extends ConsumerWidget {
                     DashboardTabController(tabs: tabs, assets: const []),
               ),
             ),
-            const SizedBox(height: kScreenPadding),
             _buildBottomNavigationBar(context),
           ],
         ),
@@ -210,26 +209,28 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.bottomCenter,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              color: context.colorScheme.onBackground,
-              onPressed: () => GoRouter.of(context).go('/settings'),
-            ),
-            IconButton(
-              icon: const Icon(Icons.account_balance_wallet),
-              color: context.colorScheme.onBackground,
-              onPressed: () => GoRouter.of(context).push('/wallets'),
-            ),
-          ],
-        ),
-      ],
+    return Container(
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.bottomCenter,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.settings),
+                color: context.colorScheme.onBackground,
+                onPressed: () => GoRouter.of(context).go('/settings'),
+              ),
+              IconButton(
+                icon: const Icon(Icons.account_balance_wallet),
+                color: context.colorScheme.onBackground,
+                onPressed: () => GoRouter.of(context).push('/wallets'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
