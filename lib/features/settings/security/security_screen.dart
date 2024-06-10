@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/settings_toggle.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/features/settings/providers/settings_providers.dart';
+import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 
 class SecurityScreen extends ConsumerWidget {
   static const String title = 'Security';
@@ -12,8 +13,8 @@ class SecurityScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timeoutSeconds = ref.watch(lockTimeoutProvider);
-    final enablePasswordLock = ref.watch(enablePasswordLockProvider);
+    ref.watch(lockTimeoutProvider);
+    final enablePinLock = ref.watch(pinLockStateAdapter);
 
     return Scaffold(
       appBar: AppBar(
@@ -25,9 +26,9 @@ class SecurityScreen extends ConsumerWidget {
           children: [
             const SizedBox(height: kScreenPadding),
             buildSettingsToggle(ref),
-            if (enablePasswordLock) ...[
+            if (enablePinLock) ...[
               const SizedBox(height: kScreenPadding),
-              buildTimeoutDropdown(ref, timeoutSeconds.toString()),
+              buildTimeoutDropdown(ref),
             ],
           ],
         ),
@@ -38,16 +39,21 @@ class SecurityScreen extends ConsumerWidget {
   Widget buildSettingsToggle(WidgetRef ref) {
     return SettingsToggle(
       title: 'Enable Password Lock',
-      provider: enablePasswordLockProvider,
+      provider: pinLockStateAdapter,
+      onChanged: () {
+        final storage = ref.read(storageProvider);
+        storage.setTimeoutEnabled(ref.read(pinLockStateAdapter));
+      },
     );
   }
 
-  Widget buildTimeoutDropdown(WidgetRef ref, String timeoutSeconds) {
+  Widget buildTimeoutDropdown(WidgetRef ref) {
+    final timeoutSeconds = ref.watch(lockTimeoutProvider);
     return CustomDropDown(
       label: 'Timeout',
       items: timeoutList,
       selectedValue: timeoutList.firstWhere(
-        (item) => item.value == timeoutSeconds,
+        (item) => item.value == timeoutSeconds.toString(),
         orElse: () => timeoutList.first,
       ),
       onChanged: (SelectItem? newValue) {
@@ -59,6 +65,8 @@ class SecurityScreen extends ConsumerWidget {
             return;
           }
           ref.read(lockTimeoutProvider.notifier).setTimeout(timeoutSeconds);
+          final storage = ref.read(storageProvider);
+          storage.setLockTimeout(ref.read(lockTimeoutProvider));
         }
       },
     );

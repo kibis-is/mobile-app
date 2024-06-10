@@ -27,6 +27,7 @@ class AdvancedScreen extends StatelessWidget {
               title: 'Allow Mainnet Networks',
               provider: allowMainNetNetworksProvider,
               description: 'Let MainNet networks appear in the networks list.',
+              onChanged: () {},
             ),
             const SizedBox(
               height: kScreenPadding,
@@ -36,6 +37,7 @@ class AdvancedScreen extends StatelessWidget {
               provider: allowBetaNetNetworksProvider,
               description:
                   'Let the BetaNet networks appear in the networks list.',
+              onChanged: () {},
             ),
             const SizedBox(
               height: kScreenPadding,
@@ -45,6 +47,7 @@ class AdvancedScreen extends StatelessWidget {
               provider: allowDIDTokenFormatInAddressSharingProvider,
               description:
                   'The DID token format “did algo:<public_address>” will be an option when sharing an address.',
+              onChanged: () {},
             ),
           ],
         ),

@@ -207,6 +207,22 @@ class StorageService {
     return _prefs?.getInt('lockTimeout');
   }
 
+  Future<void> setTimeoutEnabled(bool isEnabled) async {
+    await _prefs?.setBool('timeoutEnabled', isEnabled);
+  }
+
+  bool? getTimeoutEnabled() {
+    return _prefs?.getBool('timeoutEnabled');
+  }
+
+  Future<void> setIsDarkMode(bool isDarkMode) async {
+    await _prefs?.setBool('isDarkMode', isDarkMode);
+  }
+
+  bool? getIsDarkMode() {
+    return _prefs?.getBool('isDarkMode');
+  }
+
   Future<void> initialize() async {
     await SharedPreferences.getInstance();
     await const FlutterSecureStorage().readAll();

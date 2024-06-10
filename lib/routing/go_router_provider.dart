@@ -13,6 +13,7 @@ import 'package:kibisis/features/settings/about/about_screen.dart';
 import 'package:kibisis/features/settings/advanced/advanced_screen.dart';
 import 'package:kibisis/features/settings/appearance/appearance_screen.dart';
 import 'package:kibisis/features/settings/general/general_screen.dart';
+import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
 import 'package:kibisis/features/settings/security/security_screen.dart';
 import 'package:kibisis/features/settings/sessions/sessions_screen.dart';
 import 'package:kibisis/features/settings/settings_screen.dart';
@@ -59,13 +60,13 @@ class RouterNotifier extends ChangeNotifier {
       (_, __) => notifyListeners(),
     );
   }
-
   Future<String?> _redirectLogic(
       BuildContext context, GoRouterState state) async {
     final container = ProviderScope.containerOf(context);
 
     final isSetupComplete = container.read(setupCompleteProvider);
     final isAuthenticated = container.read(isAuthenticatedProvider);
+    final isPasswordLockEnabled = container.read(pinLockProvider);
 
     bool hasAccount = await container.read(storageProvider).accountExists();
 
@@ -79,11 +80,12 @@ class RouterNotifier extends ChangeNotifier {
       return '/setup';
     } else if (hasAccount &&
         !isAuthenticated &&
+        isPasswordLockEnabled &&
         !state.uri.toString().startsWith('/pinPadUnlock')) {
       debugPrint('redirect to /pinPadUnlock');
       return '/pinPadUnlock';
     } else if (hasAccount &&
-        isAuthenticated &&
+        (isAuthenticated || !isPasswordLockEnabled) &&
         (state.uri.toString().startsWith('/setup') ||
             state.uri.toString().startsWith('/pinPad'))) {
       debugPrint('redirect to /');

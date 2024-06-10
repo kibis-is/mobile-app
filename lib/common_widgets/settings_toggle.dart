@@ -7,11 +7,13 @@ class SettingsToggle extends ConsumerWidget {
   final String title;
   final StateProvider<bool> provider;
   final String? description;
+  final VoidCallback onChanged;
 
   const SettingsToggle({
     super.key,
     required this.title,
     required this.provider,
+    required this.onChanged,
     this.description,
   });
 
@@ -25,11 +27,13 @@ class SettingsToggle extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-                child: Text(title, style: context.textTheme.displayMedium)),
+              child: Text(title, style: context.textTheme.displayMedium),
+            ),
             Switch(
               value: isSwitchedOn,
               onChanged: (newValue) {
                 ref.read(provider.notifier).state = newValue;
+                onChanged();
               },
             ),
           ],
