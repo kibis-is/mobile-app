@@ -56,11 +56,18 @@ class AssetsTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            'assets/images/empty.svg',
-            semanticsLabel: 'Kibisis Logo',
-            fit: BoxFit.fitHeight,
-            width: MediaQuery.of(context).size.width / 4,
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width / 4,
+              maxHeight: MediaQuery.of(context).size.height / 4,
+            ),
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: SvgPicture.asset(
+                'assets/images/empty.svg',
+                semanticsLabel: 'No Assets Found',
+              ),
+            ),
           ),
           const SizedBox(height: kScreenPadding / 2),
           Text('No Assets Found', style: context.textTheme.titleMedium),
@@ -145,8 +152,9 @@ class AssetListItem extends StatelessWidget {
         children: <Widget>[
           Text(
             asset.amount.toString(),
-            style: context.textTheme.titleSmall
-                ?.copyWith(color: context.colorScheme.secondary),
+            style: context.textTheme.titleSmall?.copyWith(
+                color: context.colorScheme.secondary,
+                fontWeight: FontWeight.bold),
           ),
           const Icon(Icons.arrow_forward_ios),
         ],
