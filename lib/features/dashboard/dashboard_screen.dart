@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
+import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
@@ -61,6 +62,16 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
       ),
+      floatingActionButton: CustomFloatingActionButton(
+        icon: Icons.send,
+        onPressed: () => context.goNamed(
+          sendTransactionRouteName,
+          pathParameters: {
+            'mode': 'currency',
+          },
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -200,6 +211,7 @@ class DashboardScreen extends ConsumerWidget {
   Widget _buildBottomNavigationBar(BuildContext context) {
     return Stack(
       clipBehavior: Clip.none,
+      alignment: Alignment.bottomCenter,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,47 +221,12 @@ class DashboardScreen extends ConsumerWidget {
               color: context.colorScheme.onBackground,
               onPressed: () => GoRouter.of(context).go('/settings'),
             ),
-            Container(width: 80), // Invisible placeholder for alignment
             IconButton(
               icon: const Icon(Icons.account_balance_wallet),
               color: context.colorScheme.onBackground,
               onPressed: () => GoRouter.of(context).push('/wallets'),
             ),
           ],
-        ),
-        Positioned(
-          bottom: -kWidgetRadius,
-          left: 0,
-          right: 0,
-          child: Align(
-            alignment: Alignment.center,
-            child: InkWell(
-              onTap: () => context.goNamed(
-                sendTransactionRouteName,
-                pathParameters: {
-                  'mode': 'currency',
-                },
-              ),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(kWidgetRadius),
-              ),
-              child: Ink(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  color: context.colorScheme.secondary,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(kWidgetRadius),
-                  ),
-                ),
-                child: Icon(
-                  Icons.send,
-                  size: kScreenPadding * 2,
-                  color: context.colorScheme.onPrimary,
-                ),
-              ),
-            ),
-          ),
         ),
       ],
     );
