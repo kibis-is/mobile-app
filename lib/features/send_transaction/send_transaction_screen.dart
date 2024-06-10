@@ -8,6 +8,7 @@ import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/main.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
@@ -21,31 +22,20 @@ final sendTransactionScreenModeProvider =
   return SendTransactionScreenMode.currency;
 });
 
-final selectedAssetProvider = StateProvider<SelectItem?>((ref) {
-  final items = ref.watch(dropdownItemsProvider);
-  final mode = ref.watch(sendTransactionScreenModeProvider);
-
-  if (items.isEmpty) {
-    return SelectItem(name: 'No Items', value: "-1", icon: '0xe3af');
-  }
-  if (mode == SendTransactionScreenMode.currency) {
-    return items[0];
-  } else if (mode == SendTransactionScreenMode.asset && items.length > 1) {
-    return items[1];
-  }
-  return items[0];
-});
-
 class SendTransactionScreen extends ConsumerStatefulWidget {
   final SendTransactionScreenMode mode;
-  const SendTransactionScreen(
-      {this.mode = SendTransactionScreenMode.currency, super.key});
+  final int? assetId;
+  const SendTransactionScreen({
+    this.assetId,
+    this.mode = SendTransactionScreenMode.currency,
+    super.key,
+  });
 
   @override
-  SendCurrencyScreenState createState() => SendCurrencyScreenState();
+  SendTransactionScreenState createState() => SendTransactionScreenState();
 }
 
-class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
+class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   final TextEditingController amountController =
       TextEditingController(text: '0');
   final TextEditingController recipientAddressController =
@@ -75,6 +65,8 @@ class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
     final items = await _getAssetsAndCurrenciesAsList(ref);
     if (mounted) {
       ref.read(dropdownItemsProvider.notifier).state = items;
+      ref.read(selectedAssetProvider.notifier).selectAsset(
+          items: items, assetId: widget.assetId, mode: widget.mode);
     }
   }
 
@@ -279,7 +271,7 @@ class SendCurrencyScreenState extends ConsumerState<SendTransactionScreen> {
       selectedValue: ref.watch(selectedAssetProvider),
       onChanged: (SelectItem? newValue) {
         if (newValue != null) {
-          ref.read(selectedAssetProvider.notifier).state = newValue;
+          ref.read(selectedAssetProvider.notifier).setAsset(newValue);
         }
       },
     );

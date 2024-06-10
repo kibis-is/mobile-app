@@ -278,6 +278,24 @@ class RouterNotifier extends ChangeNotifier {
               },
             ),
             GoRoute(
+              name: sendTransactionWithAssetIdRouteName,
+              path: '$sendTransactionWithAssetIdRouteName/:mode/:assetId',
+              pageBuilder: (context, state) {
+                final mode = state.pathParameters['mode'] == 'currency'
+                    ? SendTransactionScreenMode.currency
+                    : SendTransactionScreenMode.asset;
+                final assetId = mode == SendTransactionScreenMode.asset
+                    ? int.tryParse(state.pathParameters['assetId'] ?? '0')
+                    : null;
+                return defaultTransitionPage(
+                    SendTransactionScreen(
+                      mode: mode,
+                      assetId: assetId,
+                    ),
+                    state);
+              },
+            ),
+            GoRoute(
               name: sendTransactionRouteName,
               path: '$sendTransactionRouteName/:mode',
               pageBuilder: (context, state) {
@@ -285,7 +303,10 @@ class RouterNotifier extends ChangeNotifier {
                     ? SendTransactionScreenMode.currency
                     : SendTransactionScreenMode.asset;
                 return defaultTransitionPage(
-                    SendTransactionScreen(mode: mode), state);
+                    SendTransactionScreen(
+                      mode: mode,
+                    ),
+                    state);
               },
             ),
             GoRoute(

@@ -7,8 +7,8 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
-// For clipboard functionality
 
 final assetDetailsProvider =
     FutureProvider.family<Asset, String>((ref, assetId) async {
@@ -30,25 +30,23 @@ class ViewAssetScreen extends ConsumerWidget {
         title: const Text('Asset Details'),
       ),
       body: assetDetails.when(
-        loading: () => const CircularProgressIndicator(),
-        error: (e, st) => Text('Error: $e'),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, st) => Center(child: Text('Error: $e')),
         data: (asset) {
-          return buildAssetDetails(asset);
+          return _buildAssetDetails(asset);
         },
       ),
-      bottomNavigationBar: buildBottomNavigationBar(context, publicKey),
+      bottomNavigationBar: _buildBottomNavigationBar(context, publicKey),
     );
   }
 
-  Widget buildAssetDetails(Asset asset) {
+  Widget _buildAssetDetails(Asset asset) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(kScreenPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: kScreenPadding,
-          ),
+          const SizedBox(height: kScreenPadding),
           AssetDetail(
             text: 'Asset Name',
             value: asset.params.name ?? 'Unnamed Asset',
@@ -103,13 +101,19 @@ class ViewAssetScreen extends ConsumerWidget {
     );
   }
 
-  Widget buildBottomNavigationBar(BuildContext context, String publicKey) {
+  Widget _buildBottomNavigationBar(BuildContext context, String publicKey) {
     return BottomAppBar(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           ElevatedButton(
-            onPressed: () => GoRouter.of(context).push('/sendCurrency/asset'),
+            onPressed: () => context.pushNamed(
+              sendTransactionWithAssetIdRouteName,
+              pathParameters: {
+                'mode': 'asset',
+                'assetId': assetId,
+              },
+            ),
             child: const Text('Send'),
           ),
           ElevatedButton(

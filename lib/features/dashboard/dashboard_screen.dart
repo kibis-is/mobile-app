@@ -16,6 +16,7 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -235,8 +236,13 @@ class DashboardScreen extends ConsumerWidget {
                 icon: const Icon(Icons.send),
                 iconSize: kScreenPadding * 2,
                 color: context.colorScheme.onPrimary,
-                onPressed: () =>
-                    GoRouter.of(context).go('/sendCurrency/currency'),
+                onPressed: () => context.goNamed(
+                  sendTransactionRouteName,
+                  pathParameters: {
+                    'mode': 'currency',
+                  },
+                ),
+                //                  GoRouter.of(context).go('/sendTransaction/currency'),
               ),
             ),
           ),
