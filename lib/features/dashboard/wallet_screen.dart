@@ -77,45 +77,49 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
   Widget _buildAccountItem(BuildContext context, Map<String, dynamic> account,
       String accountName, String publicKey) {
     return InkWell(
-      child: Container(
-        decoration: BoxDecoration(
-          image: const DecorationImage(
-            opacity: 0.2,
-            image: AssetImage('assets/images/voi-logo.png'),
-            fit: BoxFit.cover,
-          ),
-          border: GradientBoxBorder(
-            gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [Colors.transparent, Colors.white.withOpacity(0.5)],
+      child: Material(
+        elevation: 6.0,
+        borderRadius: BorderRadius.circular(kScreenPadding),
+        child: Container(
+          decoration: BoxDecoration(
+            image: const DecorationImage(
+              opacity: 0.2,
+              image: AssetImage('assets/images/voi-logo.png'),
+              fit: BoxFit.cover,
             ),
-            width: 1,
+            border: GradientBoxBorder(
+              gradient: LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                colors: [Colors.transparent, Colors.white.withOpacity(0.5)],
+              ),
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(kScreenPadding),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0.0, 0.5],
+              colors: [
+                ColorPalette.cardGradientTurquoiseA,
+                ColorPalette.cardGradientPurpleB,
+              ],
+            ),
           ),
-          borderRadius: BorderRadius.circular(kScreenPadding),
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.0, 0.5],
-            colors: [
-              ColorPalette.cardGradientTurquoiseA,
-              ColorPalette.cardGradientPurpleB,
+          padding: const EdgeInsets.all(kScreenPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildEditButton(context, account['accountId']!, accountName),
+              const SizedBox(height: kScreenPadding),
+              _buildLogo(),
+              const SizedBox(height: kScreenPadding / 2),
+              _buildAccountName(context, accountName),
+              const SizedBox(height: kScreenPadding / 2),
+              _buildPublicKey(context, publicKey),
+              _buildAccountBalance(context),
             ],
           ),
-        ),
-        padding: const EdgeInsets.all(kScreenPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildEditButton(context, account['accountId']!, accountName),
-            const SizedBox(height: kScreenPadding),
-            _buildLogo(),
-            const SizedBox(height: kScreenPadding / 2),
-            _buildAccountName(context, accountName),
-            const SizedBox(height: kScreenPadding / 2),
-            _buildPublicKey(context, publicKey),
-            _buildAccountBalance(context),
-          ],
         ),
       ),
       onTap: () async {
