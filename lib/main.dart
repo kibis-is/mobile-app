@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_snackbar.dart';
-import 'package:kibisis/features/settings/providers/settings_providers.dart';
+import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -64,7 +64,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           final router = ref.watch(goRouterProvider);
-          final isDarkTheme = ref.watch(isDarkModeProvider);
+          final isDarkTheme = ref.watch(isDarkModeStateAdapter);
           final isLoading = ref.watch(loadingProvider);
 
           return MaterialApp.router(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/settings_toggle.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/features/settings/providers/settings_providers.dart';
+import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
 class AppearanceScreen extends ConsumerWidget {
@@ -24,10 +24,10 @@ class AppearanceScreen extends ConsumerWidget {
             ),
             SettingsToggle(
               title: 'Dark Mode',
-              provider: isDarkModeProvider,
+              provider: isDarkModeStateAdapter,
               onChanged: () {
                 final storage = ref.read(storageProvider);
-                storage.setIsDarkMode(ref.read(isDarkModeProvider));
+                storage.setIsDarkMode(ref.read(isDarkModeStateAdapter));
               },
             ),
           ],
