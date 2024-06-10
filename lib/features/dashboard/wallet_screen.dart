@@ -128,6 +128,8 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
   Widget _buildEditButton(
       BuildContext context, String accountId, String accountName) {
     return Container(
+      padding:
+          const EdgeInsets.only(left: kScreenPadding, bottom: kScreenPadding),
       alignment: Alignment.centerRight,
       child: IconButton(
         icon: Icon(Icons.edit, color: context.colorScheme.onSecondary),
@@ -156,8 +158,8 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
         ),
         borderRadius: BorderRadius.circular(kScreenPadding / 4),
       ),
-      width: 32,
-      height: 24,
+      width: kScreenPadding * 3,
+      height: kScreenPadding * 2,
       child: SvgPicture.asset(
         'assets/images/kibisis-logo-light.svg',
         semanticsLabel: 'Kibisis Logo',
@@ -168,11 +170,12 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
   }
 
   Widget _buildAccountName(BuildContext context, String accountName) {
-    return Text(
-      accountName,
-      style:
-          context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-    );
+    return Text(accountName,
+        style: context.textTheme.titleLarge
+            ?.copyWith(fontWeight: FontWeight.bold)
+            .copyWith(
+              color: ColorPalette.darkThemeAntiflashWhite,
+            ));
   }
 
   Widget _buildPublicKey(BuildContext context, String publicKey) {
@@ -182,6 +185,7 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
       publicKey,
       style: context.textTheme.titleSmall?.copyWith(
         fontWeight: FontWeight.bold,
+        color: ColorPalette.darkThemeAntiflashWhite,
       ),
     );
   }
@@ -195,7 +199,7 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
           Text(
             '0.0',
             style: context.textTheme.bodyLarge?.copyWith(
-              color: context.colorScheme.secondary,
+              color: ColorPalette.darkThemeKeppel,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -203,7 +207,7 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
             'assets/images/voi-asset-icon.svg',
             colorFilter: ColorFilter.mode(
                 context.colorScheme.secondary, BlendMode.srcATop),
-            height: 16,
+            height: kScreenPadding,
           ),
         ],
       ),
