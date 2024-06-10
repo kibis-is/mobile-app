@@ -18,7 +18,7 @@ class CustomTab extends StatelessWidget {
         borderRadius:
             BorderRadius.circular(kWidgetRadius), // Set rounded corners
       ),
-      child: Tab(text: text),
+      child: Tab(child: Text(text, style: const TextStyle(letterSpacing: 1.5))),
     );
   }
 }
