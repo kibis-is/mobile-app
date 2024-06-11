@@ -28,12 +28,9 @@ class NftTab extends StatelessWidget {
               maxWidth: MediaQuery.of(context).size.width / 4,
               maxHeight: MediaQuery.of(context).size.height / 4,
             ),
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: SvgPicture.asset(
-                'assets/images/empty.svg',
-                semanticsLabel: 'No NFTs Found',
-              ),
+            child: SvgPicture.asset(
+              'assets/images/empty.svg',
+              semanticsLabel: 'No NFTs Found',
             ),
           ),
           const SizedBox(height: kScreenPadding / 2),

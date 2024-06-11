@@ -72,12 +72,9 @@ class ActivityTab extends ConsumerWidget {
               maxWidth: MediaQuery.of(context).size.width / 4,
               maxHeight: MediaQuery.of(context).size.height / 4,
             ),
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: SvgPicture.asset(
-                'assets/images/empty.svg',
-                semanticsLabel: 'No Transactions Found',
-              ),
+            child: SvgPicture.asset(
+              'assets/images/empty.svg',
+              semanticsLabel: 'No Transactions Found',
             ),
           ),
           const SizedBox(height: kScreenPadding / 2),
