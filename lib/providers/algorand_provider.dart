@@ -113,6 +113,61 @@ class AlgorandService {
     }
   }
 
+  Future<SearchAssetsResponse> getAssets(
+      String searchQuery,
+      double currencyIsLessThan,
+      double currencyIsGreaterThan,
+      int searchLimit) async {
+    try {
+      final maxCurrencyValue = currencyIsGreaterThan.isFinite &&
+              currencyIsGreaterThan < double.maxFinite
+          ? currencyIsGreaterThan
+          : 1e15; // Use a high but reasonable value
+
+      // Logging the input values for debugging
+      debugPrint('getAssets called with:');
+      debugPrint('searchQuery: $searchQuery');
+      debugPrint('currencyIsLessThan: $currencyIsLessThan');
+      debugPrint('currencyIsGreaterThan: $maxCurrencyValue');
+      debugPrint('searchLimit: $searchLimit');
+
+      var assetsQuery = algorand
+          .indexer()
+          .assets()
+          .whereCurrencyIsLessThan(Algo.toMicroAlgos(currencyIsLessThan))
+          .whereCurrencyIsGreaterThan(Algo.toMicroAlgos(maxCurrencyValue));
+
+      if (int.tryParse(searchQuery) != null) {
+        assetsQuery = assetsQuery.whereAssetId(int.parse(searchQuery));
+      } else if (_isValidAlgorandAddress(searchQuery)) {
+        assetsQuery = assetsQuery.whereCreator(searchQuery);
+      } else if (searchQuery.length > 1) {
+        assetsQuery = assetsQuery.whereUnitName(searchQuery);
+      } else {
+        throw Exception('Search query is too short.');
+      }
+
+      final SearchAssetsResponse assets =
+          await assetsQuery.search(limit: searchLimit);
+      return assets;
+    } on AlgorandException catch (e) {
+      debugPrint('AlgorandException: ${e.toString()}');
+      throw Exception('Failed to fetch assets: ${e.message}');
+    } catch (e) {
+      debugPrint('General Exception: $e');
+      throw Exception('Failed to fetch assets: $e');
+    }
+  }
+
+  bool _isValidAlgorandAddress(String address) {
+    try {
+      Address.fromAlgorandAddress(address: address);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<String> getAccountBalance(String publicAddress) async {
     try {
       final accountInfo = await algorand.getAccountByAddress(publicAddress);
