@@ -8,23 +8,6 @@ enum SnackType {
   error,
 }
 
-class TopSnackBar extends StatelessWidget {
-  final SnackBar snackBar;
-
-  const TopSnackBar({super.key, required this.snackBar});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.topCenter,
-      margin: EdgeInsets.only(
-        bottom: MediaQuery.of(context).size.height - kScreenPadding,
-      ),
-      child: snackBar,
-    );
-  }
-}
-
 SnackBar customSnackbar({
   required BuildContext context,
   required String message,
