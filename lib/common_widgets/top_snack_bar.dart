@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
@@ -21,12 +22,14 @@ class SnackBarService {
           message: message,
           backgroundColor: colorScheme.secondary,
           textStyle: textStyle,
+          borderRadius: BorderRadius.circular(kWidgetRadius),
         );
       case SnackType.error:
         return CustomSnackBar.error(
           message: message,
           backgroundColor: colorScheme.error,
           textStyle: textStyle,
+          borderRadius: BorderRadius.circular(kWidgetRadius),
         );
       case SnackType.neutral:
       default:
@@ -34,6 +37,7 @@ class SnackBarService {
           message: message,
           backgroundColor: colorScheme.primary,
           textStyle: textStyle,
+          borderRadius: BorderRadius.circular(kWidgetRadius),
         );
     }
   }
