@@ -58,27 +58,10 @@ class AlgorandService {
       final accountInfo = await algorand.getAccountByAddress(publicAddress);
       final holdings = accountInfo.assets;
 
-      List<DetailedAsset> detailedAssets = [];
-      for (var holding in holdings) {
-        final assetDetails = await getDetailedAsset(holding.assetId.toString());
-        final detailedAsset = DetailedAsset(
-          amount: holding.amount,
-          assetId: holding.assetId,
-          creator: holding.creator,
-          isFrozen: holding.isFrozen,
-          name: assetDetails.name,
-          unitName: assetDetails.unitName,
-          totalSupply: assetDetails.totalSupply,
-          manager: assetDetails.manager,
-          reserve: assetDetails.reserve,
-          freeze: assetDetails.freeze,
-          clawback: assetDetails.clawback,
-          url: assetDetails.url,
-          metadataHash: assetDetails.metadataHash,
-          defaultFrozen: assetDetails.defaultFrozen,
-        );
-        detailedAssets.add(detailedAsset);
-      }
+      List<DetailedAsset> detailedAssets =
+          await Future.wait(holdings.map((holding) async {
+        return await _createOrUpdateDetailedAsset(holding, publicAddress);
+      }));
 
       return detailedAssets;
     } catch (e) {
@@ -86,29 +69,17 @@ class AlgorandService {
     }
   }
 
-  Future<DetailedAsset> getDetailedAsset(String assetId) async {
+  Future<DetailedAsset> getDetailedAsset(
+      String assetId, String publicAddress) async {
     try {
       final int id = int.parse(assetId);
-      final response = await algorand.indexer().getAssetById(id);
-      final asset = response.asset;
 
-      return DetailedAsset(
-        amount: 0,
-        assetId: id,
-        creator: asset.params.creator,
-        isFrozen: false,
-        name: asset.params.name,
-        unitName: asset.params.unitName,
-        totalSupply: asset.params.total,
-        decimals: asset.params.decimals,
-        manager: asset.params.manager,
-        reserve: asset.params.reserve,
-        freeze: asset.params.freeze,
-        clawback: asset.params.clawback,
-        url: asset.params.url,
-        metadataHash: asset.params.metadataHash,
-        defaultFrozen: asset.params.defaultFrozen,
-      );
+      final accountInfo = await algorand.getAccountByAddress(publicAddress);
+      final holding = accountInfo.assets.firstWhere((h) => h.assetId == id,
+          orElse: () => throw Exception(
+              'Asset with ID $assetId not found in the current holdings.'));
+
+      return await _createOrUpdateDetailedAsset(holding, publicAddress);
     } on FormatException {
       throw Exception(
           'Invalid asset ID format. Asset ID must be a valid integer.');
@@ -117,18 +88,28 @@ class AlgorandService {
     }
   }
 
-  Future<List<Asset>> getCreatedAssets(String publicAddress) async {
-    try {
-      final accountInfo = await algorand.getAccountByAddress(publicAddress);
-      final createdAssets = accountInfo.createdAssets;
+  Future<DetailedAsset> _createOrUpdateDetailedAsset(
+      AssetHolding holding, String publicAddress) async {
+    final response = await algorand.indexer().getAssetById(holding.assetId);
+    final assetParams = response.asset.params;
 
-      if (createdAssets.isEmpty) {
-        return [];
-      }
-      return createdAssets;
-    } catch (e) {
-      throw Exception('Failed to fetch assets: $e');
-    }
+    return DetailedAsset(
+      amount: holding.amount,
+      assetId: holding.assetId,
+      creator: holding.creator,
+      isFrozen: holding.isFrozen,
+      name: assetParams.name,
+      unitName: assetParams.unitName,
+      totalSupply: assetParams.total,
+      decimals: assetParams.decimals,
+      manager: assetParams.manager,
+      reserve: assetParams.reserve,
+      freeze: assetParams.freeze,
+      clawback: assetParams.clawback,
+      url: assetParams.url,
+      metadataHash: assetParams.metadataHash,
+      defaultFrozen: assetParams.defaultFrozen,
+    );
   }
 
   Future<SearchAssetsResponse> getAssets(

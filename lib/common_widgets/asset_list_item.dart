@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/theme/color_palette.dart';
@@ -19,26 +20,31 @@ class AssetListItem extends StatelessWidget {
     return Stack(
       alignment: Alignment.topRight,
       children: [
+        Material(
+          child: Container(
+            decoration: frozenBoxDecoration(context),
+            child: ListTile(
+              tileColor: Colors.transparent,
+              horizontalTitleGap: kScreenPadding * 2,
+              leading: _buildAssetIcon(),
+              title: Text(asset.name ?? 'Unknown',
+                  style: context.textTheme.titleMedium!
+                      .copyWith(fontWeight: FontWeight.bold)),
+              subtitle: Text(asset.unitName ?? 'Unknown',
+                  style: context.textTheme.titleSmall!
+                      .copyWith(color: context.colorScheme.onSurface)),
+              trailing: _buildAssetAmount(context),
+              onTap: () =>
+                  GoRouter.of(context).go('/viewAsset/${asset.assetId}'),
+            ),
+          ),
+        ),
         asset.isFrozen
             ? const Padding(
                 padding: EdgeInsets.all(kScreenPadding / 2),
                 child: Icon(Icons.ac_unit, size: kScreenPadding),
               )
             : Container(),
-        Material(
-          child: ListTile(
-            horizontalTitleGap: kScreenPadding * 2,
-            leading: _buildAssetIcon(),
-            title: Text(asset.name ?? 'Unknown',
-                style: context.textTheme.titleMedium!
-                    .copyWith(fontWeight: FontWeight.bold)),
-            subtitle: Text(asset.unitName ?? 'Unknown',
-                style: context.textTheme.titleSmall!
-                    .copyWith(color: context.colorScheme.onSurface)),
-            trailing: _buildAssetAmount(context),
-            onTap: () => GoRouter.of(context).go('/viewAsset/${asset.assetId}'),
-          ),
-        ),
       ],
     );
   }

@@ -12,6 +12,7 @@ class ColorPalette {
   static const Color lightThemeFrenchGray = Color(0xFFBABEC5);
   static const Color lightThemeError = Color(0xFFF57D56);
   static const Color lightThemeShadow = Color(0xFF000000);
+  static const Color lightThemeFrozenColor = Color(0xFFDAECFF);
 
   static const Color darkThemeMauve = Color(0xFFE0B0FF);
   static const Color darkThemeHeliotrope = Color(0xFFC875FF);
@@ -25,8 +26,7 @@ class ColorPalette {
   static const Color darkThemeWhite = Color(0xFFFFFFFF);
   static const Color darkThemeError = Color(0xFFF57D56);
   static const Color darkThemeBlack = Color(0xFF000000);
-
-  static const Color darkThemeFrozenAssetBackground = Color(0xFF222F47);
+  static const Color darkThemeFrozenColor = Color(0xFF3C4A62);
 
   static const Color cardGradientPurpleA = Color(0xFF8048A5);
   static const Color cardGradientPurpleB = Color(0xFF522E6A);
