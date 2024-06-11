@@ -101,6 +101,18 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     return number != null && number >= 0;
   }
 
+  Future<bool> hasSufficientFunds(String publicAddress, String value) async {
+    try {
+      final balance = await ref
+          .read(algorandServiceProvider)
+          .getAccountBalance(publicAddress);
+      return double.parse(balance) >= double.parse(value);
+    } catch (e) {
+      debugPrint('Error checking sufficient funds: $e');
+      return false; // Assuming that in case of an error, we treat it as insufficient funds
+    }
+  }
+
   bool _isValidAlgorandAddress(String value) {
     return value.length == 58 && RegExp(r'^[A-Z2-7]+$').hasMatch(value);
   }
@@ -128,8 +140,22 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     return null;
   }
 
+  Future<bool> _validateForm(WidgetRef ref) async {
+    if (!_formKey.currentState!.validate()) return false;
+    final publicAddress =
+        ref.read(accountProvider).account?.publicAddress ?? '';
+    final amount = amountController.text;
+
+    if (!await hasSufficientFunds(publicAddress, amount)) {
+      _showErrorSnackbar('Insufficient funds');
+      return false;
+    }
+
+    return true;
+  }
+
   Future<void> _executeTransaction(WidgetRef ref) async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!await _validateForm(ref)) return;
 
     ref.read(loadingProvider.notifier).startLoading();
     try {
@@ -199,23 +225,25 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   String get _getAppBarTitle =>
       'Send ${widget.mode == SendTransactionScreenMode.currency ? 'Currency' : 'Asset'}';
 
-  void _showPinPadDialog(WidgetRef ref) {
-    if (_formKey.currentState!.validate()) {
-      showDialog(
-        context: context,
-        builder: (context) => PinPadDialog(
-          title: 'Verify PIN',
-          onPinVerified: () async {
-            if (mounted) {
-              ref.read(loadingProvider.notifier).startLoading();
-            }
-            await _executeTransaction(ref);
-            if (mounted) {
-              ref.read(loadingProvider.notifier).stopLoading();
-            }
-          },
-        ),
-      );
+  void _showPinPadDialog(WidgetRef ref) async {
+    if (await _validateForm(ref)) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PinPadDialog(
+            title: 'Verify PIN',
+            onPinVerified: () async {
+              if (mounted) {
+                ref.read(loadingProvider.notifier).startLoading();
+              }
+              await _executeTransaction(ref);
+              if (mounted) {
+                ref.read(loadingProvider.notifier).stopLoading();
+              }
+            },
+          ),
+        );
+      }
     }
   }
 
