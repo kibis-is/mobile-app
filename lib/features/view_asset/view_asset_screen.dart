@@ -7,6 +7,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 // For clipboard functionality
 
@@ -55,25 +56,26 @@ class ViewAssetScreen extends ConsumerWidget {
             text: 'Asset Name',
             value: asset.name ?? 'Unnamed Asset',
           ),
-          AssetDetail(
-            text: 'Asset ID',
-            value: asset.assetId.toString(),
+          Row(
+            children: [
+              Expanded(
+                child: AssetDetail(
+                  text: 'Asset ID',
+                  value: asset.assetId.toString(),
+                ),
+              ),
+              InkWell(
+                  onTap: () =>
+                      copyToClipboard(context, asset.assetId.toString()),
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: kScreenPadding),
+                    child: Icon(Icons.copy),
+                  )),
+            ],
           ),
           const AssetDetail(
             text: 'Type',
             value: '-',
-          ),
-          AssetDetail(
-            text: 'Decimals',
-            value: asset.decimals.toString(),
-          ),
-          AssetDetail(
-            text: 'Total Supply',
-            value: asset.totalSupply.toString(),
-          ),
-          AssetDetail(
-            text: 'Default Frozen',
-            value: asset.defaultFrozen == true ? "Yes" : "No",
           ),
           if (isExpanded) ...[
             AssetDetail(
@@ -141,30 +143,33 @@ class AssetDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           text,
           style: context.textTheme.bodySmall,
         ),
-        const SizedBox(width: kScreenPadding),
-        useEllipsis
-            ? EllipsizedText(
-                value,
-                ellipsis: '...',
-                type: EllipsisType.middle,
-                textAlign: TextAlign.left,
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+        const SizedBox(width: kScreenPadding / 2),
+        Expanded(
+          child: useEllipsis
+              ? EllipsizedText(
+                  value,
+                  ellipsis: '...',
+                  type: EllipsisType.middle,
+                  textAlign: TextAlign.right,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              : Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              )
-            : Text(
-                value,
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+        ),
         const SizedBox(height: kScreenPadding * 2),
       ],
     );

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
-import 'package:kibisis/providers/error_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
@@ -48,17 +46,6 @@ class _KibisisState extends ConsumerState<Kibisis> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<String?>(errorProvider, (previous, next) {
-      if (next != null && next.isNotEmpty) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          rootScaffoldMessengerKey.currentState?.showSnackBar(
-            customSnackbar(context: context, message: next),
-          );
-        });
-        ref.read(errorProvider.notifier).state = null;
-      }
-    });
-
     return FutureBuilder(
       future: ref.read(sharedPreferencesProvider.future),
       builder: (context, snapshot) {

@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
-import 'package:kibisis/common_widgets/custom_snackbar.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
-import 'package:kibisis/main.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -179,24 +178,20 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   void _showSuccessSnackbar(String message) {
     if (mounted) {
-      rootScaffoldMessengerKey.currentState?.showSnackBar(
-        customSnackbar(
-          context: context,
-          message: 'Transaction successful: $message',
-          snackType: SnackType.success,
-        ),
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.success,
+        message: 'Transaction successful: $message',
       );
     }
   }
 
   void _showErrorSnackbar(String message) {
     if (mounted) {
-      rootScaffoldMessengerKey.currentState?.showSnackBar(
-        customSnackbar(
-          context: context,
-          message: 'Error: $message',
-          snackType: SnackType.error,
-        ),
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'Error: $message',
       );
     }
   }
