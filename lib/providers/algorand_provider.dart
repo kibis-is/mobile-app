@@ -60,22 +60,22 @@ class AlgorandService {
 
       List<DetailedAsset> detailedAssets = [];
       for (var holding in holdings) {
-        final assetDetails = await getAssetDetails(holding.assetId.toString());
+        final assetDetails = await getDetailedAsset(holding.assetId.toString());
         final detailedAsset = DetailedAsset(
           amount: holding.amount,
           assetId: holding.assetId,
           creator: holding.creator,
           isFrozen: holding.isFrozen,
-          name: assetDetails.params.name,
-          unitName: assetDetails.params.unitName,
-          totalSupply: assetDetails.params.total,
-          manager: assetDetails.params.manager,
-          reserve: assetDetails.params.reserve,
-          freeze: assetDetails.params.freeze,
-          clawback: assetDetails.params.clawback,
-          url: assetDetails.params.url,
-          metadataHash: assetDetails.params.metadataHash,
-          defaultFrozen: assetDetails.params.defaultFrozen,
+          name: assetDetails.name,
+          unitName: assetDetails.unitName,
+          totalSupply: assetDetails.totalSupply,
+          manager: assetDetails.manager,
+          reserve: assetDetails.reserve,
+          freeze: assetDetails.freeze,
+          clawback: assetDetails.clawback,
+          url: assetDetails.url,
+          metadataHash: assetDetails.metadataHash,
+          defaultFrozen: assetDetails.defaultFrozen,
         );
         detailedAssets.add(detailedAsset);
       }
@@ -86,11 +86,29 @@ class AlgorandService {
     }
   }
 
-  Future<Asset> getAssetDetails(String assetId) async {
+  Future<DetailedAsset> getDetailedAsset(String assetId) async {
     try {
       final int id = int.parse(assetId);
       final response = await algorand.indexer().getAssetById(id);
-      return response.asset;
+      final asset = response.asset;
+
+      return DetailedAsset(
+        amount: 0,
+        assetId: id,
+        creator: asset.params.creator,
+        isFrozen: false,
+        name: asset.params.name,
+        unitName: asset.params.unitName,
+        totalSupply: asset.params.total,
+        decimals: asset.params.decimals,
+        manager: asset.params.manager,
+        reserve: asset.params.reserve,
+        freeze: asset.params.freeze,
+        clawback: asset.params.clawback,
+        url: asset.params.url,
+        metadataHash: asset.params.metadataHash,
+        defaultFrozen: asset.params.defaultFrozen,
+      );
     } on FormatException {
       throw Exception(
           'Invalid asset ID format. Asset ID must be a valid integer.');

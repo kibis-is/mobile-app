@@ -1,18 +1,19 @@
-import 'package:algorand_dart/algorand_dart.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
+import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+// For clipboard functionality
 
 final assetDetailsProvider =
-    FutureProvider.family<Asset, String>((ref, assetId) async {
-  return await ref.read(algorandServiceProvider).getAssetDetails(assetId);
+    FutureProvider.family<DetailedAsset, String>((ref, assetId) async {
+  return await ref.read(algorandServiceProvider).getDetailedAsset(assetId);
 });
 
 class ViewAssetScreen extends ConsumerWidget {
@@ -30,30 +31,32 @@ class ViewAssetScreen extends ConsumerWidget {
         title: const Text('Asset Details'),
       ),
       body: assetDetails.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) => Center(child: Text('Error: $e')),
+        loading: () => const CircularProgressIndicator(),
+        error: (e, st) => Text('Error: $e'),
         data: (asset) {
-          return _buildAssetDetails(asset);
+          return buildAssetDetails(asset);
         },
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(context, publicKey),
+      bottomNavigationBar: buildBottomNavigationBar(context, publicKey),
     );
   }
 
-  Widget _buildAssetDetails(Asset asset) {
+  Widget buildAssetDetails(DetailedAsset asset) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(kScreenPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: kScreenPadding),
+          const SizedBox(
+            height: kScreenPadding,
+          ),
           AssetDetail(
             text: 'Asset Name',
-            value: asset.params.name ?? 'Unnamed Asset',
+            value: asset.name ?? 'Unnamed Asset',
           ),
           AssetDetail(
             text: 'Asset ID',
-            value: asset.index.toString(),
+            value: asset.assetId.toString(),
           ),
           const AssetDetail(
             text: 'Type',
@@ -61,39 +64,39 @@ class ViewAssetScreen extends ConsumerWidget {
           ),
           AssetDetail(
             text: 'Decimals',
-            value: asset.params.decimals.toString(),
+            value: asset.decimals.toString(),
           ),
           AssetDetail(
             text: 'Total Supply',
-            value: asset.params.total.toString(),
+            value: asset.totalSupply.toString(),
           ),
           AssetDetail(
             text: 'Default Frozen',
-            value: asset.params.defaultFrozen == true ? "Yes" : "No",
+            value: asset.defaultFrozen == true ? "Yes" : "No",
           ),
           AssetDetail(
             text: 'Creator Account',
-            value: asset.params.creator,
+            value: asset.creator ?? 'Not available',
             useEllipsis: true,
           ),
           AssetDetail(
             text: 'Clawback Account',
-            value: asset.params.clawback ?? 'Not available',
+            value: asset.clawback ?? 'Not available',
             useEllipsis: true,
           ),
           AssetDetail(
             text: 'Freeze Account',
-            value: asset.params.freeze ?? 'Not available',
+            value: asset.freeze ?? 'Not available',
             useEllipsis: true,
           ),
           AssetDetail(
             text: 'Manager Account',
-            value: asset.params.manager ?? 'Not available',
+            value: asset.manager ?? 'Not available',
             useEllipsis: true,
           ),
           AssetDetail(
             text: 'Reserve Account',
-            value: asset.params.reserve ?? 'Not available',
+            value: asset.reserve ?? 'Not available',
             useEllipsis: true,
           ),
         ],
@@ -101,7 +104,7 @@ class ViewAssetScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBottomNavigationBar(BuildContext context, String publicKey) {
+  Widget buildBottomNavigationBar(BuildContext context, String publicKey) {
     return BottomAppBar(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

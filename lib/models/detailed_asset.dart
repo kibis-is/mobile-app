@@ -6,6 +6,7 @@ class DetailedAsset {
   final String? name;
   final String? unitName;
   final int? totalSupply;
+  final int? decimals; // Added decimals field
   final String? manager;
   final String? reserve;
   final String? freeze;
@@ -22,6 +23,7 @@ class DetailedAsset {
     this.name,
     this.unitName,
     this.totalSupply,
+    this.decimals, // Initialize decimals field
     this.manager,
     this.reserve,
     this.freeze,
