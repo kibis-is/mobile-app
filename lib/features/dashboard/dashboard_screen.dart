@@ -209,28 +209,26 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
-    return Container(
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.bottomCenter,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.settings),
-                color: context.colorScheme.onBackground,
-                onPressed: () => GoRouter.of(context).go('/settings'),
-              ),
-              IconButton(
-                icon: const Icon(Icons.account_balance_wallet),
-                color: context.colorScheme.onBackground,
-                onPressed: () => GoRouter.of(context).push('/wallets'),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.bottomCenter,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              color: context.colorScheme.onBackground,
+              onPressed: () => GoRouter.of(context).go('/settings'),
+            ),
+            IconButton(
+              icon: const Icon(Icons.account_balance_wallet),
+              color: context.colorScheme.onBackground,
+              onPressed: () => GoRouter.of(context).push('/wallets'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
