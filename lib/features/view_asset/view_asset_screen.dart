@@ -16,23 +16,17 @@ import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class ViewAssetScreen extends ConsumerWidget {
-  final String assetId;
+  final DetailedAsset detailedAsset;
 
-  const ViewAssetScreen({super.key, required this.assetId});
+  const ViewAssetScreen({super.key, required this.detailedAsset});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final assetDetails = ref.watch(assetDetailsProvider(assetId));
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Asset Details'),
       ),
-      body: assetDetails.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) => Text('Error: $e'),
-        data: (asset) => AssetDetailsView(asset: asset),
-      ),
+      body: AssetDetailsView(asset: detailedAsset),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(
             left: kScreenPadding,
@@ -43,7 +37,10 @@ class ViewAssetScreen extends ConsumerWidget {
           isFullWidth: true,
           onPressed: () => context.pushNamed(
             sendTransactionWithAssetIdRouteName,
-            pathParameters: {'mode': 'asset', 'assetId': assetId},
+            pathParameters: {
+              'mode': 'asset',
+              'detailedAsset': detailedAsset.assetId.toString()
+            },
           ),
         ),
       ),

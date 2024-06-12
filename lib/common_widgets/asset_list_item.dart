@@ -34,8 +34,8 @@ class AssetListItem extends StatelessWidget {
                   style: context.textTheme.titleSmall!
                       .copyWith(color: context.colorScheme.onSurface)),
               trailing: _buildAssetAmount(context),
-              onTap: () =>
-                  GoRouter.of(context).go('/viewAsset/${asset.assetId}'),
+              onTap: () => GoRouter.of(context)
+                  .go('/viewAsset/${asset.assetId}', extra: asset),
             ),
           ),
         ),
