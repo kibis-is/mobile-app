@@ -23,7 +23,7 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
     const int limit = 5;
 
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
       try {
         if (searchQuery.length < 2) {
           state =
