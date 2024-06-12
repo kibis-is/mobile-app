@@ -25,7 +25,8 @@ ElevatedButtonThemeData elevatedButtonThemeLight() {
     style: ButtonStyle(
       backgroundColor:
           MaterialStateProperty.all(ColorPalette.lightThemeMauveine),
-      foregroundColor: MaterialStateProperty.all(ColorPalette.lightThemeWhite),
+      foregroundColor:
+          MaterialStateProperty.all(ColorPalette.lightThemeAntiFlashWhite),
       textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 24)),
       padding: MaterialStateProperty.all(const EdgeInsets.all(kButtonPadding)),
       shape: MaterialStateProperty.all(

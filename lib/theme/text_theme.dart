@@ -9,63 +9,63 @@ TextTheme textThemeLight() {
     displayLarge: TextStyle(
         fontSize: 32.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     displayMedium: TextStyle(
         fontSize: 24.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     displaySmall: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     headlineLarge: TextStyle(
         fontSize: 96.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     headlineMedium: TextStyle(
         fontSize: 48.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     headlineSmall: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     titleLarge: TextStyle(
         fontSize: 32.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     titleMedium: TextStyle(
         fontSize: 24.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     titleSmall: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemePaynesGray),
+        color: ColorPalette.lightThemeLicorice),
     bodyLarge: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeCadetGray),
+        color: ColorPalette.lightThemeChineseViolet),
     bodyMedium: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeCadetGray),
+        color: ColorPalette.lightThemeChineseViolet),
     bodySmall: TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeCadetGray),
+        color: ColorPalette.lightThemeChineseViolet),
     labelLarge: TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeCadetGray),
+        color: ColorPalette.lightThemeChineseViolet),
     labelMedium: TextStyle(
         fontSize: 14.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeCadetGray),
+        color: ColorPalette.lightThemeChineseViolet),
     labelSmall: TextStyle(
         fontSize: 12.0,
         fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeCadetGray),
+        color: ColorPalette.lightThemeChineseViolet),
   );
 }
 

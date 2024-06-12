@@ -16,13 +16,13 @@ final ThemeData lightTheme = ThemeData(
   buttonTheme: buttonThemeLight(),
   elevatedButtonTheme: elevatedButtonThemeLight(),
   drawerTheme: const DrawerThemeData(
-    backgroundColor: ColorPalette.lightThemeWhite,
+    backgroundColor: ColorPalette.lightThemeAntiFlashWhite,
   ),
-  scaffoldBackgroundColor: ColorPalette.lightThemeWhite,
-  cardColor: ColorPalette.lightThemeWhiteSmoke,
+  scaffoldBackgroundColor: ColorPalette.lightThemeAntiFlashWhite,
+  cardColor: ColorPalette.lightThemeMagnolia,
   appBarTheme: appBarThemeLight(),
   listTileTheme: ListTileThemeData(
-    tileColor: ColorPalette.lightThemeWhiteSmoke,
+    tileColor: ColorPalette.lightThemeMagnolia,
     contentPadding: const EdgeInsets.all(kSizedBoxSpacing),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(kWidgetRadius), // Corner radius
@@ -31,15 +31,15 @@ final ThemeData lightTheme = ThemeData(
   colorScheme: const ColorScheme.light(
     brightness: Brightness.light,
     primary: ColorPalette.lightThemeMauveine,
-    onPrimary: ColorPalette.lightThemeWhite,
-    secondary: ColorPalette.lightThemeTeal,
-    onSecondary: ColorPalette.lightThemeWhite,
+    onPrimary: ColorPalette.lightThemeAntiFlashWhite,
+    secondary: ColorPalette.lightThemeMyrtleGreen,
+    onSecondary: ColorPalette.lightThemeAntiFlashWhite,
     error: ColorPalette.lightThemeError,
-    onError: ColorPalette.lightThemeWhite,
-    background: ColorPalette.lightThemeWhite,
-    onBackground: ColorPalette.lightThemeCadetGray,
-    surface: ColorPalette.lightThemeWhiteSmoke,
-    onSurface: ColorPalette.lightThemeCadetGray,
+    onError: ColorPalette.lightThemeAntiFlashWhite,
+    background: ColorPalette.lightThemeAntiFlashWhite,
+    onBackground: ColorPalette.lightThemeChineseViolet,
+    surface: ColorPalette.lightThemeMagnolia,
+    onSurface: ColorPalette.lightThemeChineseViolet,
     shadow: ColorPalette.lightThemeFrenchGray,
   ),
   inputDecorationTheme: InputDecorationTheme(
@@ -49,7 +49,7 @@ final ThemeData lightTheme = ThemeData(
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(kWidgetRadius),
-      borderSide: const BorderSide(color: ColorPalette.lightThemeCadetGray),
+      borderSide: const BorderSide(color: ColorPalette.lightThemeChineseViolet),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(kWidgetRadius),
@@ -59,7 +59,7 @@ final ThemeData lightTheme = ThemeData(
   pageTransitionsTheme: pageTransitions(),
   disabledColor: ColorPalette.lightThemeFrenchGray,
   bottomAppBarTheme: const BottomAppBarTheme(
-    color: ColorPalette.lightThemeWhite,
+    color: ColorPalette.lightThemeAntiFlashWhite,
     elevation: 0,
     padding: EdgeInsets.symmetric(vertical: 0),
   ),

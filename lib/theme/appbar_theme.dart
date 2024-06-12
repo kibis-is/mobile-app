@@ -15,7 +15,7 @@ AppBarTheme appBarThemeLight() {
   return const AppBarTheme(
     elevation: 0.0,
     shadowColor: Colors.transparent,
-    backgroundColor: ColorPalette.lightThemeWhite,
+    backgroundColor: ColorPalette.lightThemeAntiFlashWhite,
     centerTitle: true,
     foregroundColor: ColorPalette.lightThemeShadow,
   );

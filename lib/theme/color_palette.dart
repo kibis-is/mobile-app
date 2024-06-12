@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class ColorPalette {
   static const Color lightThemeMauveine = Color(0xFF8D029B);
   static const Color lightThemePurple = Color(0xFF64006C);
-  static const Color lightThemeLightSeaGreen = Color(0xFF00BCB4);
-  static const Color lightThemeTeal = Color(0xFF00817B);
-  static const Color lightThemeWhite = Color(0xFFFFFFFF);
-  static const Color lightThemeWhiteSmoke = Color(0xFFF4F4F4);
-  static const Color lightThemePaynesGray = Color(0xFF4A5568);
-  static const Color lightThemeCadetGray = Color(0xFF9299A4);
-  static const Color lightThemeFrenchGray = Color(0xFFBABEC5);
-  static const Color lightThemeError = Color(0xFFF57D56);
+  static const Color lightThemePersianGreen = Color(0xFF009F9A);
+  static const Color lightThemeMyrtleGreen = Color(0xFF48817D);
+  static const Color lightThemeAntiFlashWhite = Color(0xFFF3F1F3);
+  static const Color lightThemeMagnolia = Color(0xFFE9E1EA);
+  static const Color lightThemeLicorice = Color(0xFF19131A);
+  static const Color lightThemeChineseViolet = Color(0xFF77657E);
+  static const Color lightThemeFrenchGray = Color(0xFFC4BBC7);
+  static const Color lightThemeError = Color(0xFFB80900);
   static const Color lightThemeShadow = Color(0xFF000000);
   static const Color lightThemeFrozenColor = Color(0xFFDAECFF);
 
