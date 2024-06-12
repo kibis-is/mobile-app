@@ -237,14 +237,17 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                 ref.read(loadingProvider.notifier).startLoading();
               }
               await _executeTransaction(ref);
-              if (mounted) {
-                ref.read(loadingProvider.notifier).stopLoading();
-              }
+              goBack();
+              ref.read(loadingProvider.notifier).stopLoading();
             },
           ),
         );
       }
     }
+  }
+
+  void goBack() {
+    Navigator.of(context).pop();
   }
 
   @override
