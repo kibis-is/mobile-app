@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColorPalette {
+  // Light Theme Colors
   static const Color lightThemeMauveine = Color(0xFF8D029B);
   static const Color lightThemePurple = Color(0xFF64006C);
   static const Color lightThemePersianGreen = Color(0xFF009F9A);
@@ -14,6 +15,7 @@ class ColorPalette {
   static const Color lightThemeShadow = Color(0xFF000000);
   static const Color lightThemeFrozenColor = Color(0xFFDAECFF);
 
+  // Dark Theme Colors
   static const Color darkThemeMauve = Color(0xFFE0B0FF);
   static const Color darkThemeHeliotrope = Color(0xFFC875FF);
   static const Color darkThemeKeppel = Color(0xFF00C2AF);
@@ -28,11 +30,13 @@ class ColorPalette {
   static const Color darkThemeBlack = Color(0xFF000000);
   static const Color darkThemeFrozenColor = Color(0xFF3C4A62);
 
+  // Gradient Colors
   static const Color cardGradientPurpleA = Color(0xFF8048A5);
   static const Color cardGradientPurpleB = Color(0xFF522E6A);
   static const Color cardGradientTurquoiseA = Color(0xFF00C2AF);
   static const Color cardGradientLightBlue = Color(0xFF01EAF1);
   static const Color cardGradientMediumBlue = Color(0xFF266CB9);
 
+  // Other Colors
   static const Color voiPurple = Color(0xFF5A21B6);
 }

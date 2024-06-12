@@ -1,56 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/theme/color_palette.dart';
 
+ButtonThemeData buttonTheme({
+  required Color buttonColor,
+  required Color hoverColor,
+  required Color splashColor,
+}) {
+  return ButtonThemeData(
+    buttonColor: buttonColor,
+    hoverColor: hoverColor,
+    splashColor: splashColor,
+    textTheme: ButtonTextTheme.primary,
+  );
+}
+
 ButtonThemeData buttonThemeLight() {
-  return const ButtonThemeData(
+  return buttonTheme(
     buttonColor: ColorPalette.lightThemeMauveine,
     hoverColor: ColorPalette.lightThemePurple,
     splashColor: ColorPalette.lightThemePurple,
-    textTheme: ButtonTextTheme.primary,
   );
 }
 
 ButtonThemeData buttonThemeDark() {
-  return const ButtonThemeData(
+  return buttonTheme(
     buttonColor: ColorPalette.darkThemeMauve,
     hoverColor: ColorPalette.darkThemeHeliotrope,
     splashColor: ColorPalette.darkThemeHeliotrope,
-    textTheme: ButtonTextTheme.primary,
-  );
-}
-
-ElevatedButtonThemeData elevatedButtonThemeLight() {
-  return ElevatedButtonThemeData(
-    style: ButtonStyle(
-      backgroundColor:
-          MaterialStateProperty.all(ColorPalette.lightThemeMauveine),
-      foregroundColor:
-          MaterialStateProperty.all(ColorPalette.lightThemeAntiFlashWhite),
-      textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 24)),
-      padding: MaterialStateProperty.all(const EdgeInsets.all(kButtonPadding)),
-      shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kWidgetRadius),
-        ),
-      ),
-    ),
-  );
-}
-
-ElevatedButtonThemeData elevatedButtonThemeDark() {
-  return ElevatedButtonThemeData(
-    style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(ColorPalette.darkThemeMauve),
-      foregroundColor:
-          MaterialStateProperty.all(ColorPalette.darkThemeAntiflashWhite),
-      textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 24)),
-      padding: MaterialStateProperty.all(const EdgeInsets.all(kButtonPadding)),
-      shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kWidgetRadius),
-        ),
-      ),
-    ),
   );
 }

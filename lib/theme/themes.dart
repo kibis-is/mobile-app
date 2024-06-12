@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/theme/appbar_theme.dart';
+import 'package:kibisis/theme/bottom_app_bar_theme.dart';
 import 'package:kibisis/theme/button_theme.dart';
 import 'package:kibisis/theme/color_palette.dart';
+import 'package:kibisis/theme/elevated_button_theme.dart';
+import 'package:kibisis/theme/input_decoration_theme.dart';
+import 'package:kibisis/theme/list_tile_theme.dart';
 import 'package:kibisis/theme/page_transitions.dart';
 import 'package:kibisis/theme/text_theme.dart';
 
@@ -21,13 +24,7 @@ final ThemeData lightTheme = ThemeData(
   scaffoldBackgroundColor: ColorPalette.lightThemeAntiFlashWhite,
   cardColor: ColorPalette.lightThemeMagnolia,
   appBarTheme: appBarThemeLight(),
-  listTileTheme: ListTileThemeData(
-    tileColor: ColorPalette.lightThemeMagnolia,
-    contentPadding: const EdgeInsets.all(kSizedBoxSpacing),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(kWidgetRadius), // Corner radius
-    ),
-  ),
+  listTileTheme: listTileTheme(ColorPalette.lightThemeMagnolia),
   colorScheme: const ColorScheme.light(
     brightness: Brightness.light,
     primary: ColorPalette.lightThemeMauveine,
@@ -42,27 +39,13 @@ final ThemeData lightTheme = ThemeData(
     onSurface: ColorPalette.lightThemeChineseViolet,
     shadow: ColorPalette.lightThemeFrenchGray,
   ),
-  inputDecorationTheme: InputDecorationTheme(
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kWidgetRadius),
-      borderSide: const BorderSide(color: ColorPalette.lightThemeFrenchGray),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kWidgetRadius),
-      borderSide: const BorderSide(color: ColorPalette.lightThemeChineseViolet),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kWidgetRadius),
-      borderSide: const BorderSide(color: ColorPalette.lightThemePurple),
-    ),
+  inputDecorationTheme: inputDecorationTheme(
+    ColorPalette.lightThemeFrenchGray,
+    ColorPalette.lightThemePurple,
   ),
   pageTransitionsTheme: pageTransitions(),
   disabledColor: ColorPalette.lightThemeFrenchGray,
-  bottomAppBarTheme: const BottomAppBarTheme(
-    color: ColorPalette.lightThemeAntiFlashWhite,
-    elevation: 0,
-    padding: EdgeInsets.symmetric(vertical: 0),
-  ),
+  bottomAppBarTheme: bottomAppBarTheme(ColorPalette.lightThemeAntiFlashWhite),
 );
 
 // Dark Theme
@@ -75,13 +58,7 @@ final ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: ColorPalette.darkThemeRaisinBlack,
   cardColor: ColorPalette.darkThemeGunmetal,
   appBarTheme: appBarThemeDark(),
-  listTileTheme: ListTileThemeData(
-    tileColor: ColorPalette.darkThemeGunmetal,
-    contentPadding: const EdgeInsets.all(kSizedBoxSpacing),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(kWidgetRadius),
-    ),
-  ),
+  listTileTheme: listTileTheme(ColorPalette.darkThemeGunmetal),
   drawerTheme: const DrawerThemeData(
     backgroundColor: ColorPalette.darkThemeRaisinBlack,
   ),
@@ -99,21 +76,11 @@ final ThemeData darkTheme = ThemeData(
     onSurface: ColorPalette.darkThemeCadetGray,
     shadow: ColorPalette.darkThemeBlack,
   ),
-  inputDecorationTheme: InputDecorationTheme(
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kWidgetRadius),
-      borderSide: const BorderSide(color: ColorPalette.darkThemeGray),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(kWidgetRadius),
-      borderSide: const BorderSide(color: ColorPalette.darkThemeMauve),
-    ),
+  inputDecorationTheme: inputDecorationTheme(
+    ColorPalette.darkThemeGray,
+    ColorPalette.darkThemeMauve,
   ),
   pageTransitionsTheme: pageTransitions(),
   disabledColor: ColorPalette.darkThemeGray,
-  bottomAppBarTheme: const BottomAppBarTheme(
-      color: ColorPalette.darkThemeRaisinBlack,
-      elevation: 0,
-      padding: EdgeInsets.symmetric(vertical: 0),
-      height: kToolbarHeight),
+  bottomAppBarTheme: bottomAppBarTheme(ColorPalette.darkThemeRaisinBlack),
 );

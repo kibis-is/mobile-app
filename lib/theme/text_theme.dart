@@ -1,135 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/theme/color_palette.dart';
 
-// This is the base font size in px that is equivalent to 1 rem
 double baseFontSize = 16.0;
 
+TextStyle _textStyle(
+    double fontSizeMultiplier, FontWeight fontWeight, Color color) {
+  return TextStyle(
+    fontSize: baseFontSize * fontSizeMultiplier,
+    fontWeight: fontWeight,
+    color: color,
+  );
+}
+
+TextTheme textTheme({
+  required Color displayColor,
+  required Color bodyColor,
+  required Color labelColor,
+}) {
+  return TextTheme(
+    displayLarge: _textStyle(2, FontWeight.w400, displayColor),
+    displayMedium: _textStyle(1.5, FontWeight.w400, displayColor),
+    displaySmall: _textStyle(1.25, FontWeight.w400, displayColor),
+    headlineLarge: _textStyle(4, FontWeight.w400, displayColor),
+    headlineMedium: _textStyle(3, FontWeight.w400, displayColor),
+    headlineSmall: _textStyle(1.25, FontWeight.w400, displayColor),
+    titleLarge: _textStyle(2, FontWeight.w400, displayColor),
+    titleMedium: _textStyle(1.5, FontWeight.w400, displayColor),
+    titleSmall: _textStyle(1.25, FontWeight.w400, displayColor),
+    bodyLarge: _textStyle(1.25, FontWeight.w400, bodyColor),
+    bodyMedium: _textStyle(1.125, FontWeight.w400, bodyColor),
+    bodySmall: _textStyle(1, FontWeight.w400, bodyColor),
+    labelLarge: _textStyle(1, FontWeight.w400, labelColor),
+    labelMedium: _textStyle(0.875, FontWeight.w400, labelColor),
+    labelSmall: _textStyle(0.75, FontWeight.w400, labelColor),
+  );
+}
+
 TextTheme textThemeLight() {
-  return const TextTheme(
-    displayLarge: TextStyle(
-        fontSize: 32.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    displayMedium: TextStyle(
-        fontSize: 24.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    displaySmall: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    headlineLarge: TextStyle(
-        fontSize: 96.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    headlineMedium: TextStyle(
-        fontSize: 48.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    headlineSmall: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    titleLarge: TextStyle(
-        fontSize: 32.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    titleMedium: TextStyle(
-        fontSize: 24.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    titleSmall: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeLicorice),
-    bodyLarge: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeChineseViolet),
-    bodyMedium: TextStyle(
-        fontSize: 18.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeChineseViolet),
-    bodySmall: TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeChineseViolet),
-    labelLarge: TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeChineseViolet),
-    labelMedium: TextStyle(
-        fontSize: 14.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeChineseViolet),
-    labelSmall: TextStyle(
-        fontSize: 12.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.lightThemeChineseViolet),
+  return textTheme(
+    displayColor: ColorPalette.lightThemeLicorice,
+    bodyColor: ColorPalette.lightThemeChineseViolet,
+    labelColor: ColorPalette.lightThemeChineseViolet,
   );
 }
 
 TextTheme textThemeDark() {
-  return const TextTheme(
-    displayLarge: TextStyle(
-        fontSize: 32.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    displayMedium: TextStyle(
-        fontSize: 24.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    displaySmall: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    headlineLarge: TextStyle(
-        fontSize: 64.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    headlineMedium: TextStyle(
-        fontSize: 48.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    headlineSmall: TextStyle(
-        fontSize: 32.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    titleLarge: TextStyle(
-        fontSize: 32.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    titleMedium: TextStyle(
-        fontSize: 24.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    titleSmall: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeAntiflashWhite),
-    bodyLarge: TextStyle(
-        fontSize: 24.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeCadetGray),
-    bodyMedium: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeCadetGray),
-    bodySmall: TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeCadetGray),
-    labelLarge: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeCadetGray),
-    labelMedium: TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeCadetGray),
-    labelSmall: TextStyle(
-        fontSize: 12.0,
-        fontWeight: FontWeight.w400,
-        color: ColorPalette.darkThemeCadetGray),
+  return textTheme(
+    displayColor: ColorPalette.darkThemeAntiflashWhite,
+    bodyColor: ColorPalette.darkThemeCadetGray,
+    labelColor: ColorPalette.darkThemeCadetGray,
   );
 }

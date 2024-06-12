@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/theme/color_palette.dart';
 
-AppBarTheme appBarThemeDark() {
-  return const AppBarTheme(
+AppBarTheme appBarTheme({
+  required Color backgroundColor,
+  required Color foregroundColor,
+}) {
+  return AppBarTheme(
     elevation: 0.0,
     shadowColor: Colors.transparent,
-    backgroundColor: ColorPalette.darkThemeRaisinBlack,
+    backgroundColor: backgroundColor,
     centerTitle: true,
+    foregroundColor: foregroundColor,
+  );
+}
+
+AppBarTheme appBarThemeDark() {
+  return appBarTheme(
+    backgroundColor: ColorPalette.darkThemeRaisinBlack,
     foregroundColor: ColorPalette.darkThemeAntiflashWhite,
   );
 }
 
 AppBarTheme appBarThemeLight() {
-  return const AppBarTheme(
-    elevation: 0.0,
-    shadowColor: Colors.transparent,
+  return appBarTheme(
     backgroundColor: ColorPalette.lightThemeAntiFlashWhite,
-    centerTitle: true,
     foregroundColor: ColorPalette.lightThemeShadow,
   );
 }
