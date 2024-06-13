@@ -273,7 +273,7 @@ class RouterNotifier extends ChangeNotifier {
             ),
             GoRoute(
               name: viewAssetRouteName,
-              path: '$viewAssetRouteName/:assetId',
+              path: viewAssetRouteName,
               pageBuilder: (context, state) {
                 final detailedAsset = state.extra as DetailedAsset;
                 return defaultTransitionPage(
