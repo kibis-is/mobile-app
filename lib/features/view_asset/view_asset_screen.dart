@@ -39,7 +39,7 @@ class ViewAssetScreen extends ConsumerWidget {
             sendTransactionWithAssetIdRouteName,
             pathParameters: {
               'mode': 'asset',
-              'detailedAsset': detailedAsset.assetId.toString()
+              'assetId': detailedAsset.assetId.toString()
             },
           ),
         ),
