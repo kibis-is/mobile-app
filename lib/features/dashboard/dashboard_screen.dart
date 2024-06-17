@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
@@ -22,6 +22,7 @@ import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   static String title = 'Dashboard';
@@ -32,12 +33,27 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class DashboardScreenState extends ConsumerState<DashboardScreen> {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndFetchAssetsAndBalance();
     });
+  }
+
+  void _onRefresh() async {
+    final accountState = ref.read(accountProvider);
+    final publicAddress = accountState.account?.publicAddress ?? '';
+
+    if (publicAddress.isNotEmpty) {
+      refreshAccountData(ref, publicAddress);
+      _refreshController.refreshCompleted();
+    } else {
+      _refreshController.refreshFailed();
+    }
   }
 
   void _checkAndFetchAssetsAndBalance() {
@@ -72,36 +88,42 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Scaffold(
       appBar: _buildAppBar(
           context, ref, networks, accountState, algorandService, balanceAsync),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: Column(
-          children: [
-            const SizedBox(height: kScreenPadding),
-            _buildDashboardInfoPanel(
-                context, ref, networks, accountStateFuture, accountState),
-            const SizedBox(height: kScreenPadding),
-            Expanded(
-              child: assetsAsync.when(
-                data: (assets) {
-                  debugPrint('Assets loaded: ${assets.length}');
-                  if (assets.isEmpty) {
-                    return const Center(child: Text('No assets found'));
-                  } else {
-                    return DashboardTabController(
-                      tabs: tabs,
-                      assets: assets,
-                    );
-                  }
-                },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) {
-                  debugPrint('Error loading assets: $error');
-                  return Center(child: Text('Error: $error'));
-                },
+      body: SmartRefresher(
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        header: const WaterDropHeader(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+          child: Column(
+            children: [
+              const SizedBox(height: kScreenPadding),
+              _buildDashboardInfoPanel(
+                  context, ref, networks, accountStateFuture, accountState),
+              const SizedBox(height: kScreenPadding),
+              Expanded(
+                child: assetsAsync.when(
+                  data: (assets) {
+                    debugPrint('Assets loaded: ${assets.length}');
+                    if (assets.isEmpty) {
+                      return const Center(child: Text('No assets found'));
+                    } else {
+                      return DashboardTabController(
+                        tabs: tabs,
+                        assets: assets,
+                      );
+                    }
+                  },
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) {
+                    debugPrint('Error loading assets: $error');
+                    return Center(child: Text('Error: $error'));
+                  },
+                ),
               ),
-            ),
-            _buildBottomNavigationBar(context),
-          ],
+              _buildBottomNavigationBar(context),
+            ],
+          ),
         ),
       ),
       floatingActionButton: CustomFloatingActionButton(
