@@ -15,7 +15,7 @@ import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class WalletsScreen extends ConsumerStatefulWidget {
-  static String title = 'Wallets';
+  static String title = 'Select Account';
   const WalletsScreen({super.key});
 
   @override
