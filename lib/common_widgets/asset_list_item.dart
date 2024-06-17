@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/detailed_asset.dart';
+import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class AssetListItem extends StatelessWidget {
+class AssetListItem extends ConsumerWidget {
   const AssetListItem({
     super.key,
     required this.asset,
@@ -16,7 +18,7 @@ class AssetListItem extends StatelessWidget {
   final DetailedAsset asset;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Stack(
       alignment: Alignment.topRight,
       children: [
@@ -34,7 +36,10 @@ class AssetListItem extends StatelessWidget {
                   style: context.textTheme.titleSmall!
                       .copyWith(color: context.colorScheme.onSurface)),
               trailing: _buildAssetAmount(context),
-              onTap: () => GoRouter.of(context).go('/viewAsset/', extra: asset),
+              onTap: () {
+                ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
+                GoRouter.of(context).go('/viewAsset/');
+              },
             ),
           ),
         ),

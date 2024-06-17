@@ -8,7 +8,7 @@ import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/features/view_asset/providers/view_asset_provider.dart';
-import 'package:kibisis/models/detailed_asset.dart';
+import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
@@ -16,17 +16,16 @@ import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class ViewAssetScreen extends ConsumerWidget {
-  final DetailedAsset detailedAsset;
-
-  const ViewAssetScreen({super.key, required this.detailedAsset});
+  const ViewAssetScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(activeAssetProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Asset Details'),
       ),
-      body: AssetDetailsView(asset: detailedAsset),
+      body: const AssetDetailsView(),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(
             left: kScreenPadding,
@@ -36,10 +35,9 @@ class ViewAssetScreen extends ConsumerWidget {
           text: 'Send',
           isFullWidth: true,
           onPressed: () => context.pushNamed(
-            sendTransactionWithAssetIdRouteName,
+            sendTransactionRouteName,
             pathParameters: {
               'mode': 'asset',
-              'assetId': detailedAsset.assetId.toString()
             },
           ),
         ),
@@ -49,9 +47,7 @@ class ViewAssetScreen extends ConsumerWidget {
 }
 
 class AssetDetailsView extends ConsumerWidget {
-  final DetailedAsset asset;
-
-  const AssetDetailsView({super.key, required this.asset});
+  const AssetDetailsView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,9 +56,9 @@ class AssetDetailsView extends ConsumerWidget {
       padding: const EdgeInsets.all(kScreenPadding),
       child: Column(
         children: [
-          AssetHeader(asset: asset),
+          const AssetHeader(),
           AssetExpansionToggle(isExpanded: isExpanded),
-          if (isExpanded) AssetDetailsList(asset: asset),
+          if (isExpanded) const AssetDetailsList(),
         ],
       ),
     );
@@ -70,18 +66,17 @@ class AssetDetailsView extends ConsumerWidget {
 }
 
 class AssetHeader extends ConsumerWidget {
-  final DetailedAsset asset;
-
-  const AssetHeader({super.key, required this.asset});
+  const AssetHeader({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final activeAsset = ref.watch(activeAssetProvider);
     return Stack(
       children: [
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(kScreenPadding),
-          decoration: asset.isFrozen
+          decoration: activeAsset?.isFrozen ?? false
               ? frozenBoxDecoration(context)
               : BoxDecoration(
                   color: context.colorScheme.surface,
@@ -107,7 +102,7 @@ class AssetHeader extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding),
               Text(
-                asset.name ?? 'Unnamed Asset',
+                activeAsset?.name ?? 'Unnamed Asset',
                 style: context.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -146,13 +141,13 @@ class AssetHeader extends ConsumerWidget {
             child: Row(
               children: [
                 Text(
-                  asset.assetId.toString(),
+                  activeAsset?.assetId.toString() ?? '',
                   style: context.textTheme.bodySmall
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 InkWell(
-                  onTap: () =>
-                      copyToClipboard(context, asset.assetId.toString()),
+                  onTap: () => copyToClipboard(
+                      context, activeAsset?.assetId.toString() ?? ''),
                   child: Padding(
                     padding: const EdgeInsets.only(left: kScreenPadding),
                     child: Icon(
@@ -165,7 +160,7 @@ class AssetHeader extends ConsumerWidget {
             ),
           ),
         ),
-        if (asset.isFrozen)
+        if (activeAsset?.isFrozen ?? false)
           const Positioned(
             right: 0,
             bottom: 0,
@@ -213,53 +208,53 @@ class AssetExpansionToggle extends ConsumerWidget {
   }
 }
 
-class AssetDetailsList extends StatelessWidget {
-  final DetailedAsset asset;
-
-  const AssetDetailsList({super.key, required this.asset});
+class AssetDetailsList extends ConsumerWidget {
+  const AssetDetailsList({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeAsset = ref.watch(activeAssetProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: kScreenPadding),
-        AssetDetail(text: 'Decimals', value: asset.decimals.toString()),
+        AssetDetail(
+            text: 'Decimals', value: activeAsset?.decimals.toString() ?? '0'),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
           text: 'Total Supply',
           value: NumberShortener.format(
-              double.parse(asset.totalSupply.toString())),
+              double.parse(activeAsset?.totalSupply.toString() ?? '0')),
         ),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
           text: 'Default Frozen',
-          value: (asset.defaultFrozen ?? false) ? 'Yes' : 'No',
+          value: (activeAsset?.defaultFrozen ?? false) ? 'Yes' : 'No',
         ),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Creator Account',
-            value: asset.creator ?? 'Not available',
+            value: activeAsset?.creator ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Clawback Account',
-            value: asset.clawback ?? 'Not available',
+            value: activeAsset?.clawback ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Freeze Account',
-            value: asset.freeze ?? 'Not available',
+            value: activeAsset?.freeze ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Manager Account',
-            value: asset.manager ?? 'Not available',
+            value: activeAsset?.manager ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Reserve Account',
-            value: asset.reserve ?? 'Not available',
+            value: activeAsset?.reserve ?? 'Not available',
             useEllipsis: true),
       ],
     );

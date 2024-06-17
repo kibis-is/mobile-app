@@ -9,8 +9,10 @@ import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
+import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
@@ -71,11 +73,15 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Future<List<SelectItem>> _getAssetsAndCurrenciesAsList(WidgetRef ref) async {
-    final publicAddress =
-        ref.read(accountProvider).account?.publicAddress ?? '';
-    final assets =
-        await ref.read(algorandServiceProvider).getAccountAssets(publicAddress);
+    final assetsAsync = ref.read(assetsProvider);
+    final network = ref.read(networkProvider);
 
+    if (assetsAsync is! AsyncData<List<DetailedAsset>>) {
+      // If assets are not loaded yet, return empty list
+      return [];
+    }
+
+    final assets = assetsAsync.value;
     List<SelectItem> combinedList = assets.map((asset) {
       return SelectItem(
           name: asset.name ?? 'Unnamed Asset',
@@ -83,7 +89,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           icon: '0xf02b2');
     }).toList();
 
-    final network = ref.read(networkProvider);
     combinedList.insert(
       0,
       network ??
