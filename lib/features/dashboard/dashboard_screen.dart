@@ -46,11 +46,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final assetsFetched = ref.read(accountDataFetchStatusProvider);
 
     if (publicAddress.isNotEmpty && !assetsFetched) {
-      refreshAccountData(
-          ref, publicAddress); // Call the universal refresh function
-      ref
-          .read(accountDataFetchStatusProvider.notifier)
-          .setFetched(true); // Mark as fetched
+      refreshAccountData(ref, publicAddress);
+      ref.read(accountDataFetchStatusProvider.notifier).setFetched(true);
     }
   }
 
