@@ -6,9 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/providers/assets_fetched_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -223,8 +225,17 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
     debugPrint('Setting active account ID: $accountId');
     await ref.read(activeAccountProvider.notifier).setActiveAccount(accountId);
     await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
+
+    final accountState = ref.read(accountProvider);
+    final publicAddress = accountState.account?.publicAddress ?? '';
+    if (publicAddress.isNotEmpty) {
+      debugPrint('Fetching assets for new public address: $publicAddress');
+      await ref.read(assetsProvider.notifier).getAccountAssets(publicAddress);
+    }
+
     if (!mounted) return;
     debugPrint('Selected account ID: $accountId');
+    ref.read(assetFetchStatusProvider.notifier).setFetched(false);
     _navigateToHome();
   }
 

@@ -4,17 +4,30 @@ import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 
 final assetsProvider =
-    FutureProvider.family<List<DetailedAsset>, String>((ref, address) async {
-  final algorandService = ref.watch(algorandServiceProvider);
-
-  if (address.isEmpty) {
-    return [];
-  }
-  try {
-    return await algorandService.getAccountAssets(address);
-  } on AlgorandException {
-    return [];
-  } catch (e) {
-    rethrow;
-  }
+    StateNotifierProvider<AssetsNotifier, AsyncValue<List<DetailedAsset>>>(
+        (ref) {
+  return AssetsNotifier(ref);
 });
+
+class AssetsNotifier extends StateNotifier<AsyncValue<List<DetailedAsset>>> {
+  final Ref ref;
+
+  AssetsNotifier(this.ref) : super(const AsyncValue.loading());
+
+  Future<void> getAccountAssets(String address) async {
+    final algorandService = ref.read(algorandServiceProvider);
+
+    if (address.isEmpty) {
+      state = const AsyncValue.data([]);
+      return;
+    }
+    try {
+      final assets = await algorandService.getAccountAssets(address);
+      state = AsyncValue.data(assets);
+    } on AlgorandException {
+      state = AsyncValue.error('Failed to fetch assets', StackTrace.current);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+}

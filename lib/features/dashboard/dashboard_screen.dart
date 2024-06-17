@@ -8,6 +8,7 @@ import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/providers/assets_fetched_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
@@ -20,22 +21,55 @@ import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   static String title = 'Dashboard';
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  DashboardScreenState createState() => DashboardScreenState();
+}
+
+class DashboardScreenState extends ConsumerState<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndFetchAssets();
+    });
+  }
+
+  void _checkAndFetchAssets() {
+    final accountState = ref.read(accountProvider);
+    final publicAddress = accountState.account?.publicAddress ?? '';
+    final assetsAsync = ref.read(assetsProvider);
+    final assetsFetched = ref.read(assetFetchStatusProvider);
+
+    if (publicAddress.isNotEmpty &&
+        !assetsFetched &&
+        assetsAsync.maybeWhen(
+            data: (assets) => assets.isEmpty, orElse: () => true)) {
+      debugPrint('Fetching assets for public address: $publicAddress');
+      ref.read(assetsProvider.notifier).getAccountAssets(publicAddress);
+      ref.read(assetFetchStatusProvider.notifier).setFetched(true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final networks = networkOptions;
     final activeAccountId = ref.watch(activeAccountProvider);
     final storageService = ref.watch(storageProvider);
     final accountStateFuture =
         _getAccountStateFuture(storageService, activeAccountId);
     final accountState = ref.watch(accountProvider);
-    final assets =
-        ref.watch(assetsProvider(accountState.account?.publicAddress ?? ''));
     final algorandService = ref.watch(algorandServiceProvider);
+    final assetsAsync = ref.watch(assetsProvider);
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
+
+    // Check and fetch assets when the widget rebuilds
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndFetchAssets();
+    });
 
     return Scaffold(
       appBar:
@@ -49,12 +83,23 @@ class DashboardScreen extends ConsumerWidget {
                 context, ref, networks, accountStateFuture, accountState),
             const SizedBox(height: kScreenPadding),
             Expanded(
-              child: assets.when(
-                data: (assets) =>
-                    DashboardTabController(tabs: tabs, assets: assets),
+              child: assetsAsync.when(
+                data: (assets) {
+                  debugPrint('Assets loaded: ${assets.length}');
+                  if (assets.isEmpty) {
+                    return const Center(child: Text('No assets found'));
+                  } else {
+                    return DashboardTabController(
+                      tabs: tabs,
+                      assets: assets,
+                    );
+                  }
+                },
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stackTrace) =>
-                    DashboardTabController(tabs: tabs, assets: const []),
+                error: (error, stack) {
+                  debugPrint('Error loading assets: $error');
+                  return Center(child: Text('Error: $error'));
+                },
               ),
             ),
             _buildBottomNavigationBar(context),
