@@ -10,8 +10,8 @@ import 'package:kibisis/features/dashboard/providers/assets_fetched_provider.dar
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
-import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class WalletsScreen extends ConsumerStatefulWidget {
@@ -228,14 +228,12 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
 
     final accountState = ref.read(accountProvider);
     final publicAddress = accountState.account?.publicAddress ?? '';
-    if (publicAddress.isNotEmpty) {
-      debugPrint('Fetching assets for new public address: $publicAddress');
-      await ref.read(assetsProvider.notifier).getAccountAssets(publicAddress);
-    }
+
+    refreshAccountData(ref, publicAddress);
 
     if (!mounted) return;
     debugPrint('Selected account ID: $accountId');
-    ref.read(assetFetchStatusProvider.notifier).setFetched(false);
+    ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
     _navigateToHome();
   }
 

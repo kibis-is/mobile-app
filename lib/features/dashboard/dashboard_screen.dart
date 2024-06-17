@@ -15,10 +15,12 @@ import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
+import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -34,23 +36,21 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndFetchAssets();
+      _checkAndFetchAssetsAndBalance();
     });
   }
 
-  void _checkAndFetchAssets() {
+  void _checkAndFetchAssetsAndBalance() {
     final accountState = ref.read(accountProvider);
     final publicAddress = accountState.account?.publicAddress ?? '';
-    final assetsAsync = ref.read(assetsProvider);
-    final assetsFetched = ref.read(assetFetchStatusProvider);
+    final assetsFetched = ref.read(accountDataFetchStatusProvider);
 
-    if (publicAddress.isNotEmpty &&
-        !assetsFetched &&
-        assetsAsync.maybeWhen(
-            data: (assets) => assets.isEmpty, orElse: () => true)) {
-      debugPrint('Fetching assets for public address: $publicAddress');
-      ref.read(assetsProvider.notifier).getAccountAssets(publicAddress);
-      ref.read(assetFetchStatusProvider.notifier).setFetched(true);
+    if (publicAddress.isNotEmpty && !assetsFetched) {
+      refreshAccountData(
+          ref, publicAddress); // Call the universal refresh function
+      ref
+          .read(accountDataFetchStatusProvider.notifier)
+          .setFetched(true); // Mark as fetched
     }
   }
 
@@ -64,16 +64,17 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final accountState = ref.watch(accountProvider);
     final algorandService = ref.watch(algorandServiceProvider);
     final assetsAsync = ref.watch(assetsProvider);
+    final balanceAsync =
+        ref.watch(balanceProvider); // Watch the balance provider
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
-    // Check and fetch assets when the widget rebuilds
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndFetchAssets();
+      _checkAndFetchAssetsAndBalance();
     });
 
     return Scaffold(
-      appBar:
-          _buildAppBar(context, ref, networks, accountState, algorandService),
+      appBar: _buildAppBar(
+          context, ref, networks, accountState, algorandService, balanceAsync),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
@@ -129,10 +130,11 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       WidgetRef ref,
       List<SelectItem> networks,
       AccountState accountState,
-      AlgorandService algorandService) {
+      AlgorandService algorandService,
+      AsyncValue<String> balanceAsync) {
     return SplitAppBar(
       leadingWidget: _buildBalanceWidget(
-          context, ref, networks, accountState, algorandService),
+          context, ref, networks, accountState, algorandService, balanceAsync),
       actionWidget: _buildNetworkSelectButton(context, networks, ref),
     );
   }
@@ -142,54 +144,47 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       WidgetRef ref,
       List<SelectItem> networks,
       AccountState accountState,
-      AlgorandService algorandService) {
+      AlgorandService algorandService,
+      AsyncValue<String> balanceAsync) {
     return Row(
       children: [
         Text('Balance:', style: context.textTheme.bodySmall),
-        FutureBuilder<String>(
-          future: algorandService
-              .getAccountBalance(accountState.account?.publicAddress ?? ''),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const AnimatedDots(); // Show animated dots while waiting
-            } else if (snapshot.hasError) {
-              return const Text('Error'); // Handle the error case
-            } else if (snapshot.hasData) {
-              return Row(
-                children: [
-                  Text(
-                    snapshot.data!,
-                    style: context.textTheme.bodySmall!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.primary),
-                  ),
-                  SvgPicture.asset(
-                    networks[0].icon,
-                    semanticsLabel: networks[0].name,
-                    height: 12,
-                    colorFilter: ColorFilter.mode(
-                        context.colorScheme.primary, BlendMode.srcATop),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.info_outline),
-                    color: context.colorScheme.onBackground,
-                    iconSize: kScreenPadding,
-                    onPressed: () {
-                      customBottomSheet(
-                          context: context,
-                          items: [],
-                          header: "Info",
-                          isIcon: true,
-                          onPressed: (SelectItem item) {});
-                    },
-                  ),
-                ],
-              );
-            } else {
-              return const Text(
-                  'No Data'); // Handle the case where there's no data
-            }
+        balanceAsync.when(
+          data: (balance) {
+            return Row(
+              children: [
+                Text(
+                  balance,
+                  style: context.textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.primary),
+                ),
+                SvgPicture.asset(
+                  networks[0].icon,
+                  semanticsLabel: networks[0].name,
+                  height: 12,
+                  colorFilter: ColorFilter.mode(
+                      context.colorScheme.primary, BlendMode.srcATop),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  color: context.colorScheme.onBackground,
+                  iconSize: kScreenPadding,
+                  onPressed: () {
+                    customBottomSheet(
+                        context: context,
+                        items: [],
+                        header: "Info",
+                        isIcon: true,
+                        onPressed: (SelectItem item) {});
+                  },
+                ),
+              ],
+            );
           },
+          loading: () =>
+              const AnimatedDots(), // Show animated dots while waiting
+          error: (error, stack) => const Text('Error'), // Handle the error case
         ),
       ],
     );

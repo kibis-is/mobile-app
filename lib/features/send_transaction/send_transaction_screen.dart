@@ -11,6 +11,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 
@@ -103,13 +104,17 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<bool> hasSufficientFunds(String publicAddress, String value) async {
     try {
-      final balance = await ref
-          .read(algorandServiceProvider)
-          .getAccountBalance(publicAddress);
-      return double.parse(balance) >= double.parse(value);
+      await ref.read(balanceProvider.notifier).getBalance(publicAddress);
+
+      final balanceAsync = ref.read(balanceProvider);
+
+      return balanceAsync.maybeWhen(
+        data: (balance) => double.parse(balance) >= double.parse(value),
+        orElse: () => false,
+      );
     } catch (e) {
       debugPrint('Error checking sufficient funds: $e');
-      return false; // Assuming that in case of an error, we treat it as insufficient funds
+      return false;
     }
   }
 
