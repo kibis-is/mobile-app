@@ -5,17 +5,14 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/activity_tab.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
 import 'package:kibisis/features/dashboard/widgets/nft_tab.dart';
-import 'package:kibisis/models/detailed_asset.dart';
 
 class DashboardTabController extends ConsumerWidget {
   const DashboardTabController({
     super.key,
     required this.tabs,
-    required this.assets,
   });
 
   final List<String> tabs;
-  final List<DetailedAsset> assets;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,12 +29,12 @@ class DashboardTabController extends ConsumerWidget {
             const SizedBox(
               height: kScreenPadding,
             ),
-            Expanded(
+            const Expanded(
               child: TabBarView(
                 children: [
-                  AssetsTab(assets: assets),
-                  const NftTab(),
-                  const ActivityTab(),
+                  AssetsTab(),
+                  NftTab(),
+                  ActivityTab(),
                 ],
               ),
             ),

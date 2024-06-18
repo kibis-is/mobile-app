@@ -229,12 +229,12 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
     final accountState = ref.read(accountProvider);
     final publicAddress = accountState.account?.publicAddress ?? '';
 
+    _navigateToHome();
     refreshAccountData(ref, publicAddress);
 
     if (!mounted) return;
     debugPrint('Selected account ID: $accountId');
     ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
-    _navigateToHome();
   }
 
   void _navigateToEditAccount(String accountId, String accountName) {

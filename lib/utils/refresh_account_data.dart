@@ -4,11 +4,8 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
-import 'package:kibisis/providers/loading_provider.dart';
 
 void refreshAccountData(WidgetRef ref, String publicAddress) async {
-  ref.read(loadingProvider.notifier).startLoading();
-
   if (publicAddress.isNotEmpty) {
     debugPrint('Fetching account details for public address: $publicAddress');
     await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
@@ -22,6 +19,4 @@ void refreshAccountData(WidgetRef ref, String publicAddress) async {
     debugPrint('Fetching transactions for public address: $publicAddress');
     await ref.read(transactionsProvider(publicAddress).future);
   }
-
-  ref.read(loadingProvider.notifier).stopLoading();
 }

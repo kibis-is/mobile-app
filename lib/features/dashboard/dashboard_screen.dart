@@ -13,8 +13,6 @@ import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/providers/account_provider.dart';
-import 'package:kibisis/providers/algorand_provider.dart';
-import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
@@ -75,10 +73,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final accountStateFuture =
         _getAccountStateFuture(storageService, activeAccountId);
     final accountState = ref.watch(accountProvider);
-    final algorandService = ref.watch(algorandServiceProvider);
-    final assetsAsync = ref.watch(assetsProvider);
-    final balanceAsync =
-        ref.watch(balanceProvider); // Watch the balance provider
+
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -86,44 +81,27 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     });
 
     return Scaffold(
-      appBar: _buildAppBar(
-          context, ref, networks, accountState, algorandService, balanceAsync),
-      body: SmartRefresher(
-        controller: _refreshController,
-        onRefresh: _onRefresh,
-        header: const WaterDropHeader(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-          child: Column(
-            children: [
-              const SizedBox(height: kScreenPadding),
-              _buildDashboardInfoPanel(
-                  context, ref, networks, accountStateFuture, accountState),
-              const SizedBox(height: kScreenPadding),
-              Expanded(
-                child: assetsAsync.when(
-                  data: (assets) {
-                    debugPrint('Assets loaded: ${assets.length}');
-                    if (assets.isEmpty) {
-                      return const Center(child: Text('No assets found'));
-                    } else {
-                      return DashboardTabController(
-                        tabs: tabs,
-                        assets: assets,
-                      );
-                    }
-                  },
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stack) {
-                    debugPrint('Error loading assets: $error');
-                    return Center(child: Text('Error: $error'));
-                  },
-                ),
+      appBar: _buildAppBar(context, ref, networks, accountState),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+        child: Column(
+          children: [
+            const SizedBox(height: kScreenPadding),
+            _buildDashboardInfoPanel(
+                context, ref, networks, accountStateFuture, accountState),
+            const SizedBox(height: kScreenPadding),
+            Expanded(
+              child: SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: false,
+                header: const WaterDropHeader(),
+                controller: _refreshController,
+                onRefresh: _onRefresh,
+                child: DashboardTabController(tabs: tabs),
               ),
-              _buildBottomNavigationBar(context),
-            ],
-          ),
+            ),
+            _buildBottomNavigationBar(context),
+          ],
         ),
       ),
       floatingActionButton: CustomFloatingActionButton(
@@ -144,27 +122,18 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     return storageService.getAccountData(activeAccountId ?? '', 'publicKey');
   }
 
-  PreferredSizeWidget _buildAppBar(
-      BuildContext context,
-      WidgetRef ref,
-      List<SelectItem> networks,
-      AccountState accountState,
-      AlgorandService algorandService,
-      AsyncValue<String> balanceAsync) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref,
+      List<SelectItem> networks, AccountState accountState) {
     return SplitAppBar(
-      leadingWidget: _buildBalanceWidget(
-          context, ref, networks, accountState, algorandService, balanceAsync),
+      leadingWidget: _buildBalanceWidget(context, ref, networks, accountState),
       actionWidget: _buildNetworkSelectButton(context, networks, ref),
     );
   }
 
-  Widget _buildBalanceWidget(
-      BuildContext context,
-      WidgetRef ref,
-      List<SelectItem> networks,
-      AccountState accountState,
-      AlgorandService algorandService,
-      AsyncValue<String> balanceAsync) {
+  Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
+      List<SelectItem> networks, AccountState accountState) {
+    final balanceAsync =
+        ref.watch(balanceProvider); // Watch the balance provider
     return Row(
       children: [
         Text('Balance:', style: context.textTheme.bodySmall),

@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/detailed_asset.dart';
+import 'package:kibisis/providers/assets_provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class AssetsTab extends StatelessWidget {
-  const AssetsTab({
-    super.key,
-    required this.assets,
-  });
-
-  final List<DetailedAsset> assets;
+class AssetsTab extends ConsumerWidget {
+  const AssetsTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final assetsAsync = ref.watch(assetsProvider);
+
     return Column(
       children: [
         _buildAddAssetButton(context),
         const SizedBox(height: kScreenPadding),
         Expanded(
-          child: assets.isEmpty
-              ? _buildEmptyAssets(context)
-              : _buildAssetsList(context),
+          child: assetsAsync.when(
+            data: (assets) => assets.isEmpty
+                ? _buildEmptyAssets(context)
+                : _buildAssetsList(context, assets),
+            loading: () => _buildLoadingAssets(context),
+            error: (error, stack) => Center(child: Text('Error: $error')),
+          ),
         ),
       ],
     );
@@ -77,12 +81,37 @@ class AssetsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildAssetsList(BuildContext context) {
+  Widget _buildAssetsList(BuildContext context, List<DetailedAsset> assets) {
     return ListView.separated(
       itemCount: assets.length,
       shrinkWrap: true,
       itemBuilder: (context, index) => AssetListItem(asset: assets[index]),
       separatorBuilder: (_, __) => const SizedBox(height: kScreenPadding / 2),
+    );
+  }
+
+  Widget _buildLoadingAssets(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: context.colorScheme.background,
+      highlightColor: Colors.grey.shade100,
+      period: const Duration(milliseconds: 2000),
+      child: ListView.separated(
+        itemCount: 3,
+        itemBuilder: (context, index) => ListTile(
+          leading: const CircleAvatar(),
+          title: Container(
+              width: double.infinity,
+              height: kScreenPadding,
+              color: context.colorScheme.surface),
+          subtitle: Container(
+              width: double.infinity,
+              height: kScreenPadding,
+              color: context.colorScheme.surface),
+        ),
+        separatorBuilder: (BuildContext context, int index) {
+          return const SizedBox(height: kScreenPadding / 2);
+        },
+      ),
     );
   }
 }
