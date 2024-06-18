@@ -9,7 +9,6 @@ import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
-import 'package:kibisis/features/view_asset/providers/view_asset_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
@@ -56,15 +55,13 @@ class AssetDetailsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isExpanded = ref.watch(viewMoreProvider);
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(kScreenPadding),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(kScreenPadding),
       child: Column(
         children: [
-          const AssetHeader(),
-          const AssetControls(),
-          AssetExpansionToggle(isExpanded: isExpanded),
-          if (isExpanded) const AssetDetailsList(),
+          AssetHeader(),
+          AssetControls(),
+          AssetExpansionToggle(),
         ],
       ),
     );
@@ -298,33 +295,53 @@ class AssetControlsState extends ConsumerState<AssetControls> {
   }
 }
 
-class AssetExpansionToggle extends ConsumerWidget {
-  final bool isExpanded;
+final assetExpansionProvider = StateProvider<bool>((ref) => false);
 
-  const AssetExpansionToggle({super.key, required this.isExpanded});
+class AssetExpansionToggle extends ConsumerWidget {
+  const AssetExpansionToggle({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isExpanded = ref.watch(assetExpansionProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: kScreenPadding / 2),
-        InkWell(
-          onTap: () {
-            ref.read(viewMoreProvider.notifier).state = !isExpanded;
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                isExpanded ? 'Less Information' : 'More Information',
-                style: context.textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(width: kScreenPadding),
-              const Icon(Icons.arrow_drop_down),
-            ],
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () {
+              ref.read(assetExpansionProvider.notifier).state = !isExpanded;
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isExpanded ? 'Less Information' : 'More Information',
+                  style: context.textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(width: kScreenPadding),
+                Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+              ],
+            ),
           ),
+        ),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          switchInCurve: Curves.easeOut,
+          switchOutCurve: Curves.easeIn,
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return SizeTransition(
+              sizeFactor: animation,
+              axisAlignment: 0.0,
+              child: child,
+            );
+          },
+          child: isExpanded
+              ? const AssetDetailsList(key: ValueKey(1))
+              : const SizedBox(key: ValueKey(0)),
         ),
       ],
     );
