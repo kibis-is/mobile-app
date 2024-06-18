@@ -32,4 +32,40 @@ class DetailedAsset {
     this.metadataHash,
     this.defaultFrozen,
   });
+
+  DetailedAsset copyWith({
+    int? amount,
+    int? assetId,
+    String? creator,
+    bool? isFrozen,
+    String? name,
+    String? unitName,
+    int? totalSupply,
+    int? decimals,
+    String? manager,
+    String? reserve,
+    String? freeze,
+    String? clawback,
+    String? url,
+    String? metadataHash,
+    bool? defaultFrozen,
+  }) {
+    return DetailedAsset(
+      amount: amount ?? this.amount,
+      assetId: assetId ?? this.assetId,
+      creator: creator ?? this.creator,
+      isFrozen: isFrozen ?? this.isFrozen,
+      name: name ?? this.name,
+      unitName: unitName ?? this.unitName,
+      totalSupply: totalSupply ?? this.totalSupply,
+      decimals: decimals ?? this.decimals,
+      manager: manager ?? this.manager,
+      reserve: reserve ?? this.reserve,
+      freeze: freeze ?? this.freeze,
+      clawback: clawback ?? this.clawback,
+      url: url ?? this.url,
+      metadataHash: metadataHash ?? this.metadataHash,
+      defaultFrozen: defaultFrozen ?? this.defaultFrozen,
+    );
+  }
 }

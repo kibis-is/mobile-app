@@ -1,3 +1,4 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,10 +6,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/features/view_asset/providers/view_asset_provider.dart';
+import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
+import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
@@ -57,6 +62,7 @@ class AssetDetailsView extends ConsumerWidget {
       child: Column(
         children: [
           const AssetHeader(),
+          const AssetControls(),
           AssetExpansionToggle(isExpanded: isExpanded),
           if (isExpanded) const AssetDetailsList(),
         ],
@@ -171,6 +177,123 @@ class AssetHeader extends ConsumerWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+class AssetControls extends ConsumerStatefulWidget {
+  const AssetControls({super.key});
+
+  @override
+  AssetControlsState createState() => AssetControlsState();
+}
+
+class AssetControlsState extends ConsumerState<AssetControls> {
+  void _showSnackBar({required String message, required SnackType snackType}) {
+    showCustomSnackBar(
+      context: context,
+      snackType: snackType,
+      message: message,
+    );
+  }
+
+  Future<void> _toggleFreezeAsset(BuildContext context, WidgetRef ref) async {
+    final isLoading = ref.watch(loadingProvider.notifier);
+    isLoading.startLoading();
+    final activeAsset = ref.read(activeAssetProvider);
+    final accountState = ref.read(accountProvider);
+    final algorandService = ref.read(algorandServiceProvider);
+
+    if (activeAsset != null && accountState.account != null) {
+      try {
+        await algorandService.toggleFreezeAsset(
+          assetId: activeAsset.assetId,
+          account: accountState.account!,
+          freeze: !activeAsset.isFrozen,
+        );
+
+        ref.read(activeAssetProvider.notifier).setActiveAsset(
+              activeAsset.copyWith(
+                isFrozen: !activeAsset.isFrozen,
+              ),
+            );
+
+        if (context.mounted) {
+          _showSnackBar(
+            message: activeAsset.isFrozen ? 'Asset frozen' : 'Asset unfrozen',
+            snackType: SnackType.success,
+          );
+        }
+      } on AlgorandException catch (e) {
+        final prunedMessage = _extractErrorMessage(e.message);
+        if (context.mounted) {
+          _showSnackBar(
+            message: prunedMessage,
+            snackType: SnackType.error,
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          _showSnackBar(
+            message: activeAsset.isFrozen
+                ? 'Failed to freeze asset'
+                : 'Failed to unfreeze asset',
+            snackType: SnackType.error,
+          );
+        }
+      } finally {
+        isLoading.stopLoading();
+      }
+    }
+  }
+
+  String _extractErrorMessage(String errorMessage) {
+    List<String> keywords = [
+      'freeze not allowed',
+    ];
+
+    for (String keyword in keywords) {
+      if (errorMessage.contains(keyword)) {
+        // Make the first letter a capital.
+        return keyword[0].toUpperCase() + keyword.substring(1);
+      }
+    }
+
+    return 'An error occurred';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final activeAsset = ref.watch(activeAssetProvider);
+    final accountState = ref.watch(accountProvider);
+
+    final canShowFreezeButton =
+        accountState.account?.publicAddress == activeAsset?.freeze;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kScreenPadding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (canShowFreezeButton)
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: context.colorScheme.surface,
+              ),
+              child: IconButton(
+                padding: const EdgeInsets.all(kScreenPadding),
+                icon: Icon(
+                  Icons.ac_unit_rounded,
+                  color: activeAsset?.isFrozen ?? false
+                      ? context.colorScheme.primary
+                      : context.colorScheme.onSurface,
+                ),
+                onPressed: () => _toggleFreezeAsset(context, ref),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

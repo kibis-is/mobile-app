@@ -281,23 +281,35 @@ class AlgorandService {
     return e.toString();
   }
 
-  // Freeze an asset
-  Future<void> freezeAsset(int assetId, Account freezeAccount,
-      String freezeTargetAddress, bool freeze) async {
+  Future<void> toggleFreezeAsset({
+    required int assetId,
+    required Account account,
+    required bool freeze,
+  }) async {
     try {
       await algorand.assetManager.freeze(
         assetId: assetId,
-        account: freezeAccount,
-        freezeTarget: Address.fromAlgorandAddress(address: freezeTargetAddress),
+        account: account,
+        freezeTarget:
+            Address.fromAlgorandAddress(address: account.publicAddress),
         freeze: freeze,
       );
+      debugPrint(
+          "Successfully ${freeze ? 'froze' : 'unfroze'} asset with ID: $assetId");
+    } on AlgorandException catch (e) {
+      debugPrint(
+          "Failed to ${freeze ? 'freeze' : 'unfreeze'} asset with ID: $assetId: ${e.message}");
+      rethrow;
     } catch (e) {
-      debugPrint("Failed to freeze asset: $e");
-      throw Exception("Failed to freeze asset: $e");
+      debugPrint(
+          "Failed to ${freeze ? 'freeze' : 'unfreeze'} asset with ID: $assetId: $e");
+      throw AlgorandException(
+        message: "Failed to ${freeze ? 'freeze' : 'unfreeze'} asset: $e",
+        cause: e,
+      );
     }
   }
 
-  // Revoke an asset
   Future<void> revokeAsset(
       int assetId, Account account, int amount, String revokeAddress) async {
     try {
