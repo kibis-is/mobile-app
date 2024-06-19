@@ -24,9 +24,6 @@ class AppLifecycleHandler with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint(
-        'Current AppLifecycleState is $state at ${DateTime.now().toIso8601String()}');
-
     if ((state == AppLifecycleState.inactive ||
             state == AppLifecycleState.hidden) &&
         _backgroundTime == null) {
@@ -44,33 +41,23 @@ class AppLifecycleHandler with WidgetsBindingObserver {
     final isPasswordLockEnabled = ref.read(pinLockProvider);
     if (_backgroundTime != null) {
       final duration = DateTime.now().difference(_backgroundTime!);
-      debugPrint(
-          'App was in the background for: ${duration.inSeconds} seconds');
       _backgroundTime = null; // Reset the background time
 
       onResumed?.call(duration.inSeconds);
 
       if (isPasswordLockEnabled && duration.inSeconds > lockoutTime) {
-        debugPrint(
-            'The app was in the background for more than $lockoutTime seconds.');
         handleTimeout();
       }
     }
   }
 
   void handleTimeout() {
-    // Implement actions to be performed if the background time was more than one minute
-    debugPrint('Performing actions due to extended background time.');
-    // Set the isAuthenticatedProvider to false
     ref.read(isAuthenticatedProvider.notifier).state = false;
-
-    // Clear account and PIN states
     ref.read(accountProvider.notifier).clearAccountState();
     ref.read(pinProvider.notifier).clearPinState();
   }
 
   void handleOnBackground() {
     _backgroundTime = DateTime.now();
-    debugPrint('Background time set at: $_backgroundTime');
   }
 }

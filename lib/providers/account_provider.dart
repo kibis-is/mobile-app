@@ -1,6 +1,5 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:convert/convert.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
@@ -219,7 +218,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
     final privateKeyBytes =
         await state.account!.keyPair.extractPrivateKeyBytes();
     final encodedPrivateKey = hex.encode(privateKeyBytes);
-    debugPrint('Encoded Private Key: $encodedPrivateKey');
     return encodedPrivateKey;
   }
 

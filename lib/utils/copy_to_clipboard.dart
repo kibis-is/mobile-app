@@ -13,6 +13,4 @@ void copyToClipboard(BuildContext context, String text) async {
       message: "Copied to clipboard",
     );
   });
-  debugPrint('text: $text');
-  debugPrint('data: $data');
 }

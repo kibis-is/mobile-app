@@ -43,8 +43,6 @@ class AlgorandService {
         amount: amountInMicroAlgos,
         note: note,
       );
-
-      debugPrint("Payment successful: Transaction ID: $txId");
       return txId;
     } catch (e) {
       debugPrint("Failed to send payment: $e");
@@ -122,13 +120,6 @@ class AlgorandService {
               currencyIsGreaterThan < double.maxFinite
           ? currencyIsGreaterThan
           : 1e15; // Use a high but reasonable value
-
-      // Logging the input values for debugging
-      debugPrint('getAssets called with:');
-      debugPrint('searchQuery: $searchQuery');
-      debugPrint('currencyIsLessThan: $currencyIsLessThan');
-      debugPrint('currencyIsGreaterThan: $maxCurrencyValue');
-      debugPrint('searchLimit: $searchLimit');
 
       var assetsQuery = algorand
           .indexer()
@@ -223,7 +214,6 @@ class AlgorandService {
         freezeAddress: freeze,
         clawbackAddress: clawback,
       );
-      debugPrint("Asset edited successfully: Asset ID $assetId");
     } catch (e) {
       debugPrint("Failed to edit asset: $e");
       throw Exception("Failed to edit asset: $e");
@@ -294,8 +284,6 @@ class AlgorandService {
             Address.fromAlgorandAddress(address: account.publicAddress),
         freeze: freeze,
       );
-      debugPrint(
-          "Successfully ${freeze ? 'froze' : 'unfroze'} asset with ID: $assetId");
     } on AlgorandException catch (e) {
       debugPrint(
           "Failed to ${freeze ? 'freeze' : 'unfreeze'} asset with ID: $assetId: ${e.message}");

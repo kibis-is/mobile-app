@@ -71,24 +71,19 @@ class RouterNotifier extends ChangeNotifier {
     bool hasAccount = await container.read(storageProvider).accountExists();
 
     FlutterNativeSplash.remove();
-    debugPrint('refresh the routing');
-
     if (!hasAccount &&
         !state.uri.toString().startsWith('/setup') &&
         !isSetupComplete) {
-      debugPrint('redirect to /setup');
       return '/setup';
     } else if (hasAccount &&
         !isAuthenticated &&
         isPasswordLockEnabled &&
         !state.uri.toString().startsWith('/pinPadUnlock')) {
-      debugPrint('redirect to /pinPadUnlock');
       return '/pinPadUnlock';
     } else if (hasAccount &&
         (isAuthenticated || !isPasswordLockEnabled) &&
         (state.uri.toString().startsWith('/setup') ||
             state.uri.toString().startsWith('/pinPad'))) {
-      debugPrint('redirect to /');
       return '/';
     }
 

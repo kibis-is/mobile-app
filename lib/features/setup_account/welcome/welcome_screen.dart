@@ -56,12 +56,6 @@ class WelcomeScreen extends StatelessWidget {
                       text: 'Create Pin',
                       isFullWidth: true,
                       onPressed: () {
-                        final currentPath = GoRouter.of(context)
-                            .routeInformationProvider
-                            .value
-                            .uri
-                            .path;
-                        debugPrint(currentPath);
                         GoRouter.of(context).push('/setup/pinPadSetup');
                       },
                     )
