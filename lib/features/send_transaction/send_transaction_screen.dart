@@ -109,9 +109,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<bool> hasSufficientFunds(String publicAddress, String value) async {
     try {
-      await ref.read(balanceProvider.notifier).getBalance(publicAddress);
+      // await ref.read(balanceProvider.notifier).getBalance(publicAddress);
 
-      final balanceAsync = ref.read(balanceProvider);
+      final balanceAsync = ref.read(balanceProvider(publicAddress));
 
       return balanceAsync.maybeWhen(
         data: (balance) => double.parse(balance) >= double.parse(value),

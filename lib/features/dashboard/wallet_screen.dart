@@ -230,7 +230,9 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
     final publicAddress = accountState.account?.publicAddress ?? '';
 
     _navigateToHome();
-    refreshAccountData(ref, publicAddress);
+    if (mounted) {
+      refreshAccountData(context, ref, publicAddress);
+    }
 
     if (!mounted) return;
     debugPrint('Selected account ID: $accountId');

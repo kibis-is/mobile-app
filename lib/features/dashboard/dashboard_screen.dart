@@ -47,7 +47,9 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final publicAddress = accountState.account?.publicAddress ?? '';
 
     if (publicAddress.isNotEmpty) {
-      refreshAccountData(ref, publicAddress);
+      if (mounted) {
+        refreshAccountData(context, ref, publicAddress);
+      }
       _refreshController.refreshCompleted();
     } else {
       _refreshController.refreshFailed();
@@ -60,7 +62,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final assetsFetched = ref.read(accountDataFetchStatusProvider);
 
     if (publicAddress.isNotEmpty && !assetsFetched) {
-      refreshAccountData(ref, publicAddress);
+      refreshAccountData(context, ref, publicAddress);
       ref.read(accountDataFetchStatusProvider.notifier).setFetched(true);
     }
   }
@@ -132,8 +134,9 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
-    final balanceAsync =
-        ref.watch(balanceProvider); // Watch the balance provider
+    final publicAddress =
+        ref.read(accountProvider).account?.publicAddress ?? '';
+    final balanceAsync = ref.watch(balanceProvider(publicAddress));
     return Row(
       children: [
         Text('Balance:', style: context.textTheme.bodySmall),
