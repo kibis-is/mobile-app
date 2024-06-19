@@ -16,6 +16,7 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 
 final dropdownItemsProvider = StateProvider<List<SelectItem>>((ref) => []);
 
@@ -186,6 +187,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
         if (txId.isNotEmpty && txId != 'error') {
           _showSuccessSnackbar(txId);
+          if (mounted) {
+            refreshAccountData(context, ref, account.publicAddress);
+          }
         } else {
           throw Exception('Transaction failed');
         }
@@ -197,6 +201,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             int.parse(amountController.text));
 
         _showSuccessSnackbar("Asset transfer successful.");
+        if (mounted) {
+          refreshAccountData(context, ref, account.publicAddress);
+        }
       }
     } catch (e) {
       if (e is AlgorandException) {
