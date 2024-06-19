@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -96,12 +98,14 @@ class ActivityTab extends ConsumerWidget {
         final amountInAlgos = transaction.paymentTransaction != null
             ? Algo.fromMicroAlgos(transaction.paymentTransaction!.amount)
             : 0.0;
+        final note = utf8.decode(base64.decode(transaction.note ?? ''));
 
         return TransactionItem(
           transaction: transaction,
           isOutgoing: isOutgoing,
           otherPartyAddress: otherPartyAddress,
           amountInAlgos: amountInAlgos,
+          note: note,
         );
       },
       separatorBuilder: (context, index) => const SizedBox(

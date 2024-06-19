@@ -3,11 +3,9 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class TransactionItem extends ConsumerWidget {
@@ -15,14 +13,15 @@ class TransactionItem extends ConsumerWidget {
   final bool isOutgoing;
   final String otherPartyAddress;
   final double amountInAlgos;
+  final String note;
 
-  const TransactionItem({
-    super.key,
-    required this.transaction,
-    required this.isOutgoing,
-    required this.otherPartyAddress,
-    required this.amountInAlgos,
-  });
+  const TransactionItem(
+      {super.key,
+      required this.transaction,
+      required this.isOutgoing,
+      required this.otherPartyAddress,
+      required this.amountInAlgos,
+      required this.note});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,40 +39,46 @@ class TransactionItem extends ConsumerWidget {
               );
             },
             leading: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorPalette.voiPurple,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(kScreenPadding),
-                child: SvgPicture.asset(
-                  'assets/images/voi-asset-icon.svg',
-                  semanticsLabel: 'VOI Logo',
-                  width: kScreenPadding,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcATop,
+              padding: const EdgeInsets.all(kScreenPadding / 2),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                      width: 2.0,
+                      color: isOutgoing
+                          ? context.colorScheme.error
+                          : context.colorScheme.secondary)),
+              child: isOutgoing
+                  ? Icon(Icons.arrow_upward_rounded,
+                      color: isOutgoing
+                          ? context.colorScheme.error
+                          : context.colorScheme.secondary)
+                  : Icon(Icons.arrow_downward_rounded,
+                      color: isOutgoing
+                          ? context.colorScheme.error
+                          : context.colorScheme.secondary),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (transaction.roundTime != null)
+                  Text(
+                    _formatDateTime(transaction.roundTime!),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                EllipsizedText(
+                  type: EllipsisType.middle,
+                  ellipsis: '...',
+                  otherPartyAddress,
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+              ],
             ),
-            title: EllipsizedText(
-              type: EllipsisType.middle,
-              ellipsis: '...',
-              otherPartyAddress,
-              style: context.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: transaction.roundTime != null
-                ? Text(
-                    _formatDateTime(transaction.roundTime!),
-                    style: context.textTheme.bodySmall,
-                  )
-                : null,
+            subtitle: Text(note),
             trailing: Text(
               '${isOutgoing ? '-' : '+'}$amountInAlgos',
-              style: context.textTheme.bodySmall?.copyWith(
+              style: context.textTheme.bodyMedium?.copyWith(
                 color: isOutgoing
                     ? context.colorScheme.error
                     : context.colorScheme.secondary,
