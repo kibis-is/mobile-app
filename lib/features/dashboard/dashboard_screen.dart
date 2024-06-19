@@ -38,7 +38,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndFetchAssetsAndBalance();
+      // _checkAndFetchAssets();
+      _onRefresh();
     });
   }
 
@@ -56,7 +57,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
-  void _checkAndFetchAssetsAndBalance() {
+  void _checkAndFetchAssets() {
     final accountState = ref.read(accountProvider);
     final publicAddress = accountState.account?.publicAddress ?? '';
     final assetsFetched = ref.read(accountDataFetchStatusProvider);
@@ -79,7 +80,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndFetchAssetsAndBalance();
+      _checkAndFetchAssets();
     });
 
     return Scaffold(
@@ -134,9 +135,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
-    final publicAddress =
-        ref.read(accountProvider).account?.publicAddress ?? '';
-    final balanceAsync = ref.watch(balanceProvider(publicAddress));
+    final balanceAsync = ref.watch(balanceProvider);
     return Row(
       children: [
         Text('Balance:', style: context.textTheme.bodySmall),

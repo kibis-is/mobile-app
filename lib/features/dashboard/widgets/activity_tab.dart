@@ -16,8 +16,7 @@ class ActivityTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final publicAddress = ref.watch(accountProvider
         .select((account) => account.account?.publicAddress ?? ''));
-    final transactionsAsyncValue =
-        ref.watch(transactionsProvider(publicAddress));
+    final transactionsAsyncValue = ref.watch(transactionsProvider);
 
     return transactionsAsyncValue.when(
       data: (transactions) {

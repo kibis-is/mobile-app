@@ -65,9 +65,6 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
         final accountName = account['accountName'] ?? 'Unnamed Account';
         final publicKey = account['publicKey'] ?? 'No Public Key';
 
-        debugPrint(
-            'Rendering account: $accountName with Public Key: $publicKey');
-
         return _buildAccountItem(context, account, accountName, publicKey);
       },
       separatorBuilder: (BuildContext context, int index) {
@@ -222,21 +219,22 @@ class WalletsScreenState extends ConsumerState<WalletsScreen> {
   }
 
   Future<void> _handleAccountSelection(String accountId) async {
+    _navigateToHome();
+
     debugPrint('Setting active account ID: $accountId');
+
     await ref.read(activeAccountProvider.notifier).setActiveAccount(accountId);
     await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
 
     final accountState = ref.read(accountProvider);
     final publicAddress = accountState.account?.publicAddress ?? '';
-
-    _navigateToHome();
+    if (mounted) {
+      debugPrint('Selected account ID: $accountId');
+      ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
+    }
     if (mounted) {
       refreshAccountData(context, ref, publicAddress);
     }
-
-    if (!mounted) return;
-    debugPrint('Selected account ID: $accountId');
-    ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
   }
 
   void _navigateToEditAccount(String accountId, String accountName) {

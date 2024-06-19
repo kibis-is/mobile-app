@@ -112,7 +112,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     try {
       // await ref.read(balanceProvider.notifier).getBalance(publicAddress);
 
-      final balanceAsync = ref.read(balanceProvider(publicAddress));
+      final balanceAsync = ref.read(balanceProvider);
 
       return balanceAsync.maybeWhen(
         data: (balance) => double.parse(balance) >= double.parse(value),
@@ -187,9 +187,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
         if (txId.isNotEmpty && txId != 'error') {
           _showSuccessSnackbar(txId);
-          if (mounted) {
-            refreshAccountData(context, ref, account.publicAddress);
-          }
         } else {
           throw Exception('Transaction failed');
         }
@@ -201,9 +198,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             int.parse(amountController.text));
 
         _showSuccessSnackbar("Asset transfer successful.");
-        if (mounted) {
-          refreshAccountData(context, ref, account.publicAddress);
-        }
+      }
+
+      // Refresh account data after a successful transaction
+      final publicAddress =
+          ref.read(accountProvider).account?.publicAddress ?? '';
+
+      if (mounted) {
+        refreshAccountData(context, ref, publicAddress);
       }
     } catch (e) {
       if (e is AlgorandException) {

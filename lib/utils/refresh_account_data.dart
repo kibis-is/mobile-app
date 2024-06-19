@@ -6,26 +6,24 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 
 void refreshAccountData(
-    BuildContext context, WidgetRef ref, String publicAddress) async {
+    BuildContext context, WidgetRef ref, String publicAddress) {
   if (publicAddress.isNotEmpty) {
-    if (context.mounted) {
-      debugPrint('Fetching account details for public address: $publicAddress');
-      await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
-    }
+    ref.invalidate(balanceProvider);
+    ref.invalidate(assetsProvider);
+    ref.invalidate(transactionsProvider);
+    ref.invalidate(accountProvider);
 
     if (context.mounted) {
-      debugPrint('Fetching assets for public address: $publicAddress');
-      await ref.read(assetsProvider.notifier).getAccountAssets(publicAddress);
+      ref.read(accountProvider);
     }
     if (context.mounted) {
-      debugPrint('Fetching balance for public address: $publicAddress');
-      await ref
-          .read(balanceProvider(publicAddress).notifier)
-          .getBalance(publicAddress);
+      ref.read(assetsProvider.notifier).getAccountAssets(publicAddress);
     }
     if (context.mounted) {
-      debugPrint('Fetching transactions for public address: $publicAddress');
-      await ref.read(transactionsProvider(publicAddress).future);
+      ref.read(balanceProvider);
+    }
+    if (context.mounted) {
+      ref.read(transactionsProvider.notifier).getTransactions(publicAddress);
     }
   }
 }

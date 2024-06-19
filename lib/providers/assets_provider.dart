@@ -27,7 +27,9 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<DetailedAsset>>> {
     } on AlgorandException {
       state = AsyncValue.error('Failed to fetch assets', StackTrace.current);
     } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+      if (mounted) {
+        state = AsyncValue.error(e, StackTrace.current);
+      }
     }
   }
 }
