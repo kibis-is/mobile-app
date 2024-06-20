@@ -9,6 +9,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/utils/complete_account_setup.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class NameAccountScreen extends ConsumerStatefulWidget {
@@ -148,6 +149,13 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
         .finalizeAccountCreation(accountName);
 
     ref.read(accountsListProvider.notifier).loadAccounts();
+
+    final publicAddress =
+        ref.read(accountProvider).account?.publicAddress ?? '';
+
+    if (mounted) {
+      refreshAccountData(context, ref, publicAddress);
+    }
 
     _navigateToHome();
   }
