@@ -37,6 +37,9 @@ class AlgorandService {
       );
 
       return detailedAssets;
+    } on AlgorandException catch (e) {
+      debugPrint('AlgorandException: ${e.toString()}');
+      throw AlgorandException(message: e.message);
     } catch (e) {
       throw Exception('Failed to fetch assets: $e');
     }
@@ -102,10 +105,10 @@ class AlgorandService {
       return assets;
     } on AlgorandException catch (e) {
       debugPrint('AlgorandException: ${e.toString()}');
-      throw Exception('Failed to fetch assets: ${e.message}');
+      throw Exception('Failed to fetch assets zxc: ${e.message}');
     } catch (e) {
       debugPrint('General Exception: $e');
-      throw Exception('Failed to fetch assets: $e');
+      throw Exception('Failed to fetch assets abc: $e');
     }
   }
 
