@@ -58,18 +58,27 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
 
   Widget _buildAccountsList(
       BuildContext context, List<Map<String, dynamic>> accounts) {
-    return ListView.separated(
-      itemCount: accounts.length,
-      itemBuilder: (context, index) {
-        final account = accounts[index];
-        final accountName = account['accountName'] ?? 'Unnamed Account';
-        final publicKey = account['publicKey'] ?? 'No Public Key';
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.only(
+                bottom: kBottomNavigationBarHeight), // Add padding here
+            itemCount: accounts.length,
+            itemBuilder: (context, index) {
+              final account = accounts[index];
+              final accountName = account['accountName'] ?? 'Unnamed Account';
+              final publicKey = account['publicKey'] ?? 'No Public Key';
 
-        return _buildAccountItem(context, account, accountName, publicKey);
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return const SizedBox(height: kScreenPadding);
-      },
+              return _buildAccountItem(
+                  context, account, accountName, publicKey);
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return const SizedBox(height: kScreenPadding);
+            },
+          ),
+        ),
+      ],
     );
   }
 
