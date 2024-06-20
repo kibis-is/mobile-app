@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/add_asset/add_asset_screen.dart';
 import 'package:kibisis/features/dashboard/dashboard_screen.dart';
-import 'package:kibisis/features/dashboard/wallet_screen.dart';
+import 'package:kibisis/features/dashboard/account_list_screen.dart';
 import 'package:kibisis/features/error/error_screen.dart';
 import 'package:kibisis/features/pin_pad/pin_pad_screen.dart';
 import 'package:kibisis/features/scan_qr/scan_qr_screen.dart';
@@ -252,10 +252,10 @@ class RouterNotifier extends ChangeNotifier {
           },
           routes: [
             GoRoute(
-              name: walletsRouteName,
-              path: walletsRouteName,
+              name: accountListRouteName,
+              path: accountListRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const WalletsScreen(), state);
+                return defaultTransitionPage(const AccountListScreen(), state);
               },
             ),
             GoRoute(

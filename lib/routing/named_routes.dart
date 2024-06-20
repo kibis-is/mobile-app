@@ -13,12 +13,9 @@ const String mainNameAccountRouteName = 'addAccountNameAccount';
 const String mainImportQrRouteName = 'addAccountImportQr';
 
 const String editNameAccountRouteName = 'editAccount';
-
-const String walletsRouteName = 'wallets';
+const String accountListRouteName = 'wallets';
 const String sendTransactionRouteName = 'sendTransaction';
 const String addAssetRouteName = 'addAsset';
-const String addWalletRouteName = 'addWallet';
-const String addNetworkRouteName = 'addNetwork';
 const String viewAssetRouteName = 'viewAsset';
 
 const String settingsRouteName = 'settings';
@@ -31,5 +28,3 @@ const String aboutRouteName = 'about';
 
 const String pinPadUnlockRouteName = 'pinPadUnlock';
 const String pinPadSetupRouteName = 'pinPadSetup';
-
-const String errorRouteName = 'error';

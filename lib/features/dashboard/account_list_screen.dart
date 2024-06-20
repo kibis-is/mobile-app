@@ -14,15 +14,15 @@ import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class WalletsScreen extends ConsumerStatefulWidget {
+class AccountListScreen extends ConsumerStatefulWidget {
   static String title = 'Select Account';
-  const WalletsScreen({super.key});
+  const AccountListScreen({super.key});
 
   @override
-  WalletsScreenState createState() => WalletsScreenState();
+  AccountListScreenState createState() => AccountListScreenState();
 }
 
-class WalletsScreenState extends ConsumerState<WalletsScreen> {
+class AccountListScreenState extends ConsumerState<AccountListScreen> {
   @override
   Widget build(BuildContext context) {
     final accountsListState = ref.watch(accountsListProvider);
