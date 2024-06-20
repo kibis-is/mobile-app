@@ -33,7 +33,7 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
           return;
         }
         state = const AsyncValue.loading();
-        final response = await ref.read(algorandServiceProvider).getAssets(
+        final response = await ref.read(algorandServiceProvider).searchAssets(
               searchQuery,
               minCurrency,
               maxCurrency,
