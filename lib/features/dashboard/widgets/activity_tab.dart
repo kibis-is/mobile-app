@@ -102,16 +102,14 @@ class ActivityTab extends ConsumerWidget {
           : 0.0;
       final note = utf8.decode(base64.decode(transaction.note ?? ''));
       final type = transaction.type;
-      final assetId =
-          transaction.assetTransferTransaction?.assetId.toString() ?? '';
+      final assetId = transaction.assetTransferTransaction?.assetId;
       final assetAmount = transaction.assetTransferTransaction?.amount ?? 0;
       final otherPartyAddressAsset =
           transaction.assetTransferTransaction?.receiver ?? 'Unknown';
 
       if (type == 'axfer') {
-        final detailedAsset = await ref
-            .read(algorandServiceProvider)
-            .getDetailedAsset(assetId, publicAddress);
+        final detailedAsset =
+            await ref.read(algorandServiceProvider).getAssetById(assetId ?? -1);
         transactionItems.add(TransactionItem(
           transaction: transaction,
           isOutgoing: isOutgoing,

@@ -11,6 +11,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
@@ -27,9 +28,8 @@ final sendTransactionScreenModeProvider =
 
 class SendTransactionScreen extends ConsumerStatefulWidget {
   final SendTransactionScreenMode mode;
-  final int? assetId;
+
   const SendTransactionScreen({
-    this.assetId,
     this.mode = SendTransactionScreenMode.currency,
     super.key,
   });
@@ -68,8 +68,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final items = await _getAssetsAndCurrenciesAsList(ref);
     if (mounted) {
       ref.read(dropdownItemsProvider.notifier).state = items;
+      final activeAsset = ref.read(activeAssetProvider);
       ref.read(selectedAssetProvider.notifier).selectAsset(
-          items: items, assetId: widget.assetId, mode: widget.mode);
+          items: items, assetId: activeAsset?.assetId ?? 0, mode: widget.mode);
     }
   }
 
@@ -90,6 +91,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           icon: '0xf02b2');
     }).toList();
 
+    //insert the network (voi or algorand) item at the beginning of the list
     combinedList.insert(
       0,
       network ??

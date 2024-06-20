@@ -25,7 +25,7 @@ class AssetListItem extends ConsumerWidget {
       children: [
         Material(
           child: Container(
-            decoration: asset.isFrozen
+            decoration: asset.defaultFrozen ?? false
                 ? frozenBoxDecoration(context)
                 : BoxDecoration(
                     color: context.colorScheme.surface,
@@ -55,7 +55,7 @@ class AssetListItem extends ConsumerWidget {
             ),
           ),
         ),
-        asset.isFrozen
+        asset.defaultFrozen ?? false
             ? const Padding(
                 padding: EdgeInsets.all(kScreenPadding / 2),
                 child: Icon(Icons.ac_unit, size: kScreenPadding),
@@ -84,17 +84,11 @@ class AssetListItem extends ConsumerWidget {
   }
 
   Widget _buildAssetAmount(BuildContext context) {
-    return SizedBox(
+    return const SizedBox(
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
-            asset.amount.toString(),
-            style: context.textTheme.titleSmall?.copyWith(
-                color: context.colorScheme.secondary,
-                fontWeight: FontWeight.bold),
-          ),
-          const Icon(Icons.arrow_forward_ios),
+          Icon(Icons.arrow_forward_ios),
         ],
       ),
     );

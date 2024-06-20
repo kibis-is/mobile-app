@@ -38,12 +38,14 @@ class ViewAssetScreen extends ConsumerWidget {
         child: CustomButton(
           text: 'Send',
           isFullWidth: true,
-          onPressed: () => context.pushNamed(
-            sendTransactionRouteName,
-            pathParameters: {
-              'mode': 'asset',
-            },
-          ),
+          onPressed: () {
+            context.pushNamed(
+              sendTransactionRouteName,
+              pathParameters: {
+                'mode': 'asset',
+              },
+            );
+          },
         ),
       ),
     );
@@ -84,7 +86,7 @@ class AssetHeader extends ConsumerWidget {
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(kScreenPadding),
-          decoration: activeAsset?.isFrozen ?? false
+          decoration: activeAsset?.defaultFrozen ?? false
               ? frozenBoxDecoration(context)
               : BoxDecoration(
                   color: context.colorScheme.surface,
@@ -168,7 +170,7 @@ class AssetHeader extends ConsumerWidget {
             ),
           ),
         ),
-        if (activeAsset?.isFrozen ?? false)
+        if (activeAsset?.defaultFrozen ?? false)
           const Positioned(
             right: 0,
             bottom: 0,
@@ -207,22 +209,23 @@ class AssetControlsState extends ConsumerState<AssetControls> {
     final algorandService = ref.read(algorandServiceProvider);
 
     if (activeAsset != null && accountState.account != null) {
+      final frozen = activeAsset.defaultFrozen ?? false;
       try {
         await algorandService.toggleFreezeAsset(
           assetId: activeAsset.assetId,
           account: accountState.account!,
-          freeze: !activeAsset.isFrozen,
+          freeze: !frozen,
         );
 
         ref.read(activeAssetProvider.notifier).setActiveAsset(
               activeAsset.copyWith(
-                isFrozen: !activeAsset.isFrozen,
+                defaultFrozen: !frozen,
               ),
             );
 
         if (context.mounted) {
           _showSnackBar(
-            message: activeAsset.isFrozen ? 'Asset frozen' : 'Asset unfrozen',
+            message: !frozen ? 'Asset frozen' : 'Asset unfrozen',
             snackType: SnackType.success,
           );
         }
@@ -237,9 +240,8 @@ class AssetControlsState extends ConsumerState<AssetControls> {
       } catch (e) {
         if (context.mounted) {
           _showSnackBar(
-            message: activeAsset.isFrozen
-                ? 'Failed to freeze asset'
-                : 'Failed to unfreeze asset',
+            message:
+                frozen ? 'Failed to freeze asset' : 'Failed to unfreeze asset',
             snackType: SnackType.error,
           );
         }
@@ -282,7 +284,7 @@ class AssetControlsState extends ConsumerState<AssetControls> {
               padding: const EdgeInsets.all(kScreenPadding),
               icon: Icon(
                 Icons.ac_unit_rounded,
-                color: activeAsset?.isFrozen ?? false
+                color: activeAsset?.defaultFrozen ?? false
                     ? context.colorScheme.primary
                     : context.colorScheme.onSurface,
               ),

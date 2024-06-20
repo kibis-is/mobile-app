@@ -19,7 +19,7 @@ class ActiveAssetNotifier extends StateNotifier<DetailedAsset?> {
 
   void toggleFreeze() {
     if (state != null) {
-      state = state!.copyWith(isFrozen: !state!.isFrozen);
+      state = state!.copyWith(defaultFrozen: !(state!.defaultFrozen ?? false));
     }
   }
 }

@@ -1,8 +1,6 @@
 class DetailedAsset {
-  final int amount;
   final int assetId;
   final String? creator;
-  final bool isFrozen;
   final String? name;
   final String? unitName;
   final int? totalSupply;
@@ -16,10 +14,8 @@ class DetailedAsset {
   final bool? defaultFrozen;
 
   DetailedAsset({
-    required this.amount,
     required this.assetId,
     this.creator,
-    required this.isFrozen,
     this.name,
     this.unitName,
     this.totalSupply,
@@ -37,7 +33,6 @@ class DetailedAsset {
     int? amount,
     int? assetId,
     String? creator,
-    bool? isFrozen,
     String? name,
     String? unitName,
     int? totalSupply,
@@ -51,10 +46,8 @@ class DetailedAsset {
     bool? defaultFrozen,
   }) {
     return DetailedAsset(
-      amount: amount ?? this.amount,
       assetId: assetId ?? this.assetId,
       creator: creator ?? this.creator,
-      isFrozen: isFrozen ?? this.isFrozen,
       name: name ?? this.name,
       unitName: unitName ?? this.unitName,
       totalSupply: totalSupply ?? this.totalSupply,

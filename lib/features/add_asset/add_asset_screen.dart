@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,9 +93,20 @@ class AddAssetScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       final asset = assets[index];
                       return ListTile(
-                        title: Text(asset.params.name ?? 'No name'),
-                        subtitle: Text(asset.params.unitName ?? 'No Unit Name'),
-                      );
+                          title: Text(asset.params.name ?? 'No name'),
+                          subtitle:
+                              Text(asset.params.unitName ?? 'No Unit Name'),
+                          onTap: () async {
+                            final assetDetails = await ref
+                                .read(algorandServiceProvider)
+                                .getAssetById(asset.index);
+                            ref
+                                .read(activeAssetProvider.notifier)
+                                .setActiveAsset(assetDetails);
+                            if (context.mounted) {
+                              GoRouter.of(context).go('/viewAsset/');
+                            }
+                          });
                     },
                   );
                 },

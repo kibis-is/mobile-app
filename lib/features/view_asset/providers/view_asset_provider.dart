@@ -13,9 +13,7 @@ final assetDetailsProvider = FutureProvider<DetailedAsset>((ref) async {
     throw Exception(
         "Account is not available, public address is not set, or asset ID is not set.");
   }
-  return await ref
-      .read(algorandServiceProvider)
-      .getDetailedAsset(activeAssetId.toString(), account.publicAddress);
+  return await ref.read(algorandServiceProvider).getAssetById(activeAssetId);
 });
 
 final publicAddressProvider =
