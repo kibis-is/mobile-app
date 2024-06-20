@@ -9,6 +9,7 @@ import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -24,18 +25,17 @@ class ActivityTab extends ConsumerWidget {
     return transactionsAsyncValue.when(
       data: (transactions) {
         if (transactions.isEmpty) {
-          return _buildEmptyTransactions(context);
+          return _buildEmptyTransactions(context, ref);
         }
         return _buildTransactionsList(
             context, ref, transactions, publicAddress);
       },
       loading: () => _buildLoadingTransactions(context),
-      error: (error, stack) =>
-          const Center(child: Text('Failed to load transactions')),
+      error: (error, stack) => _buildEmptyTransactions(context, ref),
     );
   }
 
-  Widget _buildEmptyTransactions(BuildContext context) {
+  Widget _buildEmptyTransactions(BuildContext context, WidgetRef ref) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -56,6 +56,14 @@ class ActivityTab extends ConsumerWidget {
           Text('You have not made any transactions. Try making one now.',
               style: context.textTheme.bodyMedium, textAlign: TextAlign.center),
           const SizedBox(height: kScreenPadding),
+          TextButton(
+            onPressed: () {
+              final publicAddress =
+                  ref.watch(accountProvider).account?.publicAddress ?? '';
+              refreshAccountData(context, ref, publicAddress);
+            },
+            child: const Text('Retry'),
+          ),
         ],
       ),
     );
@@ -145,7 +153,7 @@ class ActivityTab extends ConsumerWidget {
           return const Center(
               child: Text('Failed to load transaction details'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return _buildEmptyTransactions(context);
+          return _buildEmptyTransactions(context, ref);
         } else {
           return ListView.separated(
             itemCount: snapshot.data!.length,

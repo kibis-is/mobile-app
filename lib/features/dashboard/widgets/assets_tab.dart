@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/detailed_asset.dart';
+import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -23,10 +25,10 @@ class AssetsTab extends ConsumerWidget {
         Expanded(
           child: assetsAsync.when(
             data: (assets) => assets.isEmpty
-                ? _buildEmptyAssets(context)
+                ? _buildEmptyAssets(context, ref)
                 : _buildAssetsList(context, assets),
             loading: () => _buildLoadingAssets(context),
-            error: (error, stack) => Center(child: Text('Error: $error')),
+            error: (error, stack) => _buildEmptyAssets(context, ref),
           ),
         ),
       ],
@@ -55,7 +57,7 @@ class AssetsTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyAssets(BuildContext context) {
+  Widget _buildEmptyAssets(BuildContext context, WidgetRef ref) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +78,14 @@ class AssetsTab extends ConsumerWidget {
           Text('You have not added any assets. Try adding one now.',
               style: context.textTheme.bodyMedium, textAlign: TextAlign.center),
           const SizedBox(height: kScreenPadding),
+          TextButton(
+            onPressed: () {
+              final publicAddress =
+                  ref.watch(accountProvider).account?.publicAddress ?? '';
+              refreshAccountData(context, ref, publicAddress);
+            },
+            child: const Text('Retry'),
+          ),
         ],
       ),
     );
