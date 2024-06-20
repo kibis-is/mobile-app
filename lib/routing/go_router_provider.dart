@@ -276,8 +276,8 @@ class RouterNotifier extends ChangeNotifier {
               name: sendTransactionRouteName,
               path: '$sendTransactionRouteName/:mode',
               pageBuilder: (context, state) {
-                final mode = state.pathParameters['mode'] == 'currency'
-                    ? SendTransactionScreenMode.currency
+                final mode = state.pathParameters['mode'] == 'payment'
+                    ? SendTransactionScreenMode.payment
                     : SendTransactionScreenMode.asset;
                 return defaultTransitionPage(
                     SendTransactionScreen(

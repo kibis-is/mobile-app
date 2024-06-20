@@ -19,7 +19,7 @@ class SelectedAssetNotifier extends StateNotifier<SelectItem?> {
       state = SelectItem(name: 'No Items', value: "-1", icon: '0xe3af');
       return;
     }
-    if (mode == SendTransactionScreenMode.currency) {
+    if (mode == SendTransactionScreenMode.payment) {
       state = items[0];
     } else if (mode == SendTransactionScreenMode.asset) {
       state = items.firstWhere(

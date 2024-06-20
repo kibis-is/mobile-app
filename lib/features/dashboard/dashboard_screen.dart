@@ -112,7 +112,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
         onPressed: () => context.goNamed(
           sendTransactionRouteName,
           pathParameters: {
-            'mode': 'currency',
+            'mode': 'payment',
           },
         ),
       ),

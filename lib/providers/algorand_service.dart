@@ -7,7 +7,7 @@ class AlgorandService {
 
   AlgorandService(this.algorand);
 
-  Future<String> sendCurrency(
+  Future<String> sendPayment(
       Account senderAccount, String recipientAddress, double amountInAlgos,
       [String? note]) async {
     try {

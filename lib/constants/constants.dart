@@ -18,7 +18,7 @@ enum AccountFlow {
 
 enum SendTransactionScreenMode {
   asset,
-  currency,
+  payment,
 }
 
 List<SelectItem> timeoutList = [

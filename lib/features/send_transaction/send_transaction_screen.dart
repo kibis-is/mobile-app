@@ -23,14 +23,14 @@ final dropdownItemsProvider = StateProvider<List<SelectItem>>((ref) => []);
 
 final sendTransactionScreenModeProvider =
     StateProvider<SendTransactionScreenMode>((ref) {
-  return SendTransactionScreenMode.currency;
+  return SendTransactionScreenMode.payment;
 });
 
 class SendTransactionScreen extends ConsumerStatefulWidget {
   final SendTransactionScreenMode mode;
 
   const SendTransactionScreen({
-    this.mode = SendTransactionScreenMode.currency,
+    this.mode = SendTransactionScreenMode.payment,
     super.key,
   });
 
@@ -181,7 +181,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       }
 
       if (selectedItem.value.startsWith("network")) {
-        final txId = await ref.read(algorandServiceProvider).sendCurrency(
+        final txId = await ref.read(algorandServiceProvider).sendPayment(
             account!,
             recipientAddressController.text,
             amountInAlgos,
@@ -244,7 +244,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   String get _getAppBarTitle =>
-      'Send ${widget.mode == SendTransactionScreenMode.currency ? 'Currency' : 'Asset'}';
+      'Send ${widget.mode == SendTransactionScreenMode.payment ? 'Payment' : 'Asset'}';
 
   void _showPinPadDialog(WidgetRef ref) async {
     if (await _validateForm(ref)) {
