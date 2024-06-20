@@ -37,6 +37,7 @@ final ThemeData lightTheme = ThemeData(
     onBackground: ColorPalette.lightThemeChineseViolet,
     surface: ColorPalette.lightThemeMagnolia,
     onSurface: ColorPalette.lightThemeChineseViolet,
+    onSurfaceVariant: ColorPalette.lightThemeLicorice,
     shadow: ColorPalette.lightThemeFrenchGray,
   ),
   inputDecorationTheme: inputDecorationTheme(
@@ -74,6 +75,7 @@ final ThemeData darkTheme = ThemeData(
     onBackground: ColorPalette.darkThemeCadetGray,
     surface: ColorPalette.darkThemeGunmetal,
     onSurface: ColorPalette.darkThemeCadetGray,
+    onSurfaceVariant: ColorPalette.darkThemeAntiflashWhite,
     shadow: ColorPalette.darkThemeBlack,
   ),
   inputDecorationTheme: inputDecorationTheme(

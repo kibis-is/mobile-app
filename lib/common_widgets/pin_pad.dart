@@ -60,12 +60,14 @@ class PinPadState extends ConsumerState<PinPad> {
                   child: CircleAvatar(
                     radius: 10,
                     backgroundColor: index < pinEntryProvider.pin.length
-                        ? Colors.white
+                        ? context.colorScheme.onSurfaceVariant
                         : Colors.transparent,
                     child: Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(
+                            color: context.colorScheme.onSurfaceVariant,
+                            width: 2),
                       ),
                     ),
                   ),
