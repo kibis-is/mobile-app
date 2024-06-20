@@ -8,6 +8,7 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:algorand_dart/algorand_dart.dart';
+import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -85,32 +86,80 @@ class ActivityTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildTransactionsList(BuildContext context, WidgetRef ref,
-      List<Transaction> transactions, String publicAddress) {
-    return ListView.separated(
-      itemCount: transactions.length,
-      itemBuilder: (context, index) {
-        final transaction = transactions[index];
-        final isOutgoing = transaction.sender == publicAddress;
-        final otherPartyAddress = isOutgoing
-            ? transaction.paymentTransaction?.receiver.toString() ?? ''
-            : transaction.sender;
-        final amountInAlgos = transaction.paymentTransaction != null
-            ? Algo.fromMicroAlgos(transaction.paymentTransaction!.amount)
-            : 0.0;
-        final note = utf8.decode(base64.decode(transaction.note ?? ''));
+  Future<List<TransactionItem>> _buildTransactionItems(
+      List<Transaction> transactions,
+      String publicAddress,
+      WidgetRef ref) async {
+    final transactionItems = <TransactionItem>[];
 
-        return TransactionItem(
+    for (final transaction in transactions) {
+      final isOutgoing = transaction.sender == publicAddress;
+      final otherPartyAddress = isOutgoing
+          ? transaction.paymentTransaction?.receiver.toString() ?? ''
+          : transaction.sender;
+      final amountInAlgos = transaction.paymentTransaction != null
+          ? Algo.fromMicroAlgos(transaction.paymentTransaction!.amount)
+          : 0.0;
+      final note = utf8.decode(base64.decode(transaction.note ?? ''));
+      final type = transaction.type;
+      final assetId =
+          transaction.assetTransferTransaction?.assetId.toString() ?? '';
+      final assetAmount = transaction.assetTransferTransaction?.amount ?? 0;
+      final otherPartyAddressAsset =
+          transaction.assetTransferTransaction?.receiver ?? 'Unknown';
+
+      if (type == 'axfer') {
+        final detailedAsset = await ref
+            .read(algorandServiceProvider)
+            .getDetailedAsset(assetId, publicAddress);
+        transactionItems.add(TransactionItem(
+          transaction: transaction,
+          isOutgoing: isOutgoing,
+          otherPartyAddress: otherPartyAddressAsset,
+          note: note,
+          amount: assetAmount.toString(),
+          type: type,
+          assetName: detailedAsset.name ?? '',
+        ));
+      } else if (type == 'pay') {
+        transactionItems.add(TransactionItem(
           transaction: transaction,
           isOutgoing: isOutgoing,
           otherPartyAddress: otherPartyAddress,
-          amountInAlgos: amountInAlgos,
+          amount: amountInAlgos.toString(),
           note: note,
-        );
+          type: type,
+        ));
+      }
+    }
+
+    return transactionItems;
+  }
+
+  Widget _buildTransactionsList(BuildContext context, WidgetRef ref,
+      List<Transaction> transactions, String publicAddress) {
+    return FutureBuilder<List<TransactionItem>>(
+      future: _buildTransactionItems(transactions, publicAddress, ref),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildLoadingTransactions(context);
+        } else if (snapshot.hasError) {
+          return const Center(
+              child: Text('Failed to load transaction details'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return _buildEmptyTransactions(context);
+        } else {
+          return ListView.separated(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              return snapshot.data![index];
+            },
+            separatorBuilder: (context, index) => const SizedBox(
+              height: kScreenPadding / 2,
+            ),
+          );
+        }
       },
-      separatorBuilder: (context, index) => const SizedBox(
-        height: kScreenPadding / 2,
-      ),
     );
   }
 }

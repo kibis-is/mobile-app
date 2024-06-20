@@ -55,13 +55,18 @@ class AssetDetailsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.all(kScreenPadding),
+    final activeAsset = ref.watch(activeAssetProvider);
+    final accountState = ref.read(accountProvider);
+    final canShowFreezeButton =
+        accountState.account?.publicAddress == activeAsset?.freeze;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(kScreenPadding),
       child: Column(
         children: [
-          AssetHeader(),
-          AssetControls(),
-          AssetExpansionToggle(),
+          const AssetHeader(),
+          if (canShowFreezeButton) const AssetControls(),
+          const AssetExpansionToggle(),
         ],
       ),
     );
@@ -106,7 +111,7 @@ class AssetHeader extends ConsumerWidget {
               const SizedBox(height: kScreenPadding),
               Text(
                 activeAsset?.name ?? 'Unnamed Asset',
-                style: context.textTheme.titleLarge?.copyWith(
+                style: context.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -155,7 +160,7 @@ class AssetHeader extends ConsumerWidget {
                     padding: const EdgeInsets.only(left: kScreenPadding),
                     child: Icon(
                       Icons.copy,
-                      color: context.colorScheme.primary,
+                      color: context.colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -262,33 +267,28 @@ class AssetControlsState extends ConsumerState<AssetControls> {
   @override
   Widget build(BuildContext context) {
     final activeAsset = ref.watch(activeAssetProvider);
-    final accountState = ref.watch(accountProvider);
-
-    final canShowFreezeButton =
-        accountState.account?.publicAddress == activeAsset?.freeze;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: kScreenPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (canShowFreezeButton)
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: context.colorScheme.surface,
-              ),
-              child: IconButton(
-                padding: const EdgeInsets.all(kScreenPadding),
-                icon: Icon(
-                  Icons.ac_unit_rounded,
-                  color: activeAsset?.isFrozen ?? false
-                      ? context.colorScheme.primary
-                      : context.colorScheme.onSurface,
-                ),
-                onPressed: () => _toggleFreezeAsset(context, ref),
-              ),
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: context.colorScheme.surface,
             ),
+            child: IconButton(
+              padding: const EdgeInsets.all(kScreenPadding),
+              icon: Icon(
+                Icons.ac_unit_rounded,
+                color: activeAsset?.isFrozen ?? false
+                    ? context.colorScheme.primary
+                    : context.colorScheme.onSurface,
+              ),
+              onPressed: () => _toggleFreezeAsset(context, ref),
+            ),
+          ),
         ],
       ),
     );
@@ -373,27 +373,27 @@ class AssetDetailsList extends ConsumerWidget {
         ),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
-            text: 'Creator Account',
+            text: 'Creator:',
             value: activeAsset?.creator ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
-            text: 'Clawback Account',
+            text: 'Clawback:',
             value: activeAsset?.clawback ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
-            text: 'Freeze Account',
+            text: 'Freeze:',
             value: activeAsset?.freeze ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
-            text: 'Manager Account',
+            text: 'Manager:',
             value: activeAsset?.manager ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
-            text: 'Reserve Account',
+            text: 'Reserve:',
             value: activeAsset?.reserve ?? 'Not available',
             useEllipsis: true),
       ],
@@ -426,13 +426,13 @@ class AssetDetail extends StatelessWidget {
                   ellipsis: '...',
                   type: EllipsisType.middle,
                   textAlign: TextAlign.right,
-                  style: context.textTheme.titleMedium
+                  style: context.textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.bold),
                 )
               : Text(
                   value,
                   textAlign: TextAlign.right,
-                  style: context.textTheme.titleMedium
+                  style: context.textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
         ),

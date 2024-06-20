@@ -1,3 +1,4 @@
+import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,17 +25,28 @@ class AssetListItem extends ConsumerWidget {
       children: [
         Material(
           child: Container(
-            decoration: frozenBoxDecoration(context),
+            decoration: asset.isFrozen
+                ? frozenBoxDecoration(context)
+                : BoxDecoration(
+                    color: context.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(kWidgetRadius),
+                  ),
             child: ListTile(
               tileColor: Colors.transparent,
               horizontalTitleGap: kScreenPadding * 2,
               leading: _buildAssetIcon(),
-              title: Text(asset.name ?? 'Unknown',
-                  style: context.textTheme.titleMedium!
-                      .copyWith(fontWeight: FontWeight.bold)),
-              subtitle: Text(asset.unitName ?? 'Unknown',
-                  style: context.textTheme.titleSmall!
-                      .copyWith(color: context.colorScheme.onSurface)),
+              title: EllipsizedText(
+                asset.name ?? 'Unknown',
+                style: context.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: EllipsizedText(
+                asset.unitName ?? 'Unknown',
+                style: context.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.onSurface),
+              ),
               trailing: _buildAssetAmount(context),
               onTap: () {
                 ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
