@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
-import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
@@ -9,10 +8,6 @@ import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_lifecycle_handler.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:kibisis/providers/account_provider.dart';
-import 'package:kibisis/providers/algorand_provider.dart';
-import 'package:kibisis/providers/assets_provider.dart';
-import 'package:kibisis/providers/balance_provider.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
