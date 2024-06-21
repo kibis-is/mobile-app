@@ -7,14 +7,18 @@ import 'package:kibisis/utils/theme_extensions.dart';
 
 Future<dynamic> customBottomSheet({
   required BuildContext context,
-  required List<dynamic> items,
+  List<dynamic>? items,
   required String header,
   bool isIcon = false,
   bool hasButton = false,
   String? buttonText,
-  required Function(SelectItem) onPressed,
+  Function(SelectItem)? onPressed,
   VoidCallback? buttonOnPressed,
+  Widget? singleWidget, // Optional parameter for a single widget
 }) {
+  // Determine if we are using a list or a single widget
+  final isSingleWidgetMode = singleWidget != null;
+
   return showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
@@ -25,7 +29,11 @@ Future<dynamic> customBottomSheet({
           children: [
             _buildHeader(context, header),
             const SizedBox(height: kScreenPadding),
-            _buildItemList(context, items, isIcon, onPressed),
+            if (isSingleWidgetMode)
+              singleWidget
+            else
+              _buildItemList(context, items!, isIcon,
+                  onPressed!), // Use the list if singleWidget is not provided
             if (hasButton)
               CustomButton(
                 text: buttonText ?? "Confirm",

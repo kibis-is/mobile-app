@@ -14,6 +14,7 @@ import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
+import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -146,7 +147,11 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                   onPressed: () {
                     customBottomSheet(
                         context: context,
-                        items: [],
+                        singleWidget: Text(
+                          'Minimum balance is ${ref.watch(minimumBalanceProvider)} VOI. Based on the account configuration, this is the minimum balance needed to keep the account open.',
+                          softWrap: true,
+                          style: context.textTheme.bodyMedium,
+                        ),
                         header: "Info",
                         isIcon: true,
                         onPressed: (SelectItem item) {});
