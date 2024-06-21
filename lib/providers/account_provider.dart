@@ -70,20 +70,26 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
     try {
       final accountName =
-          await storageService.getAccountData(activeAccountId, 'accountName');
+          await storageService.getAccountData(activeAccountId, 'accountName') ??
+              '';
       final privateKey =
-          await storageService.getAccountData(activeAccountId, 'privateKey');
-
-      if (privateKey != null) {
-        final account = await algorand.loadAccountFromPrivateKey(privateKey);
-        state = state.copyWith(
-          accountId: activeAccountId,
-          accountName: accountName,
-          account: account,
-        );
-      }
+          await storageService.getAccountData(activeAccountId, 'privateKey') ??
+              '';
+      initialiseFromPrivateKey(accountName, privateKey, activeAccountId);
     } catch (e) {
       state = state.copyWith(error: 'Failed to initialize account: $e');
+    }
+  }
+
+  Future<void> initialiseFromPrivateKey(
+      String accountName, String privateKey, String activeAccountId) async {
+    if (privateKey.isNotEmpty) {
+      final account = await algorand.loadAccountFromPrivateKey(privateKey);
+      state = state.copyWith(
+        accountId: activeAccountId,
+        accountName: accountName,
+        account: account,
+      );
     }
   }
 

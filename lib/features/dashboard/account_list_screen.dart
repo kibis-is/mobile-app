@@ -7,10 +7,8 @@ import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
-import 'package:kibisis/providers/active_account_provider.dart';
-import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
+import 'package:kibisis/utils/account_selection.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AccountListScreen extends ConsumerStatefulWidget {
@@ -130,8 +128,8 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
         ),
       ),
       onTap: () async {
-        debugPrint('Tapped account Public Key: $publicKey');
-        await _handleAccountSelection(account['accountId']!);
+        final accountHandler = AccountHandler(context, ref);
+        accountHandler.handleAccountSelection(account['accountId']);
       },
     );
   }
@@ -226,28 +224,9 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
     );
   }
 
-  Future<void> _handleAccountSelection(String accountId) async {
-    _navigateToHome();
-
-    debugPrint('Setting active account ID: $accountId');
-
-    await ref.read(activeAccountProvider.notifier).setActiveAccount(accountId);
-    ref.invalidate(accountProvider);
-    await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
-
-    if (mounted) {
-      invalidateProviders(ref);
-    }
-  }
-
   void _navigateToEditAccount(String accountId, String accountName) {
     GoRouter.of(context)
         .push('/editAccount/$accountId', extra: {'accountName': accountName});
-  }
-
-  void _navigateToHome() {
-    if (!mounted) return;
-    GoRouter.of(context).go('/');
   }
 
   void _navigateToAddAccount() {

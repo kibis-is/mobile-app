@@ -56,10 +56,13 @@ class AlgorandService {
 
       return detailedAssets;
     } on AlgorandException catch (e) {
-      debugPrint('AlgorandException: ${e.toString()}');
-      throw AlgorandException(message: e.message);
+      debugPrint('Get Account Assets Algorand Exception: ${e.toString()}');
+      // Return an empty list instead of throwing an exception
+      return <DetailedAsset>[];
     } catch (e) {
-      throw Exception('Failed to fetch assets: $e');
+      debugPrint('Failed to fetch assets: $e');
+      // Return an empty list or handle differently as per your use case
+      return <DetailedAsset>[];
     }
   }
 
@@ -122,7 +125,7 @@ class AlgorandService {
           await assetsQuery.search(limit: searchLimit);
       return assets;
     } on AlgorandException catch (e) {
-      debugPrint('AlgorandException: ${e.toString()}');
+      debugPrint('Search Assets AlgorandException: ${e.toString()}');
       throw Exception('Failed to fetch assets zxc: ${e.message}');
     } catch (e) {
       debugPrint('General Exception: $e');
@@ -145,7 +148,7 @@ class AlgorandService {
       final balance = accountInfo.amount;
       return Algo.fromMicroAlgos(balance).toString();
     } on AlgorandException catch (e) {
-      debugPrint('Algorand Exception: ${e.message}');
+      debugPrint('Get Balance Algorand Exception: ${e.message}');
       return '0';
     } catch (e) {
       debugPrint('General Exception: $e');
