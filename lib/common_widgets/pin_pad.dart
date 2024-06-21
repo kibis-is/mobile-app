@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
@@ -112,8 +113,23 @@ class PinPadState extends ConsumerState<PinPad> {
                                 Icons.refresh,
                                 color: context.colorScheme.onError,
                               ),
-                              onPressed: () {
-                                _handleResetApp();
+                              onPressed: () async {
+                                bool confirm = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ConfirmationDialog(
+                                          yesText: 'Reset',
+                                          noText: 'Cancel',
+                                          content:
+                                              'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
+                                        );
+                                      },
+                                    ) ??
+                                    false;
+
+                                if (confirm) {
+                                  _handleResetApp();
+                                }
                               },
                               color: context.colorScheme.onSurface,
                               iconSize: kScreenPadding * 2,

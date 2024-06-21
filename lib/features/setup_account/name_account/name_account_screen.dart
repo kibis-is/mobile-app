@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
@@ -67,7 +68,22 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                   return IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () async {
-                      await _deleteAccount(widget.accountId!);
+                      bool confirm = await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const ConfirmationDialog(
+                                yesText: 'Delete',
+                                noText: 'Cancel',
+                                content:
+                                    'Are you sure you want to delete this account?',
+                              );
+                            },
+                          ) ??
+                          false;
+
+                      if (confirm) {
+                        await _deleteAccount(widget.accountId!);
+                      }
                     },
                   );
                 }
