@@ -57,12 +57,6 @@ class _KibisisState extends ConsumerState<Kibisis> {
 
         return sharedPreferences.when(
           data: (prefs) {
-            ref.watch(accountProvider);
-            ref.watch(algorandServiceProvider);
-            ref.watch(activeAccountProvider);
-            ref.watch(assetsProvider);
-            ref.watch(balanceProvider);
-
             final isDarkTheme = ref.watch(isDarkModeStateAdapter);
             final isLoading = ref.watch(loadingProvider);
             final router = ref.watch(goRouterProvider);

@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/detailed_asset.dart';
-import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:shimmer/shimmer.dart';
@@ -80,9 +79,7 @@ class AssetsTab extends ConsumerWidget {
           const SizedBox(height: kScreenPadding),
           TextButton(
             onPressed: () {
-              final publicAddress =
-                  ref.watch(accountProvider).account?.publicAddress ?? '';
-              refreshAccountData(context, ref, publicAddress);
+              invalidateProviders(ref);
             },
             child: const Text('Retry'),
           ),

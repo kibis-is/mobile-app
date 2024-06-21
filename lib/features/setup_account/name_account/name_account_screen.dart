@@ -8,6 +8,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/utils/complete_account_setup.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -121,11 +122,13 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                           isFullWidth: true,
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
+                              ref.read(loadingProvider.notifier).startLoading();
                               if (widget.accountFlow == AccountFlow.edit) {
                                 await _updateAccountName();
                               } else {
                                 await _handleAccountCreation();
                               }
+                              ref.read(loadingProvider.notifier).stopLoading();
                             }
                           },
                         ),
@@ -150,12 +153,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
 
     ref.read(accountsListProvider.notifier).loadAccounts();
 
-    final publicAddress =
-        ref.read(accountProvider).account?.publicAddress ?? '';
-
-    if (mounted) {
-      refreshAccountData(context, ref, publicAddress);
-    }
+    invalidateProviders(ref);
 
     _navigateToHome();
   }

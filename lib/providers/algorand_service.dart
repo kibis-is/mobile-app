@@ -6,7 +6,6 @@ class AlgorandService {
   final Algorand algorand;
 
   AlgorandService(this.algorand);
-
   Future<String> sendPayment(
       Account senderAccount, String recipientAddress, double amountInAlgos,
       [String? note]) async {
@@ -20,6 +19,25 @@ class AlgorandService {
         amount: amountInMicroAlgos,
         note: note,
       );
+
+      // Check that the transaction ID is not 'error' or empty
+      if (txId.isNotEmpty && txId != 'error') {
+        // Wait for the transaction to be confirmed with a specified timeout
+        final transactionResponse =
+            await algorand.waitForConfirmation(txId, timeout: 4);
+
+        // Check that confirmedRound is not null and greater than zero
+        if (transactionResponse.confirmedRound != null &&
+            transactionResponse.confirmedRound! > 0) {
+          debugPrint(
+              "Transaction confirmed in round: ${transactionResponse.confirmedRound}");
+          return txId;
+        } else {
+          debugPrint(
+              "Transaction failed to confirm within the expected rounds.");
+          return 'error';
+        }
+      }
       return txId;
     } catch (e) {
       debugPrint("Failed to send payment: $e");
@@ -145,10 +163,26 @@ class AlgorandService {
         totalAssets: totalAssets,
         decimals: decimals,
       );
+
+      // Wait for the transaction to be confirmed
+      if (transactionId.isNotEmpty && transactionId != 'error') {
+        final transactionResponse =
+            await algorand.waitForConfirmation(transactionId, timeout: 4);
+        if (transactionResponse.confirmedRound != null &&
+            transactionResponse.confirmedRound! > 0) {
+          debugPrint(
+              "Asset creation confirmed in round: ${transactionResponse.confirmedRound}");
+          return transactionId;
+        } else {
+          debugPrint(
+              "Asset creation failed to confirm within the expected rounds.");
+          return 'error';
+        }
+      }
       return transactionId;
     } catch (e) {
       debugPrint("Failed to create asset: $e");
-      throw Exception("Failed to create asset: $e");
+      return 'error';
     }
   }
 
@@ -166,7 +200,7 @@ class AlgorandService {
       Address freeze = Address.fromAlgorandAddress(address: freezeAddress);
       Address clawback = Address.fromAlgorandAddress(address: clawbackAddress);
 
-      await algorand.assetManager.editAsset(
+      final txId = await algorand.assetManager.editAsset(
         assetId: assetId,
         account: account,
         managerAddress: manager,
@@ -174,6 +208,21 @@ class AlgorandService {
         freezeAddress: freeze,
         clawbackAddress: clawback,
       );
+
+      // Wait for the transaction to be confirmed
+      if (txId.isNotEmpty && txId != 'error') {
+        final transactionResponse =
+            await algorand.waitForConfirmation(txId, timeout: 4);
+        if (transactionResponse.confirmedRound != null &&
+            transactionResponse.confirmedRound! > 0) {
+          debugPrint(
+              "Asset edit confirmed in round: ${transactionResponse.confirmedRound}");
+        } else {
+          debugPrint(
+              "Asset edit failed to confirm within the expected rounds.");
+          throw Exception("Asset edit confirmation failed.");
+        }
+      }
     } catch (e) {
       debugPrint("Failed to edit asset: $e");
       throw Exception("Failed to edit asset: $e");
@@ -182,10 +231,25 @@ class AlgorandService {
 
   Future<void> destroyAsset(int assetId, Account account) async {
     try {
-      await algorand.assetManager.destroyAsset(
+      final txId = await algorand.assetManager.destroyAsset(
         assetId: assetId,
         account: account,
       );
+
+      // Wait for the transaction to be confirmed
+      if (txId.isNotEmpty && txId != 'error') {
+        final transactionResponse =
+            await algorand.waitForConfirmation(txId, timeout: 4);
+        if (transactionResponse.confirmedRound != null &&
+            transactionResponse.confirmedRound! > 0) {
+          debugPrint(
+              "Asset destruction confirmed in round: ${transactionResponse.confirmedRound}");
+        } else {
+          debugPrint(
+              "Asset destruction failed to confirm within the expected rounds.");
+          throw Exception("Asset destruction confirmation failed.");
+        }
+      }
     } catch (e) {
       debugPrint("Failed to destroy asset: $e");
       throw Exception("Failed to destroy asset: $e");
@@ -194,10 +258,25 @@ class AlgorandService {
 
   Future<void> optInAsset(int assetId, Account account) async {
     try {
-      await algorand.assetManager.optIn(
+      final txId = await algorand.assetManager.optIn(
         assetId: assetId,
         account: account,
       );
+
+      // Wait for the transaction to be confirmed
+      if (txId.isNotEmpty && txId != 'error') {
+        final transactionResponse =
+            await algorand.waitForConfirmation(txId, timeout: 4);
+        if (transactionResponse.confirmedRound != null &&
+            transactionResponse.confirmedRound! > 0) {
+          debugPrint(
+              "Asset opt-in confirmed in round: ${transactionResponse.confirmedRound}");
+        } else {
+          debugPrint(
+              "Asset opt-in failed to confirm within the expected rounds.");
+          throw Exception("Asset opt-in confirmation failed.");
+        }
+      }
     } catch (e) {
       debugPrint("Failed to opt-in to asset: $e");
       throw Exception("Failed to opt-in to asset: $e");
@@ -207,17 +286,29 @@ class AlgorandService {
   Future<void> transferAsset(int assetId, Account senderAccount,
       String receiverAddress, int amount) async {
     try {
-      await algorand.assetManager.transfer(
+      final txId = await algorand.assetManager.transfer(
         assetId: assetId,
         account: senderAccount,
         receiver: Address.fromAlgorandAddress(address: receiverAddress),
         amount: amount,
       );
+
+      // Wait for the transaction to be confirmed
+      if (txId.isNotEmpty && txId != 'error') {
+        final transactionResponse =
+            await algorand.waitForConfirmation(txId, timeout: 4);
+        if (transactionResponse.confirmedRound != null &&
+            transactionResponse.confirmedRound! > 0) {
+          debugPrint(
+              "Asset transfer confirmed in round: ${transactionResponse.confirmedRound}");
+        } else {
+          debugPrint(
+              "Asset transfer failed to confirm within the expected rounds.");
+          throw Exception("Asset transfer confirmation failed.");
+        }
+      }
     } catch (e) {
       debugPrint("Failed to transfer asset: ${e.toString()}");
-      if (e is AlgorandException) {
-        debugPrint("AlgorandException Details: ${e.message}");
-      }
       throw Exception("Failed to transfer asset: ${e.toString()}");
     }
   }

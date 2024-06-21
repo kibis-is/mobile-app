@@ -43,27 +43,10 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     });
   }
 
-  void _onRefresh() async {
-    final accountState = ref.read(accountProvider);
-    final publicAddress = accountState.account?.publicAddress ?? '';
-
-    if (publicAddress.isNotEmpty) {
-      if (mounted) {
-        refreshAccountData(context, ref, publicAddress);
-      }
-      _refreshController.refreshCompleted();
-    } else {
-      _refreshController.refreshFailed();
-    }
-  }
-
-  void _checkAndFetchAssets() {
-    final accountState = ref.read(accountProvider);
-    final publicAddress = accountState.account?.publicAddress ?? '';
+  void _onRefresh() {
     final assetsFetched = ref.read(accountDataFetchStatusProvider);
-
-    if (publicAddress.isNotEmpty && !assetsFetched) {
-      refreshAccountData(context, ref, publicAddress);
+    if (!assetsFetched) {
+      invalidateProviders(ref);
       ref.read(accountDataFetchStatusProvider.notifier).setFetched(true);
     }
   }
@@ -80,7 +63,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndFetchAssets();
+      _onRefresh();
     });
 
     return Scaffold(

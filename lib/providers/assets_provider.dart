@@ -1,28 +1,33 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/detailed_asset.dart';
+import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 
 final assetsProvider =
     StateNotifierProvider<AssetsNotifier, AsyncValue<List<DetailedAsset>>>(
         (ref) {
-  return AssetsNotifier(ref);
+  final publicAddress = ref.watch(accountProvider).account?.publicAddress ?? '';
+  return AssetsNotifier(ref, publicAddress);
 });
 
 class AssetsNotifier extends StateNotifier<AsyncValue<List<DetailedAsset>>> {
   final Ref ref;
+  final String publicAddress;
 
-  AssetsNotifier(this.ref) : super(const AsyncValue.loading());
+  AssetsNotifier(this.ref, this.publicAddress)
+      : super(const AsyncValue.loading()) {
+    _fetchAssets();
+  }
 
-  Future<void> getAccountAssets(String address) async {
-    final algorandService = ref.read(algorandServiceProvider);
-
-    if (address.isEmpty) {
+  Future<void> _fetchAssets() async {
+    if (publicAddress.isEmpty) {
       state = const AsyncValue.data([]);
       return;
     }
     try {
-      final assets = await algorandService.getAccountAssets(address);
+      final algorandService = ref.read(algorandServiceProvider);
+      final assets = await algorandService.getAccountAssets(publicAddress);
       state = AsyncValue.data(assets);
     } on AlgorandException {
       if (mounted) {

@@ -8,6 +8,7 @@ import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
@@ -17,7 +18,6 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 
 final dropdownItemsProvider = StateProvider<List<SelectItem>>((ref) => []);
 
@@ -202,13 +202,16 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         _showSuccessSnackbar("Asset transfer successful.");
       }
 
-      // Refresh account data after a successful transaction
-      final publicAddress =
-          ref.read(accountProvider).account?.publicAddress ?? '';
+      ref.invalidate(transactionsProvider);
+      ref.invalidate(balanceProvider);
 
-      if (mounted) {
-        refreshAccountData(context, ref, publicAddress);
-      }
+      // Refresh account data after a successful transaction
+      // final publicAddress =
+      //     ref.read(accountProvider).account?.publicAddress ?? '';
+
+      // if (mounted) {
+      //   refreshAccountData(context, ref, publicAddress);
+      // }
     } catch (e) {
       if (e is AlgorandException) {
         String userFriendlyMessage =

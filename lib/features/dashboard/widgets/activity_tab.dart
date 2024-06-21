@@ -58,9 +58,7 @@ class ActivityTab extends ConsumerWidget {
           const SizedBox(height: kScreenPadding),
           TextButton(
             onPressed: () {
-              final publicAddress =
-                  ref.watch(accountProvider).account?.publicAddress ?? '';
-              refreshAccountData(context, ref, publicAddress);
+              invalidateProviders(ref);
             },
             child: const Text('Retry'),
           ),
