@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
@@ -17,7 +18,9 @@ import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 final dropdownItemsProvider = StateProvider<List<SelectItem>>((ref) => []);
 
@@ -112,14 +115,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<bool> hasSufficientFunds(String publicAddress, String value) async {
     try {
-      // await ref.read(balanceProvider.notifier).getBalance(publicAddress);
+      final balance = await getMaxAmount(ref);
 
-      final balanceAsync = ref.read(balanceProvider);
-
-      return balanceAsync.maybeWhen(
-        data: (balance) => double.parse(balance) >= double.parse(value),
-        orElse: () => false,
-      );
+      return balance >= double.parse(value);
     } catch (e) {
       debugPrint('Error checking sufficient funds: $e');
       return false;
@@ -204,14 +202,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
       ref.invalidate(transactionsProvider);
       ref.invalidate(balanceProvider);
-
-      // Refresh account data after a successful transaction
-      // final publicAddress =
-      //     ref.read(accountProvider).account?.publicAddress ?? '';
-
-      // if (mounted) {
-      //   refreshAccountData(context, ref, publicAddress);
-      // }
     } catch (e) {
       if (e is AlgorandException) {
         String userFriendlyMessage =
@@ -246,9 +236,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     }
   }
 
-  String get _getAppBarTitle =>
-      'Send ${widget.mode == SendTransactionScreenMode.payment ? 'Payment' : 'Asset'}';
-
   void _showPinPadDialog(WidgetRef ref) async {
     if (await _validateForm(ref)) {
       if (mounted) {
@@ -274,11 +261,51 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     Navigator.of(context).pop();
   }
 
+// Helper function to get the balance as a double
+  double getBalance(WidgetRef ref) {
+    return ref.watch(balanceProvider);
+  }
+
+  Future<double> getMaxAmount(WidgetRef ref) async {
+    final double balance = getBalance(ref);
+    final double minimumBalance = ref.watch(minimumBalanceProvider);
+    const double transactionFee = 0.0001;
+    return balance - minimumBalance - transactionFee;
+  }
+
+  Widget buildMaxAmountDisplay(WidgetRef ref) {
+    final selectedItem = ref.watch(selectedAssetProvider);
+    bool isNetworkSelected = selectedItem?.value.startsWith("network") ?? false;
+
+    if (isNetworkSelected) {
+      // Asynchronous fetching of maximum payment amount
+      return FutureBuilder<double>(
+        future: getMaxAmount(ref),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return Text('Max: ${snapshot.data?.toStringAsFixed(2)}');
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+          }
+          return const Text('Calculating...');
+        },
+      );
+    } else {
+      // Direct synchronous access for asset mode
+      final int maxAssetAmount =
+          ref.read(activeAssetProvider)?.totalSupply ?? 0;
+      final assetName = selectedItem?.name ?? 'Asset';
+      return Text('Max: $maxAssetAmount $assetName');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getAppBarTitle),
+        title: const Text("Send"),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
@@ -288,7 +315,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             builder: (context, ref, child) {
               final dropdownItems = ref.watch(dropdownItemsProvider);
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  _maxSendInfo(context, ref),
                   const SizedBox(height: kScreenPadding),
                   _buildCustomDropDown(ref, dropdownItems),
                   const SizedBox(height: kScreenPadding),
@@ -301,7 +330,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                   const Expanded(child: SizedBox(height: kScreenPadding)),
                   CustomButton(
                     isFullWidth: true,
-                    text: 'Send',
+                    text: "Send",
                     onPressed: () => _showPinPadDialog(ref),
                   ),
                   const SizedBox(height: kScreenPadding),
@@ -311,6 +340,34 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Row _maxSendInfo(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.info_outline),
+          color: context.colorScheme.onBackground,
+          iconSize: kScreenPadding,
+          onPressed: () {
+            customBottomSheet(
+                context: context,
+                singleWidget: Text(
+                  'The maximum VOI amount is calculated by: the balance (${ref.watch(balanceProvider)}), '
+                  'minus the minimum balance needed to keep the account open (${ref.watch(minimumBalanceProvider)}), '
+                  'minus the minimum transaction fee (0.001)',
+                  softWrap: true,
+                  style: context.textTheme.bodyMedium,
+                ),
+                header: "Info",
+                isIcon: true,
+                onPressed: (SelectItem item) {});
+          },
+        ),
+        buildMaxAmountDisplay(ref),
+      ],
     );
   }
 

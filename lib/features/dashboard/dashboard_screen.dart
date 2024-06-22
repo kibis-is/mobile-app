@@ -119,50 +119,48 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
-    final balanceAsync = ref.watch(balanceProvider);
+    final balanceAsync = ref.watch(balanceNotifierProvider);
     return Row(
       children: [
         Text('Balance:', style: context.textTheme.bodySmall),
         balanceAsync.when(
-          data: (balance) {
-            return Row(
-              children: [
-                Text(
-                  balance,
-                  style: context.textTheme.bodySmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.primary),
-                ),
-                SvgPicture.asset(
-                  networks[0].icon,
-                  semanticsLabel: networks[0].name,
-                  height: 12,
-                  colorFilter: ColorFilter.mode(
-                      context.colorScheme.primary, BlendMode.srcATop),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.info_outline),
-                  color: context.colorScheme.onBackground,
-                  iconSize: kScreenPadding,
-                  onPressed: () {
-                    customBottomSheet(
-                        context: context,
-                        singleWidget: Text(
-                          'Minimum balance is ${ref.watch(minimumBalanceProvider)} VOI. Based on the account configuration, this is the minimum balance needed to keep the account open.',
-                          softWrap: true,
-                          style: context.textTheme.bodyMedium,
-                        ),
-                        header: "Info",
-                        isIcon: true,
-                        onPressed: (SelectItem item) {});
-                  },
-                ),
-              ],
-            );
-          },
+          data: (balance) => Row(
+            children: [
+              Text(
+                balance.toStringAsFixed(2),
+                style: context.textTheme.bodySmall!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.primary),
+              ),
+              SvgPicture.asset(
+                networks[0].icon,
+                semanticsLabel: networks[0].name,
+                height: 12,
+                colorFilter: ColorFilter.mode(
+                    context.colorScheme.primary, BlendMode.srcATop),
+              ),
+              IconButton(
+                icon: const Icon(Icons.info_outline),
+                color: context.colorScheme.onBackground,
+                iconSize: kScreenPadding,
+                onPressed: () {
+                  customBottomSheet(
+                      context: context,
+                      singleWidget: Text(
+                        'Minimum balance is ${ref.watch(minimumBalanceProvider).toStringAsFixed(2)} VOI. Based on the account configuration, this is the minimum balance needed to keep the account open.',
+                        softWrap: true,
+                        style: context.textTheme.bodyMedium,
+                      ),
+                      header: "Info",
+                      isIcon: true,
+                      onPressed: (SelectItem item) {});
+                },
+              ),
+            ],
+          ),
           loading: () =>
               const AnimatedDots(), // Show animated dots while waiting
-          error: (error, stack) => const Text('Error'), // Handle the error case
+          error: (error, stack) => const Text('Error'),
         ),
       ],
     );
