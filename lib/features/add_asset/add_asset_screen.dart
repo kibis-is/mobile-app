@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:kibisis/common_widgets/asset_list_item.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 
 final searchProvider =
-    StateNotifierProvider<SearchNotifier, AsyncValue<List<Asset>>>((ref) {
+    StateNotifierProvider.autoDispose<SearchNotifier, AsyncValue<List<Asset>>>(
+        (ref) {
   return SearchNotifier(ref);
 });
 
@@ -91,27 +94,29 @@ class AddAssetScreen extends ConsumerWidget {
                   return ListView.builder(
                     itemCount: assets.length,
                     itemBuilder: (context, index) {
-                      return FutureBuilder<Asset>(
-                        future: ref
-                            .read(algorandServiceProvider)
-                            .getAssetById(assets[index].index),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(
-                                child: Text('Error: ${snapshot.error}'));
-                          } else if (!snapshot.hasData) {
-                            return const Center(
-                                child: Text('No detailed asset found.'));
-                          }
-
-                          final asset = snapshot.data!;
-                          return AssetListItem(asset: asset);
-                        },
-                      );
+                      final asset = assets[index];
+                      return ListTile(
+                          title: Text(asset.params.name ?? 'No name'),
+                          subtitle:
+                              Text(asset.params.unitName ?? 'No Unit Name'),
+                          onTap: () async {
+                            final assetDetails = await ref
+                                .read(algorandServiceProvider)
+                                .getAssetById(asset.index);
+                            ref
+                                .read(activeAssetProvider.notifier)
+                                .setActiveAsset(assetDetails);
+                            if (context.mounted) {
+                              context.goNamed(
+                                viewAssetRouteName,
+                                pathParameters: {
+                                  'mode': 'add',
+                                },
+                              );
+                            }
+                            ref.invalidate(searchProvider);
+                            accountController.text = '';
+                          });
                     },
                   );
                 },

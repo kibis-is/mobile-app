@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/assets_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -44,7 +45,9 @@ class AssetsTab extends ConsumerWidget {
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(kWidgetRadius))),
         ),
-        onPressed: () => GoRouter.of(context).go('/addAsset'),
+        onPressed: () => context.goNamed(
+          addAssetRouteName,
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -92,7 +95,10 @@ class AssetsTab extends ConsumerWidget {
     return ListView.separated(
       itemCount: assets.length,
       shrinkWrap: true,
-      itemBuilder: (context, index) => AssetListItem(asset: assets[index]),
+      itemBuilder: (context, index) => AssetListItem(
+        asset: assets[index],
+        mode: AssetScreenMode.view,
+      ),
       separatorBuilder: (_, __) => const SizedBox(height: kScreenPadding / 2),
     );
   }
