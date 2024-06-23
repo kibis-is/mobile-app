@@ -269,7 +269,11 @@ class RouterNotifier extends ChangeNotifier {
               name: viewAssetRouteName,
               path: viewAssetRouteName,
               pageBuilder: (context, state) {
-                return defaultTransitionPage(const ViewAssetScreen(), state);
+                final mode = state.pathParameters['mode'] == 'add'
+                    ? AssetScreenMode.add
+                    : AssetScreenMode.view;
+                return defaultTransitionPage(
+                    ViewAssetScreen(mode: mode), state);
               },
             ),
             GoRoute(

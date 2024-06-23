@@ -10,6 +10,8 @@ const kVersionNumber = 'v0.0.1';
 
 enum PinPadMode { setup, unlock, verifyTransaction }
 
+enum AssetScreenMode { view, add }
+
 enum AccountFlow {
   setup,
   addNew,

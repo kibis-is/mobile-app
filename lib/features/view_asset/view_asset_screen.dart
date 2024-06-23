@@ -20,14 +20,20 @@ import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class ViewAssetScreen extends ConsumerWidget {
-  const ViewAssetScreen({super.key});
+  final AssetScreenMode mode;
+
+  const ViewAssetScreen({
+    super.key,
+    this.mode = AssetScreenMode.view,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(activeAssetProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Asset Details'),
+        title:
+            Text(mode == AssetScreenMode.view ? 'Asset Details' : 'Add Asset'),
       ),
       body: const AssetDetailsView(),
       bottomNavigationBar: Padding(
@@ -36,21 +42,60 @@ class ViewAssetScreen extends ConsumerWidget {
             right: kScreenPadding,
             bottom: kScreenPadding / 2),
         child: CustomButton(
-          text: 'Send',
+          text: mode == AssetScreenMode.view ? 'Send' : 'Add',
           isFullWidth: true,
-          onPressed: () {
-            context.pushNamed(
-              sendTransactionRouteName,
-              pathParameters: {
-                'mode': 'asset',
-              },
-            );
+          onPressed: () async {
+            switch (mode) {
+              case AssetScreenMode.view:
+                context.pushNamed(
+                  sendTransactionRouteName,
+                  pathParameters: {
+                    'mode': 'asset',
+                  },
+                );
+                break;
+              case AssetScreenMode.add:
+                final algorandService = ref.read(algorandServiceProvider);
+                final account = ref.read(accountProvider).account;
+                final activeAsset = ref.read(activeAssetProvider);
+
+                if (account != null && activeAsset != null) {
+                  try {
+                    await algorandService.optInAsset(
+                        activeAsset.assetId, account);
+                    debugPrint('Asset successfully opted in');
+                    if (!context.mounted) return;
+                    showCustomSnackBar(
+                      context: context,
+                      snackType: SnackType.success,
+                      message: 'Asset successfully opted in',
+                    );
+                  } catch (e) {
+                    debugPrint('Failed to opt-in to asset: $e');
+                    showCustomSnackBar(
+                      context: context,
+                      snackType: SnackType.error,
+                      message: 'Failed to opt-in to asset: $e',
+                    );
+                  }
+                } else {
+                  debugPrint('Account or active asset is null');
+                  showCustomSnackBar(
+                    context: context,
+                    snackType: SnackType.error,
+                    message: 'Account or active asset is null',
+                  );
+                }
+                break;
+            }
           },
         ),
       ),
     );
   }
 }
+
+// Rest of your classes (AssetDetailsView, AssetHeader, AssetControls, etc.) remain unchanged.
 
 class AssetDetailsView extends ConsumerWidget {
   const AssetDetailsView({super.key});

@@ -7,6 +7,7 @@ import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -14,9 +15,11 @@ class AssetListItem extends ConsumerWidget {
   const AssetListItem({
     super.key,
     required this.asset,
+    this.mode,
   });
 
   final DetailedAsset asset;
+  final AssetScreenMode? mode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,7 +53,19 @@ class AssetListItem extends ConsumerWidget {
               trailing: _buildAssetAmount(context),
               onTap: () {
                 ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
-                GoRouter.of(context).go('/viewAsset/');
+                mode == AssetScreenMode.view
+                    ? context.goNamed(
+                        viewAssetRouteName,
+                        pathParameters: {
+                          'mode': 'view',
+                        },
+                      )
+                    : context.goNamed(
+                        viewAssetRouteName,
+                        pathParameters: {
+                          'mode': 'add',
+                        },
+                      );
               },
             ),
           ),
