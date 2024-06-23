@@ -55,7 +55,7 @@ class AlgorandService {
 
       return assets;
     } on AlgorandException catch (e) {
-      debugPrint('Get Account Assets Algorand Exception: ${e.toString()}');
+      debugPrint('Get Account Assets Algorand Exception: ${e.message}');
       // Return an empty list instead of throwing an exception
       return <Asset>[];
     } catch (e) {
@@ -108,7 +108,7 @@ class AlgorandService {
           await assetsQuery.search(limit: searchLimit);
       return assets;
     } on AlgorandException catch (e) {
-      debugPrint('Search Assets AlgorandException: ${e.toString()}');
+      debugPrint('Search Assets AlgorandException: ${e.message}');
       throw Exception('Failed to fetch assets zxc: ${e.message}');
     } catch (e) {
       debugPrint('General Exception: $e');
@@ -263,6 +263,9 @@ class AlgorandService {
           throw Exception("Asset opt-in confirmation failed.");
         }
       }
+    } on AlgorandException catch (e) {
+      debugPrint(e.message);
+      throw Exception("Failed to opt-in to asset: ${e.message}");
     } catch (e) {
       debugPrint("Failed to opt-in to asset: $e");
       throw Exception("Failed to opt-in to asset: $e");

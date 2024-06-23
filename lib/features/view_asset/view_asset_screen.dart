@@ -12,6 +12,7 @@ import 'package:kibisis/features/settings/appearance/providers/dark_mode_provide
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
@@ -55,6 +56,7 @@ class ViewAssetScreen extends ConsumerWidget {
                 );
                 break;
               case AssetScreenMode.add:
+                ref.read(loadingProvider.notifier).startLoading();
                 final algorandService = ref.read(algorandServiceProvider);
                 final account = ref.read(accountProvider).account;
                 final activeAsset = ref.read(activeAssetProvider);
@@ -63,8 +65,10 @@ class ViewAssetScreen extends ConsumerWidget {
                   try {
                     await algorandService.optInAsset(
                         activeAsset.index, account);
-                    debugPrint('Asset successfully opted in');
+                    ref.invalidate(assetsProvider);
+
                     if (!context.mounted) return;
+                    GoRouter.of(context).go('/');
                     showCustomSnackBar(
                       context: context,
                       snackType: SnackType.success,
@@ -77,6 +81,7 @@ class ViewAssetScreen extends ConsumerWidget {
                       snackType: SnackType.error,
                       message: 'Failed to opt-in to asset: $e',
                     );
+                    ref.read(loadingProvider.notifier).stopLoading();
                   }
                 } else {
                   debugPrint('Account or active asset is null');
@@ -86,6 +91,7 @@ class ViewAssetScreen extends ConsumerWidget {
                     message: 'Account or active asset is null',
                   );
                 }
+                ref.read(loadingProvider.notifier).stopLoading();
                 break;
             }
           },

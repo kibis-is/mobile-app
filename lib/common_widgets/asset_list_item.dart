@@ -16,10 +16,12 @@ class AssetListItem extends ConsumerWidget {
     super.key,
     required this.asset,
     this.mode,
+    this.onPressed,
   });
 
   final Asset asset;
   final AssetScreenMode? mode;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,33 +53,38 @@ class AssetListItem extends ConsumerWidget {
                     color: context.colorScheme.onSurface),
               ),
               trailing: _buildAssetAmount(context),
-              onTap: () {
-                ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
-                mode == AssetScreenMode.view
-                    ? context.goNamed(
-                        viewAssetRouteName,
-                        pathParameters: {
-                          'mode': 'view',
-                        },
-                      )
-                    : context.goNamed(
-                        viewAssetRouteName,
-                        pathParameters: {
-                          'mode': 'add',
-                        },
-                      );
-              },
+              onTap: (onPressed == null && mode == AssetScreenMode.add)
+                  ? null
+                  : () => _handleOnPressed(context, ref),
             ),
           ),
         ),
-        asset.params.defaultFrozen ?? false
-            ? const Padding(
-                padding: EdgeInsets.all(kScreenPadding / 2),
-                child: Icon(Icons.ac_unit, size: kScreenPadding),
-              )
-            : Container(),
+        if (asset.params.defaultFrozen ?? false)
+          const Padding(
+            padding: EdgeInsets.all(kScreenPadding / 2),
+            child: Icon(Icons.ac_unit, size: kScreenPadding),
+          ),
       ],
     );
+  }
+
+  void _handleOnPressed(BuildContext context, WidgetRef ref) {
+    ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
+    if (mode == AssetScreenMode.view) {
+      context.goNamed(
+        viewAssetRouteName,
+        pathParameters: {
+          'mode': 'view',
+        },
+      );
+    } else if (mode == AssetScreenMode.add) {
+      context.pushNamed(
+        viewAssetRouteName,
+        pathParameters: {
+          'mode': 'add',
+        },
+      );
+    }
   }
 
   Widget _buildAssetIcon() {
@@ -99,13 +106,15 @@ class AssetListItem extends ConsumerWidget {
   }
 
   Widget _buildAssetAmount(BuildContext context) {
-    return const SizedBox(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Icon(Icons.arrow_forward_ios),
-        ],
-      ),
+    return SizedBox(
+      child: (onPressed == null && mode == AssetScreenMode.add)
+          ? const Text('Owned')
+          : const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(Icons.arrow_forward_ios_rounded),
+              ],
+            ),
     );
   }
 }
