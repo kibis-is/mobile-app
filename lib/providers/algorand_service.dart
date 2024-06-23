@@ -1,6 +1,5 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
-import 'package:kibisis/models/detailed_asset.dart';
 
 class AlgorandService {
   final Algorand algorand;
@@ -45,47 +44,31 @@ class AlgorandService {
     }
   }
 
-  Future<List<DetailedAsset>> getAccountAssets(String publicAddress) async {
+  Future<List<Asset>> getAccountAssets(String publicAddress) async {
     try {
       final accountInfo = await algorand.getAccountByAddress(publicAddress);
       final holdings = accountInfo.assets;
 
-      List<DetailedAsset> detailedAssets = await Future.wait(
+      List<Asset> assets = await Future.wait(
         holdings.map((holding) => getAssetById(holding.assetId)),
       );
 
-      return detailedAssets;
+      return assets;
     } on AlgorandException catch (e) {
       debugPrint('Get Account Assets Algorand Exception: ${e.toString()}');
       // Return an empty list instead of throwing an exception
-      return <DetailedAsset>[];
+      return <Asset>[];
     } catch (e) {
       debugPrint('Failed to fetch assets: $e');
       // Return an empty list or handle differently as per your use case
-      return <DetailedAsset>[];
+      return <Asset>[];
     }
   }
 
-  Future<DetailedAsset> getAssetById(int assetId) async {
+  Future<Asset> getAssetById(int assetId) async {
     try {
       final response = await algorand.indexer().getAssetById(assetId);
-      final assetParams = response.asset;
-
-      return DetailedAsset(
-        assetId: assetParams.index,
-        creator: assetParams.params.creator,
-        name: assetParams.params.name,
-        unitName: assetParams.params.unitName,
-        totalSupply: assetParams.params.total,
-        decimals: assetParams.params.decimals,
-        manager: assetParams.params.manager,
-        reserve: assetParams.params.reserve,
-        freeze: assetParams.params.freeze,
-        clawback: assetParams.params.clawback,
-        url: assetParams.params.url,
-        metadataHash: assetParams.params.metadataHash,
-        defaultFrozen: assetParams.params.defaultFrozen,
-      );
+      return response.asset;
     } on FormatException {
       throw Exception(
           'Invalid asset ID format. Asset ID must be a valid integer.');

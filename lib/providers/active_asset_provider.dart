@@ -1,15 +1,15 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/models/detailed_asset.dart';
 
 final activeAssetProvider =
-    StateNotifierProvider<ActiveAssetNotifier, DetailedAsset?>((ref) {
+    StateNotifierProvider<ActiveAssetNotifier, Asset?>((ref) {
   return ActiveAssetNotifier();
 });
 
-class ActiveAssetNotifier extends StateNotifier<DetailedAsset?> {
+class ActiveAssetNotifier extends StateNotifier<Asset?> {
   ActiveAssetNotifier() : super(null);
 
-  void setActiveAsset(DetailedAsset asset) {
+  void setActiveAsset(Asset asset) {
     state = asset;
   }
 
@@ -19,7 +19,20 @@ class ActiveAssetNotifier extends StateNotifier<DetailedAsset?> {
 
   void toggleFreeze() {
     if (state != null) {
-      state = state!.copyWith(defaultFrozen: !(state!.defaultFrozen ?? false));
+      final updatedState = Asset(
+        index: state!.index,
+        createdAtRound: state!.createdAtRound,
+        deleted: state!.deleted,
+        destroyedAtRound: state!.destroyedAtRound,
+        params: AssetParameters(
+          defaultFrozen: !(state!.params.defaultFrozen ?? false),
+          decimals: state!.params.decimals,
+          creator: state!.params.creator,
+          total: state!.params.total,
+        ),
+      );
+
+      state = updatedState;
     }
   }
 }

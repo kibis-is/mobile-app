@@ -62,7 +62,7 @@ class ViewAssetScreen extends ConsumerWidget {
                 if (account != null && activeAsset != null) {
                   try {
                     await algorandService.optInAsset(
-                        activeAsset.assetId, account);
+                        activeAsset.index, account);
                     debugPrint('Asset successfully opted in');
                     if (!context.mounted) return;
                     showCustomSnackBar(
@@ -105,7 +105,7 @@ class AssetDetailsView extends ConsumerWidget {
     final activeAsset = ref.watch(activeAssetProvider);
     final accountState = ref.read(accountProvider);
     final canShowFreezeButton =
-        accountState.account?.publicAddress == activeAsset?.freeze;
+        accountState.account?.publicAddress == activeAsset?.params.freeze;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(kScreenPadding),
@@ -131,7 +131,7 @@ class AssetHeader extends ConsumerWidget {
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(kScreenPadding),
-          decoration: activeAsset?.defaultFrozen ?? false
+          decoration: activeAsset?.params.defaultFrozen ?? false
               ? frozenBoxDecoration(context)
               : BoxDecoration(
                   color: context.colorScheme.surface,
@@ -157,7 +157,7 @@ class AssetHeader extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding),
               Text(
-                activeAsset?.name ?? 'Unnamed Asset',
+                activeAsset?.params.name ?? 'Unnamed Asset',
                 style: context.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -196,13 +196,13 @@ class AssetHeader extends ConsumerWidget {
             child: Row(
               children: [
                 Text(
-                  activeAsset?.assetId.toString() ?? '',
+                  activeAsset?.index.toString() ?? '',
                   style: context.textTheme.bodySmall
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 InkWell(
                   onTap: () => copyToClipboard(
-                      context, activeAsset?.assetId.toString() ?? ''),
+                      context, activeAsset?.index.toString() ?? ''),
                   child: Padding(
                     padding: const EdgeInsets.only(left: kScreenPadding),
                     child: Icon(
@@ -215,7 +215,7 @@ class AssetHeader extends ConsumerWidget {
             ),
           ),
         ),
-        if (activeAsset?.defaultFrozen ?? false)
+        if (activeAsset?.params.defaultFrozen ?? false)
           const Positioned(
             right: 0,
             bottom: 0,
@@ -254,19 +254,28 @@ class AssetControlsState extends ConsumerState<AssetControls> {
     final algorandService = ref.read(algorandServiceProvider);
 
     if (activeAsset != null && accountState.account != null) {
-      final frozen = activeAsset.defaultFrozen ?? false;
+      final frozen = activeAsset.params.defaultFrozen ?? false;
       try {
         await algorandService.toggleFreezeAsset(
-          assetId: activeAsset.assetId,
+          assetId: activeAsset.index,
           account: accountState.account!,
           freeze: !frozen,
         );
 
-        ref.read(activeAssetProvider.notifier).setActiveAsset(
-              activeAsset.copyWith(
-                defaultFrozen: !frozen,
-              ),
-            );
+        final updatedAsset = Asset(
+          index: activeAsset.index,
+          createdAtRound: activeAsset.createdAtRound,
+          deleted: activeAsset.deleted,
+          destroyedAtRound: activeAsset.destroyedAtRound,
+          params: AssetParameters(
+            defaultFrozen: frozen,
+            decimals: activeAsset.params.decimals,
+            creator: activeAsset.params.creator,
+            total: activeAsset.params.total,
+          ),
+        );
+
+        ref.read(activeAssetProvider.notifier).setActiveAsset(updatedAsset);
 
         if (context.mounted) {
           _showSnackBar(
@@ -329,7 +338,7 @@ class AssetControlsState extends ConsumerState<AssetControls> {
               padding: const EdgeInsets.all(kScreenPadding),
               icon: Icon(
                 Icons.ac_unit_rounded,
-                color: activeAsset?.defaultFrozen ?? false
+                color: activeAsset?.params.defaultFrozen ?? false
                     ? context.colorScheme.primary
                     : context.colorScheme.onSurface,
               ),
@@ -406,42 +415,43 @@ class AssetDetailsList extends ConsumerWidget {
       children: [
         const SizedBox(height: kScreenPadding),
         AssetDetail(
-            text: 'Decimals', value: activeAsset?.decimals.toString() ?? '0'),
+            text: 'Decimals',
+            value: activeAsset?.params.decimals.toString() ?? '0'),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
           text: 'Total Supply',
           value: NumberShortener.format(
-              double.parse(activeAsset?.totalSupply.toString() ?? '0')),
+              double.parse(activeAsset?.params.total.toString() ?? '0')),
         ),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
           text: 'Default Frozen',
-          value: (activeAsset?.defaultFrozen ?? false) ? 'Yes' : 'No',
+          value: (activeAsset?.params.defaultFrozen ?? false) ? 'Yes' : 'No',
         ),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Creator:',
-            value: activeAsset?.creator ?? 'Not available',
+            value: activeAsset?.params.creator ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Clawback:',
-            value: activeAsset?.clawback ?? 'Not available',
+            value: activeAsset?.params.clawback ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Freeze:',
-            value: activeAsset?.freeze ?? 'Not available',
+            value: activeAsset?.params.freeze ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Manager:',
-            value: activeAsset?.manager ?? 'Not available',
+            value: activeAsset?.params.manager ?? 'Not available',
             useEllipsis: true),
         const SizedBox(height: kScreenPadding),
         AssetDetail(
             text: 'Reserve:',
-            value: activeAsset?.reserve ?? 'Not available',
+            value: activeAsset?.params.reserve ?? 'Not available',
             useEllipsis: true),
       ],
     );

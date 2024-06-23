@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,7 +91,7 @@ class AddAssetScreen extends ConsumerWidget {
                   return ListView.builder(
                     itemCount: assets.length,
                     itemBuilder: (context, index) {
-                      return FutureBuilder<DetailedAsset>(
+                      return FutureBuilder<Asset>(
                         future: ref
                             .read(algorandServiceProvider)
                             .getAssetById(assets[index].index),
@@ -109,8 +108,8 @@ class AddAssetScreen extends ConsumerWidget {
                                 child: Text('No detailed asset found.'));
                           }
 
-                          final detailedAsset = snapshot.data!;
-                          return AssetListItem(asset: detailedAsset);
+                          final asset = snapshot.data!;
+                          return AssetListItem(asset: asset);
                         },
                       );
                     },

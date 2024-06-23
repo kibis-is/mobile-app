@@ -114,7 +114,7 @@ class ActivityTab extends ConsumerWidget {
           transaction.assetTransferTransaction?.receiver ?? 'Unknown';
 
       if (type == 'axfer') {
-        final detailedAsset =
+        final asset =
             await ref.read(algorandServiceProvider).getAssetById(assetId ?? -1);
         transactionItems.add(TransactionItem(
           transaction: transaction,
@@ -123,7 +123,7 @@ class ActivityTab extends ConsumerWidget {
           note: note,
           amount: assetAmount.toString(),
           type: type,
-          assetName: detailedAsset.name ?? '',
+          assetName: asset.params.name ?? '',
         ));
       } else if (type == 'pay') {
         transactionItems.add(TransactionItem(

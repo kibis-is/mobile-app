@@ -1,3 +1,4 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
@@ -18,7 +18,7 @@ class AssetListItem extends ConsumerWidget {
     this.mode,
   });
 
-  final DetailedAsset asset;
+  final Asset asset;
   final AssetScreenMode? mode;
 
   @override
@@ -28,7 +28,7 @@ class AssetListItem extends ConsumerWidget {
       children: [
         Material(
           child: Container(
-            decoration: asset.defaultFrozen ?? false
+            decoration: asset.params.defaultFrozen ?? false
                 ? frozenBoxDecoration(context)
                 : BoxDecoration(
                     color: context.colorScheme.surface,
@@ -39,13 +39,13 @@ class AssetListItem extends ConsumerWidget {
               horizontalTitleGap: kScreenPadding * 2,
               leading: _buildAssetIcon(),
               title: EllipsizedText(
-                asset.name ?? 'Unknown',
+                asset.params.name ?? 'Unknown',
                 style: context.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               subtitle: EllipsizedText(
-                asset.unitName ?? 'Unknown',
+                asset.params.unitName ?? 'Unknown',
                 style: context.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: context.colorScheme.onSurface),
@@ -70,7 +70,7 @@ class AssetListItem extends ConsumerWidget {
             ),
           ),
         ),
-        asset.defaultFrozen ?? false
+        asset.params.defaultFrozen ?? false
             ? const Padding(
                 padding: EdgeInsets.all(kScreenPadding / 2),
                 child: Icon(Icons.ac_unit, size: kScreenPadding),

@@ -1,17 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 
 final assetsProvider =
-    StateNotifierProvider<AssetsNotifier, AsyncValue<List<DetailedAsset>>>(
-        (ref) {
+    StateNotifierProvider<AssetsNotifier, AsyncValue<List<Asset>>>((ref) {
   final publicAddress = ref.watch(accountProvider).account?.publicAddress ?? '';
   return AssetsNotifier(ref, publicAddress);
 });
 
-class AssetsNotifier extends StateNotifier<AsyncValue<List<DetailedAsset>>> {
+class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
   final Ref ref;
   final String publicAddress;
 

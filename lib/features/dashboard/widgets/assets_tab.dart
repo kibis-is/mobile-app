@@ -1,10 +1,10 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:shimmer/shimmer.dart';
@@ -88,7 +88,7 @@ class AssetsTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildAssetsList(BuildContext context, List<DetailedAsset> assets) {
+  Widget _buildAssetsList(BuildContext context, List<Asset> assets) {
     return ListView.separated(
       itemCount: assets.length,
       shrinkWrap: true,

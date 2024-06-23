@@ -267,7 +267,7 @@ class RouterNotifier extends ChangeNotifier {
             ),
             GoRoute(
               name: viewAssetRouteName,
-              path: viewAssetRouteName,
+              path: '$viewAssetRouteName/:mode',
               pageBuilder: (context, state) {
                 final mode = state.pathParameters['mode'] == 'add'
                     ? AssetScreenMode.add

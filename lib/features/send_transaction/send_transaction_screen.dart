@@ -11,7 +11,6 @@ import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
-import 'package:kibisis/models/detailed_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
@@ -73,7 +72,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       ref.read(dropdownItemsProvider.notifier).state = items;
       final activeAsset = ref.read(activeAssetProvider);
       ref.read(selectedAssetProvider.notifier).selectAsset(
-          items: items, assetId: activeAsset?.assetId ?? 0, mode: widget.mode);
+          items: items, assetId: activeAsset?.index ?? 0, mode: widget.mode);
     }
   }
 
@@ -81,7 +80,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final assetsAsync = ref.read(assetsProvider);
     final network = ref.read(networkProvider);
 
-    if (assetsAsync is! AsyncData<List<DetailedAsset>>) {
+    if (assetsAsync is! AsyncData<List<Asset>>) {
       // If assets are not loaded yet, return empty list
       return [];
     }
@@ -89,8 +88,8 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final assets = assetsAsync.value;
     List<SelectItem> combinedList = assets.map((asset) {
       return SelectItem(
-          name: asset.name ?? 'Unnamed Asset',
-          value: asset.assetId.toString(),
+          name: asset.params.name ?? 'Unnamed Asset',
+          value: asset.index.toString(),
           icon: '0xf02b2');
     }).toList();
 
@@ -295,7 +294,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     } else {
       // Direct synchronous access for asset mode
       final int maxAssetAmount =
-          ref.read(activeAssetProvider)?.totalSupply ?? 0;
+          ref.read(activeAssetProvider)?.params.total ?? 0;
       final assetName = selectedItem?.name ?? 'Asset';
       return Text('Max: $maxAssetAmount $assetName');
     }
