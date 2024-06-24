@@ -1,11 +1,11 @@
 {
-    "name": "kibisis",
-    "short_name": "kibisis",
+    "name": "Kibisis",
+    "short_name": "Kibisis",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#FF8D029B",
     "theme_color": "#FFFFFFFF",
-    "description": "A new Flutter project.",
+    "description": "Not just for DeFi.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
