@@ -9,7 +9,6 @@ Future<dynamic> customBottomSheet({
   required BuildContext context,
   List<dynamic>? items,
   required String header,
-  bool isIcon = false,
   bool hasButton = false,
   String? buttonText,
   Function(SelectItem)? onPressed,
@@ -32,7 +31,7 @@ Future<dynamic> customBottomSheet({
             if (isSingleWidgetMode)
               singleWidget
             else
-              _buildItemList(context, items!, isIcon,
+              _buildItemList(context, items!,
                   onPressed!), // Use the list if singleWidget is not provided
             if (hasButton)
               CustomButton(
@@ -62,14 +61,13 @@ Widget _buildHeader(BuildContext context, String header) {
 Widget _buildItemList(
   BuildContext context,
   List<dynamic> items,
-  bool isIcon,
   Function(SelectItem) onPressed,
 ) {
   return Expanded(
     child: ListView.builder(
       itemCount: items.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildListItem(context, items[index], isIcon, onPressed);
+        return _buildListItem(context, items[index], onPressed);
       },
     ),
   );
@@ -78,7 +76,6 @@ Widget _buildItemList(
 Widget _buildListItem(
   BuildContext context,
   SelectItem item,
-  bool isIcon,
   Function(SelectItem) onPressed,
 ) {
   return InkWell(

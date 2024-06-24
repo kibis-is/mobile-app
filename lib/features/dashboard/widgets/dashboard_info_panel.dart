@@ -71,7 +71,6 @@ class DashboardInfoPanel extends StatelessWidget {
                     context: context,
                     items: items,
                     header: "Options",
-                    isIcon: true,
                     onPressed: (SelectItem item) {},
                   ).then((value) {
                     if (value == "Copy Address") {
@@ -97,7 +96,7 @@ class DashboardInfoPanel extends StatelessWidget {
                   padding: const EdgeInsets.all(kScreenPadding / 3),
                   child: AppIcons.icon(
                     icon: AppIcons.verticalDots,
-                    size: AppIcons.small,
+                    size: AppIcons.medium,
                   ),
                 ),
               ),

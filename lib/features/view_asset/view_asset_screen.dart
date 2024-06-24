@@ -154,9 +154,9 @@ class AssetHeader extends ConsumerWidget {
                   shape: BoxShape.circle,
                 ),
                 child: SvgPicture.asset(
+                  '${AppIcons.svgBasePath}${AppIcons.voiIcon}.svg', // Use string interpolation correctly
                   width: 50,
                   height: 50,
-                  AppIcons.voiIcon,
                   semanticsLabel: 'VOI Logo',
                   colorFilter:
                       const ColorFilter.mode(Colors.white, BlendMode.srcATop),

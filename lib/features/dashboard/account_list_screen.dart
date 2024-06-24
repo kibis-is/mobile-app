@@ -35,7 +35,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
         child: _buildBody(context, accountsListState),
       ),
       floatingActionButton: CustomFloatingActionButton(
-        icon: Icons.add,
+        icon: AppIcons.add,
         onPressed: _navigateToAddAccount,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

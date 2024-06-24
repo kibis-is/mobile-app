@@ -36,8 +36,12 @@ class AppIcons {
   static const IconData advanced = Icons.build_rounded;
   static const IconData about = Icons.info_rounded;
   static const IconData send = Icons.send_rounded;
+  static const IconData asset = Icons.monetization_on_rounded;
+  static const IconData scan = Icons.qr_code_scanner_rounded;
+  static const IconData addAccount = Icons.person_add_rounded;
+  static const IconData importAccount = Icons.import_export_rounded;
 
-  static const String _svgBasePath = 'assets/images/';
+  static const String svgBasePath = 'assets/images/';
 
   static const String voiIcon = 'voi-asset-icon';
   static const String algorandIcon = 'algorand-logo';
@@ -66,7 +70,7 @@ class AppIcons {
     } else if (icon is String) {
       try {
         return SvgPicture.asset(
-          '$_svgBasePath$icon.svg',
+          '$svgBasePath$icon.svg',
           height: size,
           colorFilter: ColorFilter.mode(effectiveColor, BlendMode.srcATop),
         );

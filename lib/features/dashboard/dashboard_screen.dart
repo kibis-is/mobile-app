@@ -149,7 +149,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                         style: context.textTheme.bodyMedium,
                       ),
                       header: "Info",
-                      isIcon: true,
                       onPressed: (SelectItem item) {});
                 },
               ),
@@ -231,12 +230,12 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           children: [
             IconButton(
               icon:
-                  AppIcons.icon(icon: AppIcons.settings, size: AppIcons.small),
+                  AppIcons.icon(icon: AppIcons.settings, size: AppIcons.medium),
               color: context.colorScheme.onBackground,
               onPressed: () => GoRouter.of(context).go('/settings'),
             ),
             IconButton(
-              icon: AppIcons.icon(icon: AppIcons.wallet, size: AppIcons.small),
+              icon: AppIcons.icon(icon: AppIcons.wallet, size: AppIcons.medium),
               color: context.colorScheme.onBackground,
               onPressed: () => GoRouter.of(context).push('/wallets'),
             ),

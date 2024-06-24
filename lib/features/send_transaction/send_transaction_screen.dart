@@ -91,7 +91,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       return SelectItem(
         name: asset.params.name ?? 'Unnamed Asset',
         value: asset.index.toString(),
-        icon: AppIcons.icon(icon: AppIcons.error),
+        icon: AppIcons.asset,
       );
     }).toList();
 
@@ -349,22 +349,25 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
-          icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small),
-          color: context.colorScheme.onBackground,
+          icon: AppIcons.icon(
+            icon: AppIcons.info,
+            size: AppIcons.small,
+            color: context.colorScheme.onBackground,
+          ),
           iconSize: kScreenPadding,
           onPressed: () {
             customBottomSheet(
-                context: context,
-                singleWidget: Text(
-                  'The maximum VOI amount is calculated by: the balance (${ref.watch(balanceProvider)}), '
-                  'minus the minimum balance needed to keep the account open (${ref.watch(minimumBalanceProvider)}), '
-                  'minus the minimum transaction fee (0.001)',
-                  softWrap: true,
-                  style: context.textTheme.bodyMedium,
-                ),
-                header: "Info",
-                isIcon: true,
-                onPressed: (SelectItem item) {});
+              context: context,
+              singleWidget: Text(
+                'The maximum VOI amount is calculated by: the balance (${ref.watch(balanceProvider)}), '
+                'minus the minimum balance needed to keep the account open (${ref.watch(minimumBalanceProvider)}), '
+                'minus the minimum transaction fee (0.001)',
+                softWrap: true,
+                style: context.textTheme.bodyMedium,
+              ),
+              header: "Info",
+              onPressed: (SelectItem item) {},
+            );
           },
         ),
         buildMaxAmountDisplay(ref),
@@ -403,7 +406,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.next,
       controller: recipientAddressController,
-      suffixIcon: Icons.qr_code_scanner,
+      suffixIcon: AppIcons.scan,
       autoCorrect: false,
       onTrailingPressed: () {},
       validator: _validateAlgorandAddress,

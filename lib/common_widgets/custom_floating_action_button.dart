@@ -33,7 +33,10 @@ class CustomFloatingActionButton extends StatelessWidget {
         onPressed: onPressed,
         child: Padding(
           padding: const EdgeInsets.all(kScreenPadding / 2),
-          child: AppIcons.icon(icon: icon, size: AppIcons.large),
+          child: AppIcons.icon(
+              icon: icon,
+              size: AppIcons.large,
+              color: context.colorScheme.onSecondary),
         ),
       ),
     );

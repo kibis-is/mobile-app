@@ -56,7 +56,7 @@ class TransactionItem extends ConsumerWidget {
         border: Border.all(color: iconColor, width: 2.0),
       ),
       child:
-          AppIcons.icon(icon: iconData, size: AppIcons.small, color: iconColor),
+          AppIcons.icon(icon: iconData, size: AppIcons.large, color: iconColor),
     );
   }
 

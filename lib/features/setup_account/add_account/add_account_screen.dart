@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
@@ -39,8 +40,8 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
             CustomListTile(
               title: "Create New Account",
               subtitle: 'You will be prompted to save a seed.',
-              leadingIcon: Icons.person_add,
-              trailingIcon: Icons.arrow_forward_ios_rounded,
+              leadingIcon: AppIcons.addAccount,
+              trailingIcon: AppIcons.arrowRight,
               onTap: () async {
                 await _createNewAccount(ref);
               },
@@ -51,8 +52,8 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
             CustomListTile(
               title: "Import Via Seed",
               subtitle: 'Import an existing account via seed phrase.',
-              leadingIcon: Icons.import_export,
-              trailingIcon: Icons.arrow_forward_ios_rounded,
+              leadingIcon: AppIcons.importAccount,
+              trailingIcon: AppIcons.arrowRight,
               onTap: () {
                 GoRouter.of(context).push(
                     widget.accountFlow == AccountFlow.setup
@@ -68,8 +69,8 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
               CustomListTile(
                 title: "Import Via QR Code",
                 subtitle: 'Scan a QR code to import an existing account.',
-                leadingIcon: Icons.qr_code_scanner,
-                trailingIcon: Icons.arrow_forward_ios_rounded,
+                leadingIcon: AppIcons.scan,
+                trailingIcon: AppIcons.arrowRight,
                 onTap: () {
                   GoRouter.of(context).push(
                       widget.accountFlow == AccountFlow.setup

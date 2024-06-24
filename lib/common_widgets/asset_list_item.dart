@@ -95,7 +95,8 @@ class AssetListItem extends ConsumerWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(kScreenPadding),
-        child: AppIcons.icon(icon: AppIcons.voiIcon, color: Colors.white),
+        child: AppIcons.icon(
+            icon: AppIcons.voiIcon, color: Colors.white, size: AppIcons.large),
       ),
     );
   }
@@ -103,7 +104,9 @@ class AssetListItem extends ConsumerWidget {
   Widget _buildAssetAmount(BuildContext context) {
     return SizedBox(
       child: (onPressed == null && mode == AssetScreenMode.add)
-          ? const Text('Owned')
+          ? Text('Owned',
+              style: context.textTheme.bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.bold))
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
