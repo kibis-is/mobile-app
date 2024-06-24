@@ -345,31 +345,34 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Row _maxSendInfo(BuildContext context, WidgetRef ref) {
+    final selectedItem = ref.watch(selectedAssetProvider);
+    bool isNetworkSelected = selectedItem?.value.startsWith("network") ?? false;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        IconButton(
-          icon: AppIcons.icon(
-            icon: AppIcons.info,
-            size: AppIcons.small,
-            color: context.colorScheme.onBackground,
+        if (isNetworkSelected)
+          IconButton(
+            icon: AppIcons.icon(
+              icon: AppIcons.info,
+              size: AppIcons.small,
+              color: context.colorScheme.onBackground,
+            ),
+            iconSize: kScreenPadding,
+            onPressed: () {
+              customBottomSheet(
+                context: context,
+                singleWidget: Text(
+                  'The maximum VOI amount is calculated by: the balance (${ref.watch(balanceProvider)}), '
+                  'minus the minimum balance needed to keep the account open (${ref.watch(minimumBalanceProvider)}), '
+                  'minus the minimum transaction fee (0.001)',
+                  softWrap: true,
+                  style: context.textTheme.bodyMedium,
+                ),
+                header: "Info",
+                onPressed: (SelectItem item) {},
+              );
+            },
           ),
-          iconSize: kScreenPadding,
-          onPressed: () {
-            customBottomSheet(
-              context: context,
-              singleWidget: Text(
-                'The maximum VOI amount is calculated by: the balance (${ref.watch(balanceProvider)}), '
-                'minus the minimum balance needed to keep the account open (${ref.watch(minimumBalanceProvider)}), '
-                'minus the minimum transaction fee (0.001)',
-                softWrap: true,
-                style: context.textTheme.bodyMedium,
-              ),
-              header: "Info",
-              onPressed: (SelectItem item) {},
-            );
-          },
-        ),
         buildMaxAmountDisplay(ref),
       ],
     );
