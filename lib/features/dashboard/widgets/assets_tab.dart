@@ -96,6 +96,13 @@ class AssetsTab extends ConsumerWidget {
   }
 
   Widget _buildAssetsList(BuildContext context, List<Asset> assets) {
+    // Sort the assets by the defaultFrozen property
+    assets.sort((a, b) {
+      final aFrozen = a.params.defaultFrozen ?? false;
+      final bFrozen = b.params.defaultFrozen ?? false;
+      return aFrozen == bFrozen ? 0 : (aFrozen ? 1 : -1);
+    });
+
     return ListView.separated(
       itemCount: assets.length,
       shrinkWrap: true,
