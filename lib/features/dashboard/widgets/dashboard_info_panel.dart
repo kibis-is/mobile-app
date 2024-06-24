@@ -6,6 +6,7 @@ import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -25,17 +26,17 @@ class DashboardInfoPanel extends StatelessWidget {
         SelectItem(
           name: "Copy Address",
           value: 'copy',
-          icon: '0xe190',
+          icon: AppIcons.copy,
         ),
         SelectItem(
           name: "Share Address",
           value: 'share',
-          icon: '0xe190',
+          icon: AppIcons.share,
         ),
         SelectItem(
           name: "Edit",
           value: 'edit',
-          icon: '0xe3c9',
+          icon: AppIcons.edit,
         ),
       ];
 
@@ -92,11 +93,12 @@ class DashboardInfoPanel extends StatelessWidget {
                     }
                   });
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(
-                    kScreenPadding / 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(kScreenPadding / 3),
+                  child: AppIcons.icon(
+                    icon: AppIcons.verticalDots,
+                    size: AppIcons.small,
                   ),
-                  child: Icon(Icons.more_vert),
                 ),
               ),
             ),

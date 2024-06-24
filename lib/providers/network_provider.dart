@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 
 // Network options
 final List<SelectItem> networkOptions = [
   SelectItem(
-      name: 'VOI',
-      value: "network-voi",
-      icon: 'assets/images/voi-asset-icon.svg'),
+    name: 'VOI',
+    value: "network-voi",
+    icon: AppIcons.voiIcon,
+  ),
   SelectItem(
-      name: 'Algorand',
-      value: "network-algorand",
-      icon: 'assets/images/algorand-logo.svg'),
+    name: 'Algorand',
+    value: "network-algorand",
+    icon: AppIcons.algorandIcon,
+  ),
 ];
 
 final networkProvider =

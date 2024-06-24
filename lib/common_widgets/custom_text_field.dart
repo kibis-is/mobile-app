@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/app_icons.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -59,7 +60,8 @@ class CustomTextField extends StatelessWidget {
       textAlignVertical: TextAlignVertical.top,
       decoration: InputDecoration(
         counterText: "",
-        prefixIcon: leadingIcon != null ? Icon(leadingIcon) : null,
+        prefixIcon:
+            leadingIcon != null ? AppIcons.icon(icon: leadingIcon) : null,
         labelText: labelText,
         contentPadding: const EdgeInsets.symmetric(
             horizontal: kScreenPadding, vertical: kScreenPadding / 2),
@@ -71,13 +73,13 @@ class CustomTextField extends StatelessWidget {
             ? Padding(
                 padding: const EdgeInsets.only(right: kScreenPadding / 2),
                 child: IconButton(
-                  icon: Icon(suffixIcon),
+                  icon: AppIcons.icon(icon: suffixIcon),
                   onPressed: onTrailingPressed,
                 ),
               )
             : isObscureText
                 ? IconButton(
-                    icon: const Icon(Icons.visibility),
+                    icon: AppIcons.icon(icon: AppIcons.showPassword),
                     onPressed: () {
                       // Typically toggle password visibility
                     },

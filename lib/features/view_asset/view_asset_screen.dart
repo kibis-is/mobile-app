@@ -2,7 +2,7 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
@@ -16,6 +16,7 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -155,7 +156,7 @@ class AssetHeader extends ConsumerWidget {
                 child: SvgPicture.asset(
                   width: 50,
                   height: 50,
-                  'assets/images/voi-asset-icon.svg',
+                  AppIcons.voiIcon,
                   semanticsLabel: 'VOI Logo',
                   colorFilter:
                       const ColorFilter.mode(Colors.white, BlendMode.srcATop),
@@ -211,10 +212,8 @@ class AssetHeader extends ConsumerWidget {
                       context, activeAsset?.index.toString() ?? ''),
                   child: Padding(
                     padding: const EdgeInsets.only(left: kScreenPadding),
-                    child: Icon(
-                      Icons.copy,
-                      color: context.colorScheme.onSurface,
-                    ),
+                    child: AppIcons.icon(
+                        icon: AppIcons.copy, size: AppIcons.small),
                   ),
                 ),
               ],
@@ -222,13 +221,13 @@ class AssetHeader extends ConsumerWidget {
           ),
         ),
         if (activeAsset?.params.defaultFrozen ?? false)
-          const Positioned(
+          Positioned(
             right: 0,
             bottom: 0,
             child: Padding(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                   horizontal: kScreenPadding / 2, vertical: kScreenPadding),
-              child: Icon(Icons.ac_unit),
+              child: AppIcons.icon(icon: AppIcons.freeze, size: AppIcons.small),
             ),
           ),
       ],
@@ -342,8 +341,9 @@ class AssetControlsState extends ConsumerState<AssetControls> {
             ),
             child: IconButton(
               padding: const EdgeInsets.all(kScreenPadding),
-              icon: Icon(
-                Icons.ac_unit_rounded,
+              icon: AppIcons.icon(
+                icon: AppIcons.freeze,
+                size: AppIcons.small,
                 color: activeAsset?.params.defaultFrozen ?? false
                     ? context.colorScheme.primary
                     : context.colorScheme.onSurface,
@@ -385,7 +385,11 @@ class AssetExpansionToggle extends ConsumerWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(width: kScreenPadding),
-                Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                isExpanded
+                    ? AppIcons.icon(
+                        icon: AppIcons.arrowDropup, size: AppIcons.large)
+                    : AppIcons.icon(
+                        icon: AppIcons.arrowDropdown, size: AppIcons.large),
               ],
             ),
           ),

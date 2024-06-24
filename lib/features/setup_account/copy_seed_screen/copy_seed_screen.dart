@@ -6,6 +6,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/copy_seed_screen/widgets/custom_seed_chip.dart';
 import 'package:kibisis/features/setup_account/name_account/providers/checkbox_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -71,7 +72,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                             alignment: Alignment.centerRight,
                             child: IconButton(
                               alignment: Alignment.centerRight,
-                              icon: const Icon(Icons.copy),
+                              icon: AppIcons.icon(icon: AppIcons.small),
                               onPressed: () =>
                                   copyToClipboard(context, snapshot.data!),
                             ),

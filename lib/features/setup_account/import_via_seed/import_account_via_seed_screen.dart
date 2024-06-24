@@ -7,6 +7,7 @@ import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 
 class ImportSeedScreen extends ConsumerStatefulWidget {
   static String title = 'Import Seed';
@@ -61,7 +62,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
         title: Text(ImportSeedScreen.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: AppIcons.icon(icon: AppIcons.refresh, size: AppIcons.small),
             onPressed: () {
               for (var controller in seedPhraseControllers) {
                 controller.clear();
@@ -69,7 +70,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.paste),
+            icon: AppIcons.icon(icon: AppIcons.paste, size: AppIcons.small),
             onPressed: () async {
               ClipboardData? clipData = await Clipboard.getData('text/plain');
               if (clipData != null) {

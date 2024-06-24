@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 Future<dynamic> customBottomSheet({
@@ -90,15 +90,11 @@ Widget _buildListItem(
       padding: const EdgeInsets.symmetric(vertical: kSizedBoxSpacing),
       child: Row(
         children: [
-          isIcon
-              ? const Icon(Icons.widgets)
-              : SvgPicture.asset(
-                  item.icon,
-                  semanticsLabel: item.name,
-                  height: kSizedBoxSpacing * 2,
-                  colorFilter: ColorFilter.mode(
-                      context.colorScheme.onBackground, BlendMode.srcATop),
-                ),
+          AppIcons.icon(
+            icon: item.icon,
+            size: kSizedBoxSpacing * 2,
+            color: context.colorScheme.onBackground,
+          ),
           const SizedBox(width: kSizedBoxSpacing),
           Text(
             item.name,

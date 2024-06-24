@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/app_icons.dart';
 
 final selectedAssetProvider =
     StateNotifierProvider<SelectedAssetNotifier, SelectItem?>((ref) {
@@ -16,7 +17,11 @@ class SelectedAssetNotifier extends StateNotifier<SelectItem?> {
     required SendTransactionScreenMode mode,
   }) {
     if (items.isEmpty) {
-      state = SelectItem(name: 'No Items', value: "-1", icon: '0xe3af');
+      state = SelectItem(
+        name: 'No Items',
+        value: "-1",
+        icon: AppIcons.error,
+      );
       return;
     }
     if (mode == SendTransactionScreenMode.payment) {

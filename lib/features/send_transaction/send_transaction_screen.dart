@@ -19,6 +19,7 @@ import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 final dropdownItemsProvider = StateProvider<List<SelectItem>>((ref) => []);
@@ -88,9 +89,10 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final assets = assetsAsync.value;
     List<SelectItem> combinedList = assets.map((asset) {
       return SelectItem(
-          name: asset.params.name ?? 'Unnamed Asset',
-          value: asset.index.toString(),
-          icon: '0xf02b2');
+        name: asset.params.name ?? 'Unnamed Asset',
+        value: asset.index.toString(),
+        icon: AppIcons.icon(icon: AppIcons.error),
+      );
     }).toList();
 
     //insert the network (voi or algorand) item at the beginning of the list
@@ -100,7 +102,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           SelectItem(
             name: 'No Network',
             value: "-1",
-            icon: '0xe3af',
+            icon: AppIcons.error,
           ),
     );
     return combinedList;
@@ -347,7 +349,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
-          icon: const Icon(Icons.info_outline),
+          icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small),
           color: context.colorScheme.onBackground,
           iconSize: kScreenPadding,
           onPressed: () {

@@ -9,6 +9,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_selection.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AccountListScreen extends ConsumerStatefulWidget {
@@ -141,8 +142,10 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
           const EdgeInsets.only(left: kScreenPadding, bottom: kScreenPadding),
       alignment: Alignment.centerRight,
       child: IconButton(
-        icon:
-            const Icon(Icons.edit, color: ColorPalette.darkThemeAntiflashWhite),
+        icon: AppIcons.icon(
+            icon: AppIcons.edit,
+            size: AppIcons.small,
+            color: context.colorScheme.onSurfaceVariant),
         onPressed: () {
           _navigateToEditAccount(accountId, accountName);
         },
@@ -213,12 +216,10 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SvgPicture.asset(
-            'assets/images/voi-asset-icon.svg',
-            colorFilter: ColorFilter.mode(
-                context.colorScheme.secondary, BlendMode.srcATop),
-            height: kScreenPadding,
-          ),
+          AppIcons.icon(
+              icon: AppIcons.voiIcon,
+              color: context.colorScheme.secondary,
+              size: AppIcons.small),
         ],
       ),
     );

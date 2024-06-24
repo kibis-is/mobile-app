@@ -19,6 +19,7 @@ import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -39,7 +40,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // _checkAndFetchAssets();
       _onRefresh();
     });
   }
@@ -50,6 +50,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       invalidateProviders(ref);
       ref.read(accountDataFetchStatusProvider.notifier).setFetched(true);
     }
+    _refreshController.refreshCompleted();
   }
 
   @override
@@ -62,10 +63,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final accountState = ref.watch(accountProvider);
 
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _onRefresh();
-    });
 
     return Scaffold(
       appBar: _buildAppBar(context, ref, networks, accountState),
@@ -92,7 +89,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
       ),
       floatingActionButton: CustomFloatingActionButton(
-        icon: Icons.send,
+        icon: AppIcons.send,
         onPressed: () => context.goNamed(
           sendTransactionRouteName,
           pathParameters: {
@@ -133,14 +130,14 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                     color: context.colorScheme.primary),
               ),
               SvgPicture.asset(
-                networks[0].icon,
+                'assets/images/${networks[0].icon}.svg',
                 semanticsLabel: networks[0].name,
                 height: 12,
                 colorFilter: ColorFilter.mode(
                     context.colorScheme.primary, BlendMode.srcATop),
               ),
               IconButton(
-                icon: const Icon(Icons.info_outline),
+                icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small),
                 color: context.colorScheme.onBackground,
                 iconSize: kScreenPadding,
                 onPressed: () {
@@ -233,12 +230,13 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              icon: const Icon(Icons.settings),
+              icon:
+                  AppIcons.icon(icon: AppIcons.settings, size: AppIcons.small),
               color: context.colorScheme.onBackground,
               onPressed: () => GoRouter.of(context).go('/settings'),
             ),
             IconButton(
-              icon: const Icon(Icons.account_balance_wallet),
+              icon: AppIcons.icon(icon: AppIcons.wallet, size: AppIcons.small),
               color: context.colorScheme.onBackground,
               onPressed: () => GoRouter.of(context).push('/wallets'),
             ),

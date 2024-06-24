@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class SelectItem {
   final String name;
   final String value;
-  final String icon;
+  final dynamic icon;
 
-  SelectItem({required this.name, required this.value, required this.icon});
+  SelectItem({
+    required this.name,
+    required this.value,
+    required this.icon,
+  });
 }
 
 class CustomDropDown extends StatelessWidget {
@@ -47,7 +52,7 @@ class CustomDropDown extends StatelessWidget {
           color: context.colorScheme.onBackground,
         ),
         borderRadius: BorderRadius.circular(kWidgetRadius),
-        color: Theme.of(context).colorScheme.background,
+        color: context.colorScheme.background,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<SelectItem>(
@@ -57,7 +62,13 @@ class CustomDropDown extends StatelessWidget {
           items: items.map((SelectItem item) {
             return DropdownMenuItem<SelectItem>(
               value: item,
-              child: Text(item.name),
+              child: Row(
+                children: [
+                  AppIcons.icon(icon: item.icon),
+                  const SizedBox(width: 8),
+                  Text(item.name),
+                ],
+              ),
             );
           }).toList(),
         ),

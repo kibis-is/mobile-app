@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:kibisis/utils/app_icons.dart';
+
 class SettingsMenu {
   final String name;
-  final String icon;
+  final IconData icon;
   final String path;
 
   SettingsMenu({required this.name, required this.icon, required this.path});
@@ -8,32 +11,32 @@ class SettingsMenu {
   static List<SettingsMenu> menuList = [
     SettingsMenu(
       name: 'General',
-      icon: '0xe57f',
+      icon: AppIcons.settings,
       path: '/general',
     ),
     SettingsMenu(
       name: 'Security',
-      icon: '0xe569',
+      icon: AppIcons.security,
       path: '/security',
     ),
     SettingsMenu(
       name: 'Appearance',
-      icon: '0xe46b',
+      icon: AppIcons.appearance,
       path: '/appearance',
     ),
     SettingsMenu(
       name: 'Sessions',
-      icon: '0xe345',
+      icon: AppIcons.sessions,
       path: '/sessions',
     ),
     SettingsMenu(
       name: 'Advanced',
-      icon: '0xef06',
+      icon: AppIcons.advanced,
       path: '/advanced',
     ),
     SettingsMenu(
       name: 'About',
-      icon: '0xe33d',
+      icon: AppIcons.about,
       path: '/about',
     ),
   ];

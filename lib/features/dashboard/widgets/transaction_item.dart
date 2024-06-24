@@ -7,6 +7,7 @@ import 'package:kibisis/common_widgets/top_snack_bar.dart';
 
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/theme/color_palette.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class TransactionItem extends ConsumerWidget {
@@ -54,7 +55,8 @@ class TransactionItem extends ConsumerWidget {
         shape: BoxShape.circle,
         border: Border.all(color: iconColor, width: 2.0),
       ),
-      child: Icon(iconData, color: iconColor),
+      child:
+          AppIcons.icon(icon: iconData, size: AppIcons.small, color: iconColor),
     );
   }
 

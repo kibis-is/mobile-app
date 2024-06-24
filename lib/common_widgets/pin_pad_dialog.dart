@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/pin_pad.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/app_icons.dart';
 
 class PinPadDialog extends StatelessWidget {
   final String title;
@@ -21,7 +22,7 @@ class PinPadDialog extends StatelessWidget {
         appBar: AppBar(
           title: Text(title),
           leading: IconButton(
-            icon: const Icon(Icons.close),
+            icon: AppIcons.icon(icon: AppIcons.cross, size: AppIcons.small),
             onPressed: () => Navigator.of(context).pop(false),
           ),
         ),

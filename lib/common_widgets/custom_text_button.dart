@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class CustomTextButton extends StatelessWidget {
@@ -36,7 +37,7 @@ class CustomTextButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(title, style: context.textTheme.displayMedium),
-          Icon(iconData, size: 24),
+          AppIcons.icon(icon: iconData),
         ],
       ),
     );

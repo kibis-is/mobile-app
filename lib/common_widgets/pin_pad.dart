@@ -6,6 +6,7 @@ import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -103,16 +104,15 @@ class PinPadState extends ConsumerState<PinPad> {
                       ),
                       itemBuilder: (context, index) {
                         if (index == 9) {
-                          // Add reset button in debug mode
                           if (kDebugMode) {
                             return IconButton(
                               style: IconButton.styleFrom(
                                 backgroundColor: context.colorScheme.error,
                               ),
-                              icon: Icon(
-                                Icons.refresh,
-                                color: context.colorScheme.onError,
-                              ),
+                              icon: AppIcons.icon(
+                                  icon: AppIcons.refresh,
+                                  size: AppIcons.large,
+                                  color: context.colorScheme.onError),
                               onPressed: () async {
                                 bool confirm = await showDialog(
                                       context: context,
@@ -126,7 +126,6 @@ class PinPadState extends ConsumerState<PinPad> {
                                       },
                                     ) ??
                                     false;
-
                                 if (confirm) {
                                   _handleResetApp();
                                 }
@@ -140,7 +139,8 @@ class PinPadState extends ConsumerState<PinPad> {
                         }
                         if (index == 11) {
                           return IconButton(
-                            icon: const Icon(Icons.backspace),
+                            icon: AppIcons.icon(
+                                icon: AppIcons.backspace, size: AppIcons.large),
                             onPressed: () {
                               ref
                                   .read(pinEntryStateNotifierProvider.notifier)

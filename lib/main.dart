@@ -5,6 +5,7 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
 import 'package:kibisis/theme/themes.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/app_lifecycle_handler.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -69,7 +70,9 @@ class _KibisisState extends ConsumerState<Kibisis> {
                   isLoading: isLoading,
                   color: context.colorScheme.background,
                   opacity: 0.5,
-                  child: Center(child: widget),
+                  child: DefaultColorInitializer(
+                    child: Center(child: widget),
+                  ),
                 ),
               ),
             );
@@ -84,5 +87,18 @@ class _KibisisState extends ConsumerState<Kibisis> {
         );
       },
     );
+  }
+}
+
+class DefaultColorInitializer extends StatelessWidget {
+  final Widget child;
+
+  const DefaultColorInitializer({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    // Initialize the default color after the theme has been applied
+    AppIcons.initializeDefaultColor(context);
+    return child;
   }
 }

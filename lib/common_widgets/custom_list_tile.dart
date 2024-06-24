@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class CustomListTile extends StatelessWidget {
@@ -29,8 +30,10 @@ class CustomListTile extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(kScreenPadding / 2),
-          child: Icon(leadingIcon,
-              color: context.colorScheme.onPrimary, size: kScreenPadding * 1.5),
+          child: AppIcons.icon(
+            icon: leadingIcon,
+            color: context.colorScheme.onPrimary,
+          ),
         ),
       ),
       title: Text(
@@ -45,9 +48,10 @@ class CustomListTile extends StatelessWidget {
       ),
       trailing: Padding(
         padding: const EdgeInsets.all(kScreenPadding),
-        child: Icon(
-          trailingIcon,
-          color: context.colorScheme.onBackground,
+        child: AppIcons.icon(
+          icon: trailingIcon,
+          size: AppIcons.small,
+          color: context.colorScheme.onSurface,
         ),
       ),
       onTap: onTap,

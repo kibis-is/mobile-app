@@ -7,6 +7,7 @@ import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -52,7 +53,10 @@ class AssetsTab extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('Add Asset'),
-            Icon(Icons.add, color: context.colorScheme.primary),
+            AppIcons.icon(
+                icon: AppIcons.add,
+                size: AppIcons.small,
+                color: context.colorScheme.primary),
           ],
         ),
       ),
