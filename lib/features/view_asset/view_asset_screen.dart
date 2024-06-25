@@ -210,8 +210,7 @@ class AssetHeader extends ConsumerWidget {
                       context, activeAsset?.index.toString() ?? ''),
                   child: Padding(
                     padding: const EdgeInsets.only(left: kScreenPadding),
-                    child: AppIcons.icon(
-                        icon: AppIcons.copy, size: AppIcons.small),
+                    child: AppIcons.icon(icon: AppIcons.copy),
                   ),
                 ),
               ],

@@ -47,6 +47,10 @@ final ThemeData lightTheme = ThemeData(
   pageTransitionsTheme: pageTransitions(),
   disabledColor: ColorPalette.lightThemeFrenchGray,
   bottomAppBarTheme: bottomAppBarTheme(ColorPalette.lightThemeAntiFlashWhite),
+  tabBarTheme: const TabBarTheme(
+    labelColor: ColorPalette.lightThemeMauveine,
+    unselectedLabelColor: ColorPalette.lightThemeChineseViolet,
+  ),
 );
 
 // Dark Theme
@@ -85,4 +89,8 @@ final ThemeData darkTheme = ThemeData(
   pageTransitionsTheme: pageTransitions(),
   disabledColor: ColorPalette.darkThemeGray,
   bottomAppBarTheme: bottomAppBarTheme(ColorPalette.darkThemeRaisinBlack),
+  tabBarTheme: const TabBarTheme(
+    labelColor: ColorPalette.darkThemeMauve,
+    unselectedLabelColor: ColorPalette.darkThemeCadetGray,
+  ),
 );

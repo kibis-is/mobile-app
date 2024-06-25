@@ -6,6 +6,7 @@ class AppIcons {
   static const double small = 16.0;
   static const double medium = 24.0;
   static const double large = 32.0;
+  static const double xlarge = 48.0;
 
   // Static IconData examples
   static const IconData arrowRight = Icons.arrow_forward_ios_rounded;
@@ -36,10 +37,11 @@ class AppIcons {
   static const IconData advanced = Icons.build_rounded;
   static const IconData about = Icons.info_rounded;
   static const IconData send = Icons.send_rounded;
-  static const IconData asset = Icons.monetization_on_rounded;
+  static const IconData asset = Icons.attach_money_rounded;
   static const IconData scan = Icons.qr_code_scanner_rounded;
   static const IconData addAccount = Icons.person_add_rounded;
   static const IconData importAccount = Icons.import_export_rounded;
+  static const IconData delete = Icons.delete_rounded;
 
   static const String svgBasePath = 'assets/images/';
 

@@ -62,7 +62,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
         title: Text(ImportSeedScreen.title),
         actions: [
           IconButton(
-            icon: AppIcons.icon(icon: AppIcons.refresh, size: AppIcons.small),
+            icon: AppIcons.icon(icon: AppIcons.refresh),
             onPressed: () {
               for (var controller in seedPhraseControllers) {
                 controller.clear();
@@ -70,7 +70,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
             },
           ),
           IconButton(
-            icon: AppIcons.icon(icon: AppIcons.paste, size: AppIcons.small),
+            icon: AppIcons.icon(icon: AppIcons.paste),
             onPressed: () async {
               ClipboardData? clipData = await Clipboard.getData('text/plain');
               if (clipData != null) {

@@ -206,6 +206,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
     );
   }
 
+  //TODO: need this for showing balance on account cards later.
   Widget _buildAccountBalance(BuildContext context) {
     return Container(
       alignment: Alignment.centerRight,

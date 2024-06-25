@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
@@ -39,7 +40,8 @@ class AssetListItem extends ConsumerWidget {
             child: ListTile(
               tileColor: Colors.transparent,
               horizontalTitleGap: kScreenPadding * 2,
-              leading: _buildAssetIcon(context),
+              leading: _buildAssetIcon(
+                  context, ref, asset.params.defaultFrozen ?? false),
               title: EllipsizedText(
                 asset.params.name ?? 'Unknown',
                 style: context.textTheme.titleSmall?.copyWith(
@@ -62,7 +64,10 @@ class AssetListItem extends ConsumerWidget {
         if (asset.params.defaultFrozen ?? false)
           Padding(
             padding: const EdgeInsets.all(kScreenPadding / 2),
-            child: AppIcons.icon(icon: AppIcons.freeze, size: AppIcons.small),
+            child: AppIcons.icon(
+                icon: AppIcons.freeze,
+                size: AppIcons.small,
+                color: context.colorScheme.onSurfaceVariant),
           ),
       ],
     );
@@ -87,16 +92,30 @@ class AssetListItem extends ConsumerWidget {
     }
   }
 
-  Widget _buildAssetIcon(BuildContext context) {
+  Widget _buildAssetIcon(
+      BuildContext context, WidgetRef ref, bool isFrozenDefault) {
+    final isDarkMode = ref.watch(isDarkModeProvider);
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorPalette.voiPurple,
+        border: Border.all(
+            width: 3,
+            color: isFrozenDefault
+                ? isDarkMode
+                    ? ColorPalette.darkThemeFrozenColor
+                    : ColorPalette.lightThemeFrozenColor
+                : context.colorScheme.primary),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
+        padding: const EdgeInsets.all(kScreenPadding / 3),
         child: AppIcons.icon(
-            icon: AppIcons.voiIcon, color: Colors.white, size: AppIcons.large),
+            icon: AppIcons.asset,
+            color: isFrozenDefault
+                ? isDarkMode
+                    ? ColorPalette.darkThemeFrozenColor
+                    : ColorPalette.lightThemeFrozenColor
+                : context.colorScheme.primary,
+            size: AppIcons.large),
       ),
     );
   }

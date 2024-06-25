@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
-
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/theme/color_palette.dart';
+import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -30,38 +30,43 @@ class TransactionItem extends ConsumerWidget {
     this.assetName,
   });
 
-  Widget _getTransactionIcon(BuildContext context) {
-    Color iconColor;
-    IconData iconData;
+  Widget _getTransactionIcon(
+      BuildContext context, bool isDarkMode, String network) {
+    dynamic iconData;
 
     switch (type) {
       case 'pay':
-        iconColor = context.colorScheme.primary;
-        iconData = Icons.telegram;
+        iconData =
+            network == 'network-voi' ? AppIcons.voiIcon : AppIcons.algorandIcon;
         break;
       case 'axfer':
-        iconColor = ColorPalette.darkThemeAssetColor;
-        iconData = Icons.payments_rounded;
+        iconData = AppIcons.asset;
         break;
       default:
-        iconColor = context.colorScheme.primary;
-        iconData = Icons.warning;
+        iconData = AppIcons.error;
         break;
     }
 
     return Container(
-      padding: const EdgeInsets.all(kScreenPadding / 2),
+      padding: type == 'pay' ? const EdgeInsets.all(kScreenPadding / 4) : null,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: iconColor, width: 2.0),
+        border: Border.all(
+          width: 3,
+          color: context.colorScheme.primary,
+        ),
       ),
-      child:
-          AppIcons.icon(icon: iconData, size: AppIcons.large, color: iconColor),
+      child: AppIcons.icon(
+          icon: iconData,
+          size: type == 'pay' ? AppIcons.medium : AppIcons.large,
+          color: context.colorScheme.primary),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = ref.watch(isDarkModeProvider);
+    final network = ref.watch(networkProvider)?.value ?? 'network-voi';
     return Column(
       children: [
         Material(
@@ -87,7 +92,7 @@ class TransactionItem extends ConsumerWidget {
                     message: 'Transaction ID Copied',
                   );
                 },
-                leading: _getTransactionIcon(context),
+                leading: _getTransactionIcon(context, isDarkMode, network),
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

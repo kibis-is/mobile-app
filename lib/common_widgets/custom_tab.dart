@@ -15,8 +15,7 @@ class CustomTab extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
       decoration: BoxDecoration(
         color: context.colorScheme.surface,
-        borderRadius:
-            BorderRadius.circular(kWidgetRadius), // Set rounded corners
+        borderRadius: BorderRadius.circular(kWidgetRadius),
       ),
       child: Tab(child: Text(text, style: const TextStyle(letterSpacing: 1.5))),
     );

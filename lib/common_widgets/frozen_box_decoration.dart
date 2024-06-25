@@ -9,28 +9,36 @@ BoxDecoration frozenBoxDecoration(BuildContext context) {
   var brightness = Theme.of(context).brightness;
   bool isDarkMode = brightness == Brightness.dark;
 
-  Color frozenColor = isDarkMode
-      ? ColorPalette.darkThemeFrozenColor
-      : ColorPalette.lightThemeFrozenColor;
+  Color frozenColor =
+      isDarkMode ? ColorPalette.darkThemeFrozenColor : Colors.white;
   return BoxDecoration(
     color: context.colorScheme.background,
     gradient: RadialGradient(
       radius: (1 / 375) * screenWidth,
-      colors: [
-        context.colorScheme.background,
-        frozenColor,
-      ],
+      colors: isDarkMode
+          ? [
+              context.colorScheme.background,
+              ColorPalette.darkThemeFrozenSurfaceColor,
+            ]
+          : [
+              context.colorScheme.surface,
+              frozenColor,
+            ],
     ),
     borderRadius: BorderRadius.circular(kWidgetRadius),
     border: GradientBoxBorder(
       gradient: LinearGradient(
-        begin: Alignment.bottomLeft,
-        end: Alignment.topRight,
-        colors: [
-          Colors.transparent,
-          Colors.white.withOpacity(0.5),
-        ],
-      ),
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+          colors: isDarkMode
+              ? [
+                  Colors.transparent,
+                  Colors.white.withOpacity(0.5),
+                ]
+              : [
+                  Colors.white.withOpacity(1),
+                  Colors.white.withOpacity(1),
+                ]),
       width: 2,
     ),
   );

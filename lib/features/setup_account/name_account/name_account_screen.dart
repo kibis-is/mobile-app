@@ -15,6 +15,7 @@ import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/account_selection.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -66,7 +67,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                 final accountsList = ref.watch(accountsListProvider);
                 if (accountsList.accounts.length > 1) {
                   return IconButton(
-                    icon: const Icon(Icons.delete),
+                    icon: AppIcons.icon(icon: AppIcons.delete),
                     onPressed: () async {
                       bool confirm = await showDialog(
                             context: context,
