@@ -72,7 +72,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                             alignment: Alignment.centerRight,
                             child: IconButton(
                               alignment: Alignment.centerRight,
-                              icon: AppIcons.icon(icon: AppIcons.small),
+                              icon: AppIcons.icon(icon: AppIcons.copy),
                               onPressed: () =>
                                   copyToClipboard(context, snapshot.data!),
                             ),
@@ -172,6 +172,9 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                     return CustomButton(
                       text: 'Next',
                       isFullWidth: true,
+                      buttonType: checkboxValue
+                          ? ButtonType.secondary
+                          : ButtonType.disabled,
                       onPressed: checkboxValue
                           ? () {
                               if (formKey.currentState?.validate() ?? false) {
