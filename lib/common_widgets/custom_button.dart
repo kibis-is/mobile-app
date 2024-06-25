@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-enum ButtonType { primary, secondary, warning }
+enum ButtonType { primary, secondary, warning, disabled }
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -39,6 +39,10 @@ class CustomButton extends StatelessWidget {
       case ButtonType.warning:
         backgroundColor = context.colorScheme.error;
         foregroundColor = context.colorScheme.onError;
+        break;
+      case ButtonType.disabled:
+        backgroundColor = Theme.of(context).disabledColor;
+        foregroundColor = context.colorScheme.onSecondary;
         break;
     }
 
