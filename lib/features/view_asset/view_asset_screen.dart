@@ -133,6 +133,7 @@ class AssetHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeAsset = ref.watch(activeAssetProvider);
+    final isDarkMode = ref.watch(isDarkModeProvider);
     return Stack(
       children: [
         Container(
@@ -172,28 +173,25 @@ class AssetHeader extends ConsumerWidget {
             ],
           ),
         ),
-        Positioned(
-          left: 0,
-          top: 0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: kScreenPadding / 2, vertical: kScreenPadding),
-            child: Row(
-              children: [
-                Chip(
-                    padding: const EdgeInsets.all(kScreenPadding / 4),
-                    label: Text(
-                      'ASA',
-                      style: context.textTheme.displaySmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    backgroundColor: ref.watch(isDarkModeProvider)
-                        ? ColorPalette.cardGradientMediumBlue
-                        : Colors.lightBlue[100]),
-              ],
+        if ((activeAsset?.index ?? 0) != 0)
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kScreenPadding / 2, vertical: kScreenPadding),
+              child: Chip(
+                padding: const EdgeInsets.all(kScreenPadding / 4),
+                label: Text(
+                  'ASA',
+                  style: context.textTheme.displaySmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: isDarkMode ? Colors.white : Colors.black),
+                ),
+                backgroundColor: ColorPalette.cardGradientMediumBlue,
+              ),
             ),
           ),
-        ),
         Positioned(
           right: 0,
           top: 0,
