@@ -123,7 +123,10 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
               _buildAccountName(context, accountName),
               const SizedBox(height: kScreenPadding / 2),
               _buildPublicKey(context, publicKey),
-              _buildAccountBalance(context),
+              // _buildAccountBalance(context),
+              const SizedBox(
+                height: kScreenPadding,
+              ),
             ],
           ),
         ),
@@ -144,8 +147,8 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
       child: IconButton(
         icon: AppIcons.icon(
             icon: AppIcons.edit,
-            size: AppIcons.small,
-            color: context.colorScheme.onSurfaceVariant),
+            size: AppIcons.medium,
+            color: ColorPalette.darkThemeAntiflashWhite),
         onPressed: () {
           _navigateToEditAccount(accountId, accountName);
         },
