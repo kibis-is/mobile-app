@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -202,23 +204,43 @@ class PinPadState extends ConsumerState<PinPad> {
     final pinNotifier = ref.read(pinEntryStateNotifierProvider.notifier);
     final pin = pinNotifier.getPin();
 
-    if (widget.mode == PinPadMode.verifyTransaction) {
-      final isPinValid = await ref.read(pinProvider.notifier).verifyPin(pin);
-      if (isPinValid) {
-        pinNotifier.clearError();
-        if (widget.onPinVerified != null) {
-          widget.onPinVerified!();
+    switch (widget.mode) {
+      case PinPadMode.setup:
+        pinNotifier.pinComplete(widget.mode);
+        await ref.refresh(storageProvider).accountExists();
+        if (!mounted) return;
+        _navigateToAddAccount();
+        break;
+      case PinPadMode.unlock:
+        pinNotifier.pinComplete(widget.mode);
+        if (ref.read(isAuthenticatedProvider) && mounted) {
+          // Optionally navigate to the home screen or another screen
+          GoRouter.of(context).go('/home');
         }
-      } else {
-        pinNotifier.setError('Incorrect PIN. Try again.');
-      }
-    } else {
-      pinNotifier.pinComplete(widget.mode);
-      if (widget.mode != PinPadMode.setup) {
-        ref.read(pinProvider.notifier).clearPinState();
-      }
+        break;
+      case PinPadMode.verifyTransaction:
+        final isPinValid = await ref.read(pinProvider.notifier).verifyPin(pin);
+        if (isPinValid) {
+          pinNotifier.clearError();
+          if (widget.onPinVerified != null) {
+            widget.onPinVerified!();
+          }
+        } else {
+          pinNotifier.setError('Incorrect PIN. Try again.');
+        }
+        break;
+      default:
+        break;
     }
 
+    if (widget.mode != PinPadMode.setup) {
+      ref.read(pinProvider.notifier).clearPinState();
+    }
     pinNotifier.clearPin();
+  }
+
+  void _navigateToAddAccount() {
+    if (!mounted) return;
+    GoRouter.of(context).push('/setup/setupAddAccount');
   }
 }
