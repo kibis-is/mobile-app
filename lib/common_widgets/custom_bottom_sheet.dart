@@ -95,7 +95,7 @@ Widget _buildListItem(
           const SizedBox(width: kSizedBoxSpacing),
           Text(
             item.name,
-            style: context.textTheme.titleLarge,
+            style: context.textTheme.displayMedium,
           ),
         ],
       ),
