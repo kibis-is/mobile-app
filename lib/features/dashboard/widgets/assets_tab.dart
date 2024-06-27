@@ -68,21 +68,25 @@ class AssetsTab extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width / 4,
-              maxHeight: MediaQuery.of(context).size.height / 4,
-            ),
-            child: SvgPicture.asset(
-              'assets/images/empty.svg',
-              semanticsLabel: 'No Assets Found',
+          Flexible(
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height / 4,
+              ),
+              child: SvgPicture.asset(
+                'assets/images/empty.svg',
+                semanticsLabel: 'No Assets Found',
+              ),
             ),
           ),
           const SizedBox(height: kScreenPadding / 2),
           Text('No Assets Found', style: context.textTheme.titleMedium),
           const SizedBox(height: kScreenPadding / 2),
-          Text('You have not added any assets. Try adding one now.',
-              style: context.textTheme.bodyMedium, textAlign: TextAlign.center),
+          Text(
+            'You have not added any assets. Try adding one now.',
+            style: context.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: kScreenPadding),
           TextButton(
             onPressed: () {
