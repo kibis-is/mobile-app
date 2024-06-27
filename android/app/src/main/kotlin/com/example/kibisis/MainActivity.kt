@@ -1,4 +1,4 @@
-package com.example.kibisis
+package sh.agoralabs.kibisis
 
 import io.flutter.embedding.android.FlutterActivity
 
