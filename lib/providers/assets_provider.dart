@@ -15,10 +15,10 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
 
   AssetsNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
-    _fetchAssets();
+    fetchAssets();
   }
 
-  Future<void> _fetchAssets() async {
+  Future<void> fetchAssets() async {
     if (publicAddress.isEmpty) {
       state = const AsyncValue.data([]);
       return;
