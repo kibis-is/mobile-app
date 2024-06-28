@@ -51,17 +51,11 @@ class ActivityTab extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Flexible(
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width / 4,
-                maxHeight: MediaQuery.of(context).size.height / 4,
-              ),
-              child: SvgPicture.asset(
-                'assets/images/empty.svg',
-                semanticsLabel: 'No Transactions Found',
-              ),
-            ),
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: SvgPicture.asset('assets/images/empty.svg',
+                semanticsLabel: 'No Assets Found'),
           ),
           const SizedBox(height: kScreenPadding / 2),
           Text('No Transactions Found', style: context.textTheme.titleMedium),

@@ -96,13 +96,11 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Flexible(
-            child: Container(
-              constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height / 4),
-              child: SvgPicture.asset('assets/images/empty.svg',
-                  semanticsLabel: 'No Assets Found'),
-            ),
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: SvgPicture.asset('assets/images/empty.svg',
+                semanticsLabel: 'No Assets Found'),
           ),
           const SizedBox(height: kScreenPadding / 2),
           Text('No Assets Found', style: context.textTheme.titleMedium),
