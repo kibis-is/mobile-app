@@ -271,7 +271,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final double balance = getBalance(ref);
     final double minimumBalance = ref.watch(minimumBalanceProvider);
     const double transactionFee = 0.0001;
-    return balance - minimumBalance - transactionFee;
+    final sum = balance - minimumBalance - transactionFee;
+
+    return sum < 0 ? 0 : sum;
   }
 
   Widget buildMaxAmountDisplay(WidgetRef ref) {
