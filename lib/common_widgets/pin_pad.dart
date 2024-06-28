@@ -214,8 +214,7 @@ class PinPadState extends ConsumerState<PinPad> {
       case PinPadMode.unlock:
         pinNotifier.pinComplete(widget.mode);
         if (ref.read(isAuthenticatedProvider) && mounted) {
-          // Optionally navigate to the home screen or another screen
-          GoRouter.of(context).go('/home');
+          GoRouter.of(context).go('/');
         }
         break;
       case PinPadMode.verifyTransaction:
