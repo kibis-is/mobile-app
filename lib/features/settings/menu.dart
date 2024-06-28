@@ -24,16 +24,18 @@ class SettingsMenu {
       icon: AppIcons.appearance,
       path: '/appearance',
     ),
-    SettingsMenu(
-      name: 'Sessions',
-      icon: AppIcons.sessions,
-      path: '/sessions',
-    ),
-    SettingsMenu(
-      name: 'Advanced',
-      icon: AppIcons.advanced,
-      path: '/advanced',
-    ),
+    //TODO: implement sessions
+    // SettingsMenu(
+    //   name: 'Sessions',
+    //   icon: AppIcons.sessions,
+    //   path: '/sessions',
+    // ),
+    //TODO: implement advanced options
+    // SettingsMenu(
+    //   name: 'Advanced',
+    //   icon: AppIcons.advanced,
+    //   path: '/advanced',
+    // ),
     SettingsMenu(
       name: 'About',
       icon: AppIcons.about,
