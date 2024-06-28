@@ -7,7 +7,9 @@ import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class NetworkSelect extends ConsumerWidget {
-  const NetworkSelect({super.key});
+  final int networkCount;
+
+  const NetworkSelect({super.key, required this.networkCount});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,15 +17,19 @@ class NetworkSelect extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: kScreenPadding / 6),
-      child: _NetworkDisplayRow(currentNetwork: currentNetwork),
+      child: _NetworkDisplayRow(
+        currentNetwork: currentNetwork,
+        networkCount: networkCount,
+      ),
     );
   }
 }
 
 class _NetworkDisplayRow extends StatelessWidget {
   final SelectItem? currentNetwork;
+  final int networkCount;
 
-  const _NetworkDisplayRow({this.currentNetwork});
+  const _NetworkDisplayRow({this.currentNetwork, required this.networkCount});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,8 @@ class _NetworkDisplayRow extends StatelessWidget {
           style: context.textTheme.bodySmall
               ?.copyWith(color: context.colorScheme.onSurface),
         ),
-        AppIcons.icon(icon: AppIcons.arrowDropdown, size: AppIcons.small),
+        if (networkCount > 1)
+          AppIcons.icon(icon: AppIcons.arrowDropdown, size: AppIcons.small),
       ],
     );
   }

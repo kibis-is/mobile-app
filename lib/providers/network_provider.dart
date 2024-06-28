@@ -11,11 +11,12 @@ final List<SelectItem> networkOptions = [
     value: "network-voi",
     icon: AppIcons.voiIcon,
   ),
-  SelectItem(
-    name: 'Algorand',
-    value: "network-algorand",
-    icon: AppIcons.algorandIcon,
-  ),
+  //TODO: Get settings for Algorand
+  // SelectItem(
+  //   name: 'Algorand',
+  //   value: "network-algorand",
+  //   icon: AppIcons.algorandIcon,
+  // ),
 ];
 
 final networkProvider =
