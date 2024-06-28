@@ -4,7 +4,6 @@ import 'package:kibisis/common_widgets/custom_tab_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/activity_tab.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
-import 'package:kibisis/features/dashboard/widgets/nft_tab.dart';
 
 class DashboardTabController extends ConsumerWidget {
   const DashboardTabController({
