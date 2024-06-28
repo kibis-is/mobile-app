@@ -1,3 +1,4 @@
+import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -98,13 +99,14 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final balanceAsync = ref.watch(balanceNotifierProvider);
     return Row(
       children: [
-        Text('Balance:', style: context.textTheme.bodySmall),
         balanceAsync.when(
           data: (balance) => Row(
             children: [
-              Text(
+              EllipsizedText(
+                type: EllipsisType.end,
+                ellipsis: '...',
                 balance.toStringAsFixed(2),
-                style: context.textTheme.bodySmall!.copyWith(
+                style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: context.colorScheme.primary),
               ),
