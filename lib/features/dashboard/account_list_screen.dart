@@ -207,27 +207,27 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
   }
 
   //TODO: need this for showing balance on account cards later.
-  Widget _buildAccountBalance(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Text(
-            '0.0',
-            style: context.textTheme.bodyLarge?.copyWith(
-              color: ColorPalette.darkThemeKeppel,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          AppIcons.icon(
-              icon: AppIcons.voiIcon,
-              color: context.colorScheme.secondary,
-              size: AppIcons.small),
-        ],
-      ),
-    );
-  }
+  // Widget _buildAccountBalance(BuildContext context) {
+  //   return Container(
+  //     alignment: Alignment.centerRight,
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.end,
+  //       children: [
+  //         Text(
+  //           '0.0',
+  //           style: context.textTheme.bodyLarge?.copyWith(
+  //             color: ColorPalette.darkThemeKeppel,
+  //             fontWeight: FontWeight.bold,
+  //           ),
+  //         ),
+  //         AppIcons.icon(
+  //             icon: AppIcons.voiIcon,
+  //             color: context.colorScheme.secondary,
+  //             size: AppIcons.small),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   void _navigateToEditAccount(String accountId, String accountName) {
     GoRouter.of(context)
