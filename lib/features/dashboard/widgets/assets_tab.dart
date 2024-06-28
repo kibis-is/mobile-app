@@ -116,6 +116,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             },
             child: const Text('Retry'),
           ),
+          const SizedBox(height: kScreenPadding),
         ],
       ),
     );
