@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -74,8 +75,8 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                 onTap: () {
                   GoRouter.of(context).push(
                       widget.accountFlow == AccountFlow.setup
-                          ? '/setup/setupImportQRCode'
-                          : '/addAccount/addAccountImportQRCode');
+                          ? '$welcomeRouteName/$setupImportQrRouteName'
+                          : '/addAccount/$mainImportQrRouteName');
                 },
               ),
           ],
