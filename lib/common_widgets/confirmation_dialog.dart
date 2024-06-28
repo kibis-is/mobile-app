@@ -22,7 +22,7 @@ class ConfirmationDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.all(kScreenPadding),
       title: Text(
         title,
-        style: context.textTheme.titleLarge,
+        style: context.textTheme.titleMedium,
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
       content: Text(content, style: context.textTheme.bodySmall),
@@ -34,13 +34,10 @@ class ConfirmationDialog extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(kScreenPadding),
-                  child: Text(
-                    yesText,
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                child: Text(
+                  yesText,
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -50,14 +47,11 @@ class ConfirmationDialog extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(kScreenPadding),
-                  child: Text(
-                    noText,
-                    style: context.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.secondary),
-                  ),
+                child: Text(
+                  noText,
+                  style: context.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.secondary),
                 ),
               ),
             ),
