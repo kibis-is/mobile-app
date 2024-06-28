@@ -10,6 +10,7 @@ import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_selection.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AccountListScreen extends ConsumerStatefulWidget {
@@ -131,9 +132,10 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
           ),
         ),
       ),
-      onTap: () async {
+      onTap: () {
         final accountHandler = AccountHandler(context, ref);
         accountHandler.handleAccountSelection(account['accountId']);
+        invalidateProviders(ref);
       },
     );
   }

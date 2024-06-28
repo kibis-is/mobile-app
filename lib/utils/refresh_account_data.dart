@@ -5,7 +5,7 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 
 void invalidateProviders(WidgetRef ref) {
-  ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
+  ref.invalidate(accountDataFetchStatusProvider);
   ref.invalidate(balanceProvider);
   ref.invalidate(assetsProvider);
   ref.invalidate(transactionsProvider);

@@ -261,6 +261,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
         final accountHandler = AccountHandler(context, ref);
         accountHandler.handleAccountSelection(newAccountId);
       }
+      invalidateProviders(ref);
     } catch (e) {
       debugPrint('Failed to complete account setup: $e');
     }
