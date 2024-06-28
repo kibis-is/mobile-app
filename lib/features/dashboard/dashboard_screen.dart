@@ -48,7 +48,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
         _getAccountStateFuture(storageService, activeAccountId);
     final accountState = ref.watch(accountProvider);
 
-    List<String> tabs = ['Assets', 'NFTs', 'Activity'];
+    List<String> tabs = ['Assets', 'Activity'];
 
     return Scaffold(
       appBar: _buildAppBar(context, ref, networks, accountState),
@@ -168,7 +168,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                   });
             }
           : null,
-      child: const NetworkSelect(),
+      child: NetworkSelect(networkCount: networks.length),
     );
   }
 

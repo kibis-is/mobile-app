@@ -33,7 +33,8 @@ class DashboardTabController extends ConsumerWidget {
               child: TabBarView(
                 children: [
                   AssetsTab(),
-                  NftTab(),
+                  //TODO: Implement NFTs
+                  // NftTab(),
                   ActivityTab(),
                 ],
               ),
