@@ -20,27 +20,29 @@ class AddAssetScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: Column(
-          children: [
-            const SizedBox(height: kScreenPadding),
-            Text(
-              "Enter an assetID, name, asset, or symbol ID (for ARC-200).",
-              style: context.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: kScreenPadding),
-            CustomTextField(
-              controller: accountController,
-              labelText: 'Search Query',
-              onChanged: (value) {
-                searchNotifier.searchAssets(value);
-              },
-            ),
-            const SizedBox(height: kScreenPadding),
-            const AssetList(),
-            const SizedBox(height: kScreenPadding),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+          child: Column(
+            children: [
+              const SizedBox(height: kScreenPadding),
+              Text(
+                "Enter an assetID, name, asset, or symbol ID (for ARC-200).",
+                style: context.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: kScreenPadding),
+              CustomTextField(
+                controller: accountController,
+                labelText: 'Search Query',
+                onChanged: (value) {
+                  searchNotifier.searchAssets(value);
+                },
+              ),
+              const SizedBox(height: kScreenPadding),
+              const AssetList(),
+              const SizedBox(height: kScreenPadding),
+            ],
+          ),
         ),
       ),
     );
