@@ -329,18 +329,20 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                     const SizedBox(height: kScreenPadding),
                     _buildNoteTextField(),
                     if (_remainingBytes < 1000) _buildRemainingBytesIndicator(),
-                    const Expanded(child: SizedBox(height: kScreenPadding)),
-                    CustomButton(
-                      isFullWidth: true,
-                      text: "Send",
-                      onPressed: () => _showPinPadDialog(ref),
-                    ),
                     const SizedBox(height: kScreenPadding),
                   ],
                 );
               },
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(kScreenPadding),
+        child: CustomButton(
+          isFullWidth: true,
+          text: "Send",
+          onPressed: () => _showPinPadDialog(ref),
         ),
       ),
     );
