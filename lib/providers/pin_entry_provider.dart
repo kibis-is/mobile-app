@@ -38,6 +38,7 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
           await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
           ref.read(isAuthenticatedProvider.notifier).state = true;
           debugPrint('Authentication state set to true.');
+          clearError();
         } else {
           throw Exception('Incorrect PIN');
         }
