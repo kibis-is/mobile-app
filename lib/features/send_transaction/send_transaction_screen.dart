@@ -308,36 +308,38 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       appBar: AppBar(
         title: const Text("Send"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: Form(
-          key: _formKey,
-          child: Consumer(
-            builder: (context, ref, child) {
-              final dropdownItems = ref.watch(dropdownItemsProvider);
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  _maxSendInfo(context, ref),
-                  const SizedBox(height: kScreenPadding),
-                  _buildCustomDropDown(ref, dropdownItems),
-                  const SizedBox(height: kScreenPadding),
-                  _buildAmountTextField(),
-                  const SizedBox(height: kScreenPadding),
-                  _buildRecipientAddressTextField(),
-                  const SizedBox(height: kScreenPadding),
-                  _buildNoteTextField(),
-                  if (_remainingBytes < 1000) _buildRemainingBytesIndicator(),
-                  const Expanded(child: SizedBox(height: kScreenPadding)),
-                  CustomButton(
-                    isFullWidth: true,
-                    text: "Send",
-                    onPressed: () => _showPinPadDialog(ref),
-                  ),
-                  const SizedBox(height: kScreenPadding),
-                ],
-              );
-            },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+          child: Form(
+            key: _formKey,
+            child: Consumer(
+              builder: (context, ref, child) {
+                final dropdownItems = ref.watch(dropdownItemsProvider);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _maxSendInfo(context, ref),
+                    const SizedBox(height: kScreenPadding),
+                    _buildCustomDropDown(ref, dropdownItems),
+                    const SizedBox(height: kScreenPadding),
+                    _buildAmountTextField(),
+                    const SizedBox(height: kScreenPadding),
+                    _buildRecipientAddressTextField(),
+                    const SizedBox(height: kScreenPadding),
+                    _buildNoteTextField(),
+                    if (_remainingBytes < 1000) _buildRemainingBytesIndicator(),
+                    const Expanded(child: SizedBox(height: kScreenPadding)),
+                    CustomButton(
+                      isFullWidth: true,
+                      text: "Send",
+                      onPressed: () => _showPinPadDialog(ref),
+                    ),
+                    const SizedBox(height: kScreenPadding),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
