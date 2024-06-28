@@ -1,4 +1,3 @@
-// app_lifecycle_handler.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
@@ -6,6 +5,9 @@ import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
+import 'package:kibisis/providers/splash_screen_provider.dart';
+
+// Provider to manage splash screen visibility
 
 class AppLifecycleHandler with WidgetsBindingObserver {
   DateTime? _backgroundTime;
@@ -37,8 +39,8 @@ class AppLifecycleHandler with WidgetsBindingObserver {
 
   void handleOnForeground() {
     final lockoutTime = ref.read(lockTimeoutProvider);
-
     final isPasswordLockEnabled = ref.read(pinLockProvider);
+
     if (_backgroundTime != null) {
       final duration = DateTime.now().difference(_backgroundTime!);
       _backgroundTime = null; // Reset the background time
@@ -48,6 +50,9 @@ class AppLifecycleHandler with WidgetsBindingObserver {
       if (isPasswordLockEnabled && duration.inSeconds > lockoutTime) {
         handleTimeout();
       }
+
+      // Remove the splash screen when the app comes to the foreground
+      ref.read(isSplashScreenVisibleProvider.notifier).state = false;
     }
   }
 
@@ -59,5 +64,8 @@ class AppLifecycleHandler with WidgetsBindingObserver {
 
   void handleOnBackground() {
     _backgroundTime = DateTime.now();
+
+    // Show the splash screen when the app goes to the background
+    ref.read(isSplashScreenVisibleProvider.notifier).state = true;
   }
 }

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/splash_screen_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
 import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/app_lifecycle_handler.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:kibisis/utils/app_lifecycle_handler.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -32,10 +35,11 @@ class _KibisisState extends ConsumerState<Kibisis> {
   void initState() {
     super.initState();
     _lifecycleHandler = AppLifecycleHandler(
-        ref: ref,
-        onResumed: (seconds) {
-          debugPrint('App was resumed after $seconds seconds');
-        });
+      ref: ref,
+      onResumed: (seconds) {
+        debugPrint('App was resumed after $seconds seconds');
+      },
+    );
     _lifecycleHandler.initialize();
   }
 
@@ -50,6 +54,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
     return Consumer(
       builder: (context, ref, _) {
         final sharedPreferences = ref.watch(sharedPreferencesProvider);
+        final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
 
         return sharedPreferences.when(
           data: (prefs) {
@@ -64,17 +69,22 @@ class _KibisisState extends ConsumerState<Kibisis> {
               theme: lightTheme,
               darkTheme: darkTheme,
               themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-              builder: (context, widget) => ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 600),
-                child: LoadingOverlay(
-                  isLoading: isLoading,
-                  color: context.colorScheme.background,
-                  opacity: 0.5,
-                  child: DefaultColorInitializer(
-                    child: Center(child: widget),
+              builder: (context, widget) {
+                return ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: LoadingOverlay(
+                    isLoading: isLoading,
+                    color: context.colorScheme.background,
+                    opacity: 0.5,
+                    child: Stack(
+                      children: [
+                        DefaultColorInitializer(child: Center(child: widget)),
+                        if (isSplashScreenVisible) const SplashScreen(),
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
           loading: () => const Material(
@@ -100,5 +110,27 @@ class DefaultColorInitializer extends StatelessWidget {
     // Initialize the default color after the theme has been applied
     AppIcons.initializeDefaultColor(context);
     return child;
+  }
+}
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: context.colorScheme.background,
+      body: Center(
+        child: SvgPicture.asset(
+          'assets/images/kibisis-animated.svg',
+          semanticsLabel: 'Kibisis Logo',
+          fit: BoxFit.fitHeight,
+          height: 100,
+          width: 100,
+          colorFilter:
+              ColorFilter.mode(context.colorScheme.primary, BlendMode.srcATop),
+        ),
+      ),
+    );
   }
 }
