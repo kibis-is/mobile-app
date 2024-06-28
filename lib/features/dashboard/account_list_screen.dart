@@ -118,7 +118,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildEditButton(context, account['accountId']!, accountName),
-              const SizedBox(height: kScreenPadding),
+              const SizedBox(height: kScreenPadding / 2),
               _buildLogo(),
               const SizedBox(height: kScreenPadding / 2),
               _buildAccountName(context, accountName),
