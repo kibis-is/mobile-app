@@ -78,6 +78,7 @@ class ActivityTab extends ConsumerWidget {
             },
             child: const Text('Retry'),
           ),
+          const SizedBox(height: kScreenPadding),
         ],
       ),
     );
