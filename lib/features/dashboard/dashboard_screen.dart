@@ -13,6 +13,7 @@ import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
@@ -31,15 +32,6 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class DashboardScreenState extends ConsumerState<DashboardScreen> {
-  // void _onRefresh() {
-  //   final assetsFetched = ref.read(accountDataFetchStatusProvider);
-  //   if (!assetsFetched) {
-  //     invalidateProviders(ref);
-  //     ref.read(accountDataFetchStatusProvider.notifier).setFetched(true);
-  //   }
-  //   _refreshController.refreshCompleted();
-  // }
-
   @override
   Widget build(BuildContext context) {
     final networks = networkOptions;
@@ -48,6 +40,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final accountStateFuture =
         _getAccountStateFuture(storageService, activeAccountId);
     final accountState = ref.watch(accountProvider);
+    final assets = ref.watch(assetsProvider);
 
     List<String> tabs = ['Assets', 'Activity'];
 
@@ -68,13 +61,34 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           ],
         ),
       ),
-      floatingActionButton: CustomFloatingActionButton(
-        icon: AppIcons.send,
-        onPressed: () => context.goNamed(
-          sendTransactionRouteName,
-          pathParameters: {
-            'mode': 'payment',
-          },
+      floatingActionButton: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        switchInCurve: Curves.bounceIn,
+        switchOutCurve: Curves.easeOut,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: const Offset(0, 0),
+            ).animate(animation),
+            child: child,
+          );
+        },
+        child: assets.when(
+          data: (assetList) => assetList.isNotEmpty
+              ? CustomFloatingActionButton(
+                  key: const ValueKey('fab'),
+                  icon: AppIcons.send,
+                  onPressed: () => context.goNamed(
+                    sendTransactionRouteName,
+                    pathParameters: {
+                      'mode': 'payment',
+                    },
+                  ),
+                )
+              : const SizedBox.shrink(key: ValueKey('empty')),
+          loading: () => const SizedBox.shrink(key: ValueKey('loading')),
+          error: (err, stack) => const SizedBox.shrink(key: ValueKey('error')),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
