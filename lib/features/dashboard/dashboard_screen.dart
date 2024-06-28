@@ -8,7 +8,6 @@ import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/features/dashboard/providers/assets_fetched_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
@@ -20,9 +19,7 @@ import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   static String title = 'Dashboard';
@@ -33,25 +30,14 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class DashboardScreenState extends ConsumerState<DashboardScreen> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _onRefresh();
-    });
-  }
-
-  void _onRefresh() {
-    final assetsFetched = ref.read(accountDataFetchStatusProvider);
-    if (!assetsFetched) {
-      invalidateProviders(ref);
-      ref.read(accountDataFetchStatusProvider.notifier).setFetched(true);
-    }
-    _refreshController.refreshCompleted();
-  }
+  // void _onRefresh() {
+  //   final assetsFetched = ref.read(accountDataFetchStatusProvider);
+  //   if (!assetsFetched) {
+  //     invalidateProviders(ref);
+  //     ref.read(accountDataFetchStatusProvider.notifier).setFetched(true);
+  //   }
+  //   _refreshController.refreshCompleted();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -75,14 +61,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                 context, ref, networks, accountStateFuture, accountState),
             const SizedBox(height: kScreenPadding),
             Expanded(
-              child: SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: false,
-                header: const WaterDropHeader(),
-                controller: _refreshController,
-                onRefresh: _onRefresh,
-                child: DashboardTabController(tabs: tabs),
-              ),
+              child: DashboardTabController(tabs: tabs),
             ),
             _buildBottomNavigationBar(context),
           ],

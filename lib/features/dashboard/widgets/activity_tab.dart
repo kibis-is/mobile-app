@@ -11,6 +11,7 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ActivityTab extends ConsumerWidget {
@@ -18,20 +19,30 @@ class ActivityTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final RefreshController refreshController =
+        RefreshController(initialRefresh: false);
+
     final publicAddress = ref.watch(accountProvider
         .select((account) => account.account?.publicAddress ?? ''));
     final transactionsAsyncValue = ref.watch(transactionsProvider);
-
-    return transactionsAsyncValue.when(
-      data: (transactions) {
-        if (transactions.isEmpty) {
-          return _buildEmptyTransactions(context, ref);
-        }
-        return _buildTransactionsList(
-            context, ref, transactions, publicAddress);
+    return SmartRefresher(
+      controller: refreshController,
+      onRefresh: () {
+        ref.read(transactionsProvider.notifier).getTransactions(publicAddress);
+        refreshController.refreshCompleted();
       },
-      loading: () => _buildLoadingTransactions(context),
-      error: (error, stack) => _buildEmptyTransactions(context, ref),
+      enablePullDown: true,
+      child: transactionsAsyncValue.when(
+        data: (transactions) {
+          if (transactions.isEmpty) {
+            return _buildEmptyTransactions(context, ref);
+          }
+          return _buildTransactionsList(
+              context, ref, transactions, publicAddress);
+        },
+        loading: () => _buildLoadingTransactions(context),
+        error: (error, stack) => _buildEmptyTransactions(context, ref),
+      ),
     );
   }
 
