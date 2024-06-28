@@ -141,20 +141,39 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                               ? 'Save'
                               : 'Create',
                           isFullWidth: true,
-                          onPressed: () async {
-                            if (formKey.currentState!.validate()) {
-                              ref.read(loadingProvider.notifier).startLoading();
-                              if (widget.accountFlow == AccountFlow.edit) {
-                                await _updateAccountName();
-                              } else {
-                                completeAccountSetup(
-                                    ref,
-                                    accountNameController.text,
-                                    widget.accountFlow);
-                              }
-                              ref.read(loadingProvider.notifier).stopLoading();
-                            }
-                          },
+                          onPressed: ref.watch(loadingProvider)
+                              ? null
+                              : () async {
+                                  // Disable button when loading
+                                  if (formKey.currentState!.validate()) {
+                                    ref
+                                        .read(loadingProvider.notifier)
+                                        .startLoading(); // Start loading
+                                    try {
+                                      if (widget.accountFlow ==
+                                          AccountFlow.edit) {
+                                        await _updateAccountName();
+                                      } else {
+                                        await completeAccountSetup(
+                                            ref,
+                                            accountNameController.text,
+                                            widget.accountFlow);
+                                      }
+                                      // Optionally navigate or show a success message here
+                                    } catch (e) {
+                                      if (!context.mounted) return;
+                                      showCustomSnackBar(
+                                        context: context,
+                                        snackType: SnackType.error,
+                                        message:
+                                            'Failed to process your request: $e',
+                                      );
+                                    }
+                                    ref
+                                        .read(loadingProvider.notifier)
+                                        .stopLoading();
+                                  }
+                                },
                         ),
                       ],
                     ),
