@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -59,7 +61,9 @@ class GeneralScreen extends ConsumerWidget {
                     false;
 
                 if (confirm) {
-                  AppResetUtil.resetApp(ref);
+                  await AppResetUtil.resetApp(ref);
+                  if (!context.mounted) return;
+                  GoRouter.of(context).goNamed(welcomeRouteName);
                 }
               },
             )
