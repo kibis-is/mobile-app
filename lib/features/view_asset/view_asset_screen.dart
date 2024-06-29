@@ -76,11 +76,11 @@ class ViewAssetScreen extends ConsumerWidget {
                       message: 'Asset successfully opted in',
                     );
                   } catch (e) {
-                    debugPrint('Failed to opt-in to asset: $e');
+                    debugPrint('$e');
                     showCustomSnackBar(
                       context: context,
                       snackType: SnackType.error,
-                      message: 'Failed to opt-in to asset: $e',
+                      message: '$e',
                     );
                     ref.read(loadingProvider.notifier).stopLoading();
                   }
@@ -89,7 +89,7 @@ class ViewAssetScreen extends ConsumerWidget {
                   showCustomSnackBar(
                     context: context,
                     snackType: SnackType.error,
-                    message: 'Account or active asset is null',
+                    message: 'Account not ready',
                   );
                 }
                 ref.read(loadingProvider.notifier).stopLoading();

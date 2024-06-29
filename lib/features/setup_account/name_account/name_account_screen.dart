@@ -165,8 +165,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                       showCustomSnackBar(
                                         context: context,
                                         snackType: SnackType.error,
-                                        message:
-                                            'Failed to process your request: $e',
+                                        message: '$e',
                                       );
                                     }
                                     ref
@@ -217,7 +216,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
-        message: 'Failed to delete account: $e',
+        message: '$e',
       );
     }
   }
