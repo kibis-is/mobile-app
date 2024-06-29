@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:kibisis/common_widgets/splash_screen.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
@@ -110,27 +109,5 @@ class DefaultColorInitializer extends StatelessWidget {
     // Initialize the default color after the theme has been applied
     AppIcons.initializeDefaultColor(context);
     return child;
-  }
-}
-
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colorScheme.background,
-      body: Center(
-        child: SvgPicture.asset(
-          'assets/images/kibisis-animated.svg',
-          semanticsLabel: 'Kibisis Logo',
-          fit: BoxFit.fitHeight,
-          height: 100,
-          width: 100,
-          colorFilter:
-              ColorFilter.mode(context.colorScheme.primary, BlendMode.srcATop),
-        ),
-      ),
-    );
   }
 }

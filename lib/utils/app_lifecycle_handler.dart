@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
@@ -51,8 +53,9 @@ class AppLifecycleHandler with WidgetsBindingObserver {
         handleTimeout();
       }
 
-      // Remove the splash screen when the app comes to the foreground
-      ref.read(isSplashScreenVisibleProvider.notifier).state = false;
+      if (Platform.isAndroid || Platform.isIOS) {
+        ref.read(isSplashScreenVisibleProvider.notifier).state = false;
+      }
     }
   }
 
@@ -64,8 +67,8 @@ class AppLifecycleHandler with WidgetsBindingObserver {
 
   void handleOnBackground() {
     _backgroundTime = DateTime.now();
-
-    // Show the splash screen when the app goes to the background
-    ref.read(isSplashScreenVisibleProvider.notifier).state = true;
+    if (Platform.isAndroid || Platform.isIOS) {
+      ref.read(isSplashScreenVisibleProvider.notifier).state = true;
+    }
   }
 }
