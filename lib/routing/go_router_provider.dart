@@ -157,7 +157,10 @@ class RouterNotifier extends ChangeNotifier {
               path: setupImportQrRouteName,
               pageBuilder: (context, state) {
                 return defaultTransitionPage(
-                    const QrCodeScannerScreen(accountFlow: AccountFlow.setup),
+                    const QrCodeScannerScreen(
+                      accountFlow: AccountFlow.setup,
+                      scanMode: ScanMode.privateKey,
+                    ),
                     state);
               },
             ),
@@ -210,7 +213,9 @@ class RouterNotifier extends ChangeNotifier {
               path: mainImportQrRouteName,
               pageBuilder: (context, state) {
                 return defaultTransitionPage(
-                    const QrCodeScannerScreen(accountFlow: AccountFlow.addNew),
+                    const QrCodeScannerScreen(
+                        accountFlow: AccountFlow.addNew,
+                        scanMode: ScanMode.privateKey),
                     state);
               },
             ),
@@ -289,6 +294,19 @@ class RouterNotifier extends ChangeNotifier {
                     ),
                     state);
               },
+              routes: [
+                GoRoute(
+                  name: qrScannerRouteName,
+                  path: qrScannerRouteName,
+                  pageBuilder: (context, state) {
+                    final scanMode = state.extra as ScanMode;
+                    return defaultTransitionPage(
+                      QrCodeScannerScreen(scanMode: scanMode),
+                      state,
+                    );
+                  },
+                ),
+              ],
             ),
             GoRoute(
               name: settingsRouteName,

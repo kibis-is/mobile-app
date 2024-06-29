@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
@@ -10,6 +12,7 @@ import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
+import 'package:kibisis/features/scan_qr/scan_qr_screen.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
@@ -19,6 +22,7 @@ import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -95,7 +99,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       );
     }).toList();
 
-    //insert the network (voi or algorand) item at the beginning of the list
+    // Insert the network (voi or algorand) item at the beginning of the list
     combinedList.insert(
       0,
       network ??
@@ -117,7 +121,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   Future<bool> hasSufficientFunds(String publicAddress, String value) async {
     try {
       final balance = await getMaxAmount(ref);
-
       return balance >= double.parse(value);
     } catch (e) {
       debugPrint('Error checking sufficient funds: $e');
@@ -211,7 +214,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       }
 
       _showErrorSnackbar(e.toString());
-      debugPrint('Transaction error: $e');
+      debugPrint(e.toString());
     } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
@@ -222,7 +225,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       showCustomSnackBar(
         context: context,
         snackType: SnackType.success,
-        message: 'Transaction successful: $message',
+        message: 'Transaction successful',
       );
     }
   }
@@ -232,7 +235,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
-        message: 'Error: $message',
+        message: message,
       );
     }
   }
@@ -262,7 +265,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     Navigator.of(context).pop();
   }
 
-// Helper function to get the balance as a double
+  // Helper function to get the balance as a double
   double getBalance(WidgetRef ref) {
     return ref.watch(balanceProvider);
   }
@@ -385,15 +388,23 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Widget _buildCustomDropDown(WidgetRef ref, List<SelectItem> dropdownItems) {
-    return CustomDropDown(
-      label: 'Asset',
-      items: dropdownItems,
-      selectedValue: ref.watch(selectedAssetProvider),
-      onChanged: (SelectItem? newValue) {
-        if (newValue != null) {
-          ref.read(selectedAssetProvider.notifier).setAsset(newValue);
-        }
-      },
+    final isDisabled = dropdownItems.length <= 1;
+
+    return GestureDetector(
+      onTap: isDisabled ? () {} : null,
+      child: AbsorbPointer(
+        absorbing: isDisabled,
+        child: CustomDropDown(
+          label: 'Asset',
+          items: dropdownItems,
+          selectedValue: ref.watch(selectedAssetProvider),
+          onChanged: (SelectItem? newValue) {
+            if (newValue != null) {
+              ref.read(selectedAssetProvider.notifier).setAsset(newValue);
+            }
+          },
+        ),
+      ),
     );
   }
 
@@ -410,14 +421,28 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Widget _buildRecipientAddressTextField() {
+    final isMobile = (Platform.isAndroid || Platform.isIOS) ? true : false;
+
     return CustomTextField(
       labelText: 'Recipient Address',
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.next,
       controller: recipientAddressController,
-      suffixIcon: AppIcons.scan,
+      suffixIcon: isMobile ? AppIcons.scan : null,
       autoCorrect: false,
-      onTrailingPressed: () {},
+      onTrailingPressed: isMobile
+          ? () async {
+              debugPrint('pressed');
+              final scannedData = await context.pushNamed(
+                '/$sendTransactionRouteName/$qrScannerRouteName',
+                extra: ScanMode.publicKey,
+              );
+
+              if (scannedData != null) {
+                recipientAddressController.text = scannedData as String;
+              }
+            }
+          : null,
       validator: _validateAlgorandAddress,
     );
   }

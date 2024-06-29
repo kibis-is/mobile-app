@@ -1,18 +1,28 @@
+import 'dart:convert';
+
+import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kibisis/common_widgets/top_snack_bar.dart';
+import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class QrCodeScannerScreen extends ConsumerStatefulWidget {
-  static String title = 'Import via QR Code';
-  final AccountFlow accountFlow;
+enum ScanMode { privateKey, publicKey }
 
-  const QrCodeScannerScreen({super.key, required this.accountFlow});
+class QrCodeScannerScreen extends ConsumerStatefulWidget {
+  static String title = 'Scan QR';
+  final AccountFlow? accountFlow; // Optional
+  final ScanMode scanMode;
+
+  const QrCodeScannerScreen({
+    super.key,
+    this.accountFlow, // Now optional
+    required this.scanMode,
+  });
 
   @override
   QrCodeScannerScreenState createState() => QrCodeScannerScreenState();
@@ -89,29 +99,75 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       _processing = true;
       final qrData = scanData.code;
       try {
-        final uri = Uri.parse(qrData!);
-        final privateKey = uri.queryParameters['privatekey'];
-        if (privateKey != null) {
+        if (widget.scanMode == ScanMode.privateKey) {
+          final uri = Uri.parse(qrData?.toString() ?? '');
+          final privateKey = uri.queryParameters['privatekey'];
+          if (privateKey == null) {
+            throw Exception('QR code is not an account');
+          }
+
+          // Validate the privateKey length and ensure it is a valid hexadecimal string
+          if (privateKey.length != 128 ||
+              !RegExp(r'^[0-9a-fA-F]+$').hasMatch(privateKey)) {
+            throw Exception('Invalid private key format');
+          }
+
+          // Validate the privateKey length and ensure it is a valid hexadecimal string
+          if (privateKey.length != 64 ||
+              !RegExp(r'^[0-9a-fA-F]+$').hasMatch(privateKey)) {
+            throw Exception('Invalid private key format');
+          }
+
+          // Convert the privateKey hex string to a list of bytes
+          final privateKeyBytes = Uint8List.fromList(hex.decode(privateKey));
+          if (privateKeyBytes.length != 32) {
+            throw Exception('Private key must be 32 bytes long');
+          }
+
+          // Convert bytes to a base64 string if required by your method (example)
+          final base64PrivateKey = base64.encode(privateKeyBytes);
+
           await ref
               .read(temporaryAccountProvider.notifier)
-              .restoreAccountFromPrivateKey(privateKey);
+              .restoreAccountFromPrivateKey(base64PrivateKey);
           if (!mounted) return;
           GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
               ? '/setup/setupNameAccount'
               : '/addAccount/addAccountNameAccount');
-        } else {
-          throw Exception('Invalid QR code format');
+        } else if (widget.scanMode == ScanMode.publicKey) {
+          // Assuming public key format for other cases
+          if (qrData != null &&
+              qrData.length == 58 &&
+              RegExp(r'^[A-Z2-7]+$').hasMatch(qrData)) {
+            Navigator.pop(
+                context, qrData); // Return the scanned data as public key
+          } else {
+            throw Exception('Invalid public key format');
+          }
         }
       } catch (e) {
-        showCustomSnackBar(
-          context: context,
-          snackType: SnackType.error,
-          message: e.toString(),
-        );
+        await _showErrorDialog(e.toString());
       } finally {
         _processing = false;
       }
     });
+  }
+
+  Future<void> _showErrorDialog(String errorMessage) async {
+    await controller?.pauseCamera();
+    if (!mounted) return;
+    await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ConfirmationDialog(
+          title: 'Error',
+          content: errorMessage,
+          isConfirmDialog: false, // Use non-confirmatory dialog
+        );
+      },
+    );
+    controller?.resumeCamera();
   }
 
   @override

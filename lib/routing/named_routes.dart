@@ -17,6 +17,7 @@ const String accountListRouteName = 'wallets';
 const String sendTransactionRouteName = 'sendTransaction';
 const String addAssetRouteName = 'addAsset';
 const String viewAssetRouteName = 'viewAsset';
+const String qrScannerRouteName = 'qrScanner';
 
 const String settingsRouteName = 'settings';
 const String generalRouteName = 'general';
