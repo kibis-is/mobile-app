@@ -7,6 +7,8 @@ class ConfirmationDialog extends StatelessWidget {
   final String content;
   final String yesText;
   final String noText;
+  final String okText;
+  final bool isConfirmDialog;
 
   const ConfirmationDialog({
     super.key,
@@ -14,6 +16,8 @@ class ConfirmationDialog extends StatelessWidget {
     this.content = 'Do you want to proceed with this action?',
     this.yesText = 'Yes',
     this.noText = 'No',
+    this.okText = 'OK',
+    this.isConfirmDialog = true,
   });
 
   @override
@@ -24,40 +28,58 @@ class ConfirmationDialog extends StatelessWidget {
         title,
         style: context.textTheme.titleMedium,
       ),
-      actionsAlignment: MainAxisAlignment.spaceBetween,
       content: Text(content, style: context.textTheme.bodySmall),
-      actions: <Widget>[
-        Row(
-          children: [
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: Text(
-                  yesText,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: Text(
-                  noText,
-                  style: context.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.secondary),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actions: isConfirmDialog
+          ? _buildConfirmActions(context)
+          : _buildOkAction(context),
     );
+  }
+
+  List<Widget> _buildConfirmActions(BuildContext context) {
+    return [
+      Expanded(
+        child: TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+          child: Text(
+            yesText,
+            style: context.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+      Expanded(
+        child: TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(false);
+          },
+          child: Text(
+            noText,
+            style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.secondary),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildOkAction(BuildContext context) {
+    return [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop(true);
+        },
+        child: Text(
+          okText, // Use the okText parameter
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ];
   }
 }
