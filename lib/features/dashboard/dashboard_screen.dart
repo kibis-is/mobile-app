@@ -44,6 +44,19 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     List<String> tabs = ['Assets', 'Activity'];
 
+    Widget buildFloatingActionButton() {
+      return CustomFloatingActionButton(
+        key: const ValueKey('fab'),
+        icon: AppIcons.send,
+        onPressed: () => context.goNamed(
+          sendTransactionRouteName,
+          pathParameters: {
+            'mode': 'payment',
+          },
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: _buildAppBar(context, ref, networks, accountState),
       body: Padding(
@@ -75,20 +88,9 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           );
         },
         child: assets.when(
-          data: (assetList) => assetList.isNotEmpty
-              ? CustomFloatingActionButton(
-                  key: const ValueKey('fab'),
-                  icon: AppIcons.send,
-                  onPressed: () => context.goNamed(
-                    sendTransactionRouteName,
-                    pathParameters: {
-                      'mode': 'payment',
-                    },
-                  ),
-                )
-              : const SizedBox.shrink(key: ValueKey('empty')),
+          data: (assetList) => buildFloatingActionButton(),
           loading: () => const SizedBox.shrink(key: ValueKey('loading')),
-          error: (err, stack) => const SizedBox.shrink(key: ValueKey('error')),
+          error: (err, stack) => buildFloatingActionButton(),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
