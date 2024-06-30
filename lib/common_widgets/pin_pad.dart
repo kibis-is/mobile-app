@@ -234,8 +234,7 @@ class PinPadState extends ConsumerState<PinPad> {
   void _handlePinKeyPressed(String key) async {
     final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
     pinPadProvider.addKey(key);
-    bool isPinComplete =
-        pinPadProvider.isPinComplete(); // Define isPinComplete here
+    bool isPinComplete = pinPadProvider.isPinComplete();
 
     if (isPinComplete) {
       ref.read(isPinCompleteProvider.notifier).state = true;
@@ -245,6 +244,7 @@ class PinPadState extends ConsumerState<PinPad> {
         ref.read(pinProvider.notifier).clearPinState();
       }
       pinPadProvider.clearPin();
+      ref.read(isPinCompleteProvider.notifier).state = false;
     }
   }
 
