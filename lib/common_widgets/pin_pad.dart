@@ -34,6 +34,8 @@ class PinPadState extends ConsumerState<PinPad> {
     final pinEntryProvider = ref.watch(pinEntryStateNotifierProvider);
     final pinState = ref.watch(pinEntryStateNotifierProvider);
 
+    bool isPinComplete = ref.watch(isPinCompleteProvider);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
@@ -115,23 +117,25 @@ class PinPadState extends ConsumerState<PinPad> {
                                   icon: AppIcons.refresh,
                                   size: AppIcons.large,
                                   color: context.colorScheme.onError),
-                              onPressed: () async {
-                                bool confirm = await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return const ConfirmationDialog(
-                                          yesText: 'Reset',
-                                          noText: 'Cancel',
-                                          content:
-                                              'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
-                                        );
-                                      },
-                                    ) ??
-                                    false;
-                                if (confirm) {
-                                  _handleResetApp();
-                                }
-                              },
+                              onPressed: isPinComplete
+                                  ? null
+                                  : () async {
+                                      bool confirm = await showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const ConfirmationDialog(
+                                                yesText: 'Reset',
+                                                noText: 'Cancel',
+                                                content:
+                                                    'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
+                                              );
+                                            },
+                                          ) ??
+                                          false;
+                                      if (confirm) {
+                                        _handleResetApp();
+                                      }
+                                    },
                               color: context.colorScheme.onSurface,
                               iconSize: kScreenPadding * 2,
                             );
@@ -143,11 +147,14 @@ class PinPadState extends ConsumerState<PinPad> {
                           return IconButton(
                             icon: AppIcons.icon(
                                 icon: AppIcons.backspace, size: AppIcons.large),
-                            onPressed: () {
-                              ref
-                                  .read(pinEntryStateNotifierProvider.notifier)
-                                  .removeLastKey();
-                            },
+                            onPressed: isPinComplete
+                                ? null
+                                : () {
+                                    ref
+                                        .read(pinEntryStateNotifierProvider
+                                            .notifier)
+                                        .removeLastKey();
+                                  },
                             color: context.colorScheme.onSurface,
                             iconSize: kScreenPadding * 2,
                           );
@@ -156,12 +163,45 @@ class PinPadState extends ConsumerState<PinPad> {
                         return Padding(
                           padding: const EdgeInsets.all(kScreenPadding / 2),
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                backgroundColor: context.colorScheme.surface),
-                            onPressed: () {
-                              _handlePinKeyPressed(key);
-                            },
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  const CircleBorder()),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
+                                    return context.colorScheme.surface
+                                        .withOpacity(0.12);
+                                  }
+                                  return context.colorScheme.surface;
+                                },
+                              ),
+                              foregroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
+                                    return context.colorScheme.onSurface
+                                        .withOpacity(0.38);
+                                  }
+                                  return context.colorScheme.onSurface;
+                                },
+                              ),
+                              shadowColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
+                                    return Colors.transparent;
+                                  }
+                                  return context.colorScheme
+                                      .shadow; // Default shadow color
+                                },
+                              ),
+                            ),
+                            onPressed: isPinComplete
+                                ? null
+                                : () {
+                                    _handlePinKeyPressed(key);
+                                  },
                             child: Text(
                               key,
                               style: context.textTheme.titleLarge,
@@ -192,11 +232,19 @@ class PinPadState extends ConsumerState<PinPad> {
   }
 
   void _handlePinKeyPressed(String key) async {
+    final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
+    pinPadProvider.addKey(key);
     bool isPinComplete =
-        ref.read(pinEntryStateNotifierProvider.notifier).addKey(key);
+        pinPadProvider.isPinComplete(); // Define isPinComplete here
 
     if (isPinComplete) {
+      ref.read(isPinCompleteProvider.notifier).state = true;
       await handlePinComplete();
+      if (widget.mode != PinPadMode.setup) {
+        //need to keep the pinProvider active to create account at the end
+        ref.read(pinProvider.notifier).clearPinState();
+      }
+      pinPadProvider.clearPin();
     }
   }
 
@@ -231,11 +279,6 @@ class PinPadState extends ConsumerState<PinPad> {
       default:
         break;
     }
-
-    if (widget.mode != PinPadMode.setup) {
-      ref.read(pinProvider.notifier).clearPinState();
-    }
-    pinNotifier.clearPin();
   }
 
   void _navigateToAddAccount() {

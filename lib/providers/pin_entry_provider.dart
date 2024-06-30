@@ -12,21 +12,23 @@ final pinEntryStateNotifierProvider =
   return PinEntryStateNotifier(ref, pinStateNotifier);
 });
 
+final isPinCompleteProvider = StateProvider<bool>((ref) => false);
+
 class PinEntryStateNotifier extends StateNotifier<PinState> {
   final StateNotifierProviderRef<PinEntryStateNotifier, PinState> ref;
   final PinStateNotifier pinStateNotifier;
 
   PinEntryStateNotifier(this.ref, this.pinStateNotifier) : super(PinState());
 
-  bool addKey(String key) {
+  void addKey(String key) {
     if (state.pin.length < 6) {
       String newPin = state.pin + key;
       state = state.copyWith(pin: newPin);
-      if (newPin.length == 6) {
-        return true;
-      }
     }
-    return false;
+  }
+
+  bool isPinComplete() {
+    return state.pin.length == 6;
   }
 
   void pinComplete(PinPadMode mode) async {
