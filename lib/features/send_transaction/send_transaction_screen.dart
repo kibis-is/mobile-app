@@ -342,12 +342,15 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
-        child: CustomButton(
-          isFullWidth: true,
-          text: "Send",
-          onPressed: () => _showPinPadDialog(ref),
+      bottomNavigationBar: Hero(
+        tag: 'fab',
+        child: Padding(
+          padding: const EdgeInsets.all(kScreenPadding),
+          child: CustomButton(
+            isFullWidth: true,
+            text: "Send",
+            onPressed: () => _showPinPadDialog(ref),
+          ),
         ),
       ),
     );

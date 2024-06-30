@@ -29,35 +29,38 @@ class AssetListItem extends ConsumerWidget {
     return Stack(
       alignment: Alignment.topRight,
       children: [
-        Material(
-          child: Container(
-            decoration: asset.params.defaultFrozen ?? false
-                ? frozenBoxDecoration(context)
-                : BoxDecoration(
-                    color: context.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(kWidgetRadius),
-                  ),
-            child: ListTile(
-              tileColor: Colors.transparent,
-              horizontalTitleGap: kScreenPadding * 2,
-              leading: _buildAssetIcon(
-                  context, ref, asset.params.defaultFrozen ?? false),
-              title: EllipsizedText(
-                asset.params.name ?? 'Unknown',
-                style: context.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: EllipsizedText(
-                asset.params.unitName ?? 'Unknown',
-                style: context.textTheme.titleSmall?.copyWith(
+        Hero(
+          tag: asset.index.toString(),
+          child: Material(
+            child: Container(
+              decoration: asset.params.defaultFrozen ?? false
+                  ? frozenBoxDecoration(context)
+                  : BoxDecoration(
+                      color: context.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(kWidgetRadius),
+                    ),
+              child: ListTile(
+                tileColor: Colors.transparent,
+                horizontalTitleGap: kScreenPadding * 2,
+                leading: _buildAssetIcon(
+                    context, ref, asset.params.defaultFrozen ?? false),
+                title: EllipsizedText(
+                  asset.params.name ?? 'Unknown',
+                  style: context.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.onSurface),
+                  ),
+                ),
+                subtitle: EllipsizedText(
+                  asset.params.unitName ?? 'Unknown',
+                  style: context.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.onSurface),
+                ),
+                trailing: _buildAssetAmount(context),
+                onTap: (onPressed == null && mode == AssetScreenMode.add)
+                    ? null
+                    : () => _handleOnPressed(context, ref),
               ),
-              trailing: _buildAssetAmount(context),
-              onTap: (onPressed == null && mode == AssetScreenMode.add)
-                  ? null
-                  : () => _handleOnPressed(context, ref),
             ),
           ),
         ),

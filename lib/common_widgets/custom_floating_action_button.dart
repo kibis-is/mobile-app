@@ -19,6 +19,7 @@ class CustomFloatingActionButton extends StatelessWidget {
       width: 72,
       height: 72 - kWidgetRadius,
       child: FloatingActionButton(
+        heroTag: null,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(kWidgetRadius),

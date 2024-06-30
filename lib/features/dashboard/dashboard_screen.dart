@@ -45,14 +45,17 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     List<String> tabs = ['Assets', 'Activity'];
 
     Widget buildFloatingActionButton() {
-      return CustomFloatingActionButton(
-        key: const ValueKey('fab'),
-        icon: AppIcons.send,
-        onPressed: () => context.goNamed(
-          sendTransactionRouteName,
-          pathParameters: {
-            'mode': 'payment',
-          },
+      return Hero(
+        tag: 'fab',
+        child: CustomFloatingActionButton(
+          key: const ValueKey('fab'),
+          icon: AppIcons.send,
+          onPressed: () => context.goNamed(
+            sendTransactionRouteName,
+            pathParameters: {
+              'mode': 'payment',
+            },
+          ),
         ),
       );
     }

@@ -136,41 +136,44 @@ class AssetHeader extends ConsumerWidget {
     final isDarkMode = ref.watch(isDarkModeProvider);
     return Stack(
       children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(kScreenPadding),
-          decoration: activeAsset?.params.defaultFrozen ?? false
-              ? frozenBoxDecoration(context)
-              : BoxDecoration(
-                  color: context.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(kWidgetRadius),
+        Hero(
+          tag: activeAsset?.params.name ?? 'Unnamed Asset',
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(kScreenPadding),
+            decoration: activeAsset?.params.defaultFrozen ?? false
+                ? frozenBoxDecoration(context)
+                : BoxDecoration(
+                    color: context.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(kWidgetRadius),
+                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(kScreenPadding),
+                  decoration: const BoxDecoration(
+                    color: ColorPalette.voiPurple,
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgPicture.asset(
+                    '${AppIcons.svgBasePath}${AppIcons.voiIcon}.svg', // Use string interpolation correctly
+                    width: 50,
+                    height: 50,
+                    semanticsLabel: 'VOI Logo',
+                    colorFilter:
+                        const ColorFilter.mode(Colors.white, BlendMode.srcATop),
+                  ),
                 ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(kScreenPadding),
-                decoration: const BoxDecoration(
-                  color: ColorPalette.voiPurple,
-                  shape: BoxShape.circle,
+                const SizedBox(height: kScreenPadding),
+                Text(
+                  activeAsset?.params.name ?? 'Unnamed Asset',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                child: SvgPicture.asset(
-                  '${AppIcons.svgBasePath}${AppIcons.voiIcon}.svg', // Use string interpolation correctly
-                  width: 50,
-                  height: 50,
-                  semanticsLabel: 'VOI Logo',
-                  colorFilter:
-                      const ColorFilter.mode(Colors.white, BlendMode.srcATop),
-                ),
-              ),
-              const SizedBox(height: kScreenPadding),
-              Text(
-                activeAsset?.params.name ?? 'Unnamed Asset',
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         if ((activeAsset?.index ?? 0) != 0)
