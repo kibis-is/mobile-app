@@ -39,7 +39,7 @@ class CustomListTile extends StatelessWidget {
       title: Text(
         title,
         overflow: TextOverflow.ellipsis,
-        style: context.textTheme.titleMedium
+        style: context.textTheme.displaySmall
             ?.copyWith(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(
