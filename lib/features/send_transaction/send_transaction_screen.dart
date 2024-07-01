@@ -430,6 +430,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final isMobile = (Platform.isAndroid || Platform.isIOS) ? true : false;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: CustomTextField(
@@ -517,31 +518,34 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: accounts.map((account) {
-                return GestureDetector(
-                  onTap: () => Navigator.pop(context, account),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.all(kScreenPadding),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(kWidgetRadius),
-                      color: context.colorScheme.surface,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        EllipsizedText(
-                          account['accountName']!,
-                          ellipsis: '...',
-                          type: EllipsisType.end,
-                          style: context.textTheme.displayMedium,
-                        ),
-                        EllipsizedText(
-                          account['publicKey']!,
-                          ellipsis: '...',
-                          type: EllipsisType.middle,
-                          style: context.textTheme.bodySmall,
-                        ),
-                      ],
+                return MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context, account),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(kScreenPadding),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(kWidgetRadius),
+                        color: context.colorScheme.surface,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          EllipsizedText(
+                            account['accountName']!,
+                            ellipsis: '...',
+                            type: EllipsisType.end,
+                            style: context.textTheme.displayMedium,
+                          ),
+                          EllipsizedText(
+                            account['publicKey']!,
+                            ellipsis: '...',
+                            type: EllipsisType.middle,
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

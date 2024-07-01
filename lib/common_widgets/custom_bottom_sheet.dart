@@ -22,7 +22,8 @@ Future<dynamic> customBottomSheet({
     context: context,
     builder: (BuildContext context) {
       return Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
+        padding: const EdgeInsets.symmetric(
+            horizontal: kScreenPadding * 2, vertical: kScreenPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -44,6 +45,7 @@ Future<dynamic> customBottomSheet({
                 },
                 isFullWidth: true,
               ),
+            if (isSingleWidgetMode) const SizedBox(height: kScreenPadding),
           ],
         ),
       );
