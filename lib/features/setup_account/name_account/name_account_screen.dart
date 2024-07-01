@@ -19,6 +19,8 @@ import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
+final hasSubmittedProvider = StateProvider.autoDispose<bool>((ref) => false);
+
 class NameAccountScreen extends ConsumerStatefulWidget {
   final AccountFlow accountFlow;
   final String? initialAccountName;
@@ -141,10 +143,14 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                               ? 'Save'
                               : 'Create',
                           isFullWidth: true,
-                          onPressed: ref.watch(loadingProvider)
+                          // Disable button if loading or has been submitted
+                          onPressed: ref.watch(loadingProvider) ||
+                                  ref.watch(hasSubmittedProvider)
                               ? null
                               : () async {
-                                  // Disable button when loading
+                                  ref
+                                      .read(hasSubmittedProvider.notifier)
+                                      .state = true; // Mark as submitted
                                   if (formKey.currentState!.validate()) {
                                     ref
                                         .read(loadingProvider.notifier)
@@ -159,7 +165,6 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                             accountNameController.text,
                                             widget.accountFlow);
                                       }
-                                      // Optionally navigate or show a success message here
                                     } catch (e) {
                                       if (!context.mounted) return;
                                       showCustomSnackBar(
@@ -167,6 +172,9 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                         snackType: SnackType.error,
                                         message: '$e',
                                       );
+                                      ref
+                                          .read(hasSubmittedProvider.notifier)
+                                          .state = false;
                                     }
                                     ref
                                         .read(loadingProvider.notifier)
@@ -190,13 +198,11 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
     final accountName = accountNameController.text;
     await ref.read(accountProvider.notifier).setAccountName(accountName);
 
-    // Get the active account ID
     final accountId = ref.read(activeAccountProvider);
     if (accountId == null) {
       throw Exception('No active account ID found');
     }
 
-    // Update the account name using the accounts list provider
     await ref
         .read(accountsListProvider.notifier)
         .updateAccountName(accountId, accountName);
@@ -238,13 +244,8 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
           .read(accountProvider.notifier)
           .finalizeAccountCreation(accountName);
 
-      // Set the newly created account as the active account
       final newAccountId =
           await ref.read(accountProvider.notifier).getAccountId() ?? '';
-
-      // await ref
-      //     .read(activeAccountProvider.notifier)
-      //     .setActiveAccount(newAccountId);
 
       await ref.read(accountsListProvider.notifier).loadAccounts();
 
