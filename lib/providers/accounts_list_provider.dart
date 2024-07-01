@@ -71,4 +71,10 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
     await storageService.setAccountData(accountId, 'accountName', accountName);
     await loadAccounts(); // Trigger reload
   }
+
+  List<Map<String, String>> getAccountsExcludingActive(String? activeAccount) {
+    return state.accounts
+        .where((account) => account['accountId'] != activeAccount)
+        .toList();
+  }
 }

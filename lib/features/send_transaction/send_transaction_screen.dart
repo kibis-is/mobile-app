@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:algorand_dart/algorand_dart.dart';
+import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,8 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/scan_qr/scan_qr_screen.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/accounts_list_provider.dart';
+import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
@@ -330,7 +333,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                     const SizedBox(height: kScreenPadding),
                     _buildAmountTextField(),
                     const SizedBox(height: kScreenPadding),
-                    _buildRecipientAddressTextField(),
+                    _buildRecipientAddressTextField(context, ref),
                     const SizedBox(height: kScreenPadding),
                     _buildNoteTextField(),
                     if (_remainingBytes < 1000) _buildRemainingBytesIndicator(),
@@ -423,31 +426,135 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     );
   }
 
-  Widget _buildRecipientAddressTextField() {
+  Widget _buildRecipientAddressTextField(BuildContext context, WidgetRef ref) {
     final isMobile = (Platform.isAndroid || Platform.isIOS) ? true : false;
 
-    return CustomTextField(
-      labelText: 'Recipient Address',
-      keyboardType: TextInputType.number,
-      textInputAction: TextInputAction.next,
-      controller: recipientAddressController,
-      suffixIcon: isMobile ? AppIcons.scan : null,
-      autoCorrect: false,
-      onTrailingPressed: isMobile
-          ? () async {
-              debugPrint('pressed');
-              final scannedData = await context.pushNamed(
-                '/$sendTransactionRouteName/$qrScannerRouteName',
-                extra: ScanMode.publicKey,
-              );
+    return Row(
+      children: [
+        Expanded(
+          child: CustomTextField(
+            labelText: 'Recipient Address',
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+            controller: recipientAddressController,
+            suffixIcon: isMobile ? AppIcons.scan : null,
+            autoCorrect: false,
+            onTrailingPressed: isMobile
+                ? () async {
+                    debugPrint('pressed');
+                    final scannedData = await context.pushNamed(
+                      '/$sendTransactionRouteName/$qrScannerRouteName',
+                      extra: ScanMode.publicKey,
+                    );
 
-              if (scannedData != null) {
-                recipientAddressController.text = scannedData as String;
-              }
-            }
-          : null,
-      validator: _validateAlgorandAddress,
+                    if (scannedData != null) {
+                      recipientAddressController.text = scannedData as String;
+                    }
+                  }
+                : null,
+            validator: _validateAlgorandAddress,
+          ),
+        ),
+        const SizedBox(width: kScreenPadding / 2),
+        IconButton(
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(
+                  horizontal: kScreenPadding, vertical: 14),
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(kWidgetRadius),
+              ),
+            ),
+            backgroundColor: MaterialStateProperty.all<Color>(
+              context.colorScheme.surface,
+            ),
+            foregroundColor: MaterialStateProperty.all<Color>(
+              context.colorScheme.onSurface,
+            ),
+          ),
+          icon: const Icon(AppIcons.addAccount),
+          onPressed: () {
+            _showAddressBook(context, ref);
+          },
+        ),
+      ],
     );
+  }
+
+  Future<void> _showAddressBook(BuildContext context, WidgetRef ref) async {
+    final accountsState = ref.watch(accountsListProvider);
+    final activeAccount = ref.watch(activeAccountProvider);
+
+    debugPrint('Active account: $activeAccount');
+    debugPrint('Accounts loading: ${accountsState.isLoading}');
+    debugPrint('Accounts error: ${accountsState.error}');
+
+    if (accountsState.error != null) {
+      // Show an error message if there's an error
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text(accountsState.error!),
+          );
+        },
+      );
+    }
+
+    final accountsNotifier = ref.read(accountsListProvider.notifier);
+    final accounts = accountsNotifier.getAccountsExcludingActive(activeAccount);
+
+    debugPrint('Filtered accounts: $accounts');
+
+    final selectedAccount = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Address'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: accounts.map((account) {
+                return GestureDetector(
+                  onTap: () => Navigator.pop(context, account),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(kScreenPadding),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(kWidgetRadius),
+                      color: context.colorScheme.surface,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        EllipsizedText(
+                          account['accountName']!,
+                          ellipsis: '...',
+                          type: EllipsisType.end,
+                          style: context.textTheme.displayMedium,
+                        ),
+                        EllipsizedText(
+                          account['publicKey']!,
+                          ellipsis: '...',
+                          type: EllipsisType.middle,
+                          style: context.textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selectedAccount != null) {
+      recipientAddressController.text = selectedAccount['publicKey']!;
+    }
   }
 
   Widget _buildNoteTextField() {

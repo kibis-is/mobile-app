@@ -69,7 +69,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     try {
       final accountExists = await _accountExists(hexPrivateKey);
       if (accountExists) {
-        throw Exception('Account with this private key already exists.');
+        throw Exception('Account already added.');
       }
 
       final account = await algorand.loadAccountFromPrivateKey(hexPrivateKey);
@@ -88,7 +88,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
         privateKey: null,
         seedPhrase: null,
       );
-      throw Exception('Failed to restore account: $e');
+      throw Exception(e);
     }
   }
 
@@ -100,7 +100,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
 
       final accountExists = await _accountExists(encodedPrivateKey);
       if (accountExists) {
-        throw Exception('Account with this seed phrase already exists.');
+        throw Exception('Account already added.');
       }
 
       final seedPhraseString = seedPhrase.join(' ');
@@ -110,13 +110,15 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
         privateKey: encodedPrivateKey,
         seedPhrase: seedPhraseString,
       );
+    } on AlgorandException catch (e) {
+      throw Exception(e.message);
     } catch (e) {
       state = state.copyWith(
         account: null,
         privateKey: null,
         seedPhrase: null,
       );
-      throw Exception('Failed to restore account: $e');
+      throw Exception(e);
     }
   }
 
