@@ -13,9 +13,8 @@ Future<dynamic> customBottomSheet({
   String? buttonText,
   Function(SelectItem)? onPressed,
   VoidCallback? buttonOnPressed,
-  Widget? singleWidget, // Optional parameter for a single widget
+  Widget? singleWidget,
 }) {
-  // Determine if we are using a list or a single widget
   final isSingleWidgetMode = singleWidget != null;
 
   return showModalBottomSheet(
@@ -33,7 +32,7 @@ Future<dynamic> customBottomSheet({
               singleWidget
             else
               _buildItemList(context, items!,
-                  onPressed!), // Use the list if singleWidget is not provided
+                  onPressed!),
             if (hasButton)
               CustomButton(
                 text: buttonText ?? "Confirm",
