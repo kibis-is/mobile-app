@@ -138,7 +138,15 @@ class TransactionItem extends ConsumerWidget {
   }
 
   String _formatDateTime(int roundTime) {
+    // Convert seconds since epoch to DateTime object in milliseconds
     final dateTime = DateTime.fromMillisecondsSinceEpoch(roundTime * 1000);
-    return '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}, ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+
+    // Format the DateTime object into a readable string
+    return '${dateTime.day.toString().padLeft(2, '0')}/'
+        '${dateTime.month.toString().padLeft(2, '0')}/'
+        '${dateTime.year}, '
+        '${dateTime.hour.toString().padLeft(2, '0')}:'
+        '${dateTime.minute.toString().padLeft(2, '0')}:'
+        '${dateTime.second.toString().padLeft(2, '0')}';
   }
 }
