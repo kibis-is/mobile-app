@@ -15,7 +15,6 @@ final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
       aOptions: AndroidOptions(encryptedSharedPreferences: true));
 });
 
-// StorageService provider
 final storageProvider = Provider<StorageService>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider).maybeWhen(
         data: (prefs) => prefs,
@@ -62,7 +61,6 @@ class StorageService {
     return returnOnError as T;
   }
 
-  // Account-related methods using JSON structure
   Future<void> setAccounts(Map<String, Map<String, String>> accounts) async {
     final accountsJson = jsonEncode(accounts);
     await _secureStorage.write(key: 'accounts', value: accountsJson);
@@ -138,7 +136,6 @@ class StorageService {
     }, 'Error clearing all data');
   }
 
-  // Method to generate the next account ID
   Future<String> generateNextAccountId() async {
     final accounts = await getAccounts();
     if (accounts == null || accounts.isEmpty) {
@@ -154,7 +151,6 @@ class StorageService {
     return await getAccountData(accountId, 'publicKey');
   }
 
-  // PIN Management
   Future<void> setPinHash(String pinHash) async {
     await _retryOnException(() async {
       await _secureStorage.write(key: 'pinHash', value: pinHash);
@@ -173,7 +169,6 @@ class StorageService {
     }, 'Error clearing pin hash');
   }
 
-  // Method to check if any account exists
   Future<bool> accountExists() async {
     final accounts = await getAccounts();
     return accounts != null && accounts.isNotEmpty;
@@ -187,23 +182,18 @@ class StorageService {
     return _prefs?.getString('error');
   }
 
-  // New method to get the account name
   Future<String?> getAccountName(String accountId) async {
     return await getAccountData(accountId, 'accountName');
   }
 
-  // New method to get the private key
   Future<String?> getPrivateKey(String accountId) async {
     return await getAccountData(accountId, 'privateKey');
   }
 
-  // Timeout Management
-  // Method to save the lock timeout setting
   Future<void> setLockTimeout(int seconds) async {
     await _prefs?.setInt('lockTimeout', seconds);
   }
 
-  // Method to get the lock timeout setting
   int? getLockTimeout() {
     return _prefs?.getInt('lockTimeout');
   }
@@ -227,5 +217,20 @@ class StorageService {
   Future<void> initialize() async {
     await SharedPreferences.getInstance();
     await const FlutterSecureStorage().readAll();
+  }
+
+  Future<void> setTransactionLastFetchTime(
+      String accountId, int lastFetchTime) async {
+    debugPrint(
+        'Saving Last Fetch Time: $lastFetchTime for Account ID: $accountId');
+    await _prefs?.setInt('lastTransactionFetchTime$accountId', lastFetchTime);
+  }
+
+  Future<int> getTransactionLastFetchTime(String accountId) async {
+    final lastFetchTime =
+        _prefs?.getInt('lastTransactionFetchTime$accountId') ?? 0;
+    debugPrint(
+        'Retrieved Last Fetch Time: $lastFetchTime for Account ID: $accountId');
+    return lastFetchTime;
   }
 }
