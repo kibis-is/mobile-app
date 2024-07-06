@@ -488,12 +488,13 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final accountsState = ref.watch(accountsListProvider);
     final activeAccount = ref.watch(activeAccountProvider);
 
+    // Debugging information
     debugPrint('Active account: $activeAccount');
     debugPrint('Accounts loading: ${accountsState.isLoading}');
     debugPrint('Accounts error: ${accountsState.error}');
 
+    // Handle error state
     if (accountsState.error != null) {
-      // Show an error message if there's an error
       return showDialog<void>(
         context: context,
         builder: (BuildContext context) {
@@ -505,11 +506,16 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       );
     }
 
+    if (accountsState.isLoading) {
+      await ref.read(accountsListProvider.notifier).loadAccounts();
+    }
+
     final accountsNotifier = ref.read(accountsListProvider.notifier);
     final accounts = accountsNotifier.getAccountsExcludingActive(activeAccount);
 
     debugPrint('Filtered accounts: $accounts');
 
+    if (!context.mounted) return;
     final selectedAccount = await showDialog<Map<String, String>>(
       context: context,
       builder: (BuildContext context) {
