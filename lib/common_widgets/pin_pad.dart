@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -237,14 +239,35 @@ class PinPadState extends ConsumerState<PinPad> {
     bool isPinComplete = pinPadProvider.isPinComplete();
 
     if (isPinComplete) {
+      // Start loading spinner
+      ref.read(loadingProvider.notifier).startLoading();
       ref.read(isPinCompleteProvider.notifier).state = true;
-      await handlePinComplete();
-      if (widget.mode != PinPadMode.setup) {
-        //need to keep the pinProvider active to create account at the end
-        ref.read(pinProvider.notifier).clearPinState();
-      }
-      pinPadProvider.clearPin();
-      ref.read(isPinCompleteProvider.notifier).state = false;
+
+      // Ensure the UI updates before continuing
+      SchedulerBinding.instance.addPostFrameCallback((_) async {
+        // Handle pin completion logic
+        await handlePinComplete();
+
+        if (widget.mode != PinPadMode.setup) {
+          // Clear pin state if not in setup mode
+          ref.read(pinProvider.notifier).clearPinState();
+        }
+
+        pinPadProvider.clearPin();
+        ref.read(isPinCompleteProvider.notifier).state = false;
+
+        // Navigate to the next screen
+        if (widget.mode == PinPadMode.setup) {
+          _navigateToSetup();
+        } else if (widget.mode == PinPadMode.unlock) {
+          _navigateToDashboard();
+        }
+
+        // Use another post frame callback to stop loading after navigation
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          ref.read(loadingProvider.notifier).stopLoading();
+        });
+      });
     }
   }
 
@@ -284,5 +307,9 @@ class PinPadState extends ConsumerState<PinPad> {
   void _navigateToAddAccount() {
     if (!mounted) return;
     GoRouter.of(context).push('/setup/setupAddAccount');
+  }
+
+  void _navigateToDashboard() {
+    GoRouter.of(context).go('/');
   }
 }
