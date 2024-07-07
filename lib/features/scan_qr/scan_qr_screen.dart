@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
-import 'package:kibisis/common_widgets/confirmation_dialog.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 enum ScanMode { privateKey, publicKey }
@@ -113,7 +113,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     final String? qrData = capture.barcodes.first.rawValue;
     if (qrData == null) return;
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 300), () async {
+    _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
       _processing = true;
       try {
         if (widget.scanMode == ScanMode.privateKey) {
@@ -122,7 +122,12 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           await _handlePublicKeyMode(qrData);
         }
       } catch (e) {
-        await _showErrorDialog(e.toString());
+        if (!mounted) return;
+        showCustomSnackBar(
+          context: context,
+          snackType: SnackType.error,
+          message: e.toString(),
+        );
       } finally {
         _processing = false;
         controller.start();
@@ -134,11 +139,21 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     final uri = Uri.parse(qrData);
     final privateKey = uri.queryParameters['privatekey']?.toUpperCase();
     if (privateKey == null) {
-      throw Exception('QR code is not an account');
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'QR code is not an account',
+      );
+      return;
     }
     if (privateKey.length != 64 ||
         !RegExp(r'^[0-9a-fA-F]+$').hasMatch(privateKey)) {
-      throw Exception('Invalid private key format');
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'Invalid private key format',
+      );
+      return;
     }
 
     final seed = Uint8List.fromList(hex.decode(privateKey));
@@ -157,25 +172,12 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       if (!mounted) return;
       Navigator.pop(context, qrData);
     } else {
-      throw Exception('Invalid public key format');
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'Invalid recipient address',
+      );
     }
-  }
-
-  Future<void> _showErrorDialog(String errorMessage) async {
-    await controller.stop();
-    if (!mounted) return;
-    await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return ConfirmationDialog(
-          title: 'Error',
-          content: errorMessage,
-          isConfirmDialog: false,
-        );
-      },
-    );
-    controller.start();
   }
 
   @override
