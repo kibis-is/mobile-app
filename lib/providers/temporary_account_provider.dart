@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:convert/convert.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -111,6 +113,43 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
         seedPhrase: seedPhraseString,
       );
     } on AlgorandException catch (e) {
+      throw Exception(e.message);
+    } catch (e) {
+      state = state.copyWith(
+        account: null,
+        privateKey: null,
+        seedPhrase: null,
+      );
+      throw Exception(e);
+    }
+  }
+
+  Future<void> restoreAccountFromSeed(Uint8List seed) async {
+    try {
+      // Create account from seed
+      final account = await Account.fromSeed(seed);
+
+      final hexPrivateKey = hex.encode(seed);
+
+      final accountExists = await _accountExists(hexPrivateKey);
+      if (accountExists) {
+        throw Exception('Account already added.');
+      }
+
+      final seedPhrase = await account.seedPhrase;
+      final seedPhraseString = seedPhrase.join(' ');
+
+      state = state.copyWith(
+        account: account,
+        privateKey: hexPrivateKey,
+        seedPhrase: seedPhraseString,
+      );
+    } on AlgorandException catch (e) {
+      state = state.copyWith(
+        account: null,
+        privateKey: null,
+        seedPhrase: null,
+      );
       throw Exception(e.message);
     } catch (e) {
       state = state.copyWith(
