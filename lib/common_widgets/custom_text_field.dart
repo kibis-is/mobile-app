@@ -23,6 +23,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.onFieldSubmitted,
     this.focusNode,
+    this.onTap,
   });
 
   final TextEditingController controller;
@@ -43,6 +44,7 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
   final FocusNode? focusNode;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +91,7 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
+      onTap: onTap,
     );
   }
 }
