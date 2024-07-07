@@ -84,7 +84,7 @@ class PinPadState extends ConsumerState<PinPad> {
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+            padding: const EdgeInsets.symmetric(horizontal: kScreenPadding * 4),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 double width = constraints.maxWidth;
