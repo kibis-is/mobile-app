@@ -423,6 +423,11 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       autoCorrect: false,
       controller: amountController,
       validator: _validateAmount,
+      onTap: () {
+        if (amountController.text == '0') {
+          amountController.clear();
+        }
+      },
     );
   }
 
