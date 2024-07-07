@@ -15,6 +15,7 @@ import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
@@ -32,6 +33,14 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class DashboardScreenState extends ConsumerState<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(loadingProvider.notifier).stopLoading();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final networks = networkOptions;

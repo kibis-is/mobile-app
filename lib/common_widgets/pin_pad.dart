@@ -239,35 +239,25 @@ class PinPadState extends ConsumerState<PinPad> {
     bool isPinComplete = pinPadProvider.isPinComplete();
 
     if (isPinComplete) {
-      // Start loading spinner
-      ref.read(loadingProvider.notifier).startLoading();
-      ref.read(isPinCompleteProvider.notifier).state = true;
-
-      // Ensure the UI updates before continuing
-      SchedulerBinding.instance.addPostFrameCallback((_) async {
-        // Handle pin completion logic
-        await handlePinComplete();
-
-        if (widget.mode != PinPadMode.setup) {
-          // Clear pin state if not in setup mode
-          ref.read(pinProvider.notifier).clearPinState();
-        }
-
-        pinPadProvider.clearPin();
-        ref.read(isPinCompleteProvider.notifier).state = false;
-
-        // Navigate to the next screen
-        if (widget.mode == PinPadMode.setup) {
-          _navigateToSetup();
-        } else if (widget.mode == PinPadMode.unlock) {
-          _navigateToDashboard();
-        }
-
-        // Use another post frame callback to stop loading after navigation
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          ref.read(loadingProvider.notifier).stopLoading();
+      try {
+        ref.read(loadingProvider.notifier).startLoading();
+        ref.read(isPinCompleteProvider.notifier).state = true;
+        SchedulerBinding.instance.addPostFrameCallback((_) async {
+          await handlePinComplete();
+          if (widget.mode != PinPadMode.setup) {
+            ref.read(pinProvider.notifier).clearPinState();
+          }
+          pinPadProvider.clearPin();
+          ref.read(isPinCompleteProvider.notifier).state = false;
+          if (widget.mode == PinPadMode.setup) {
+            _navigateToSetup();
+          } else if (widget.mode == PinPadMode.unlock) {
+            _navigateToDashboard();
+          }
         });
-      });
+      } catch (e) {
+        ref.read(loadingProvider.notifier).stopLoading();
+      }
     }
   }
 

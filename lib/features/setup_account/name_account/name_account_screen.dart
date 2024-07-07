@@ -175,10 +175,10 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                       ref
                                           .read(hasSubmittedProvider.notifier)
                                           .state = false;
+                                      ref
+                                          .read(loadingProvider.notifier)
+                                          .stopLoading();
                                     }
-                                    ref
-                                        .read(loadingProvider.notifier)
-                                        .stopLoading();
                                   }
                                 },
                         ),
