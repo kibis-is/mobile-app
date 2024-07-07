@@ -63,26 +63,44 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text(QrCodeScannerScreen.title),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: MobileScanner(
-              key: qrKey,
-              controller: controller,
-              onDetect: _onQRViewCreated,
+      body: Stack(
+        children: [
+          MobileScanner(
+            key: qrKey,
+            controller: controller,
+            onDetect: _onQRViewCreated,
+          ),
+          Center(
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: context.colorScheme.primary, width: 2),
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
-          Expanded(
-            flex: 1,
+          Positioned(
+            bottom: 20,
+            left: 20,
+            right: 20,
             child: Center(
               child: (result != null)
                   ? Text(
-                      'Barcode Type: ${result!.format} Data: ${result!.rawValue}')
-                  : const Text('Scan a code'),
+                      'Barcode Type: ${result!.format} Data: ${result!.rawValue}',
+                      style: const TextStyle(color: Colors.white),
+                    )
+                  : const Text(
+                      'Scan a QR code',
+                      style: TextStyle(color: Colors.white),
+                    ),
             ),
           ),
         ],
