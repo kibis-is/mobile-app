@@ -1,15 +1,15 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 enum ScanMode { privateKey, publicKey }
 
@@ -31,16 +31,17 @@ class QrCodeScannerScreen extends ConsumerStatefulWidget {
 class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
-  QRViewController? controller;
+  MobileScannerController controller = MobileScannerController();
   bool _processing = false;
+  Timer? _debounceTimer;
 
   @override
   void reassemble() {
     super.reassemble();
     if (defaultTargetPlatform == TargetPlatform.android) {
-      controller?.pauseCamera();
+      controller.stop();
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      controller?.resumeCamera();
+      controller.start();
     }
   }
 
@@ -70,9 +71,10 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         children: <Widget>[
           Expanded(
             flex: 5,
-            child: QRView(
+            child: MobileScanner(
               key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
+              controller: controller,
+              onDetect: _onQRViewCreated,
             ),
           ),
           Expanded(
@@ -80,7 +82,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             child: Center(
               child: (result != null)
                   ? Text(
-                      'Barcode Type: ${result!.format.name}   Data: ${result!.code}')
+                      'Barcode Type: ${result!.format} Data: ${result!.rawValue}')
                   : const Text('Scan a code'),
             ),
           ),
@@ -89,18 +91,22 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     );
   }
 
-  Future<void> _onQRViewCreated(QRViewController controller) async {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) async {
-      if (_processing) {
-        return;
-      }
+  Future<void> _onQRViewCreated(BarcodeCapture capture) async {
+    if (_processing) return;
 
+    final String? qrData = capture.barcodes.first.rawValue;
+    if (qrData == null) return;
+
+    // Cancel the existing timer if it is still active
+    _debounceTimer?.cancel();
+
+    // Start a new timer to process the scan after a short delay
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () async {
       _processing = true;
-      final qrData = scanData.code;
+
       try {
         if (widget.scanMode == ScanMode.privateKey) {
-          final uri = Uri.parse(qrData?.toString() ?? '');
+          final uri = Uri.parse(qrData);
           final privateKey = uri.queryParameters['privatekey'];
           if (privateKey == null) {
             throw Exception('QR code is not an account');
@@ -112,33 +118,23 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             throw Exception('Invalid private key format');
           }
 
-          // Validate the privateKey length and ensure it is a valid hexadecimal string
-          if (privateKey.length != 64 ||
-              !RegExp(r'^[0-9a-fA-F]+$').hasMatch(privateKey)) {
-            throw Exception('Invalid private key format');
-          }
-
           // Convert the privateKey hex string to a list of bytes
           final privateKeyBytes = Uint8List.fromList(hex.decode(privateKey));
           if (privateKeyBytes.length != 32) {
             throw Exception('Private key must be 32 bytes long');
           }
 
-          // Convert bytes to a base64 string if required by your method (example)
-          final base64PrivateKey = base64.encode(privateKeyBytes);
-
           await ref
               .read(temporaryAccountProvider.notifier)
-              .restoreAccountFromPrivateKey(base64PrivateKey);
+              .restoreAccountFromPrivateKey(privateKey);
           if (!mounted) return;
           GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
               ? '/setup/setupNameAccount'
               : '/addAccount/addAccountNameAccount');
         } else if (widget.scanMode == ScanMode.publicKey) {
           // Assuming public key format for other cases
-          if (qrData != null &&
-              qrData.length == 58 &&
-              RegExp(r'^[A-Z2-7]+$').hasMatch(qrData)) {
+          if (qrData.length == 58 && RegExp(r'^[A-Z2-7]+$').hasMatch(qrData)) {
+            if (!mounted) return;
             Navigator.pop(
                 context, qrData); // Return the scanned data as public key
           } else {
@@ -148,13 +144,14 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       } catch (e) {
         await _showErrorDialog(e.toString());
       } finally {
-        _processing = false;
+        _processing = false; // Unlock processing for new scans
+        controller.start(); // Ensure scanner is restarted for next scan
       }
     });
   }
 
   Future<void> _showErrorDialog(String errorMessage) async {
-    await controller?.pauseCamera();
+    await controller.stop();
     if (!mounted) return;
     await showDialog<bool>(
       context: context,
@@ -167,12 +164,13 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         );
       },
     );
-    controller?.resumeCamera();
+    controller.start();
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    controller.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
   }
 }

@@ -443,8 +443,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             onTrailingPressed: isMobile
                 ? () async {
                     debugPrint('pressed');
-                    final scannedData = await context.pushNamed(
-                      '/$sendTransactionRouteName/$qrScannerRouteName',
+                    final mode = ref.watch(sendTransactionScreenModeProvider);
+                    final scannedData = await GoRouter.of(context).pushNamed(
+                      qrScannerRouteName,
+                      pathParameters: {
+                        'mode': mode == SendTransactionScreenMode.payment
+                            ? 'payment'
+                            : 'asset',
+                      },
                       extra: ScanMode.publicKey,
                     );
 
