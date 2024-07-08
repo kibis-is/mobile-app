@@ -154,7 +154,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                   if (formKey.currentState!.validate()) {
                                     ref
                                         .read(loadingProvider.notifier)
-                                        .startLoading(); // Start loading
+                                        .startLoading();
                                     try {
                                       if (widget.accountFlow ==
                                           AccountFlow.edit) {
@@ -175,6 +175,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                       ref
                                           .read(hasSubmittedProvider.notifier)
                                           .state = false;
+                                    } finally {
                                       ref
                                           .read(loadingProvider.notifier)
                                           .stopLoading();

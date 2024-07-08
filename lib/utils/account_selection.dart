@@ -21,6 +21,8 @@ class AccountHandler {
       ref.invalidate(accountProvider);
       await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
     } catch (e) {
+      debugPrint('Handle Account Selection: ${e.toString()}');
+    } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
   }

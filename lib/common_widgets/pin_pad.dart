@@ -237,22 +237,20 @@ class PinPadState extends ConsumerState<PinPad> {
     final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
     pinPadProvider.addKey(key);
     bool isPinComplete = pinPadProvider.isPinComplete();
-
     if (isPinComplete) {
       try {
         ref.read(loadingProvider.notifier).startLoading();
         ref.read(isPinCompleteProvider.notifier).state = true;
         SchedulerBinding.instance.addPostFrameCallback((_) async {
-          await handlePinComplete();
-          if (widget.mode != PinPadMode.setup) {
-            ref.read(pinProvider.notifier).clearPinState();
-          }
-          pinPadProvider.clearPin();
-          ref.read(isPinCompleteProvider.notifier).state = false;
-          if (widget.mode == PinPadMode.setup) {
-            _navigateToSetup();
-          } else if (widget.mode == PinPadMode.unlock) {
-            _navigateToDashboard();
+          try {
+            await handlePinComplete();
+            if (widget.mode != PinPadMode.setup) {
+              ref.read(pinProvider.notifier).clearPinState();
+            }
+            pinPadProvider.clearPin();
+          } finally {
+            ref.read(isPinCompleteProvider.notifier).state = false;
+            ref.read(loadingProvider.notifier).stopLoading();
           }
         });
       } catch (e) {

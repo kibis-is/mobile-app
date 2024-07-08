@@ -173,51 +173,50 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Future<void> _executeTransaction(WidgetRef ref) async {
-    if (!await _validateForm(ref)) return;
-
-    ref.read(loadingProvider.notifier).startLoading();
     try {
+      ref.read(loadingProvider.notifier).startLoading();
       final account = ref.read(accountProvider).account;
+      if (account == null) {
+        throw Exception("Account not available for the transaction.");
+      }
       double amountInAlgos = double.parse(amountController.text);
-
       final selectedItem = ref.read(selectedAssetProvider);
       if (selectedItem == null) {
         throw Exception("No item selected for the transaction.");
       }
-
       if (selectedItem.value.startsWith("network")) {
         final txId = await ref.read(algorandServiceProvider).sendPayment(
-            account!,
+            account,
             recipientAddressController.text,
             amountInAlgos,
             noteController.text);
 
-        if (txId.isNotEmpty && txId != 'error') {
-          _showSuccessSnackbar(txId);
-        } else {
+        if (txId.isEmpty || txId == 'error') {
           throw Exception('Transaction failed');
         }
+        _showSuccessSnackbar(txId);
       } else {
         await ref.read(algorandServiceProvider).transferAsset(
             int.parse(selectedItem.value),
-            account!,
+            account,
             recipientAddressController.text,
             int.parse(amountController.text));
-
         _showSuccessSnackbar("Asset transfer successful.");
       }
-
       ref.invalidate(transactionsProvider);
       ref.invalidate(balanceProvider);
     } catch (e) {
+      String errorMessage = 'An error occurred';
       if (e is AlgorandException) {
-        String userFriendlyMessage =
+        errorMessage =
             ref.read(algorandServiceProvider).parseAlgorandException(e);
-        _showErrorSnackbar(userFriendlyMessage);
+      } else {
+        errorMessage = e.toString();
       }
-
-      _showErrorSnackbar(e.toString());
-      debugPrint(e.toString());
+      _showErrorSnackbar(errorMessage);
+      debugPrint(errorMessage);
+    } finally {
+      goBack();
       ref.read(loadingProvider.notifier).stopLoading();
     }
   }
@@ -250,12 +249,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           builder: (context) => PinPadDialog(
             title: 'Verify PIN',
             onPinVerified: () async {
-              if (mounted) {
-                ref.read(loadingProvider.notifier).startLoading();
+              if (await _validateForm(ref)) {
+                await _executeTransaction(ref);
               }
-              await _executeTransaction(ref);
-              goBack();
-              ref.read(loadingProvider.notifier).stopLoading();
             },
           ),
         );
@@ -360,34 +356,46 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Row _maxSendInfo(BuildContext context, WidgetRef ref) {
     final selectedItem = ref.watch(selectedAssetProvider);
+    final accountName = ref.watch(accountProvider).accountName;
     bool isNetworkSelected = selectedItem?.value.startsWith("network") ?? false;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        if (isNetworkSelected)
-          IconButton(
-            icon: AppIcons.icon(
-              icon: AppIcons.info,
-              size: AppIcons.small,
-              color: context.colorScheme.onBackground,
-            ),
-            iconSize: kScreenPadding,
-            onPressed: () {
-              customBottomSheet(
-                context: context,
-                singleWidget: Text(
-                  'The maximum VOI amount is calculated by: the balance (${ref.watch(balanceProvider)}), '
-                  'minus the minimum balance needed to keep the account open (${ref.watch(minimumBalanceProvider)}), '
-                  'minus the minimum transaction fee (0.001)',
-                  softWrap: true,
-                  style: context.textTheme.bodyMedium,
+        EllipsizedText(
+          accountName ?? 'No Account',
+          ellipsis: '...',
+          type: EllipsisType.end,
+          style: context.textTheme.bodyMedium,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (isNetworkSelected)
+              IconButton(
+                icon: AppIcons.icon(
+                  icon: AppIcons.info,
+                  size: AppIcons.small,
+                  color: context.colorScheme.onBackground,
                 ),
-                header: "Info",
-                onPressed: (SelectItem item) {},
-              );
-            },
-          ),
-        buildMaxAmountDisplay(ref),
+                iconSize: kScreenPadding,
+                onPressed: () {
+                  customBottomSheet(
+                    context: context,
+                    singleWidget: Text(
+                      'The maximum VOI amount is calculated by: the balance (${ref.watch(balanceProvider)}), '
+                      'minus the minimum balance needed to keep the account open (${ref.watch(minimumBalanceProvider)}), '
+                      'minus the minimum transaction fee (0.001)',
+                      softWrap: true,
+                      style: context.textTheme.bodyMedium,
+                    ),
+                    header: "Info",
+                    onPressed: (SelectItem item) {},
+                  );
+                },
+              ),
+            buildMaxAmountDisplay(ref),
+          ],
+        ),
       ],
     );
   }

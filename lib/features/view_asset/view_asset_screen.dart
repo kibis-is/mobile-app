@@ -82,6 +82,7 @@ class ViewAssetScreen extends ConsumerWidget {
                       snackType: SnackType.error,
                       message: '$e',
                     );
+                  } finally {
                     ref.read(loadingProvider.notifier).stopLoading();
                   }
                 } else {
@@ -252,8 +253,7 @@ class AssetControlsState extends ConsumerState<AssetControls> {
   }
 
   Future<void> _toggleFreezeAsset(BuildContext context, WidgetRef ref) async {
-    final isLoading = ref.watch(loadingProvider.notifier);
-    isLoading.startLoading();
+    ref.watch(loadingProvider.notifier).startLoading();
     final activeAsset = ref.read(activeAssetProvider);
     final accountState = ref.read(accountProvider);
     final algorandService = ref.read(algorandServiceProvider);
@@ -305,7 +305,7 @@ class AssetControlsState extends ConsumerState<AssetControls> {
           );
         }
       } finally {
-        isLoading.stopLoading();
+        ref.read(loadingProvider.notifier).stopLoading();
       }
     }
   }
