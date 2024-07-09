@@ -72,12 +72,7 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                 subtitle: 'Scan a QR code to import an existing account.',
                 leadingIcon: AppIcons.scan,
                 trailingIcon: AppIcons.arrowRight,
-                onTap: () {
-                  GoRouter.of(context).push(
-                      widget.accountFlow == AccountFlow.setup
-                          ? '$welcomeRouteName/$setupImportQrRouteName'
-                          : '/addAccount/$mainImportQrRouteName');
-                },
+                onTap: _navigateToImportViaQr,
               ),
           ],
         ),
@@ -90,8 +85,13 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
     _navigateToCopySeed();
   }
 
+  void _navigateToImportViaQr() {
+    GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
+        ? '/setup/$setupImportQrRouteName'
+        : '/addAccount/$mainImportQrRouteName');
+  }
+
   void _navigateToCopySeed() {
-    if (!mounted) return;
     GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
         ? '/setup/setupCopySeed'
         : '/addAccount/addAccountCopySeed');
