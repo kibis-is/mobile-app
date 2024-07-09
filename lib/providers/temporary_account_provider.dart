@@ -17,22 +17,26 @@ class TemporaryAccountState {
   final Account? account;
   final String? privateKey;
   final String? seedPhrase;
+  final String? accountName; // Added field for account name
 
   TemporaryAccountState({
     this.account,
     this.privateKey,
     this.seedPhrase,
+    this.accountName, // Initialize account name
   });
 
   TemporaryAccountState copyWith({
     Account? account,
     String? privateKey,
     String? seedPhrase,
+    String? accountName, // Include accountName in copyWith
   }) {
     return TemporaryAccountState(
       account: account ?? this.account,
       privateKey: privateKey ?? this.privateKey,
       seedPhrase: seedPhrase ?? this.seedPhrase,
+      accountName: accountName ?? this.accountName, // Set account name
     );
   }
 }
@@ -124,36 +128,44 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     }
   }
 
-  Future<void> restoreAccountFromSeed(Uint8List seed) async {
+  Future<void> restoreAccountFromSeed(Uint8List seed, {String? name}) async {
     try {
       // Create account from seed
       final account = await Account.fromSeed(seed);
 
       final hexPrivateKey = hex.encode(seed);
 
+      // Check if account already exists
       final accountExists = await _accountExists(hexPrivateKey);
       if (accountExists) {
         throw Exception('Account already added.');
       }
 
+      // Get seed phrase and convert to string
       final seedPhrase = await account.seedPhrase;
       final seedPhraseString = seedPhrase.join(' ');
 
+      // Update state with the new account information and the provided name
       state = state.copyWith(
         account: account,
+        accountName: name, // Use the provided name
         privateKey: hexPrivateKey,
         seedPhrase: seedPhraseString,
       );
     } on AlgorandException catch (e) {
+      // Handle Algorand specific exceptions
       state = state.copyWith(
         account: null,
+        accountName: null, // Reset account name on failure
         privateKey: null,
         seedPhrase: null,
       );
       throw Exception(e.message);
     } catch (e) {
+      // Handle general exceptions
       state = state.copyWith(
         account: null,
+        accountName: null, // Reset account name on failure
         privateKey: null,
         seedPhrase: null,
       );

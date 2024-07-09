@@ -138,14 +138,30 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   Future<void> _handlePrivateKeyMode(String qrData) async {
     final uri = Uri.parse(qrData);
     final privateKey = uri.queryParameters['privatekey']?.toUpperCase();
+    final encoding = uri.queryParameters['encoding'];
+    final name = uri.queryParameters['name']; // Assuming you might use it later
+
+    // Validate private key
     if (privateKey == null) {
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
-        message: 'QR code is not an account',
+        message: 'QR code does not contain an account',
       );
       return;
     }
+
+    // Check if the encoding is 'hex'
+    if (encoding != 'hex') {
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'Unsupported QR code',
+      );
+      return;
+    }
+
+    // Validate private key format
     if (privateKey.length != 64 ||
         !RegExp(r'^[0-9a-fA-F]+$').hasMatch(privateKey)) {
       showCustomSnackBar(
@@ -156,10 +172,11 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       return;
     }
 
+    // Convert private key from hex
     final seed = Uint8List.fromList(hex.decode(privateKey));
     await ref
         .read(temporaryAccountProvider.notifier)
-        .restoreAccountFromSeed(seed);
+        .restoreAccountFromSeed(seed, name: name); // Pass the name parameter
 
     if (!mounted) return;
     GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
