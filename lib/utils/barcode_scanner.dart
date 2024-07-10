@@ -47,7 +47,7 @@ class QRCodeScannerLogic {
 
   Future<void> _handlePrivateKeyMode(String? qrData) async {
     if (qrData == null) return;
-
+    ref.read(loadingProvider.notifier).startLoading();
     final uri = Uri.parse(qrData);
     final privateKey = uri.queryParameters['privatekey']?.toUpperCase();
     final encoding = uri.queryParameters['encoding'];
@@ -59,6 +59,7 @@ class QRCodeScannerLogic {
         snackType: SnackType.error,
         message: 'QR code does not contain a valid account or encoding',
       );
+      ref.read(loadingProvider.notifier).stopLoading();
       return;
     }
 
@@ -69,24 +70,38 @@ class QRCodeScannerLogic {
         snackType: SnackType.error,
         message: 'Invalid private key format',
       );
+      ref.read(loadingProvider.notifier).stopLoading();
       return;
     }
 
     final seed = Uint8List.fromList(hex.decode(privateKey));
-    await ref
-        .read(temporaryAccountProvider.notifier)
-        .restoreAccountFromSeed(seed, name: name);
+    try {
+      await ref
+          .read(temporaryAccountProvider.notifier)
+          .restoreAccountFromSeed(seed, name: name);
 
-    if (name != null && name.isNotEmpty) {
-      await AccountSetupUtility.completeAccountSetup(ref, name, accountFlow!);
+      if (name != null && name.isNotEmpty) {
+        await AccountSetupUtility.completeAccountSetup(ref, name, accountFlow!);
+        if (!context.mounted) return;
+        GoRouter.of(context).go('/');
+        showCustomSnackBar(
+            context: context,
+            snackType: SnackType.success,
+            message: 'Account "$name" imported successfully!');
+      } else {
+        if (!context.mounted) return;
+        GoRouter.of(context).push(accountFlow == AccountFlow.setup
+            ? '/setup/setupNameAccount'
+            : '/addAccount/addAccountNameAccount');
+      }
+    } catch (e) {
       if (!context.mounted) return;
-      GoRouter.of(context).go('/');
+      showCustomSnackBar(
+          context: context,
+          snackType: SnackType.error,
+          message: 'Failed to import account: ${e.toString()}');
+    } finally {
       ref.read(loadingProvider.notifier).stopLoading();
-    } else {
-      if (!context.mounted) return;
-      GoRouter.of(context).push(accountFlow == AccountFlow.setup
-          ? '/setup/setupNameAccount'
-          : '/addAccount/addAccountNameAccount');
     }
   }
 
