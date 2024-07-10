@@ -24,7 +24,9 @@ class QrCodeScannerScreen extends ConsumerStatefulWidget {
 class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
-  MobileScannerController controller = MobileScannerController();
+  MobileScannerController controller = MobileScannerController(
+    formats: [BarcodeFormat.qrCode],
+  );
 
   @override
   void reassemble() {
