@@ -47,3 +47,5 @@ List<SelectItem> timeoutList = [
     icon: AppIcons.time,
   ),
 ];
+
+enum ScanMode { privateKey, publicKey }

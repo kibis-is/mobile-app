@@ -1,16 +1,10 @@
-import 'dart:async';
-import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/barcode_scanner.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:kibisis/providers/temporary_account_provider.dart';
-import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
-
-enum ScanMode { privateKey, publicKey }
 
 class QrCodeScannerScreen extends ConsumerStatefulWidget {
   static String title = 'Scan QR';
@@ -31,8 +25,6 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   MobileScannerController controller = MobileScannerController();
-  bool _processing = false;
-  Timer? _debounceTimer;
 
   @override
   void reassemble() {
@@ -74,7 +66,16 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           MobileScanner(
             key: qrKey,
             controller: controller,
-            onDetect: _onQRViewCreated,
+            onDetect: (capture) {
+              var scannerLogic = QRCodeScannerLogic(
+                context: context,
+                ref: ref,
+                scanMode: widget.scanMode,
+                controller: controller,
+                accountFlow: widget.accountFlow,
+              );
+              scannerLogic.handleBarcode(capture);
+            },
           ),
           Center(
             child: Container(
@@ -108,99 +109,9 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     );
   }
 
-  Future<void> _onQRViewCreated(BarcodeCapture capture) async {
-    if (_processing) return;
-    final String? qrData = capture.barcodes.first.rawValue;
-    if (qrData == null) return;
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
-      _processing = true;
-      try {
-        if (widget.scanMode == ScanMode.privateKey) {
-          await _handlePrivateKeyMode(qrData);
-        } else if (widget.scanMode == ScanMode.publicKey) {
-          await _handlePublicKeyMode(qrData);
-        }
-      } catch (e) {
-        if (!mounted) return;
-        showCustomSnackBar(
-          context: context,
-          snackType: SnackType.error,
-          message: e.toString(),
-        );
-      } finally {
-        _processing = false;
-        controller.start();
-      }
-    });
-  }
-
-  Future<void> _handlePrivateKeyMode(String qrData) async {
-    final uri = Uri.parse(qrData);
-    final privateKey = uri.queryParameters['privatekey']?.toUpperCase();
-    final encoding = uri.queryParameters['encoding'];
-    final name = uri.queryParameters['name']; // Assuming you might use it later
-
-    // Validate private key
-    if (privateKey == null) {
-      showCustomSnackBar(
-        context: context,
-        snackType: SnackType.error,
-        message: 'QR code does not contain an account',
-      );
-      return;
-    }
-
-    // Check if the encoding is 'hex'
-    if (encoding != 'hex') {
-      showCustomSnackBar(
-        context: context,
-        snackType: SnackType.error,
-        message: 'Unsupported QR code',
-      );
-      return;
-    }
-
-    // Validate private key format
-    if (privateKey.length != 64 ||
-        !RegExp(r'^[0-9a-fA-F]+$').hasMatch(privateKey)) {
-      showCustomSnackBar(
-        context: context,
-        snackType: SnackType.error,
-        message: 'Invalid private key format',
-      );
-      return;
-    }
-
-    // Convert private key from hex
-    final seed = Uint8List.fromList(hex.decode(privateKey));
-    await ref
-        .read(temporaryAccountProvider.notifier)
-        .restoreAccountFromSeed(seed, name: name); // Pass the name parameter
-
-    if (!mounted) return;
-    GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
-        ? '/setup/setupNameAccount'
-        : '/addAccount/addAccountNameAccount');
-  }
-
-  Future<void> _handlePublicKeyMode(String qrData) async {
-    if (qrData.length == 58 && RegExp(r'^[A-Z2-7]+$').hasMatch(qrData)) {
-      if (!mounted) return;
-      Navigator.pop(context, qrData);
-    } else {
-      showCustomSnackBar(
-        context: context,
-        snackType: SnackType.error,
-        message: 'Invalid recipient address',
-      );
-    }
-  }
-
   @override
   void dispose() {
     controller.dispose();
-    _debounceTimer?.cancel();
     super.dispose();
   }
 }
