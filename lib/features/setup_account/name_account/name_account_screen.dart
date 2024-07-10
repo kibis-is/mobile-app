@@ -9,14 +9,9 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
-import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
-import 'package:kibisis/providers/setup_complete_provider.dart';
-import 'package:kibisis/providers/storage_provider.dart';
-import 'package:kibisis/providers/temporary_account_provider.dart';
-import 'package:kibisis/utils/account_selection.dart';
+import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 final hasSubmittedProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -160,10 +155,11 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                           AccountFlow.edit) {
                                         await _updateAccountName();
                                       } else {
-                                        await completeAccountSetup(
-                                            ref,
-                                            accountNameController.text,
-                                            widget.accountFlow);
+                                        await AccountSetupUtility
+                                            .completeAccountSetup(
+                                                ref,
+                                                accountNameController.text,
+                                                widget.accountFlow);
                                       }
                                     } catch (e) {
                                       if (!context.mounted) return;
@@ -176,6 +172,9 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                           .read(hasSubmittedProvider.notifier)
                                           .state = false;
                                     } finally {
+                                      if (context.mounted) {
+                                        GoRouter.of(context).go('/');
+                                      }
                                       ref
                                           .read(loadingProvider.notifier)
                                           .stopLoading();
@@ -208,8 +207,8 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
         .read(accountsListProvider.notifier)
         .updateAccountName(accountId, accountName);
 
-    // Complete the account setup
-    await completeAccountSetup(ref, accountName, widget.accountFlow);
+    await AccountSetupUtility.completeAccountSetup(
+        ref, accountName, widget.accountFlow);
     ref.read(accountsListProvider.notifier).loadAccounts();
   }
 
@@ -231,40 +230,5 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   void _navigateToWallets() {
     if (!mounted) return;
     GoRouter.of(context).go('/wallets');
-  }
-
-  Future<void> completeAccountSetup(
-    WidgetRef ref,
-    String accountName,
-    AccountFlow accountFlow,
-  ) async {
-    try {
-      invalidateProviders(ref);
-      //update the account provider with the new data collected in the tempaccountprovider
-      await ref
-          .read(accountProvider.notifier)
-          .finalizeAccountCreation(accountName);
-
-      final newAccountId =
-          await ref.read(accountProvider.notifier).getAccountId() ?? '';
-
-      await ref.read(accountsListProvider.notifier).loadAccounts();
-
-      if (accountFlow == AccountFlow.setup) {
-        ref.read(isAuthenticatedProvider.notifier).state = true;
-        await ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
-      }
-      ref.read(temporaryAccountProvider.notifier).clear();
-
-      await ref.refresh(storageProvider).accountExists();
-
-      if (mounted) {
-        final accountHandler = AccountHandler(context, ref);
-        accountHandler.handleAccountSelection(newAccountId);
-      }
-      invalidateProviders(ref);
-    } catch (e) {
-      debugPrint('Failed to complete account setup: $e');
-    }
   }
 }

@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/utils/account_setup.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRCodeScannerLogic {
@@ -16,8 +18,6 @@ class QRCodeScannerLogic {
   final MobileScannerController controller;
   final AccountFlow? accountFlow;
 
-  Timer? _debounceTimer;
-
   QRCodeScannerLogic({
     required this.context,
     required this.ref,
@@ -26,26 +26,23 @@ class QRCodeScannerLogic {
     this.accountFlow,
   });
 
-  void handleBarcode(BarcodeCapture capture) {
-    _debounceTimer?.cancel(); // Cancels any pending timer.
-    _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
-      try {
-        if (scanMode == ScanMode.privateKey) {
-          await _handlePrivateKeyMode(capture.barcodes.first.rawValue);
-        } else if (scanMode == ScanMode.publicKey) {
-          await _handlePublicKeyMode(capture.barcodes.first.rawValue);
-        }
-      } catch (e) {
-        if (!context.mounted) return;
-        showCustomSnackBar(
-          context: context,
-          snackType: SnackType.error,
-          message: e.toString(),
-        );
-      } finally {
-        controller.start();
+  Future<void> handleBarcode(BarcodeCapture capture) async {
+    try {
+      if (scanMode == ScanMode.privateKey) {
+        await _handlePrivateKeyMode(capture.barcodes.first.rawValue);
+      } else if (scanMode == ScanMode.publicKey) {
+        await _handlePublicKeyMode(capture.barcodes.first.rawValue);
       }
-    });
+    } catch (e) {
+      if (!context.mounted) return;
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: e.toString(),
+      );
+    } finally {
+      controller.start();
+    }
   }
 
   Future<void> _handlePrivateKeyMode(String? qrData) async {
@@ -54,22 +51,13 @@ class QRCodeScannerLogic {
     final uri = Uri.parse(qrData);
     final privateKey = uri.queryParameters['privatekey']?.toUpperCase();
     final encoding = uri.queryParameters['encoding'];
-    final name = uri.queryParameters['name']; // Assuming you might use it later
+    final name = uri.queryParameters['name'];
 
-    if (privateKey == null) {
+    if (privateKey == null || encoding != 'hex') {
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
-        message: 'QR code does not contain an account',
-      );
-      return;
-    }
-
-    if (encoding != 'hex') {
-      showCustomSnackBar(
-        context: context,
-        snackType: SnackType.error,
-        message: 'Unsupported QR code',
+        message: 'QR code does not contain a valid account or encoding',
       );
       return;
     }
@@ -89,10 +77,17 @@ class QRCodeScannerLogic {
         .read(temporaryAccountProvider.notifier)
         .restoreAccountFromSeed(seed, name: name);
 
-    if (!context.mounted) return;
-    GoRouter.of(context).push(accountFlow == AccountFlow.setup
-        ? '/setup/setupNameAccount'
-        : '/addAccount/addAccountNameAccount');
+    if (name != null && name.isNotEmpty) {
+      await AccountSetupUtility.completeAccountSetup(ref, name, accountFlow!);
+      if (!context.mounted) return;
+      GoRouter.of(context).go('/');
+      ref.read(loadingProvider.notifier).stopLoading();
+    } else {
+      if (!context.mounted) return;
+      GoRouter.of(context).push(accountFlow == AccountFlow.setup
+          ? '/setup/setupNameAccount'
+          : '/addAccount/addAccountNameAccount');
+    }
   }
 
   Future<void> _handlePublicKeyMode(String? qrData) async {
@@ -108,9 +103,5 @@ class QRCodeScannerLogic {
         message: 'Invalid recipient address',
       );
     }
-  }
-
-  void dispose() {
-    _debounceTimer?.cancel();
   }
 }

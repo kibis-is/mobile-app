@@ -7,6 +7,7 @@ import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_selection.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -133,9 +134,12 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
         ),
       ),
       onTap: () {
-        final accountHandler = AccountHandler(context, ref);
+        ref.read(loadingProvider.notifier).startLoading();
+        final accountHandler = AccountHandler(ref);
         accountHandler.handleAccountSelection(account['accountId']);
         invalidateProviders(ref);
+        GoRouter.of(context).go('/');
+        ref.read(loadingProvider.notifier).stopLoading();
       },
     );
   }
@@ -207,29 +211,6 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
       ),
     );
   }
-
-  //TODO: need this for showing balance on account cards later.
-  // Widget _buildAccountBalance(BuildContext context) {
-  //   return Container(
-  //     alignment: Alignment.centerRight,
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       children: [
-  //         Text(
-  //           '0.0',
-  //           style: context.textTheme.bodyLarge?.copyWith(
-  //             color: ColorPalette.darkThemeKeppel,
-  //             fontWeight: FontWeight.bold,
-  //           ),
-  //         ),
-  //         AppIcons.icon(
-  //             icon: AppIcons.voiIcon,
-  //             color: context.colorScheme.secondary,
-  //             size: AppIcons.small),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   void _navigateToEditAccount(String accountId, String accountName) {
     GoRouter.of(context)

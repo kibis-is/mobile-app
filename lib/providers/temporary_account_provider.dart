@@ -130,42 +130,32 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
 
   Future<void> restoreAccountFromSeed(Uint8List seed, {String? name}) async {
     try {
-      // Create account from seed
       final account = await Account.fromSeed(seed);
-
       final hexPrivateKey = hex.encode(seed);
-
-      // Check if account already exists
       final accountExists = await _accountExists(hexPrivateKey);
       if (accountExists) {
         throw Exception('Account already added.');
       }
-
-      // Get seed phrase and convert to string
       final seedPhrase = await account.seedPhrase;
       final seedPhraseString = seedPhrase.join(' ');
-
-      // Update state with the new account information and the provided name
       state = state.copyWith(
         account: account,
-        accountName: name, // Use the provided name
+        accountName: name,
         privateKey: hexPrivateKey,
         seedPhrase: seedPhraseString,
       );
     } on AlgorandException catch (e) {
-      // Handle Algorand specific exceptions
       state = state.copyWith(
         account: null,
-        accountName: null, // Reset account name on failure
+        accountName: null,
         privateKey: null,
         seedPhrase: null,
       );
       throw Exception(e.message);
     } catch (e) {
-      // Handle general exceptions
       state = state.copyWith(
         account: null,
-        accountName: null, // Reset account name on failure
+        accountName: null,
         privateKey: null,
         seedPhrase: null,
       );

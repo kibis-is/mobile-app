@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
-import 'package:kibisis/providers/loading_provider.dart';
 
 class AccountHandler {
-  final BuildContext context;
   final WidgetRef ref;
 
-  AccountHandler(this.context, this.ref);
+  AccountHandler(this.ref);
 
   Future<void> handleAccountSelection(String accountId) async {
-    ref.read(loadingProvider.notifier).startLoading();
     try {
-      GoRouter.of(context).go('/');
       await ref
           .read(activeAccountProvider.notifier)
           .setActiveAccount(accountId);
@@ -22,8 +17,6 @@ class AccountHandler {
       await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
     } catch (e) {
       debugPrint('Handle Account Selection: ${e.toString()}');
-    } finally {
-      ref.read(loadingProvider.notifier).stopLoading();
     }
   }
 }

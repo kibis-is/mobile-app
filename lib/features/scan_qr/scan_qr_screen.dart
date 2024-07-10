@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +29,9 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   MobileScannerController controller = MobileScannerController(
     formats: [BarcodeFormat.qrCode],
   );
+
+  Timer? _debounceTimer;
+  bool isProcessing = false;
 
   @override
   void reassemble() {
@@ -69,14 +74,22 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             key: qrKey,
             controller: controller,
             onDetect: (capture) {
-              var scannerLogic = QRCodeScannerLogic(
-                context: context,
-                ref: ref,
-                scanMode: widget.scanMode,
-                controller: controller,
-                accountFlow: widget.accountFlow,
-              );
-              scannerLogic.handleBarcode(capture);
+              if (_debounceTimer?.isActive ?? false || isProcessing) {
+                return;
+              }
+              _debounceTimer =
+                  Timer(const Duration(milliseconds: 2000), () async {
+                isProcessing = true;
+                var scannerLogic = QRCodeScannerLogic(
+                  context: context,
+                  ref: ref,
+                  scanMode: widget.scanMode,
+                  controller: controller,
+                  accountFlow: widget.accountFlow,
+                );
+                scannerLogic.handleBarcode(capture);
+                isProcessing = false;
+              });
             },
           ),
           Center(
@@ -113,6 +126,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     controller.dispose();
     super.dispose();
   }
