@@ -1,3 +1,4 @@
+import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -66,7 +67,17 @@ class CustomDropDown extends StatelessWidget {
                 children: [
                   AppIcons.icon(icon: item.icon),
                   const SizedBox(width: 8),
-                  Text(item.name),
+                  Flexible(
+                    // This will allow the text to fill the remaining space and wrap if necessary
+                    child: EllipsizedText(
+                      item.name,
+                      ellipsis: '...',
+                      type: EllipsisType.end,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onBackground,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             );
