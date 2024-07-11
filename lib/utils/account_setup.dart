@@ -15,7 +15,6 @@ class AccountSetupUtility {
   static Future<void> completeAccountSetup(
       WidgetRef ref, String accountName, AccountFlow accountFlow) async {
     try {
-      invalidateProviders(ref);
       await ref
           .read(accountProvider.notifier)
           .finalizeAccountCreation(accountName);
