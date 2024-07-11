@@ -35,7 +35,7 @@ class CustomDropDown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      clipBehavior: Clip.none, // Allows the label to position outside the box
+      clipBehavior: Clip.none,
       alignment: Alignment.topLeft,
       children: [
         _buildDropDownContainer(context),
@@ -68,7 +68,6 @@ class CustomDropDown extends StatelessWidget {
                   AppIcons.icon(icon: item.icon),
                   const SizedBox(width: 8),
                   Flexible(
-                    // This will allow the text to fill the remaining space and wrap if necessary
                     child: EllipsizedText(
                       item.name,
                       ellipsis: '...',
