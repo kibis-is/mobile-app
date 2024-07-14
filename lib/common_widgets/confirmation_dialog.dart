@@ -38,30 +38,26 @@ class ConfirmationDialog extends StatelessWidget {
 
   List<Widget> _buildConfirmActions(BuildContext context) {
     return [
-      Expanded(
-        child: TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(true);
-          },
-          child: Text(
-            yesText,
-            style: context.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop(true);
+        },
+        child: Text(
+          yesText,
+          style: context.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      Expanded(
-        child: TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(false);
-          },
-          child: Text(
-            noText,
-            style: context.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.colorScheme.secondary),
-          ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop(false);
+        },
+        child: Text(
+          noText,
+          style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: context.colorScheme.secondary),
         ),
       ),
     ];
