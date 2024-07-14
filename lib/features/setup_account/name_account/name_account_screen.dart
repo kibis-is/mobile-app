@@ -12,6 +12,7 @@ import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 final hasSubmittedProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -157,9 +158,13 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                       } else {
                                         await AccountSetupUtility
                                             .completeAccountSetup(
-                                                ref,
-                                                accountNameController.text,
-                                                widget.accountFlow);
+                                          ref: ref,
+                                          accountFlow: widget.accountFlow,
+                                          accountName:
+                                              accountNameController.text,
+                                          setFinalState: true,
+                                        );
+                                        invalidateProviders(ref);
                                       }
                                     } catch (e) {
                                       if (!context.mounted) return;
@@ -208,8 +213,13 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
         .updateAccountName(accountId, accountName);
 
     await AccountSetupUtility.completeAccountSetup(
-        ref, accountName, widget.accountFlow);
+      ref: ref,
+      accountFlow: widget.accountFlow,
+      accountName: accountName,
+      setFinalState: true,
+    );
     ref.read(accountsListProvider.notifier).loadAccounts();
+    invalidateProviders(ref);
   }
 
   Future<void> _deleteAccount(String accountId) async {

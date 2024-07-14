@@ -7,6 +7,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/barcode_scanner.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
@@ -62,17 +63,37 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                         : '/addAccount/addAccountImportSeed');
               },
             ),
-            const SizedBox(
-              height: kScreenPadding,
-            ),
             if (defaultTargetPlatform == TargetPlatform.android ||
                 defaultTargetPlatform == TargetPlatform.iOS)
-              CustomListTile(
-                title: "Import Via QR Code",
-                subtitle: 'Scan a QR code to import an existing account.',
-                leadingIcon: AppIcons.scan,
-                trailingIcon: AppIcons.arrowRight,
-                onTap: _navigateToImportViaQr,
+              Column(
+                children: [
+                  const SizedBox(
+                    height: kScreenPadding,
+                  ),
+                  CustomListTile(
+                    title: "Import Via QR Code",
+                    subtitle: 'Scan a QR code to import an existing account.',
+                    leadingIcon: AppIcons.scan,
+                    trailingIcon: AppIcons.arrowRight,
+                    onTap: _navigateToImportViaQr,
+                  ),
+                ],
+              ),
+            if (kDebugMode)
+              Column(
+                children: [
+                  const SizedBox(
+                    height: kScreenPadding,
+                  ),
+                  CustomListTile(
+                    title: "Import Hardcoded URI",
+                    subtitle:
+                        'Import accounts from a hardcoded URI for testing.',
+                    leadingIcon: AppIcons.importAccount,
+                    trailingIcon: AppIcons.arrowRight,
+                    onTap: _importFromHardcodedUri,
+                  ),
+                ],
               ),
           ],
         ),
@@ -95,5 +116,16 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
     GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
         ? '/setup/setupCopySeed'
         : '/addAccount/addAccountCopySeed');
+  }
+
+  void _importFromHardcodedUri() {
+    QRCodeScannerLogic(
+      context: context,
+      ref: ref,
+      scanMode: ScanMode.privateKey,
+      accountFlow: widget.accountFlow,
+    ).handleMockBarcode(
+      'avm://account/import?encoding=hex&name=Personal&privatekey=b6ea7fbf7eae1f1222d7f37569c2fef45b4ee381426f23e9b038fe1214b81840&name=Test%20Account%201&privatekey=3f4b12952b43a0016510cd4c25890690abf0f60b27e369c32abb349f9874dbda&name=Test%20Account%202&privatekey=205ea8380b8959babffc093cfa15596fd4d29b925f0945c1abd76ae3228f19b9',
+    );
   }
 }

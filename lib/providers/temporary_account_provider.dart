@@ -17,26 +17,26 @@ class TemporaryAccountState {
   final Account? account;
   final String? privateKey;
   final String? seedPhrase;
-  final String? accountName; // Added field for account name
+  final String? accountName;
 
   TemporaryAccountState({
     this.account,
     this.privateKey,
     this.seedPhrase,
-    this.accountName, // Initialize account name
+    this.accountName,
   });
 
   TemporaryAccountState copyWith({
     Account? account,
     String? privateKey,
     String? seedPhrase,
-    String? accountName, // Include accountName in copyWith
+    String? accountName,
   }) {
     return TemporaryAccountState(
       account: account ?? this.account,
       privateKey: privateKey ?? this.privateKey,
       seedPhrase: seedPhrase ?? this.seedPhrase,
-      accountName: accountName ?? this.accountName, // Set account name
+      accountName: accountName ?? this.accountName,
     );
   }
 }
@@ -73,7 +73,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
 
   Future<void> restoreAccountFromPrivateKey(String hexPrivateKey) async {
     try {
-      final accountExists = await _accountExists(hexPrivateKey);
+      final accountExists = await accountAlreadyExists(hexPrivateKey);
       if (accountExists) {
         throw Exception('Account already added.');
       }
@@ -104,7 +104,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       final privateKeyBytes = await account.keyPair.extractPrivateKeyBytes();
       final encodedPrivateKey = hex.encode(privateKeyBytes);
 
-      final accountExists = await _accountExists(encodedPrivateKey);
+      final accountExists = await accountAlreadyExists(encodedPrivateKey);
       if (accountExists) {
         throw Exception('Account already added.');
       }
@@ -132,7 +132,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     try {
       final account = await Account.fromSeed(seed);
       final hexPrivateKey = hex.encode(seed);
-      final accountExists = await _accountExists(hexPrivateKey);
+      final accountExists = await accountAlreadyExists(hexPrivateKey);
       if (accountExists) {
         throw Exception('Account already added.');
       }
@@ -163,7 +163,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     }
   }
 
-  Future<bool> _accountExists(String privateKey) async {
+  Future<bool> accountAlreadyExists(String privateKey) async {
     final storageService = ref.read(storageProvider);
     final existingAccounts = await storageService.getAccounts();
     final exists = existingAccounts?.values

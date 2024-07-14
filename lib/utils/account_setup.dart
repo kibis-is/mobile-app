@@ -9,11 +9,13 @@ import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/account_selection.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 
 class AccountSetupUtility {
   static Future<void> completeAccountSetup(
-      WidgetRef ref, String accountName, AccountFlow accountFlow) async {
+      {required WidgetRef ref,
+      required String accountName,
+      required AccountFlow accountFlow,
+      required bool setFinalState}) async {
     try {
       await ref
           .read(accountProvider.notifier)
@@ -23,7 +25,7 @@ class AccountSetupUtility {
 
       await ref.read(accountsListProvider.notifier).loadAccounts();
 
-      if (accountFlow == AccountFlow.setup) {
+      if (accountFlow == AccountFlow.setup && setFinalState) {
         ref.read(isAuthenticatedProvider.notifier).state = true;
         await ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
       }
@@ -36,8 +38,6 @@ class AccountSetupUtility {
         final accountHandler = AccountHandler(ref);
         accountHandler.handleAccountSelection(newAccountId);
       }
-
-      invalidateProviders(ref);
     } catch (e) {
       debugPrint('Failed to complete account setup: $e');
       throw Exception('Failed to complete account setup: ${e.toString()}');
