@@ -14,6 +14,7 @@ import 'package:kibisis/features/settings/advanced/advanced_screen.dart';
 import 'package:kibisis/features/settings/appearance/appearance_screen.dart';
 import 'package:kibisis/features/settings/general/general_screen.dart';
 import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
+import 'package:kibisis/features/settings/security/export_accounts.dart';
 import 'package:kibisis/features/settings/security/security_screen.dart';
 import 'package:kibisis/features/settings/sessions/sessions_screen.dart';
 import 'package:kibisis/features/settings/settings_screen.dart';
@@ -328,6 +329,16 @@ class RouterNotifier extends ChangeNotifier {
                   pageBuilder: (context, state) {
                     return defaultTransitionPage(const SecurityScreen(), state);
                   },
+                  routes: [
+                    GoRoute(
+                      name: exportAccountsRouteName,
+                      path: exportAccountsRouteName,
+                      pageBuilder: (context, state) {
+                        return defaultTransitionPage(
+                            ExportAccountsScreen(), state);
+                      },
+                    ),
+                  ],
                 ),
                 GoRoute(
                   name: appearanceRouteName,

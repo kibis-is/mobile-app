@@ -66,6 +66,37 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
     }
   }
 
+  Future<void> loadAccountsWithPrivateKeys() async {
+    try {
+      final storageService = ref.read(storageProvider);
+      final accountsMap = await storageService.getAccounts();
+      if (accountsMap == null) {
+        state = state.copyWith(accounts: [], isLoading: false);
+        return;
+      }
+
+      // Map accounts and fetch private keys
+      final accountsList =
+          await Future.wait(accountsMap.entries.map((entry) async {
+        final accountId = entry.key;
+        final accountData = entry.value;
+        final publicKey = accountData['publicKey'] ?? 'No Public Key';
+        final privateKey =
+            await storageService.getPrivateKey(accountId) ?? 'No Private Key';
+        return {
+          'accountId': accountId,
+          'accountName': accountData['accountName'] ?? 'Unnamed Account',
+          'publicKey': publicKey,
+          'privateKey': privateKey, // Including private keys now
+        };
+      }).toList());
+
+      state = state.copyWith(accounts: accountsList, isLoading: false);
+    } catch (e) {
+      state = state.copyWith(error: e.toString(), isLoading: false);
+    }
+  }
+
   Future<void> updateAccountName(String accountId, String accountName) async {
     final storageService = ref.read(storageProvider);
     await storageService.setAccountData(accountId, 'accountName', accountName);

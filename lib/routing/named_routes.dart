@@ -22,6 +22,7 @@ const String qrScannerRouteName = 'qrScanner';
 const String settingsRouteName = 'settings';
 const String generalRouteName = 'general';
 const String securityRouteName = 'security';
+const String exportAccountsRouteName = 'exportAccounts';
 const String appearanceRouteName = 'appearance';
 const String sessionsRouteName = 'sessions';
 const String advancedRouteName = 'advanced';

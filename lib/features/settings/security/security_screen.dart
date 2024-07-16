@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/settings_toggle.dart';
+import 'package:kibisis/common_widgets/transparent_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 
 class SecurityScreen extends ConsumerWidget {
   static const String title = 'Security';
@@ -30,6 +33,13 @@ class SecurityScreen extends ConsumerWidget {
               const SizedBox(height: kScreenPadding),
               buildTimeoutDropdown(ref),
             ],
+            const SizedBox(height: kScreenPadding),
+            TransparentListTile(
+              icon: AppIcons.importAccount,
+              title: 'Export Accounts',
+              onTap: () => GoRouter.of(context)
+                  .push('/settings/security/exportAccounts'),
+            ),
           ],
         ),
       ),
