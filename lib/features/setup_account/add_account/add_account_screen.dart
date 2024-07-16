@@ -125,7 +125,7 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
       scanMode: ScanMode.privateKey,
       accountFlow: widget.accountFlow,
     ).handleMockBarcode(
-      'avm://account/import?encoding=hex&name=Personal&privatekey=b6ea7fbf7eae1f1222d7f37569c2fef45b4ee381426f23e9b038fe1214b81840&name=Test%20Account%201&privatekey=3f4b12952b43a0016510cd4c25890690abf0f60b27e369c32abb349f9874dbda&name=Test%20Account%202&privatekey=205ea8380b8959babffc093cfa15596fd4d29b925f0945c1abd76ae3228f19b9',
+      'avm://account/import?name=Personal&privatekey=tup_v36uHxIi1_N1acL-9FtO44FCbyPpsDj-EhS4GEA=&name=Test%20Account%201&privatekey=P0sSlStDoAFlEM1MJYkGkKvw9gsn42nDKrs0n5h029o=&name=Test%20Account%202&privatekey=IF6oOAuJWbq__Ak8-hVZb9TSm5JfCUXBq9dq4yKPGbk=',
     );
   }
 }

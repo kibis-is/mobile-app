@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
-import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -68,11 +68,13 @@ class QRCodeScannerLogic {
     var parts = query.split('&');
 
     for (var part in parts) {
-      var keyValue = part.split('=');
-      if (keyValue.length != 2) continue;
+      var index =
+          part.indexOf('='); // Find the first '=' which separates key and value
+      if (index == -1) continue; // Skip if there's no '='
 
-      var key = keyValue[0];
-      var value = Uri.decodeComponent(keyValue[1]);
+      var key = part.substring(0, index);
+      var value = Uri.decodeComponent(
+          part.substring(index + 1)); // Decode everything after the '='
 
       if (!params.containsKey(key)) {
         params[key] = [];
@@ -90,8 +92,9 @@ class QRCodeScannerLogic {
 
     Set<String> seenKeys = {};
     for (int i = 0; i < keys.length; i++) {
-      if (keys[i].length != 64 ||
-          !RegExp(r'^[0-9a-fA-F]+$').hasMatch(keys[i])) {
+      // Check if the keys are of 44 characters and valid base64 URL encoding
+      if (keys[i].length != 44 ||
+          !RegExp(r'^[A-Za-z0-9\-_]+=*$').hasMatch(keys[i])) {
         return false;
       }
       if (!seenKeys.add(keys[i])) {
@@ -114,37 +117,42 @@ class QRCodeScannerLogic {
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
-        message: 'Import Failed',
+        message: 'Import Failed - Private keys are not valid',
       );
       return;
     }
 
     List<String> validNames = [];
-    List<String> validKeys = [];
+    List<Uint8List> validSeeds = [];
 
     for (int i = 0; i < names.length; i++) {
-      final privateKey = keys[i].toUpperCase();
+      final base64Key = keys[i];
 
-      if (await ref
-          .read(temporaryAccountProvider.notifier)
-          .accountAlreadyExists(privateKey)) {
-        continue; // Skip duplicate keys
+      try {
+        final seed = base64Url.decode(base64Key);
+        if (await ref
+            .read(temporaryAccountProvider.notifier)
+            .accountAlreadyExists(base64Key)) {
+          continue; // Skip duplicate keys
+        }
+
+        validNames.add(names[i]);
+        validSeeds.add(seed);
+      } catch (e) {
+        // Handle decoding error
+        continue;
       }
-
-      validNames.add(names[i]);
-      validKeys.add(privateKey);
     }
 
-    if (validKeys.isEmpty || validNames.isEmpty) {
+    if (validSeeds.isEmpty || validNames.isEmpty) {
       throw Exception('No valid private keys found in QR code');
     }
 
     try {
       for (int i = 0; i < validNames.length; i++) {
-        final seed = Uint8List.fromList(hex.decode(validKeys[i]));
         await ref
             .read(temporaryAccountProvider.notifier)
-            .restoreAccountFromSeed(seed, name: validNames[i]);
+            .restoreAccountFromSeed(validSeeds[i], name: validNames[i]);
 
         await AccountSetupUtility.completeAccountSetup(
           ref: ref,
