@@ -16,7 +16,6 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
-import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
@@ -503,14 +502,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<void> _showAddressBook(BuildContext context, WidgetRef ref) async {
     final accountsState = ref.watch(accountsListProvider);
-    final activeAccount = ref.watch(activeAccountProvider);
 
-    // Debugging information
-    debugPrint('Active account: $activeAccount');
-    debugPrint('Accounts loading: ${accountsState.isLoading}');
-    debugPrint('Accounts error: ${accountsState.error}');
-
-    // Handle error state
     if (accountsState.error != null) {
       return showDialog<void>(
         context: context,
@@ -527,10 +519,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       await ref.read(accountsListProvider.notifier).loadAccounts();
     }
 
-    final accountsNotifier = ref.read(accountsListProvider.notifier);
-    final accounts = accountsNotifier.getAccountsExcludingActive(activeAccount);
-
-    debugPrint('Filtered accounts: $accounts');
+    final accounts = ref.read(accountsListProvider).accounts;
 
     if (!context.mounted) return;
     final selectedAccount = await showDialog<Map<String, String>>(
@@ -557,13 +546,11 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                         children: [
                           EllipsizedText(
                             account['accountName']!,
-                            ellipsis: '...',
                             type: EllipsisType.end,
                             style: context.textTheme.displayMedium,
                           ),
                           EllipsizedText(
                             account['publicKey']!,
-                            ellipsis: '...',
                             type: EllipsisType.middle,
                             style: context.textTheme.bodySmall,
                           ),
