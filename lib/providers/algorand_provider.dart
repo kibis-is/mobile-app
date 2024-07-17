@@ -5,14 +5,10 @@ import 'algorand_service.dart';
 final algorandProvider = Provider<Algorand>((ref) {
   final algodClient = AlgodClient(
     apiUrl: "https://testnet-api.voi.nodly.io",
-    apiKey: "",
-    tokenKey: "",
   );
 
   final indexerClient = IndexerClient(
     apiUrl: "https://testnet-idx.voi.nodly.io",
-    apiKey: "",
-    tokenKey: "",
   );
 
   return Algorand(algodClient: algodClient, indexerClient: indexerClient);

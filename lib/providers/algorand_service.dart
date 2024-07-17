@@ -46,21 +46,31 @@ class AlgorandService {
 
   Future<List<Asset>> getAccountAssets(String publicAddress) async {
     try {
-      final accountInfo = await algorand.getAccountByAddress(publicAddress);
-      final holdings = accountInfo.assets;
+      final accountInfo =
+          await algorand.algodClient.client.get('/v2/accounts/$publicAddress');
+      final holdings = accountInfo.data['assets'] as List<dynamic>;
 
-      List<Asset> assets = await Future.wait(
-        holdings.map((holding) => getAssetById(holding.assetId)),
-      );
+      List<Future<Asset?>> assetFutures = holdings.map((holding) async {
+        try {
+          return await getAssetById(holding['asset-id']);
+        } catch (e) {
+          debugPrint(
+              'Failed to fetch asset details for asset-id ${holding['asset-id']}: $e');
+          return null;
+        }
+      }).toList();
 
-      return assets;
+      List<Asset?> assets = await Future.wait(assetFutures);
+
+      List<Asset> validAssets =
+          assets.where((asset) => asset != null).cast<Asset>().toList();
+
+      return validAssets;
     } on AlgorandException catch (e) {
       debugPrint('Get Account Assets Algorand Exception: ${e.message}');
-      // Return an empty list instead of throwing an exception
       return <Asset>[];
     } catch (e) {
       debugPrint('Failed to fetch assets: $e');
-      // Return an empty list or handle differently as per your use case
       return <Asset>[];
     }
   }
@@ -127,8 +137,9 @@ class AlgorandService {
 
   Future<String> getAccountBalance(String publicAddress) async {
     try {
-      final accountInfo = await algorand.getAccountByAddress(publicAddress);
-      final balance = accountInfo.amount;
+      final accountInfo =
+          await algorand.algodClient.client.get('/v2/accounts/$publicAddress');
+      final balance = accountInfo.data['amount'] as int;
       return Algo.fromMicroAlgos(balance).toString();
     } on AlgorandException catch (e) {
       debugPrint('Get Balance Algorand Exception: ${e.message}');

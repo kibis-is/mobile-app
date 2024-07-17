@@ -12,7 +12,6 @@ import 'package:kibisis/features/settings/appearance/providers/dark_mode_provide
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
-import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -20,6 +19,7 @@ import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/number_shortener.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class ViewAssetScreen extends ConsumerWidget {
@@ -101,7 +101,7 @@ class ViewAssetScreen extends ConsumerWidget {
 
     try {
       await algorandService.optInAsset(activeAsset.index, account);
-      ref.invalidate(assetsProvider);
+      invalidateProviders(ref);
 
       if (context.mounted) {
         GoRouter.of(context).go('/');
