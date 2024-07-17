@@ -335,7 +335,7 @@ class RouterNotifier extends ChangeNotifier {
                       path: exportAccountsRouteName,
                       pageBuilder: (context, state) {
                         return defaultTransitionPage(
-                            ExportAccountsScreen(), state);
+                            const ExportAccountsScreen(), state);
                       },
                     ),
                   ],

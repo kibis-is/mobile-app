@@ -1,44 +1,41 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
-final barcodeUriProvider =
-    FutureProvider.autoDispose.family<String, String?>((ref, accountId) async {
+final barcodeUriProvider = FutureProvider.autoDispose
+    .family<List<String>, String?>((ref, accountId) async {
   if (accountId == 'all') {
     return await generateAllAccountURIs(ref);
   } else if (accountId != null) {
-    return await generateSingleAccountURI(ref, accountId);
+    return [await generateSingleAccountURI(ref, accountId)];
   }
-  return '';
+  return [];
 });
 
-Future<String> generateAllAccountURIs(Ref ref) async {
+Future<List<String>> generateAllAccountURIs(Ref ref) async {
   await ref.read(accountsListProvider.notifier).loadAccountsWithPrivateKeys();
   final accounts = ref.read(accountsListProvider).accounts;
 
   if (accounts.isEmpty) {
-    return '';
+    return [];
   }
 
-  final firstAccount = accounts.first;
-  final StringBuffer uri = StringBuffer(buildURI(
-      name: firstAccount['accountName'] ?? 'Unnamed Account',
-      privateKey: firstAccount['privateKey'] ?? '0'));
+  List<List<Map<String, dynamic>>> accountChunks = chunkAccounts(accounts, 5);
+  List<String> uris = [];
 
-  for (int i = 1; i < accounts.length; i++) {
-    var account = accounts[i];
-    uri.write('&');
-    uri.write(buildURIParams(account['accountName'] ?? 'Unnamed Account',
-        account['privateKey'] ?? '0'));
+  for (var chunk in accountChunks) {
+    StringBuffer uri = StringBuffer('avm://account/import?');
+    for (int i = 0; i < chunk.length; i++) {
+      if (i > 0) uri.write('&');
+      uri.write(buildURIParams(chunk[i]['accountName'] ?? 'Unnamed Account',
+          chunk[i]['privateKey'] ?? '0'));
+    }
+    uris.add(uri.toString());
   }
 
-  final uriString = uri.toString();
-  debugPrint(uriString);
-  return uriString;
+  return uris;
 }
 
 Future<String> generateSingleAccountURI(Ref ref, String accountId) async {
@@ -59,16 +56,21 @@ String buildURI(
 }
 
 String buildURIParams(String name, String hexPrivateKey) {
-  // Convert hex string to bytes
   Uint8List bytes = Uint8List.fromList(List.generate(hexPrivateKey.length ~/ 2,
       (i) => int.parse(hexPrivateKey.substring(i * 2, i * 2 + 2), radix: 16)));
-
-  // Encode bytes to base64 URL safe format
   String base64PrivateKey = base64UrlEncode(bytes);
-
-  // Ensure the private key is the correct length
   assert(base64PrivateKey.length == 44,
       "The encoded key should be 44 characters long");
-
   return 'name=${Uri.encodeComponent(name)}&privatekey=$base64PrivateKey';
+}
+
+List<List<Map<String, dynamic>>> chunkAccounts(
+    List<Map<String, dynamic>> accounts, int chunkSize) {
+  List<List<Map<String, dynamic>>> chunks = [];
+  for (int i = 0; i < accounts.length; i += chunkSize) {
+    int end =
+        (i + chunkSize < accounts.length) ? i + chunkSize : accounts.length;
+    chunks.add(accounts.sublist(i, end));
+  }
+  return chunks;
 }

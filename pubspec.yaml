@@ -34,6 +34,7 @@ dependencies:
   image_gallery_saver: ^2.0.3
   share_plus: ^9.0.0
   permission_handler: ^11.3.1
+  infinite_carousel: ^1.1.1
 
 dev_dependencies:
   flutter_test:
