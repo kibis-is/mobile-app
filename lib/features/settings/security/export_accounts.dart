@@ -73,12 +73,11 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
             const SizedBox(height: kScreenPadding),
             Expanded(
               child: qrDataAsyncValue.when(
-                data: (List<String> qrDatas) {
-                  qrKeys =
-                      List.generate(qrDatas.length, (index) => GlobalKey());
-                  return qrDatas.length > 1
-                      ? buildCarousel(qrDatas)
-                      : buildSingleQrView(qrDatas[0]);
+                data: (List<String> qrData) {
+                  qrKeys = List.generate(qrData.length, (index) => GlobalKey());
+                  return qrData.length > 1
+                      ? buildCarousel(qrData)
+                      : buildSingleQrView(qrData[0]);
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, stack) => Center(child: Text('Error: $e')),
@@ -92,13 +91,13 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     );
   }
 
-  Widget buildCarousel(List<String> qrDatas) {
+  Widget buildCarousel(List<String> qrData) {
     return InfiniteCarousel.builder(
-      itemCount: qrDatas.length,
+      itemCount: qrData.length,
       itemExtent: MediaQuery.of(context).size.width * 0.8,
       controller: InfiniteScrollController(),
       loop: false,
-      center: true,
+      center: false,
       physics: const PageViewTypeScrollPhysics(),
       scrollBehavior: ScrollConfiguration.of(context).copyWith(
         dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
@@ -110,10 +109,11 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             child: RepaintBoundary(
-              key: qrKeys[itemIndex],
+              key: qrKeys[realIndex],
               child: QrImageView(
+                semanticsLabel: 'qr code $realIndex',
                 backgroundColor: Colors.white,
-                data: qrDatas[0],
+                data: qrData[itemIndex],
                 version: QrVersions.auto,
               ),
             ),
