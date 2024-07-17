@@ -13,6 +13,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
+import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
@@ -38,67 +39,106 @@ class ViewAssetScreen extends ConsumerWidget {
             Text(mode == AssetScreenMode.view ? 'Asset Details' : 'Add Asset'),
       ),
       body: const AssetDetailsView(),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(
-            left: kScreenPadding,
-            right: kScreenPadding,
-            bottom: kScreenPadding / 2),
-        child: CustomButton(
-          text: mode == AssetScreenMode.view ? 'Send' : 'Add',
-          isFullWidth: true,
-          onPressed: () async {
-            switch (mode) {
-              case AssetScreenMode.view:
-                context.pushNamed(
-                  sendTransactionRouteName,
-                  pathParameters: {
-                    'mode': 'asset',
-                  },
-                );
-                break;
-              case AssetScreenMode.add:
-                ref.read(loadingProvider.notifier).startLoading();
-                final algorandService = ref.read(algorandServiceProvider);
-                final account = ref.read(accountProvider).account;
-                final activeAsset = ref.read(activeAssetProvider);
+      bottomNavigationBar: _buildBottomNavigationBar(context, ref),
+    );
+  }
 
-                if (account != null && activeAsset != null) {
-                  try {
-                    await algorandService.optInAsset(
-                        activeAsset.index, account);
-                    ref.invalidate(assetsProvider);
-
-                    if (!context.mounted) return;
-                    GoRouter.of(context).go('/');
-                    showCustomSnackBar(
-                      context: context,
-                      snackType: SnackType.success,
-                      message: 'Asset successfully opted in',
-                    );
-                  } catch (e) {
-                    debugPrint('$e');
-                    showCustomSnackBar(
-                      context: context,
-                      snackType: SnackType.error,
-                      message: '$e',
-                    );
-                  } finally {
-                    ref.read(loadingProvider.notifier).stopLoading();
-                  }
-                } else {
-                  debugPrint('Account or active asset is null');
-                  showCustomSnackBar(
-                    context: context,
-                    snackType: SnackType.error,
-                    message: 'Account not ready',
-                  );
-                }
-                ref.read(loadingProvider.notifier).stopLoading();
-                break;
-            }
-          },
-        ),
+  Widget _buildBottomNavigationBar(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: kScreenPadding,
+        right: kScreenPadding,
+        bottom: kScreenPadding / 2,
       ),
+      child: CustomButton(
+        text: mode == AssetScreenMode.view ? 'Send' : 'Add',
+        isFullWidth: true,
+        onPressed: () => _handleButtonPress(context, ref),
+      ),
+    );
+  }
+
+  Future<void> _handleButtonPress(BuildContext context, WidgetRef ref) async {
+    if (mode == AssetScreenMode.view) {
+      context.pushNamed(sendTransactionRouteName,
+          pathParameters: {'mode': 'asset'});
+      return;
+    }
+
+    ref.read(loadingProvider.notifier).startLoading();
+    try {
+      await _addAsset(context, ref);
+    } on AlgorandException catch (algorandError) {
+      if (!context.mounted) return;
+      _handleAlgorandException(algorandError, context);
+    } catch (e, stack) {
+      if (!context.mounted) return;
+      _handleGeneralException(e, stack, context);
+    } finally {
+      ref.read(loadingProvider.notifier).stopLoading();
+    }
+  }
+
+  Future<void> _addAsset(BuildContext context, WidgetRef ref) async {
+    final algorandService = ref.read(algorandServiceProvider);
+    final account = ref.read(accountProvider).account;
+    final activeAsset = ref.read(activeAssetProvider);
+    final balance = ref.read(balanceProvider);
+
+    if (account == null || activeAsset == null) {
+      throw Exception('Account or active asset is null');
+    }
+
+    // Pre-check the account balance
+    if (balance == 0) {
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'Please fund your account to proceed.',
+      );
+      return;
+    }
+
+    try {
+      await algorandService.optInAsset(activeAsset.index, account);
+      ref.invalidate(assetsProvider);
+
+      if (context.mounted) {
+        GoRouter.of(context).go('/');
+        showCustomSnackBar(
+          context: context,
+          snackType: SnackType.success,
+          message: 'Asset successfully opted in',
+        );
+      }
+    } on AlgorandException catch (e) {
+      if (!context.mounted) return;
+      _handleAlgorandException(e, context);
+    }
+  }
+
+  void _handleAlgorandException(AlgorandException e, BuildContext context) {
+    String userFriendlyMessage = 'An error occurred with Algorand service';
+
+    if (e.message.contains('overspend')) {
+      userFriendlyMessage = 'Insufficient balance to opt-in to asset.';
+    }
+
+    debugPrint(e.message);
+    showCustomSnackBar(
+      context: context,
+      snackType: SnackType.error,
+      message: userFriendlyMessage,
+    );
+  }
+
+  void _handleGeneralException(
+      dynamic e, StackTrace stack, BuildContext context) {
+    debugPrint('$e\n$stack');
+    showCustomSnackBar(
+      context: context,
+      snackType: SnackType.error,
+      message: 'An unexpected error occurred',
     );
   }
 }
