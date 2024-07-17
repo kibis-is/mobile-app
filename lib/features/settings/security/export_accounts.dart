@@ -1,8 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
@@ -11,7 +10,7 @@ import 'package:kibisis/providers/barcode_uri_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/save_qr_image.dart';
-import 'package:qr_flutter/qr_flutter.dart'; // Make sure you replace this with your QrImageView if it's a custom widget
+import 'package:qr_flutter/qr_flutter.dart';
 
 final selectedAccountProvider = StateProvider<String?>((ref) {
   final activeAccountId = ref.read(activeAccountProvider);
@@ -29,6 +28,40 @@ class ExportAccountsScreen extends ConsumerStatefulWidget {
 
 class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
   List<GlobalKey> qrKeys = [];
+  Timer? _timer;
+  final _pageController = PageController();
+  int _currentPage = 0;
+  double _intervalSeconds = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      startTimer();
+    });
+  }
+
+  void startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(Duration(seconds: _intervalSeconds.round()),
+        (Timer timer) {
+      if (_currentPage < qrKeys.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      if (_pageController.hasClients) {
+        _pageController.jumpToPage(_currentPage);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +98,13 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
                     orElse: () => dropdownItems[0]),
                 onChanged: (SelectItem? newValue) {
                   if (newValue != null) {
+                    _timer?.cancel(); // Stop the timer
                     ref.read(selectedAccountProvider.notifier).state =
                         newValue.value;
+                    // Restart the timer after the state update
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      startTimer();
+                    });
                   }
                 },
               ),
@@ -75,8 +113,9 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
               child: qrDataAsyncValue.when(
                 data: (List<String> qrData) {
                   qrKeys = List.generate(qrData.length, (index) => GlobalKey());
+                  resetTimer();
                   return qrData.length > 1
-                      ? buildCarousel(qrData)
+                      ? buildSlideshow(qrData)
                       : buildSingleQrView(qrData[0]);
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
@@ -91,51 +130,88 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     );
   }
 
-  Widget buildCarousel(List<String> qrData) {
-    return InfiniteCarousel.builder(
-      itemCount: qrData.length,
-      itemExtent: MediaQuery.of(context).size.width * 0.8,
-      controller: InfiniteScrollController(),
-      loop: false,
-      center: false,
-      physics: const PageViewTypeScrollPhysics(),
-      scrollBehavior: ScrollConfiguration.of(context).copyWith(
-        dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
-      ),
-      itemBuilder: (context, itemIndex, realIndex) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            alignment: Alignment.center,
-            child: RepaintBoundary(
-              key: qrKeys[realIndex],
-              child: QrImageView(
-                semanticsLabel: 'qr code $realIndex',
-                backgroundColor: Colors.white,
-                data: qrData[itemIndex],
-                version: QrVersions.auto,
-              ),
-            ),
+  Widget buildSlideshow(List<String> qrData) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: qrData.length,
+            itemBuilder: (context, index) {
+              return Center(
+                child: RepaintBoundary(
+                  key: qrKeys[index],
+                  child: QrImageView(
+                    backgroundColor: Colors.white,
+                    data: qrData[index],
+                    version: QrVersions.auto,
+                  ),
+                ),
+              );
+            },
           ),
-        );
-      },
+        ),
+        Slider(
+          value: _intervalSeconds,
+          min: 0,
+          max: 10,
+          divisions: 10,
+          label: '${_intervalSeconds.round()} seconds',
+          onChanged: (double value) {
+            setState(() {
+              _intervalSeconds = value;
+              resetTimer();
+            });
+          },
+        ),
+        const SizedBox(height: kScreenPadding),
+      ],
     );
   }
 
   Widget buildSingleQrView(String qrData) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      alignment: Alignment.center,
-      child: RepaintBoundary(
-        key: qrKeys[0],
-        child: QrImageView(
-          backgroundColor: Colors.white,
-          data: qrData,
-          version: QrVersions.auto,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          alignment: Alignment.center,
+          child: RepaintBoundary(
+            key: qrKeys[0],
+            child: QrImageView(
+              backgroundColor: Colors.white,
+              data: qrData,
+              version: QrVersions.auto,
+            ),
+          ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+          child: Slider(
+            value: _intervalSeconds,
+            min: 1,
+            max: 10,
+            divisions: 9,
+            label: '${_intervalSeconds.round()} seconds',
+            onChanged: (double value) {
+              setState(() {
+                _intervalSeconds = value;
+                resetTimer();
+              });
+            },
+          ),
+        ),
+        const SizedBox(height: kScreenPadding),
+      ],
     );
+  }
+
+  void resetTimer() {
+    _timer?.cancel();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      startTimer();
+    });
   }
 
   Widget buildActionRow(String selectedAccountId) {
