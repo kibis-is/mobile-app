@@ -96,6 +96,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
             buildAccountDropDown(accounts, selectedAccountId),
             const SizedBox(height: kScreenPadding),
             buildQrCodeDisplay(qrDataAsyncValue),
+            const SizedBox(height: kScreenPadding),
             buildSlider(selectedAccountId),
             const SizedBox(height: kScreenPadding),
             buildActionRow(selectedAccountId),
@@ -139,7 +140,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
   }
 
   Widget buildQrCodeDisplay(AsyncValue<List<String>> qrDataAsyncValue) {
-    return Expanded(
+    return Flexible(
       child: qrDataAsyncValue.when(
         data: (List<String> qrData) {
           qrKeys = List.generate(qrData.length, (index) => GlobalKey());
@@ -156,42 +157,39 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
 
   Widget buildSlider(String selectedAccountId) {
     if (selectedAccountId != 'all') return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0),
-      child: SliderTheme(
-        data: SliderTheme.of(context)
-            .copyWith(overlayShape: SliderComponentShape.noThumb),
-        child: Consumer(
-          builder: (context, ref, child) {
-            final sliderValue = ref.watch(sliderValueProvider);
-            return Slider(
-              value: sliderValue,
-              min: 0,
-              max: (intervals.length - 1).toDouble(),
-              divisions: intervals.length - 1,
-              label: intervals[sliderValue.toInt()]['label'].toString(),
-              onChanged: (double value) {
-                ref.read(sliderValueProvider.notifier).state = value;
-                startOrAdjustTimer();
-              },
-            );
-          },
-        ),
+    return SliderTheme(
+      data: SliderTheme.of(context)
+          .copyWith(overlayShape: SliderComponentShape.noThumb),
+      child: Consumer(
+        builder: (context, ref, child) {
+          final sliderValue = ref.watch(sliderValueProvider);
+          return Slider(
+            value: sliderValue,
+            min: 0,
+            max: (intervals.length - 1).toDouble(),
+            divisions: intervals.length - 1,
+            label: intervals[sliderValue.toInt()]['label'].toString(),
+            onChanged: (double value) {
+              ref.read(sliderValueProvider.notifier).state = value;
+              startOrAdjustTimer();
+            },
+          );
+        },
       ),
     );
   }
 
   Widget buildSlideshow(List<String> qrData) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(
+        Flexible(
           child: PageView.builder(
             controller: _pageController,
             itemCount: qrData.length,
             itemBuilder: (context, index) {
-              return Center(
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.topCenter,
                 child: RepaintBoundary(
                   key: qrKeys[index],
                   child: QrImageView(
@@ -212,15 +210,18 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          alignment: Alignment.center,
-          child: RepaintBoundary(
-            key: qrKeys[0],
-            child: QrImageView(
-              backgroundColor: Colors.white,
-              data: qrData,
-              version: QrVersions.auto,
+        Flexible(
+          fit: FlexFit.tight,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            alignment: Alignment.topCenter,
+            child: RepaintBoundary(
+              key: qrKeys[0],
+              child: QrImageView(
+                backgroundColor: Colors.white,
+                data: qrData,
+                version: QrVersions.auto,
+              ),
             ),
           ),
         ),
