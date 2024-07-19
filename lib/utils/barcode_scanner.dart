@@ -68,13 +68,11 @@ class QRCodeScannerLogic {
     var parts = query.split('&');
 
     for (var part in parts) {
-      var index =
-          part.indexOf('='); // Find the first '=' which separates key and value
-      if (index == -1) continue; // Skip if there's no '='
+      var index = part.indexOf('=');
+      if (index == -1) continue;
 
       var key = part.substring(0, index);
-      var value = Uri.decodeComponent(
-          part.substring(index + 1)); // Decode everything after the '='
+      var value = Uri.decodeComponent(part.substring(index + 1));
 
       if (!params.containsKey(key)) {
         params[key] = [];
