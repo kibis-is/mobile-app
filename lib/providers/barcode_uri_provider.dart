@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -22,17 +23,31 @@ Future<List<String>> generateAllAccountURIs(Ref ref) async {
     return [];
   }
 
+  String allData = accounts
+      .map((account) =>
+          '${account['accountName'] ?? 'Unnamed Account'}${account['privateKey'] ?? '0'}')
+      .join();
+  String globalChecksum = md5.convert(utf8.encode(allData)).toString();
+
   List<List<Map<String, dynamic>>> accountChunks = chunkAccounts(accounts, 5);
   List<String> uris = [];
+  int pageNumber = 1;
+  int totalPages = accountChunks.length;
 
   for (var chunk in accountChunks) {
     StringBuffer uri = StringBuffer('avm://account/import?');
-    for (int i = 0; i < chunk.length; i++) {
-      if (i > 0) uri.write('&');
-      uri.write(buildURIParams(chunk[i]['accountName'] ?? 'Unnamed Account',
-          chunk[i]['privateKey'] ?? '0'));
+    List<String> params = [];
+
+    for (var account in chunk) {
+      params.add(buildURIParams(account['accountName'] ?? 'Unnamed Account',
+          account['privateKey'] ?? '0'));
     }
+
+    uri.write(params.join('&'));
+
+    uri.write('&checksum=$globalChecksum&page=$pageNumber:$totalPages');
     uris.add(uri.toString());
+    pageNumber++;
   }
 
   return uris;
