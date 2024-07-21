@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -10,8 +11,8 @@ class CustomTextField extends StatelessWidget {
     this.errorText = '',
     this.isEnabled = true,
     this.leadingIcon,
-    this.suffixIcon, // Ensure this is IconData?
-    this.onTrailingPressed, // Ensure this is VoidCallback?
+    this.suffixIcon,
+    this.onTrailingPressed,
     this.isObscureText = false,
     this.autoCorrect = true,
     this.textInputAction = TextInputAction.next,
@@ -24,6 +25,7 @@ class CustomTextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.focusNode,
     this.onTap,
+    this.isSmall = false,
   });
 
   final TextEditingController controller;
@@ -31,8 +33,8 @@ class CustomTextField extends StatelessWidget {
   final String errorText;
   final bool isEnabled;
   final IconData? leadingIcon;
-  final IconData? suffixIcon; // Correct Type
-  final VoidCallback? onTrailingPressed; // Correct Type
+  final IconData? suffixIcon;
+  final VoidCallback? onTrailingPressed;
   final bool isObscureText;
   final bool autoCorrect;
   final TextInputAction? textInputAction;
@@ -45,6 +47,7 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final FocusNode? focusNode;
   final VoidCallback? onTap;
+  final bool isSmall;
 
   @override
   Widget build(BuildContext context) {
@@ -59,29 +62,42 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       obscureText: isObscureText,
-      textAlignVertical: TextAlignVertical.top,
+      style: TextStyle(
+          fontSize: isSmall
+              ? context.textTheme.bodySmall?.fontSize
+              : context.textTheme.bodyMedium?.fontSize),
+      textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
         counterText: "",
-        prefixIcon:
-            leadingIcon != null ? AppIcons.icon(icon: leadingIcon) : null,
+        prefixIcon: leadingIcon != null
+            ? Icon(leadingIcon,
+                size: isSmall ? AppIcons.small : AppIcons.medium)
+            : null,
         labelText: labelText,
-        contentPadding: const EdgeInsets.symmetric(
-            horizontal: kScreenPadding, vertical: kScreenPadding / 2),
+        labelStyle: TextStyle(fontSize: context.textTheme.bodySmall?.fontSize),
+        contentPadding: EdgeInsets.symmetric(
+            horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding / 2,
+            vertical: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         errorText: errorText.isEmpty
             ? null
             : (controller.text.isNotEmpty ? null : errorText),
         suffixIcon: suffixIcon != null
             ? Padding(
-                padding: const EdgeInsets.only(right: kScreenPadding / 2),
+                padding: EdgeInsets.only(
+                    right: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
                 child: IconButton(
-                  icon: AppIcons.icon(icon: suffixIcon),
+                  icon: AppIcons.icon(
+                      icon: suffixIcon,
+                      size: isSmall ? AppIcons.small : AppIcons.medium),
                   onPressed: onTrailingPressed,
                 ),
               )
             : isObscureText
                 ? IconButton(
-                    icon: AppIcons.icon(icon: AppIcons.showPassword),
+                    icon: AppIcons.icon(
+                        icon: AppIcons.showPassword,
+                        size: isSmall ? AppIcons.small : AppIcons.medium),
                     onPressed: () {
                       // Typically toggle password visibility
                     },

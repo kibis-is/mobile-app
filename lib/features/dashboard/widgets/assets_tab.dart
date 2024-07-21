@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
@@ -23,61 +24,97 @@ class AssetsTab extends ConsumerStatefulWidget {
 class _AssetsTabState extends ConsumerState<AssetsTab> {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  final ScrollController _scrollController = ScrollController();
+  final TextEditingController filterController = TextEditingController();
 
   void _onRefresh() {
-    // Your refresh logic here, e.g., fetching new data and marking the refresh as complete
     ref.read(assetsProvider.notifier).fetchAssets();
     _refreshController.refreshCompleted();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    filterController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final assetsAsync = ref.watch(assetsProvider);
 
-    return Column(
-      children: [
-        _buildAddAssetButton(context),
-        const SizedBox(height: kScreenPadding),
-        Expanded(
-          child: SmartRefresher(
-            enablePullDown: true,
-            controller: _refreshController,
-            onRefresh: _onRefresh,
-            child: assetsAsync.when(
-              data: (assets) => assets.isEmpty
-                  ? _buildEmptyAssets(context, ref)
-                  : _buildAssetsList(context, assets),
-              loading: () => _buildLoadingAssets(context),
-              error: (error, stack) => _buildEmptyAssets(context, ref),
+    return Scaffold(
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            titleSpacing: 0,
+            floating: true,
+            snap: true,
+            title: _buildSearchBar(context),
+          ),
+          SliverFillRemaining(
+            child: SmartRefresher(
+              enablePullDown: true,
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              child: assetsAsync.when(
+                data: (assets) => assets.isEmpty
+                    ? _buildEmptyAssets(context, ref)
+                    : _buildAssetsList(context, assets),
+                loading: () => _buildLoadingAssets(context),
+                error: (error, stack) => _buildEmptyAssets(context, ref),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildAddAssetButton(BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: TextButton(
-        style: ButtonStyle(
-          side: MaterialStateProperty.all(
-              BorderSide(color: context.colorScheme.primary)),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kWidgetRadius))),
+  Widget _buildSearchBar(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        IconButton(
+          color: context.colorScheme.surface,
+          onPressed: () => context.goNamed(addAssetRouteName),
+          icon: Icon(
+            AppIcons.importAccount,
+            color: context.colorScheme.onBackground,
+            size: AppIcons.medium,
+          ),
         ),
-        onPressed: () => context.goNamed(addAssetRouteName),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Add Asset'),
-            AppIcons.icon(
-                icon: AppIcons.add,
-                size: AppIcons.small,
-                color: context.colorScheme.primary),
-          ],
+        const SizedBox(width: kScreenPadding / 2),
+        Expanded(
+          child: CustomTextField(
+            controller: filterController,
+            labelText: 'Search',
+            onChanged: (value) {
+              ref.read(assetsProvider.notifier).setFilter(value);
+            },
+            autoCorrect: false,
+            suffixIcon: AppIcons.cross,
+            leadingIcon: AppIcons.search,
+            onTrailingPressed: () => filterController.clear(),
+            isSmall: true,
+          ),
         ),
-      ),
+        const SizedBox(width: kScreenPadding / 2),
+        IconButton(
+          onPressed: () => context.goNamed(addAssetRouteName),
+          icon: Icon(
+            AppIcons.add,
+            color: context.colorScheme.primary,
+            size: AppIcons.medium,
+          ),
+        ),
+      ],
     );
   }
 

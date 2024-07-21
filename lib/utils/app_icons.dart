@@ -43,6 +43,8 @@ class AppIcons {
   static const IconData importAccount = Icons.import_export_rounded;
   static const IconData delete = Icons.delete_rounded;
   static const IconData group = Icons.grid_view_rounded;
+  static const IconData filter = Icons.filter_list_rounded;
+  static const IconData search = Icons.search_rounded;
 
   static const String svgBasePath = 'assets/images/';
 

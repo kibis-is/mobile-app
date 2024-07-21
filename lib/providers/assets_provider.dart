@@ -16,6 +16,8 @@ final assetsProvider =
 class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
   final Ref ref;
   final String publicAddress;
+  List<Asset> _allAssets = [];
+  String _filter = '';
 
   AssetsNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
@@ -30,9 +32,9 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
     }
     try {
       final algorandService = ref.read(algorandServiceProvider);
-      final assets = await algorandService.getAccountAssets(publicAddress);
+      _allAssets = await algorandService.getAccountAssets(publicAddress);
       debugPrint('fetched assets with publicAddress: $publicAddress');
-      state = AsyncValue.data(assets);
+      state = AsyncValue.data(_filteredAssets());
     } on AlgorandException {
       if (mounted) {
         state = AsyncValue.error('Failed to fetch assets', StackTrace.current);
@@ -42,5 +44,21 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
         state = AsyncValue.error(e, StackTrace.current);
       }
     }
+  }
+
+  void setFilter(String filter) {
+    _filter = filter;
+    state = AsyncValue.data(_filteredAssets());
+  }
+
+  List<Asset> _filteredAssets() {
+    if (_filter.isEmpty) {
+      return _allAssets;
+    }
+    return _allAssets
+        .where((asset) =>
+            asset.params.name?.toLowerCase().contains(_filter.toLowerCase()) ??
+            false)
+        .toList();
   }
 }
