@@ -1,4 +1,4 @@
-import 'package:kibisis/common_widgets/custom_dropdown.dart';
+import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
 const kScreenPadding = 16.0;

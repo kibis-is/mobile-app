@@ -6,6 +6,7 @@ import 'package:kibisis/common_widgets/settings_toggle.dart';
 import 'package:kibisis/common_widgets/transparent_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
+import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';

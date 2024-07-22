@@ -1,20 +1,9 @@
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
-
-class SelectItem {
-  final String name;
-  final String value;
-  final dynamic icon;
-
-  SelectItem({
-    required this.name,
-    required this.value,
-    required this.icon,
-  });
-}
 
 class CustomDropDown extends StatelessWidget {
   final bool isExpanded;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
-import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -31,8 +31,7 @@ Future<dynamic> customBottomSheet({
             if (isSingleWidgetMode)
               singleWidget
             else
-              _buildItemList(context, items!,
-                  onPressed!),
+              _buildItemList(context, items!, onPressed!),
             if (hasButton)
               CustomButton(
                 text: buttonText ?? "Confirm",
@@ -55,7 +54,7 @@ Future<dynamic> customBottomSheet({
 Widget _buildHeader(BuildContext context, String header) {
   return Padding(
     padding: const EdgeInsets.all(kSizedBoxSpacing),
-    child: Text(header, style: context.textTheme.titleLarge),
+    child: Text(header, style: context.textTheme.titleMedium),
   );
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:algorand_dart/algorand_dart.dart';
@@ -18,6 +19,8 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
   final String publicAddress;
   List<Asset> _allAssets = [];
   String _filter = '';
+  bool _showFrozen = false;
+  Sorting? _sorting;
 
   AssetsNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
@@ -51,14 +54,61 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
     state = AsyncValue.data(_filteredAssets());
   }
 
-  List<Asset> _filteredAssets() {
-    if (_filter.isEmpty) {
-      return _allAssets;
+  void setShowFrozen(bool showFrozen) {
+    _showFrozen = showFrozen;
+    state = AsyncValue.data(_filteredAssets());
+  }
+
+  void sortAssets(Sorting sorting) {
+    switch (sorting) {
+      case Sorting.assetId:
+        _allAssets.sort((a, b) => a.index.compareTo(b.index));
+        break;
+      case Sorting.name:
+        _allAssets.sort((a, b) =>
+            a.params.name
+                ?.toLowerCase()
+                .compareTo(b.params.name!.toLowerCase()) ??
+            0);
+        break;
     }
-    return _allAssets
-        .where((asset) =>
-            asset.params.name?.toLowerCase().contains(_filter.toLowerCase()) ??
-            false)
-        .toList();
+    state = AsyncValue.data(_filteredAssets()); // Update state with sorted data
+  }
+
+  List<Asset> _filteredAssets() {
+    List<Asset> filteredAssets = _allAssets;
+
+    if (_filter.isNotEmpty) {
+      filteredAssets = filteredAssets
+          .where((asset) =>
+              asset.params.name
+                  ?.toLowerCase()
+                  .contains(_filter.toLowerCase()) ??
+              false)
+          .toList();
+    }
+
+    if (!_showFrozen) {
+      filteredAssets = filteredAssets
+          .where((asset) => !(asset.params.defaultFrozen ?? false))
+          .toList();
+    }
+
+    switch (_sorting) {
+      case Sorting.assetId:
+        filteredAssets.sort((a, b) => a.index.compareTo(b.index));
+        break;
+      case Sorting.name:
+        filteredAssets.sort((a, b) =>
+            a.params.name
+                ?.toLowerCase()
+                .compareTo(b.params.name?.toLowerCase() ?? '') ??
+            0);
+        break;
+      default:
+        break;
+    }
+
+    return filteredAssets;
   }
 }

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
+import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
@@ -26,6 +28,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       RefreshController(initialRefresh: false);
   final ScrollController _scrollController = ScrollController();
   final TextEditingController filterController = TextEditingController();
+
+  Sorting? _sorting;
 
   void _onRefresh() {
     ref.read(assetsProvider.notifier).fetchAssets();
@@ -83,9 +87,10 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       children: [
         IconButton(
           color: context.colorScheme.surface,
-          onPressed: () => context.goNamed(addAssetRouteName),
+          onPressed: _showFilterDialog,
           icon: Icon(
-            AppIcons.importAccount,
+            AppIcons
+                .importAccount, // Consider changing the icon to reflect functionality
             color: context.colorScheme.onBackground,
             size: AppIcons.medium,
           ),
@@ -116,6 +121,42 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         ),
       ],
     );
+  }
+
+  void _showFilterDialog() {
+    customBottomSheet(
+      context: context,
+      header: "Sort and Filter Assets",
+      items: sortOptions,
+      onPressed: (SelectItem item) {
+        ref.read(sortingProvider.notifier).state = Sorting.values.firstWhere(
+            (s) => s.toString().split('.').last == item.value,
+            orElse: () => Sorting.assetId);
+        _sortAssets();
+      },
+      singleWidget: Consumer(
+        builder: (context, ref, child) {
+          final showFrozen = ref.watch(showFrozenProvider);
+          return CheckboxListTile(
+            title: const Text("Show Frozen Assets"),
+            value: showFrozen,
+            onChanged: (bool? value) {
+              ref.read(showFrozenProvider.notifier).state = value!;
+              _filterAssets(value);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  void _sortAssets() {
+    final assetsNotifier = ref.read(assetsProvider.notifier);
+    assetsNotifier.sortAssets(_sorting ?? Sorting.assetId);
+  }
+
+  void _filterAssets(bool showFrozen) {
+    ref.read(assetsProvider.notifier).setShowFrozen(showFrozen);
   }
 
   Widget _buildAssetsList(BuildContext context, List<Asset> assets) {
@@ -181,3 +222,18 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     );
   }
 }
+
+List<SelectItem> sortOptions = [
+  SelectItem(
+      name: "Sort by Index", value: "index", icon: Icons.format_list_numbered),
+  SelectItem(name: "Sort by Name", value: "name", icon: Icons.sort_by_alpha),
+];
+
+// Placeholder enums for sorting logic
+
+final showFrozenProvider = StateProvider<bool>((ref) => false);
+
+final sortingProvider =
+    StateProvider<Sorting>((ref) => Sorting.assetId); // Default is by index
+
+enum Sorting { assetId, name }
