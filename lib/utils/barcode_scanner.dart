@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/multipart_scan_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
@@ -26,13 +27,58 @@ class QRCodeScannerLogic {
     this.controller,
     this.accountFlow,
   });
-
   Future<void> handleBarcode(BarcodeCapture capture) async {
     try {
+      String rawData = capture.barcodes.first.rawValue ?? '';
       if (scanMode == ScanMode.privateKey) {
-        await _handlePrivateKeyMode(capture.barcodes.first.rawValue);
+        Uri uri = Uri.parse(rawData);
+        Map<String, List<String>> params = _parseQueryParams(uri.query);
+
+        if (params.containsKey('page')) {
+          final pageDetails = params['page']![0].split(':');
+          final currentPage = int.parse(pageDetails[0]);
+          final totalPages = int.parse(pageDetails[1]);
+
+          // Add the current part to the provider
+          ref
+              .read(multipartScanProvider.notifier)
+              .addPart(currentPage.toString(), rawData);
+
+          var scanState = ref.read(multipartScanProvider);
+          if (scanState.scannedParts.length == totalPages &&
+              scanState.isComplete) {
+            // Verify checksum consistency across all parts
+            String? expectedChecksum =
+                Uri.parse(scanState.scannedParts.values.first)
+                    .queryParameters['checksum'];
+            bool checksumsMatch = scanState.scannedParts.values.every((uri) =>
+                Uri.parse(uri).queryParameters['checksum'] == expectedChecksum);
+
+            if (!checksumsMatch) {
+              showCustomSnackBar(
+                context: context,
+                snackType: SnackType.error,
+                message: 'Checksum mismatch. Operation aborted.',
+              );
+              ref.read(multipartScanProvider.notifier).reset();
+              return;
+            }
+
+            // Now that we have all parts and they are verified, process each one
+            for (var uri in scanState.scannedParts.values) {
+              _handlePrivateKeyMode(uri,
+                  isFinalPart: uri == scanState.scannedParts.values.last);
+            }
+            ref
+                .read(multipartScanProvider.notifier)
+                .reset(); // Reset the state after processing
+          }
+        } else {
+          // If it's not paginated, process immediately
+          _handlePrivateKeyMode(rawData);
+        }
       } else if (scanMode == ScanMode.publicKey) {
-        await _handlePublicKeyMode(capture.barcodes.first.rawValue);
+        _handlePublicKeyMode(rawData);
       }
     } catch (e) {
       if (!context.mounted) return;
@@ -41,8 +87,9 @@ class QRCodeScannerLogic {
         snackType: SnackType.error,
         message: e.toString(),
       );
+      ref.read(multipartScanProvider.notifier).reset();
     } finally {
-      controller?.start();
+      controller?.start(); // Ensure the scanner is ready for the next scan
     }
   }
 
@@ -103,7 +150,8 @@ class QRCodeScannerLogic {
     return true;
   }
 
-  Future<void> _handlePrivateKeyMode(String? qrData) async {
+  Future<void> _handlePrivateKeyMode(String? qrData,
+      {bool isFinalPart = true}) async {
     if (qrData == null) return;
 
     final uri = Uri.parse(qrData);
@@ -161,14 +209,17 @@ class QRCodeScannerLogic {
         invalidateProviders(ref);
       }
 
-      if (validNames.length == 1) {
-        if (!context.mounted) return;
-        GoRouter.of(context).go('/');
-      } else {
-        if (!context.mounted) return;
-        GoRouter.of(context).push('/wallets');
+      // Conditional navigation based on whether it is the final part of a paginated barcode
+      if (isFinalPart) {
+        if (validNames.length == 1) {
+          if (!context.mounted) return;
+          GoRouter.of(context).go('/');
+        } else {
+          if (!context.mounted) return;
+          GoRouter.of(context).push('/wallets');
+        }
       }
-
+      if (!context.mounted) return;
       showCustomSnackBar(
         context: context,
         snackType: SnackType.success,
