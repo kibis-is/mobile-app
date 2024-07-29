@@ -123,6 +123,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                         ),
                         const SizedBox(height: kScreenPadding),
                         CustomTextField(
+                          maxLength: kMaxAccountNameLength,
                           controller: accountNameController,
                           labelText: 'Account Name',
                           onChanged: (value) {},

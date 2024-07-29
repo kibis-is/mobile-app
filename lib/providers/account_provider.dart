@@ -1,6 +1,7 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:convert/convert.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
@@ -95,6 +96,9 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
   Future<void> setAccountName(String accountName) async {
     try {
+      if (accountName.length > kMaxAccountNameLength) {
+        ref.read(errorProvider.notifier).state = 'Account name is too long';
+      }
       state = state.copyWith(accountName: accountName);
     } catch (e) {
       ref.read(errorProvider.notifier).state =
