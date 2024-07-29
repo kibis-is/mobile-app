@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final multipartScanProvider =
@@ -46,5 +47,29 @@ class MultipartScanNotifier extends StateNotifier<MultipartScanState> {
 
   void reset() {
     state = MultipartScanState();
+  }
+
+  List<int> getRemainingParts() {
+    final scannedPartNumbers = state.scannedParts.keys
+        .map((key) {
+          final parts = key.split(':');
+          if (parts.length == 2) {
+            return int.tryParse(parts[0]);
+          }
+          return null;
+        })
+        .whereType<int>()
+        .toSet();
+
+    debugPrint('Scanned part numbers: $scannedPartNumbers');
+    debugPrint('Total parts: ${state.totalParts}');
+
+    final allParts = List<int>.generate(state.totalParts, (index) => index + 1);
+    final remainingParts =
+        allParts.where((part) => !scannedPartNumbers.contains(part)).toList();
+
+    debugPrint('Remaining parts: $remainingParts');
+
+    return remainingParts;
   }
 }
