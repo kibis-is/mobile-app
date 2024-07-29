@@ -16,7 +16,6 @@ class QrDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      contentPadding: const EdgeInsets.all(kScreenPadding),
       title: SizedBox(
         width: double.infinity,
         child: Text(
@@ -43,11 +42,12 @@ class QrDialog extends StatelessWidget {
               Navigator.of(context).pop(false);
             },
             child: Padding(
-              padding: const EdgeInsets.all(kScreenPadding),
+              padding: const EdgeInsets.all(kScreenPadding / 2),
               child: Text(
                 'Close',
                 style: context.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: context.colorScheme.secondary,
                 ),
               ),
             ),
