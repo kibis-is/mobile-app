@@ -16,7 +16,6 @@ dependencies:
   loading_overlay: ^0.3.0
   flutter_svg: ^2.0.10+1
   ellipsized_text: ^1.2.0
-  pin_input_text_field: ^4.5.1
   cupertino_icons: ^1.0.6
   algorand_dart: ^1.0.3
   gradient_borders: ^1.0.0
@@ -35,6 +34,7 @@ dependencies:
   share_plus: ^9.0.0
   permission_handler: ^11.3.1
   infinite_carousel: ^1.1.1
+  vibration: ^1.8.4
 
 dev_dependencies:
   flutter_test:

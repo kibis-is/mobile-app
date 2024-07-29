@@ -8,6 +8,7 @@ const kSizedBoxSpacing = 16.0;
 const kInputHeight = 64.0;
 const kPinLength = 6;
 const kVersionNumber = 'v0.1.0';
+const kMaxAccountNameLength = 32;
 
 enum PinPadMode { setup, unlock, verifyTransaction }
 

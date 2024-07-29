@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
@@ -37,6 +38,33 @@ class ViewAssetScreen extends ConsumerWidget {
       appBar: AppBar(
         title:
             Text(mode == AssetScreenMode.view ? 'Asset Details' : 'Add Asset'),
+        actions: [
+          if (mode == AssetScreenMode.view)
+            Consumer(
+              builder: (context, ref, child) {
+                return IconButton(
+                  icon: AppIcons.icon(icon: AppIcons.delete),
+                  onPressed: () async {
+                    bool confirm = await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const ConfirmationDialog(
+                              yesText: 'Opt Out',
+                              noText: 'Cancel',
+                              content: 'Opt out from this asset?',
+                            );
+                          },
+                        ) ??
+                        false;
+
+                    if (confirm) {
+                      await _removeAsset();
+                    }
+                  },
+                );
+              },
+            ),
+        ],
       ),
       body: const AssetDetailsView(),
       bottomNavigationBar: _buildBottomNavigationBar(context, ref),
@@ -77,6 +105,11 @@ class ViewAssetScreen extends ConsumerWidget {
     } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
+  }
+
+  Future<void> _removeAsset() async {
+    //TODO: Implement asset removal
+    debugPrint("Removed asset");
   }
 
   Future<void> _addAsset(BuildContext context, WidgetRef ref) async {

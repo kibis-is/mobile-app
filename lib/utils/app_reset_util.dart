@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/dashboard/providers/assets_fetched_provider.dart';
+import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
+import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
@@ -34,6 +36,8 @@ class AppResetUtil {
       ref.invalidate(accountProvider);
       ref.invalidate(storageProvider);
       ref.invalidate(selectedAssetProvider);
+      ref.invalidate(isDarkModeProvider);
+      ref.invalidate(showFrozenAssetsProvider);
       ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
       ref.read(setupCompleteProvider.notifier).setSetupComplete(false);
       ref.read(isAuthenticatedProvider.notifier).state = false;

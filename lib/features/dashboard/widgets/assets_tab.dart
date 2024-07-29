@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
+import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -15,6 +16,10 @@ import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:shimmer/shimmer.dart';
+
+final sortingProvider = StateProvider<Sorting>((ref) => Sorting.assetId);
+
+enum Sorting { assetId, name }
 
 class AssetsTab extends ConsumerStatefulWidget {
   const AssetsTab({super.key});
@@ -29,9 +34,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController filterController = TextEditingController();
 
-  Sorting? _sorting;
-
   void _onRefresh() {
+    ref.invalidate(assetsProvider);
     ref.read(assetsProvider.notifier).fetchAssets();
     _refreshController.refreshCompleted();
   }
@@ -89,8 +93,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           color: context.colorScheme.surface,
           onPressed: _showFilterDialog,
           icon: Icon(
-            AppIcons
-                .importAccount, // Consider changing the icon to reflect functionality
+            AppIcons.importAccount,
             color: context.colorScheme.onBackground,
             size: AppIcons.medium,
           ),
@@ -99,7 +102,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         Expanded(
           child: CustomTextField(
             controller: filterController,
-            labelText: 'Search',
+            labelText: 'Filter',
             onChanged: (value) {
               ref.read(assetsProvider.notifier).setFilter(value);
             },
@@ -129,20 +132,25 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       header: "Sort and Filter Assets",
       items: sortOptions,
       onPressed: (SelectItem item) {
-        ref.read(sortingProvider.notifier).state = Sorting.values.firstWhere(
+        Sorting newSorting = Sorting.values.firstWhere(
             (s) => s.toString().split('.').last == item.value,
             orElse: () => Sorting.assetId);
-        _sortAssets();
+        ref.read(sortingProvider.notifier).state = newSorting;
+        _sortAssets(newSorting);
       },
       singleWidget: Consumer(
         builder: (context, ref, child) {
-          final showFrozen = ref.watch(showFrozenProvider);
+          final showFrozen = ref.watch(showFrozenAssetsProvider);
           return CheckboxListTile(
             title: const Text("Show Frozen Assets"),
             value: showFrozen,
             onChanged: (bool? value) {
-              ref.read(showFrozenProvider.notifier).state = value!;
-              _filterAssets(value);
+              if (value != null) {
+                ref
+                    .read(showFrozenAssetsProvider.notifier)
+                    .setShowFrozenAssets(value);
+                _filterAssets(value);
+              }
             },
           );
         },
@@ -150,9 +158,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     );
   }
 
-  void _sortAssets() {
+  void _sortAssets(Sorting sorting) {
     final assetsNotifier = ref.read(assetsProvider.notifier);
-    assetsNotifier.sortAssets(_sorting ?? Sorting.assetId);
+    assetsNotifier.sortAssets(sorting);
   }
 
   void _filterAssets(bool showFrozen) {
@@ -228,12 +236,3 @@ List<SelectItem> sortOptions = [
       name: "Sort by Index", value: "index", icon: Icons.format_list_numbered),
   SelectItem(name: "Sort by Name", value: "name", icon: Icons.sort_by_alpha),
 ];
-
-// Placeholder enums for sorting logic
-
-final showFrozenProvider = StateProvider<bool>((ref) => false);
-
-final sortingProvider =
-    StateProvider<Sorting>((ref) => Sorting.assetId); // Default is by index
-
-enum Sorting { assetId, name }

@@ -214,6 +214,14 @@ class StorageService {
     return _prefs?.getBool('isDarkMode');
   }
 
+  Future<void> setShowFrozenAssets(bool showFrozenAssets) async {
+    await _prefs?.setBool('showFrozenAssets', showFrozenAssets);
+  }
+
+  bool? getShowFrozenAssets() {
+    return _prefs?.getBool('showFrozenAssets');
+  }
+
   Future<void> initialize() async {
     await SharedPreferences.getInstance();
     await const FlutterSecureStorage().readAll();
