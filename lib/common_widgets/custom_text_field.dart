@@ -70,11 +70,15 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         counterText: "",
         prefixIcon: leadingIcon != null
-            ? Icon(leadingIcon,
-                size: isSmall ? AppIcons.small : AppIcons.medium)
+            ? Icon(
+                leadingIcon,
+                size: isSmall ? AppIcons.small : AppIcons.medium,
+                color: context.colorScheme.onSurface,
+              )
             : null,
         labelText: labelText,
-        labelStyle: TextStyle(fontSize: context.textTheme.bodySmall?.fontSize),
+        labelStyle: TextStyle(fontSize: context.textTheme.bodySmall?.fontSize)
+            .copyWith(color: context.colorScheme.onSurface),
         contentPadding: EdgeInsets.symmetric(
             horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding / 2,
             vertical: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
@@ -86,12 +90,14 @@ class CustomTextField extends StatelessWidget {
             ? Padding(
                 padding: EdgeInsets.only(
                     right: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
-                child: IconButton(
-                  icon: AppIcons.icon(
-                      icon: suffixIcon,
-                      size: isSmall ? AppIcons.small : AppIcons.medium),
-                  onPressed: onTrailingPressed,
-                ),
+                child: (controller.text.isEmpty)
+                    ? null
+                    : IconButton(
+                        icon: AppIcons.icon(
+                            icon: suffixIcon,
+                            size: isSmall ? AppIcons.small : AppIcons.medium),
+                        onPressed: onTrailingPressed,
+                      ),
               )
             : isObscureText
                 ? IconButton(
