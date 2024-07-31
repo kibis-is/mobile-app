@@ -9,7 +9,7 @@ import 'package:kibisis/theme/list_tile_theme.dart';
 import 'package:kibisis/theme/page_transitions.dart';
 import 'package:kibisis/theme/text_theme.dart';
 
-String fontFamily = 'Anonymous Pro';
+String fontFamily = 'SF Pro';
 
 // Light Theme
 final ThemeData lightTheme = ThemeData(

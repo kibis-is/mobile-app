@@ -66,9 +66,16 @@ flutter:
   assets:
     - assets/images/
 
+  # fonts:
+  #   - family: Anonymous Pro
+  #     fonts:
+  #       - asset: assets/fonts/AnonymousPro-Regular.ttf
+  #       - asset: assets/fonts/AnonymousPro-Bold.ttf
+  #         weight: 700
+
   fonts:
-    - family: Anonymous Pro
+    - family: SF Pro
       fonts:
-        - asset: assets/fonts/AnonymousPro-Regular.ttf
-        - asset: assets/fonts/AnonymousPro-Bold.ttf
+        - asset: assets/fonts/SFPRODISPLAYREGULAR.OTF
+        - asset: assets/fonts/SFPRODISPLAYBOLD.OTF
           weight: 700
