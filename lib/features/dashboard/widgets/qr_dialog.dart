@@ -16,6 +16,8 @@ class QrDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      contentPadding: EdgeInsets.zero,
+      titlePadding: const EdgeInsets.all(kScreenPadding),
       title: SizedBox(
         width: double.infinity,
         child: Text(

@@ -27,6 +27,7 @@ class ConfirmationDialog extends StatelessWidget {
       title: Text(
         title,
         style: context.textTheme.titleMedium,
+        textAlign: TextAlign.center,
       ),
       content: Text(content, style: context.textTheme.bodySmall),
       actionsAlignment: MainAxisAlignment.spaceBetween,

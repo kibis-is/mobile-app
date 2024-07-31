@@ -453,7 +453,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             autoCorrect: false,
             onTrailingPressed: isMobile
                 ? () async {
-                    debugPrint('pressed');
                     final mode = ref.watch(sendTransactionScreenModeProvider);
                     final scannedData = await GoRouter.of(context).pushNamed(
                       qrScannerRouteName,
@@ -509,6 +508,8 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            titlePadding: const EdgeInsets.all(kScreenPadding),
             title: const Text('Error'),
             content: Text(accountsState.error!),
           );
@@ -527,40 +528,52 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Address'),
+          contentPadding: EdgeInsets.zero,
+          titlePadding: const EdgeInsets.all(kScreenPadding),
+          scrollable: true,
+          title: const Text(
+            'Select Address',
+            textAlign: TextAlign.center,
+          ),
           content: SingleChildScrollView(
             child: ListBody(
-              children: accounts.map((account) {
-                return MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () => Navigator.pop(context, account),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(kScreenPadding),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(kWidgetRadius),
-                        color: context.colorScheme.surface,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          EllipsizedText(
-                            account['accountName']!,
-                            type: EllipsisType.end,
-                            style: context.textTheme.displayMedium,
+              children: accounts.map<Widget>((account) {
+                return Column(
+                  children: [
+                    MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context, account),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.all(kScreenPadding),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(kWidgetRadius),
+                            color: context.colorScheme.surface,
                           ),
-                          EllipsizedText(
-                            account['publicKey']!,
-                            type: EllipsisType.middle,
-                            style: context.textTheme.bodySmall,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              EllipsizedText(
+                                account['accountName']!,
+                                type: EllipsisType.end,
+                                style: context.textTheme.displayMedium,
+                              ),
+                              EllipsizedText(
+                                account['publicKey']!,
+                                type: EllipsisType.middle,
+                                style: context.textTheme.bodySmall,
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 2),
+                  ],
                 );
-              }).toList(),
+              }).toList()
+                ..removeLast(),
             ),
           ),
         );
