@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/splash_screen.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
@@ -60,6 +61,12 @@ class _KibisisState extends ConsumerState<Kibisis> {
             final isDarkTheme = ref.watch(isDarkModeStateAdapter);
             final isLoading = ref.watch(loadingProvider);
             final router = ref.watch(goRouterProvider);
+
+            SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              systemNavigationBarColor: context.colorScheme.background,
+              systemNavigationBarIconBrightness:
+                  isDarkTheme ? Brightness.light : Brightness.dark,
+            ));
 
             return MaterialApp.router(
               scaffoldMessengerKey: rootScaffoldMessengerKey,
