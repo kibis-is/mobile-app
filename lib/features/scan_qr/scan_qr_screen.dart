@@ -1,12 +1,16 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/scan_qr/widgets/progress_bar.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
 import 'package:kibisis/utils/barcode_scanner.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+
+final isPaginatedScanProvider = StateProvider<bool>((ref) => false);
 
 class QrCodeScannerScreen extends ConsumerStatefulWidget {
   static const String title = 'Scan QR';
@@ -36,24 +40,44 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   @override
   void reassemble() {
     super.reassemble();
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      controller.stop();
-    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+    controller.stop();
+    if (mounted) {
       controller.start();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isPaginatedScan = ref.watch(isPaginatedScanProvider);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: _buildAppBar(),
-      body: Stack(
-        children: [
-          _buildScannerView(),
-          _buildScanTargetIndicator(),
-          _buildScanProgressIndicator(),
-        ],
+      body: Center(
+        // Add Center here
+        child: Stack(
+          fit: StackFit.loose,
+          alignment: Alignment.center,
+          children: [
+            _buildScannerView(),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * kDialogWidth,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isPaginatedScan) ...[
+                    const AnimatedProgressBar(),
+                    const SizedBox(height: kScreenPadding),
+                  ],
+                  _buildScanTargetIndicator(),
+                  if (isPaginatedScan) ...[
+                    const SizedBox(height: kScreenPadding),
+                    _buildNextQrCodeText(),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -74,8 +98,12 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         if (_debounceTimer?.isActive ?? false || isProcessing) {
           return;
         }
+        ref
+            .read(loadingProvider.notifier)
+            .startLoading(message: 'Importing Accounts', fullScreen: false);
+        isProcessing = true;
+        controller.stop();
         _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
-          isProcessing = true;
           var scannerLogic = QRCodeScannerLogic(
             context: context,
             ref: ref,
@@ -83,61 +111,56 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             controller: controller,
             accountFlow: widget.accountFlow,
           );
-          scannerLogic.handleBarcode(capture);
-          isProcessing = false;
+          try {
+            await scannerLogic.handleBarcode(capture);
+          } catch (e) {
+            if (mounted) {
+              showCustomSnackBar(
+                context: context,
+                snackType: SnackType.error,
+                message: e.toString(),
+              );
+            }
+          } finally {
+            isProcessing = false;
+            ref.read(loadingProvider.notifier).stopLoading();
+          }
         });
       },
     );
   }
 
+  Widget _buildNextQrCodeText() {
+    final nextQrCodeNumber =
+        ref.watch(multipartScanProvider.notifier).getRemainingParts();
+    debugPrint('Next QR: $nextQrCodeNumber');
+    return Column(
+      children: [
+        Text('Next QR:', style: context.textTheme.displaySmall),
+        Chip(
+          label: Text(
+            'Part ${nextQrCodeNumber.first}',
+            style: context.textTheme.displayMedium
+                ?.copyWith(color: context.colorScheme.onSecondary),
+          ),
+          color: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+              return context.colorScheme.secondary;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildScanTargetIndicator() {
-    return Center(
+    return AspectRatio(
+      aspectRatio: 1 / 1,
       child: Container(
-        width: 250,
-        height: 250,
         decoration: BoxDecoration(
           border: Border.all(color: context.colorScheme.primary, width: 2),
           borderRadius: BorderRadius.circular(12),
         ),
-      ),
-    );
-  }
-
-  Widget _buildScanProgressIndicator() {
-    return Positioned(
-      bottom: kScreenPadding,
-      left: kScreenPadding,
-      right: kScreenPadding,
-      child: Consumer(
-        builder: (context, ref, child) {
-          final scanState = ref.watch(multipartScanProvider);
-          if (scanState.totalParts > 0) {
-            int nextPart = scanState.scannedParts.length + 1;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LinearProgressIndicator(
-                  value: scanState.scannedParts.length / scanState.totalParts,
-                  backgroundColor: Colors.white,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                      context.colorScheme.secondary),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    "Scan part $nextPart of ${scanState.totalParts}",
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                )
-              ],
-            );
-          } else {
-            return const Text(
-              'Scan a QR code',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            );
-          }
-        },
       ),
     );
   }
