@@ -11,7 +11,6 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
-import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
@@ -21,30 +20,45 @@ import 'package:kibisis/providers/temporary_account_provider.dart';
 class AppResetUtil {
   static Future<void> resetApp(WidgetRef ref) async {
     try {
-      ref.read(loadingProvider.notifier).startLoading();
-      final storageService = ref.read(storageProvider);
-      await storageService.clearAll();
-      ref.invalidate(accountProvider);
-      ref.invalidate(pinProvider);
-      ref.invalidate(pinEntryStateNotifierProvider);
-      ref.invalidate(errorProvider);
-      ref.invalidate(activeAccountProvider);
-      ref.invalidate(temporaryAccountProvider);
-      ref.invalidate(balanceProvider);
-      ref.invalidate(assetsProvider);
-      ref.invalidate(transactionsProvider);
-      ref.invalidate(accountProvider);
-      ref.invalidate(storageProvider);
-      ref.invalidate(selectedAssetProvider);
-      ref.invalidate(isDarkModeProvider);
-      ref.invalidate(showFrozenAssetsProvider);
-      ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
-      ref.read(setupCompleteProvider.notifier).setSetupComplete(false);
-      ref.read(isAuthenticatedProvider.notifier).state = false;
+      _invalidateProviders(ref);
+      await _clearStorage(ref);
+      _resetProviders(ref);
     } catch (e) {
       debugPrint('Reset App: ${e.toString()}');
-    } finally {
-      ref.read(loadingProvider.notifier).stopLoading();
+      throw Exception('Reset app failed');
     }
+  }
+
+  static void _invalidateProviders(WidgetRef ref) {
+    ref.invalidate(accountProvider);
+    ref.invalidate(pinProvider);
+    ref.invalidate(pinEntryStateNotifierProvider);
+    ref.invalidate(errorProvider);
+    ref.invalidate(activeAccountProvider);
+    ref.invalidate(temporaryAccountProvider);
+    ref.invalidate(balanceProvider);
+    ref.invalidate(assetsProvider);
+    ref.invalidate(transactionsProvider);
+    ref.invalidate(selectedAssetProvider);
+    ref.invalidate(isDarkModeProvider);
+    ref.invalidate(showFrozenAssetsProvider);
+  }
+
+  static Future<void> _clearStorage(WidgetRef ref) async {
+    final storageService = ref.read(storageProvider);
+    try {
+      await storageService.clearOneByOne();
+    } catch (e) {
+      debugPrint('Error clearing secure storage: ${e.toString()}');
+      throw Exception('Failed to reset');
+    }
+
+    ref.invalidate(storageProvider);
+  }
+
+  static void _resetProviders(WidgetRef ref) {
+    ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
+    ref.read(setupCompleteProvider.notifier).setSetupComplete(false);
+    ref.read(isAuthenticatedProvider.notifier).state = false;
   }
 }

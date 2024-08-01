@@ -126,6 +126,7 @@ class StorageService {
     _prefs?.setString('defaultNetwork', network);
   }
 
+//TODO:Decide if this is to be removed, no longer used
   Future<void> clearAll() async {
     await _retryOnException(() async {
       if (_prefs == null) {
@@ -134,6 +135,18 @@ class StorageService {
       await _prefs.clear();
       await _secureStorage.deleteAll();
     }, 'Error clearing all data');
+  }
+
+  Future<void> clearOneByOne() async {
+    try {
+      final allKeys = await _secureStorage.readAll();
+      for (String key in allKeys.keys) {
+        await _secureStorage.delete(key: key);
+      }
+    } catch (e) {
+      debugPrint('Error clearing secure storage: ${e.toString()}');
+      rethrow;
+    }
   }
 
   Future<String> generateNextAccountId() async {
