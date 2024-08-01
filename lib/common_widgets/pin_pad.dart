@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -222,15 +223,22 @@ class PinPadState extends ConsumerState<PinPad> {
     );
   }
 
-  void _handleResetApp() async {
-    await AppResetUtil.resetApp(ref);
-    if (!mounted) return;
-    _navigateToSetup();
-  }
-
-  void _navigateToSetup() {
-    if (!mounted) return;
-    GoRouter.of(context).go('/setup');
+  void _handleResetApp() {
+    try {
+      ref
+          .read(loadingProvider.notifier)
+          .startLoading(message: 'Resetting App', fullScreen: true);
+      AppResetUtil.resetApp(ref);
+      GoRouter.of(context).go('/setup');
+    } catch (e) {
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: e.toString(),
+      );
+    } finally {
+      ref.read(loadingProvider.notifier).stopLoading();
+    }
   }
 
   void _handlePinKeyPressed(String key) async {
@@ -239,7 +247,9 @@ class PinPadState extends ConsumerState<PinPad> {
     bool isPinComplete = pinPadProvider.isPinComplete();
     if (isPinComplete) {
       try {
-        ref.read(loadingProvider.notifier).startLoading();
+        ref
+            .read(loadingProvider.notifier)
+            .startLoading(message: 'Updating PIN');
         ref.read(isPinCompleteProvider.notifier).state = true;
         SchedulerBinding.instance.addPostFrameCallback((_) async {
           try {
