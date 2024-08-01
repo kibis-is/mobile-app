@@ -1,14 +1,15 @@
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
-const kScreenPadding = 16.0;
-const kButtonPadding = 16.0;
-const kWidgetRadius = 8.0;
-const kSizedBoxSpacing = 16.0;
-const kInputHeight = 64.0;
-const kPinLength = 6;
-const kVersionNumber = 'v0.1.0';
-const kMaxAccountNameLength = 32;
+const double kScreenPadding = 16.0;
+const double kButtonPadding = 16.0;
+const double kWidgetRadius = 8.0;
+const double kSizedBoxSpacing = 16.0;
+const double kInputHeight = 64.0;
+const int kPinLength = 6;
+const String kVersionNumber = 'v0.1.0';
+const int kMaxAccountNameLength = 32;
+const double kDialogWidth = 0.75;
 
 enum PinPadMode { setup, unlock, verifyTransaction }
 
