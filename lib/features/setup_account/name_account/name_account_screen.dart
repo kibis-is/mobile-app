@@ -93,6 +93,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
+          final loadingState = ref.watch(loadingProvider);
           return SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
@@ -141,7 +142,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                               : 'Create',
                           isFullWidth: true,
                           // Disable button if loading or has been submitted
-                          onPressed: ref.watch(loadingProvider) ||
+                          onPressed: loadingState.isLoading ||
                                   ref.watch(hasSubmittedProvider)
                               ? null
                               : () async {
@@ -151,7 +152,20 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
                                   if (formKey.currentState!.validate()) {
                                     ref
                                         .read(loadingProvider.notifier)
-                                        .startLoading();
+                                        .startLoading(
+                                          message: widget.accountFlow ==
+                                                  AccountFlow.edit
+                                              ? 'Updating Account'
+                                              : 'Creating Account',
+                                          fullScreen: widget.accountFlow ==
+                                                  AccountFlow.edit
+                                              ? false
+                                              : true,
+                                          withProgressBar: widget.accountFlow ==
+                                                  AccountFlow.edit
+                                              ? false
+                                              : true,
+                                        );
                                     try {
                                       if (widget.accountFlow ==
                                           AccountFlow.edit) {

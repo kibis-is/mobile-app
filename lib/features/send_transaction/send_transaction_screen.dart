@@ -173,7 +173,13 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<void> _executeTransaction(WidgetRef ref) async {
     try {
-      ref.read(loadingProvider.notifier).startLoading();
+      ref.read(loadingProvider.notifier).startLoading(
+            message: widget.mode == SendTransactionScreenMode.payment
+                ? 'Sending Payment'
+                : 'Sending Asset',
+            fullScreen: false,
+            withProgressBar: true,
+          );
       final account = ref.read(accountProvider).account;
       if (account == null) {
         throw Exception("Account not available for the transaction.");

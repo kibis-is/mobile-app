@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/common_widgets/custom_loading_overlay.dart';
 import 'package:kibisis/common_widgets/splash_screen.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -59,8 +60,11 @@ class _KibisisState extends ConsumerState<Kibisis> {
         return sharedPreferences.when(
           data: (prefs) {
             final isDarkTheme = ref.watch(isDarkModeStateAdapter);
-            final isLoading = ref.watch(loadingProvider);
             final router = ref.watch(goRouterProvider);
+            final isFullScreen = ref.watch(loadingProvider).fullScreen;
+            final progress = ref.watch(loadingProvider).progress;
+            final message = ref.watch(loadingProvider).message;
+            final isLoading = ref.watch(loadingProvider).isLoading;
 
             SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
               systemNavigationBarColor: context.colorScheme.background,
@@ -76,12 +80,21 @@ class _KibisisState extends ConsumerState<Kibisis> {
               darkTheme: darkTheme,
               themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
               builder: (context, widget) {
+                debugPrint(
+                    'Loading State: isLoading=$isLoading, color=${isFullScreen ? context.colorScheme.background : Colors.black}, opacity=${isFullScreen ? 1.0 : 0.6}');
+
                 return ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 600),
                   child: LoadingOverlay(
+                    progressIndicator: CustomLoadingOverlay(
+                      text: message,
+                      percent: progress,
+                    ),
                     isLoading: isLoading,
-                    color: context.colorScheme.background,
-                    opacity: 0.5,
+                    color: isFullScreen
+                        ? context.colorScheme.background
+                        : Colors.black,
+                    opacity: isFullScreen ? 1.0 : 0.6,
                     child: Stack(
                       children: [
                         DefaultColorInitializer(child: Center(child: widget)),
