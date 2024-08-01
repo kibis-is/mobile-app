@@ -35,7 +35,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   final TextEditingController filterController = TextEditingController();
 
   void _onRefresh() {
-    ref.invalidate(assetsProvider);
+    invalidateProviders(ref);
     ref.read(assetsProvider.notifier).fetchAssets();
     _refreshController.refreshCompleted();
   }
