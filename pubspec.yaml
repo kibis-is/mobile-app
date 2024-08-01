@@ -35,6 +35,7 @@ dependencies:
   permission_handler: ^11.3.1
   infinite_carousel: ^1.1.1
   vibration: ^1.8.4
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
