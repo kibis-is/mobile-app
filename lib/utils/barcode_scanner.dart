@@ -59,12 +59,7 @@ class QRCodeScannerLogic {
         await _handlePublicKey(capture);
       }
     } catch (e) {
-      if (!context.mounted) return;
-      showCustomSnackBar(
-        context: context,
-        snackType: SnackType.error,
-        message: e.toString(),
-      );
+      throw Exception(e.toString());
     }
   }
 
@@ -75,19 +70,23 @@ class QRCodeScannerLogic {
   }
 
   Future<bool> _processBarcodeData(String rawData) async {
-    Uri uri = Uri.parse(rawData);
-    Map<String, List<String>> params = _parseQueryParams(uri.query);
+    try {
+      Uri uri = Uri.parse(rawData);
+      Map<String, List<String>> params = _parseQueryParams(uri.query);
 
-    if (scanMode == ScanMode.privateKey) {
-      if (params.containsKey('page')) {
-        return await _handlePaginatedScan(uri, params);
-      } else {
-        return await _handlePrivateKey(rawData);
+      if (scanMode == ScanMode.privateKey) {
+        if (params.containsKey('page')) {
+          return await _handlePaginatedScan(uri, params);
+        } else {
+          return await _handlePrivateKey(rawData);
+        }
+      } else if (scanMode == ScanMode.publicKey) {
+        return await _handlePublicKey(rawData);
       }
-    } else if (scanMode == ScanMode.publicKey) {
-      return await _handlePublicKey(rawData);
+    } catch (e) {
+      debugPrint('Error processing barcode data: $e');
+      return false;
     }
-
     return false;
   }
 
@@ -151,7 +150,8 @@ class QRCodeScannerLogic {
   Future<bool> _handlePrivateKey(String? qrData,
       {bool isFinalPart = true}) async {
     if (qrData == null) {
-      throw Exception('QR data is null');
+      debugPrint('QR data is null');
+      return false;
     }
 
     try {
@@ -161,9 +161,11 @@ class QRCodeScannerLogic {
       final keys = params['privatekey'] ?? [];
 
       if (!_validateAccounts(names, keys)) {
-        throw Exception('Private keys are not valid');
+        debugPrint('Validation failed for accounts');
+        return false;
       }
 
+      // Assuming restoreAccounts is an async API call that requires awaiting
       await _restoreAccounts(names, keys);
 
       if (isFinalPart) {
@@ -173,8 +175,9 @@ class QRCodeScannerLogic {
       _showSuccessSnackBar();
       return true;
     } catch (e) {
-      rethrow; // Rethrow the exception to be caught at the root level
-    } finally {}
+      debugPrint('Error handling private key: $e');
+      return false;
+    }
   }
 
   Future<void> _restoreAccounts(List<String> names, List<String> keys) async {
