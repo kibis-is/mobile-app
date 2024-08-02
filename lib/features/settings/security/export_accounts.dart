@@ -19,7 +19,7 @@ final selectedAccountProvider = StateProvider<String?>((ref) {
 });
 
 final currentPageProvider = StateProvider<int>((ref) => 0);
-final sliderValueProvider = StateProvider<double>((ref) => 0);
+final sliderValueProvider = StateProvider<double>((ref) => 4);
 
 final intervals = [
   {'label': '0', 'value': 0},
@@ -98,8 +98,10 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
             const SizedBox(height: kScreenPadding),
             buildQrCodeDisplay(qrDataAsyncValue),
             const SizedBox(height: kScreenPadding),
-            buildSlider(selectedAccountId),
-            const SizedBox(height: kScreenPadding),
+            if (accounts.length > 5) ...[
+              buildSlider(selectedAccountId),
+              const SizedBox(height: kScreenPadding),
+            ],
             buildActionRow(selectedAccountId),
           ],
         ),
