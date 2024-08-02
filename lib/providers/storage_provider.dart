@@ -111,6 +111,7 @@ class StorageService {
   }
 
   Future<void> setActiveAccount(String accountId) async {
+    debugPrint('Setting Active Account: $accountId');
     await _prefs?.setString('activeAccount', accountId);
   }
 
@@ -242,16 +243,12 @@ class StorageService {
 
   Future<void> setTransactionLastFetchTime(
       String accountId, int lastFetchTime) async {
-    debugPrint(
-        'Saving Last Fetch Time: $lastFetchTime for Account ID: $accountId');
     await _prefs?.setInt('lastTransactionFetchTime$accountId', lastFetchTime);
   }
 
   Future<int> getTransactionLastFetchTime(String accountId) async {
     final lastFetchTime =
         _prefs?.getInt('lastTransactionFetchTime$accountId') ?? 0;
-    debugPrint(
-        'Retrieved Last Fetch Time: $lastFetchTime for Account ID: $accountId');
     return lastFetchTime;
   }
 }

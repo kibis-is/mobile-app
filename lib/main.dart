@@ -80,9 +80,6 @@ class _KibisisState extends ConsumerState<Kibisis> {
               darkTheme: darkTheme,
               themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
               builder: (context, widget) {
-                debugPrint(
-                    'Loading State: isLoading=$isLoading, color=${isFullScreen ? context.colorScheme.background : Colors.black}, opacity=${isFullScreen ? 1.0 : 0.6}');
-
                 return ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 600),
                   child: LoadingOverlay(

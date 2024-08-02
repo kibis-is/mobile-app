@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
@@ -36,11 +35,5 @@ class BalanceNotifier extends StateNotifier<AsyncValue<double>> {
         state = AsyncValue.error(e, StackTrace.current);
       }
     }
-  }
-
-  @override
-  void dispose() {
-    debugPrint('BalanceNotifier for $publicAddress is being disposed');
-    super.dispose();
   }
 }

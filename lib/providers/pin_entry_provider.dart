@@ -46,7 +46,6 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
         }
       } else if (mode == PinPadMode.setup) {
         await pinStateNotifier.setPin(state.pin);
-        debugPrint('PIN set successfully');
       }
     } catch (e) {
       debugPrint('Invalid PIN entered: $e');

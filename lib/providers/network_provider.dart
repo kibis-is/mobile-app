@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -48,6 +47,5 @@ class NetworkNotifier extends StateNotifier<SelectItem?> {
     final storage = _ref.read(storageProvider);
     state = network;
     await storage.setDefaultNetwork(network.name);
-    debugPrint("Changed network to ${network.name}");
   }
 }

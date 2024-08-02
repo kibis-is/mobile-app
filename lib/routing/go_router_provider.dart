@@ -87,8 +87,6 @@ class RouterNotifier extends ChangeNotifier {
             state.uri.toString().startsWith('/pinPad'))) {
       return '/';
     }
-
-    debugPrint('No redirection needed');
     return null;
   }
 

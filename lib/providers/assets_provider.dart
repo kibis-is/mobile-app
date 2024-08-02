@@ -36,7 +36,6 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
     try {
       final algorandService = ref.read(algorandServiceProvider);
       _allAssets = await algorandService.getAccountAssets(publicAddress);
-      debugPrint('fetched assets with publicAddress: $publicAddress');
       state = AsyncValue.data(_filteredAssets());
     } on AlgorandException {
       if (mounted) {
