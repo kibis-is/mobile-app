@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -121,13 +123,26 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
   }
 
   void _importFromHardcodedUri() {
-    QRCodeScannerLogic(
-      context: context,
-      ref: ref,
-      scanMode: ScanMode.privateKey,
-      accountFlow: widget.accountFlow,
-    ).handleMockBarcode(
-      'avm://account/import?name=Personal&privatekey=tup_v36uHxIi1_N1acL-9FtO44FCbyPpsDj-EhS4GEA=&name=Test%20Account%201&privatekey=P0sSlStDoAFlEM1MJYkGkKvw9gsn42nDKrs0n5h029o=&name=Test%20Account%202&privatekey=IF6oOAuJWbq__Ak8-hVZb9TSm5JfCUXBq9dq4yKPGbk=',
-    );
+    try {
+      ref
+          .read(loadingProvider.notifier)
+          .startLoading(message: 'Importing Mock Accounts', fullScreen: false);
+      QRCodeScannerLogic(
+        context: context,
+        ref: ref,
+        scanMode: ScanMode.privateKey,
+        accountFlow: widget.accountFlow,
+      ).handleMockBarcode(
+        'avm://account/import?name=Personal&privatekey=tup_v36uHxIi1_N1acL-9FtO44FCbyPpsDj-EhS4GEA=&name=Test%20Account%201&privatekey=P0sSlStDoAFlEM1MJYkGkKvw9gsn42nDKrs0n5h029o=&name=Test%20Account%202&privatekey=IF6oOAuJWbq__Ak8-hVZb9TSm5JfCUXBq9dq4yKPGbk=',
+      );
+    } catch (e) {
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: e.toString(),
+      );
+    } finally {
+      ref.read(loadingProvider.notifier).stopLoading();
+    }
   }
 }
