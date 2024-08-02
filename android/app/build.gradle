@@ -22,16 +22,8 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def secureProperties = new Properties()
-def securePropertiesFile = rootProject.file('secure.properties')
-if (securePropertiesFile.exists()) {
-    securePropertiesFile.withReader('UTF-8') { reader ->
-        secureProperties.load(reader)
-    }
-}
-
 android {
-    namespace "sh.agoralabs.kibisis"
+    namespace "is.kibis.kibisis"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -49,7 +41,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "sh.agoralabs.kibisis"
+        applicationId "is.kibis.kibisis"
         minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
