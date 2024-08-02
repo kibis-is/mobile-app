@@ -273,7 +273,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
           accountId, 'privateKey', tempAccountState.privateKey!);
       await storageService.setAccountData(
           accountId, 'seedPhrase', tempAccountState.seedPhrase!);
-      await storageService.setActiveAccount(accountId);
 
       final publicKey = tempAccountState.account!.publicAddress.toString();
       await storageService.setAccountData(accountId, 'publicKey', publicKey);
