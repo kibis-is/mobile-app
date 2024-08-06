@@ -26,8 +26,8 @@ class CustomLoadingOverlay extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(kWidgetRadius),
           color: fullScreen
-              ? context.colorScheme.background
-              : context.colorScheme.surface,
+              ? context.colorScheme.surface
+              : context.colorScheme.background,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
