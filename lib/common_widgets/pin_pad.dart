@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
@@ -241,69 +240,107 @@ class PinPadState extends ConsumerState<PinPad> {
     }
   }
 
-  void _handlePinKeyPressed(String key) async {
+  void _handlePinKeyPressed(String key) {
     final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
     pinPadProvider.addKey(key);
-    bool isPinComplete = pinPadProvider.isPinComplete();
-    if (isPinComplete) {
-      try {
-        ref
-            .read(loadingProvider.notifier)
-            .startLoading(message: 'Updating PIN');
-        ref.read(isPinCompleteProvider.notifier).state = true;
-        SchedulerBinding.instance.addPostFrameCallback((_) async {
-          try {
-            await handlePinComplete();
-            if (widget.mode != PinPadMode.setup) {
-              ref.read(pinProvider.notifier).clearPinState();
-            }
-            pinPadProvider.clearPin();
-          } finally {
-            ref.read(isPinCompleteProvider.notifier).state = false;
-            ref.read(loadingProvider.notifier).stopLoading();
-          }
-        });
-      } catch (e) {
+
+    if (pinPadProvider.isPinComplete()) {
+      _processCompletePin();
+    }
+  }
+
+  String _getOverlayText() {
+    switch (widget.mode) {
+      case PinPadMode.setup:
+        return 'Setting Up';
+      case PinPadMode.unlock:
+        return 'Authenticating';
+      case PinPadMode.verifyTransaction:
+        return 'Verifying';
+      default:
+        return '';
+    }
+  }
+
+  Future<void> _processCompletePin() async {
+    ref.read(loadingProvider.notifier).startLoading(message: _getOverlayText());
+    try {
+      await _handlePinComplete();
+      _cleanupAfterPin();
+    } catch (e) {
+      debugPrint('Error during PIN completion: $e');
+    } finally {
+      if (mounted) {
         ref.read(loadingProvider.notifier).stopLoading();
       }
     }
   }
 
-  Future<void> handlePinComplete() async {
+  void _cleanupAfterPin() {
+    final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
+    pinPadProvider.clearPin();
+    ref.read(isPinCompleteProvider.notifier).state = false;
+  }
+
+  Future<void> _handlePinComplete() async {
     final pinNotifier = ref.read(pinEntryStateNotifierProvider.notifier);
     final pin = pinNotifier.getPin();
 
     switch (widget.mode) {
       case PinPadMode.setup:
-        pinNotifier.pinComplete(widget.mode);
-        await ref.refresh(storageProvider).accountExists();
-        if (!mounted) return;
-        _navigateToAddAccount();
+        await _handleSetupMode(pinNotifier);
         break;
       case PinPadMode.unlock:
-        pinNotifier.pinComplete(widget.mode);
-        if (ref.read(isAuthenticatedProvider) && mounted) {
-          GoRouter.of(context).go('/');
-        }
+        await _handleUnlockMode(pinNotifier);
         break;
       case PinPadMode.verifyTransaction:
-        final isPinValid = await ref.read(pinProvider.notifier).verifyPin(pin);
-        if (isPinValid) {
-          pinNotifier.clearError();
-          if (widget.onPinVerified != null) {
-            widget.onPinVerified!();
-          }
-        } else {
-          pinNotifier.setError('Incorrect PIN. Try again.');
-        }
+        await _handleVerifyTransactionMode(pinNotifier, pin);
         break;
       default:
+        debugPrint('Unhandled mode in _handlePinComplete');
         break;
     }
   }
 
+  Future<void> _handleSetupMode(PinEntryStateNotifier pinNotifier) async {
+    pinNotifier.pinComplete(widget.mode);
+    bool exists = await ref.refresh(storageProvider).accountExists();
+    debugPrint('Account exists: $exists');
+    _navigateToAddAccount();
+  }
+
+  Future<void> _handleUnlockMode(PinEntryStateNotifier pinNotifier) async {
+    try {
+      // Now correctly awaiting a Future<void> from pinComplete
+      await pinNotifier.pinComplete(widget.mode);
+      bool isAuthenticated = ref.read(isAuthenticatedProvider);
+      debugPrint('User is authenticated: $isAuthenticated');
+      if (isAuthenticated) {
+        _navigateToDashboard();
+      }
+    } catch (e) {
+      debugPrint('Error during unlocking mode: $e');
+      // Handle any exceptions that might occur during the PIN completion process
+    }
+  }
+
+  Future<void> _handleVerifyTransactionMode(
+      PinEntryStateNotifier pinNotifier, String pin) async {
+    bool isPinValid = await ref.read(pinProvider.notifier).verifyPin(pin);
+    debugPrint('PIN is valid: $isPinValid');
+    if (isPinValid) {
+      pinNotifier.clearError();
+      widget.onPinVerified?.call();
+    } else {
+      pinNotifier.setError('Incorrect PIN. Try again.');
+    }
+  }
+
   void _navigateToAddAccount() {
-    if (!mounted) return;
     GoRouter.of(context).push('/setup/setupAddAccount');
+  }
+
+  void _navigateToDashboard() {
+    GoRouter.of(context).go('/');
   }
 }

@@ -31,7 +31,7 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
     return state.pin.length == 6;
   }
 
-  void pinComplete(PinPadMode mode) async {
+  Future<void> pinComplete(PinPadMode mode) async {
     try {
       if (mode == PinPadMode.unlock) {
         bool isPinVerified = await pinStateNotifier.verifyPin(state.pin);
