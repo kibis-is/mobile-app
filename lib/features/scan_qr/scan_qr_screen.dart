@@ -139,7 +139,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         Text('Next QR:', style: context.textTheme.displaySmall),
         Chip(
           label: Text(
-            'Part ${nextQrCodeNumber.first}',
+            'Part $nextQrCodeNumber',
             style: context.textTheme.displayMedium
                 ?.copyWith(color: context.colorScheme.onSecondary),
           ),
