@@ -8,12 +8,12 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/providers/fab_visibility_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
-import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
@@ -45,7 +45,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final accountStateFuture =
         _getAccountStateFuture(storageService, activeAccountId);
     final accountState = ref.watch(accountProvider);
-    final assets = ref.watch(assetsProvider);
+    final showFAB = ref.watch(fabVisibilityProvider);
 
     List<String> tabs = ['Assets', 'Activity'];
 
@@ -82,25 +82,23 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           ],
         ),
       ),
-      floatingActionButton: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.bounceIn,
-        switchOutCurve: Curves.easeOut,
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 1),
-              end: const Offset(0, 0),
-            ).animate(animation),
-            child: child,
-          );
-        },
-        child: assets.when(
-          data: (assetList) => buildFloatingActionButton(),
-          loading: () => const SizedBox.shrink(key: ValueKey('loading')),
-          error: (err, stack) => buildFloatingActionButton(),
-        ),
-      ),
+      floatingActionButton: showFAB
+          ? AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              switchInCurve: Curves.bounceIn,
+              switchOutCurve: Curves.easeOut,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 1),
+                    end: const Offset(0, 0),
+                  ).animate(animation),
+                  child: child,
+                );
+              },
+              child: buildFloatingActionButton(),
+            )
+          : const SizedBox.shrink(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
