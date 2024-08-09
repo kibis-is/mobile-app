@@ -98,6 +98,20 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                     ),
                   ],
                 ),
+              Column(
+                children: [
+                  const SizedBox(
+                    height: kScreenPadding,
+                  ),
+                  CustomListTile(
+                    title: "Import via Private Key",
+                    subtitle: 'Import accounts from a private key.',
+                    leadingIcon: AppIcons.importAccount,
+                    trailingIcon: AppIcons.arrowRight,
+                    onTap: _importViaPrivateKey,
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -120,6 +134,12 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
     GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
         ? '/setup/setupCopySeed'
         : '/addAccount/addAccountCopySeed');
+  }
+
+  void _importViaPrivateKey() {
+    GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
+        ? '/setup/$setupPrivateKeyRouteName'
+        : '/addAccount/$mainPrivateKeyRouteName');
   }
 
   void _importFromHardcodedUri() {

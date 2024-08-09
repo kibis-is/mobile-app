@@ -7,6 +7,8 @@ import 'package:kibisis/features/add_asset/add_asset_screen.dart';
 import 'package:kibisis/features/dashboard/dashboard_screen.dart';
 import 'package:kibisis/features/dashboard/account_list_screen.dart';
 import 'package:kibisis/features/error/error_screen.dart';
+import 'package:kibisis/features/setup_account/import_via_private_key/import_via_private_key.dart';
+import 'package:kibisis/features/view_nft/view_nft_screen.dart';
 import 'package:kibisis/features/pin_pad/pin_pad_screen.dart';
 import 'package:kibisis/features/scan_qr/scan_qr_screen.dart';
 import 'package:kibisis/features/settings/about/about_screen.dart';
@@ -163,6 +165,17 @@ class RouterNotifier extends ChangeNotifier {
                     state);
               },
             ),
+            GoRoute(
+              name: setupPrivateKeyRouteName,
+              path: setupPrivateKeyRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const ImportPrivateKeyScreen(
+                      accountFlow: AccountFlow.setup,
+                    ),
+                    state);
+              },
+            ),
           ],
         ),
         GoRoute(
@@ -215,6 +228,17 @@ class RouterNotifier extends ChangeNotifier {
                     const QrCodeScannerScreen(
                         accountFlow: AccountFlow.addNew,
                         scanMode: ScanMode.privateKey),
+                    state);
+              },
+            ),
+            GoRoute(
+              name: mainPrivateKeyRouteName,
+              path: mainPrivateKeyRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const ImportPrivateKeyScreen(
+                      accountFlow: AccountFlow.addNew,
+                    ),
                     state);
               },
             ),
@@ -278,6 +302,18 @@ class RouterNotifier extends ChangeNotifier {
                     : AssetScreenMode.view;
                 return defaultTransitionPage(
                     ViewAssetScreen(mode: mode), state);
+              },
+            ),
+            GoRoute(
+              name: viewNftRouteName,
+              path: '$viewNftRouteName/:index',
+              pageBuilder: (context, state) {
+                final index =
+                    int.tryParse(state.pathParameters['index'] ?? '0') ?? 0;
+                return defaultTransitionPage(
+                  ViewNftScreen(initialIndex: index),
+                  state,
+                );
               },
             ),
             GoRoute(
