@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:convert/convert.dart';
 import 'package:base32/base32.dart';
-import 'package:flutter/foundation.dart';
 
 class HexConverter {
   static String convertToHex(String input) {
+    if (_isUri(input)) {
+      return _handleUri(input);
+    }
+
     if (_isHex(input)) {
       return _handleHex(input);
     }
@@ -20,12 +23,43 @@ class HexConverter {
     throw Exception('Unsupported encoding or invalid string format.');
   }
 
+  static bool _isUri(String input) {
+    return input.startsWith('avm://');
+  }
+
+  static String _handleUri(String input) {
+    final uri = Uri.parse(input);
+    final privateKey = uri.queryParameters['privatekey'] ?? '';
+    final encoding = uri.queryParameters['encoding'] ?? '';
+
+    if (privateKey.isEmpty) {
+      throw Exception('Private key is missing in the URI.');
+    }
+
+    switch (encoding.toLowerCase()) {
+      case 'hex':
+        return _handleHex(privateKey);
+      case 'base64':
+        return _handleBase64(privateKey);
+      case 'base32':
+        return _handleBase32(privateKey);
+      default:
+        throw Exception('Unsupported encoding in the URI.');
+    }
+  }
+
   static bool _isHex(String input) {
-    return RegExp(r'^[0-9a-fA-F]+$').hasMatch(input) && (input.length == 64);
+    return RegExp(r'^[0-9a-fA-F]+$').hasMatch(input);
   }
 
   static String _handleHex(String input) {
-    return input.toLowerCase();
+    if (input.length == 64) {
+      return input.toLowerCase();
+    } else if (input.length == 128) {
+      return input.substring(0, 64).toLowerCase();
+    } else {
+      throw Exception('Invalid hex string length.');
+    }
   }
 
   static bool _isBase64(String input) {
@@ -52,17 +86,5 @@ class HexConverter {
     } catch (e) {
       throw Exception('Invalid Base32 string.');
     }
-  }
-}
-
-void main() {
-  String userInput =
-      '9b1d3ad61a62e0eadedd4d53fffe405a95ac461435c7b7e4e299f110f0c8407d';
-
-  try {
-    String hexPrivateKey = HexConverter.convertToHex(userInput);
-    debugPrint('Hexadecimal Key: $hexPrivateKey');
-  } catch (e) {
-    debugPrint('Error: ${e.toString()}');
   }
 }
