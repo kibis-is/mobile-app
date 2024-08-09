@@ -30,7 +30,7 @@ class CustomTextField extends StatelessWidget {
 
   final TextEditingController controller;
   final String labelText;
-  final String errorText;
+  final String? errorText;
   final bool isEnabled;
   final IconData? leadingIcon;
   final IconData? suffixIcon;
@@ -83,7 +83,7 @@ class CustomTextField extends StatelessWidget {
             horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding / 2,
             vertical: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
         floatingLabelBehavior: FloatingLabelBehavior.auto,
-        errorText: errorText.isEmpty
+        errorText: errorText?.isEmpty ?? true
             ? null
             : (controller.text.isNotEmpty ? null : errorText),
         suffixIcon: suffixIcon != null
