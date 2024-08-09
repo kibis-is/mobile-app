@@ -47,7 +47,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final accountState = ref.watch(accountProvider);
     final showFAB = ref.watch(fabVisibilityProvider);
 
-    List<String> tabs = ['Assets', 'Activity'];
+    List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
     Widget buildFloatingActionButton() {
       return Hero(
