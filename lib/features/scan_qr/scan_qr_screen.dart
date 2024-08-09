@@ -159,7 +159,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: context.colorScheme.primary, width: 2),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(kWidgetRadius),
         ),
       ),
     );
