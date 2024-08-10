@@ -70,7 +70,7 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
                 key: ValueKey(currentIndex),
                 children: [
                   ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    imageFilter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
                     child: Image.asset(
                       nfts[currentIndex].imageUrl,
                       fit: BoxFit.cover,
@@ -80,8 +80,8 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Colors.black.withOpacity(0.5),
-                          Colors.black.withOpacity(0.8),
+                          Colors.black.withOpacity(0.3),
+                          Colors.black.withOpacity(0.7),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
