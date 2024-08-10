@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_loading_overlay.dart';
 import 'package:kibisis/common_widgets/splash_screen.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/providers/connectivity_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -16,6 +18,8 @@ import 'package:kibisis/utils/app_lifecycle_handler.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
+
+// Connectivity Notifier using Riverpod
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +61,9 @@ class _KibisisState extends ConsumerState<Kibisis> {
         final sharedPreferences = ref.watch(sharedPreferencesProvider);
         final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
 
+        // Watch the connectivity status
+        final isConnected = ref.watch(connectivityProvider);
+
         return sharedPreferences.when(
           data: (prefs) {
             final isDarkTheme = ref.watch(isDarkModeStateAdapter);
@@ -96,6 +103,30 @@ class _KibisisState extends ConsumerState<Kibisis> {
                       children: [
                         DefaultColorInitializer(child: Center(child: widget)),
                         if (isSplashScreenVisible) const SplashScreen(),
+                        if (!isConnected)
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              color: context.colorScheme.error,
+                              padding: const EdgeInsets.all(kScreenPadding / 2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.warning,
+                                      color: context.colorScheme.onError),
+                                  const SizedBox(width: kScreenPadding / 2),
+                                  Text(
+                                    'No Internet Connection',
+                                    style: context.textTheme.displaySmall
+                                        ?.copyWith(
+                                            color: context.colorScheme.onError),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
