@@ -131,12 +131,12 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
                                   opacity: showNftInfo ? 1.0 : 0.0,
                                   duration: const Duration(milliseconds: 300),
                                   child: Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       gradient: LinearGradient(
                                         begin: Alignment.bottomCenter,
                                         end: Alignment.topCenter,
                                         colors: [
-                                          Colors.black.withOpacity(1.0),
+                                          Colors.black87,
                                           Colors.transparent
                                         ],
                                       ),
