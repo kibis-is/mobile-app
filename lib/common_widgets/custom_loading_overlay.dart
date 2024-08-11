@@ -37,7 +37,7 @@ class CustomLoadingOverlay extends StatelessWidget {
             const SizedBox(height: kScreenPadding),
             Text(
               text,
-              style: context.textTheme.displaySmall?.copyWith(
+              style: context.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,

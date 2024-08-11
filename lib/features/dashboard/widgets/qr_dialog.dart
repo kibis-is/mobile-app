@@ -23,7 +23,7 @@ class QrDialog extends StatelessWidget {
         child: Text(
           title!,
           textAlign: TextAlign.center,
-          style: context.textTheme.titleLarge,
+          style: context.textTheme.titleMedium,
         ),
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,

@@ -1,10 +1,11 @@
+import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class TransparentListTile extends StatelessWidget {
-  final IconData icon; // Changed to IconData
+  final IconData icon;
   final String title;
   final VoidCallback onTap;
 
@@ -27,9 +28,9 @@ class TransparentListTile extends StatelessWidget {
         size: AppIcons.large,
         color: context.colorScheme.primary,
       ),
-      title: Text(
+      title: EllipsizedText(
         title,
-        style: context.textTheme.displayLarge
+        style: context.textTheme.displayMedium
             ?.copyWith(fontWeight: FontWeight.bold),
       ),
       trailing: AppIcons.icon(
