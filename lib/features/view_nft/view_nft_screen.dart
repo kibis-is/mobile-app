@@ -6,6 +6,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/view_nft/providers/show_nft_info_provider.dart';
 import 'package:kibisis/providers/nft_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 import 'dart:ui';
 
 final currentIndexProvider = StateProvider<int>((ref) {
@@ -29,7 +30,6 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
     super.initState();
     _swiperIndex = widget.initialIndex;
 
-    // Set the initial index for the provider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(currentIndexProvider.notifier).state = widget.initialIndex;
       debugPrint("Initial Index set to: ${widget.initialIndex}");
@@ -39,146 +39,175 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
   @override
   Widget build(BuildContext context) {
     final nftState = ref.watch(nftNotifierProvider);
-    final nfts = nftState.nfts;
     final currentIndex = ref.watch(currentIndexProvider);
     final showNftInfo = ref.watch(showNftInfoProvider);
 
-    if (nfts.isEmpty) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('NFT Viewer')),
-        body: const Center(child: Text('No NFTs found')),
-      );
-    }
+    return nftState.when(
+      data: (nfts) {
+        if (nfts.isEmpty) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('NFT Viewer')),
+            body: const Center(child: Text('No NFTs found')),
+          );
+        }
 
-    debugPrint("Building with Current Index: $currentIndex");
-
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text('NFT Viewer'),
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
-              switchInCurve: Curves.easeInOut,
-              child: Stack(
-                fit: StackFit.expand,
-                key: ValueKey(currentIndex),
-                children: [
-                  ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-                    child: Image.asset(
-                      nfts[currentIndex].imageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black.withOpacity(0.3),
-                          Colors.black.withOpacity(0.7),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text('NFT Viewer'),
+          ),
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  switchInCurve: Curves.easeInOut,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    key: ValueKey(currentIndex),
+                    children: [
+                      ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+                        child: Image.network(
+                          nfts[currentIndex].imageUrl,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.black.withOpacity(0.3),
+                              Colors.black.withOpacity(0.7),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Swiper(
+                  index: _swiperIndex,
+                  onIndexChanged: (index) {
+                    if (_swiperIndex != index) {
+                      setState(() {
+                        _swiperIndex = index;
+                      });
+                      ref.read(currentIndexProvider.notifier).state = index;
+                    }
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(kWidgetRadius),
+                      child: GestureDetector(
+                        onTap: () =>
+                            ref.read(showNftInfoProvider.notifier).toggle(),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width -
+                              (kScreenPadding * 2),
+                          height: MediaQuery.of(context).size.width -
+                              (kScreenPadding * 2),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            alignment: Alignment.center,
+                            children: [
+                              Image.network(
+                                nfts[index].imageUrl,
+                                fit: BoxFit.fill,
+                              ),
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                top: MediaQuery.of(context).size.width / 2,
+                                child: AnimatedOpacity(
+                                  opacity: showNftInfo ? 1.0 : 0.0,
+                                  duration: const Duration(milliseconds: 300),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Colors.black.withOpacity(1.0),
+                                          Colors.transparent
+                                        ],
+                                      ),
+                                    ),
+                                    padding:
+                                        const EdgeInsets.all(kScreenPadding),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        EllipsizedText(
+                                          nfts[index].name,
+                                          style: context.textTheme.displayLarge
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.bold),
+                                        ),
+                                        EllipsizedText(
+                                          nfts[index].description,
+                                          style: context.textTheme.displaySmall,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: nfts.length,
+                  loop: nfts.length > 1 ? true : false,
+                  itemWidth:
+                      MediaQuery.of(context).size.width - (kScreenPadding * 2),
+                  itemHeight:
+                      MediaQuery.of(context).size.width - (kScreenPadding * 2),
+                  layout: SwiperLayout.STACK,
+                  scrollDirection: Axis.horizontal,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('NFT Viewer'),
+        ),
+        body: Center(
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: MediaQuery.of(context).size.width - (kScreenPadding * 2),
+              height: MediaQuery.of(context).size.width - (kScreenPadding * 2),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(kWidgetRadius),
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Swiper(
-              index: _swiperIndex,
-              onIndexChanged: (index) {
-                if (_swiperIndex != index) {
-                  setState(() {
-                    _swiperIndex = index;
-                  });
-                  ref.read(currentIndexProvider.notifier).state = index;
-                }
-              },
-              itemBuilder: (BuildContext context, int index) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(kWidgetRadius),
-                  child: GestureDetector(
-                    onTap: () =>
-                        ref.read(showNftInfoProvider.notifier).toggle(),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width -
-                          (kScreenPadding * 2),
-                      height: MediaQuery.of(context).size.width -
-                          (kScreenPadding * 2),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset(
-                            nfts[index].imageUrl,
-                            fit: BoxFit.fill,
-                          ),
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            top: MediaQuery.of(context).size.width / 2,
-                            child: AnimatedOpacity(
-                              opacity: showNftInfo ? 1.0 : 0.0,
-                              duration: const Duration(milliseconds: 300),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(1.0),
-                                      Colors.transparent
-                                    ],
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(kScreenPadding),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    EllipsizedText(
-                                      nfts[index].name,
-                                      style: context.textTheme.displayLarge
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    EllipsizedText(nfts[index].owner,
-                                        style: context.textTheme.displayMedium),
-                                    EllipsizedText(nfts[index].description,
-                                        style: context.textTheme.displaySmall),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-              itemCount: nfts.length,
-              loop: true,
-              itemWidth:
-                  MediaQuery.of(context).size.width - (kScreenPadding * 2),
-              itemHeight:
-                  MediaQuery.of(context).size.width - (kScreenPadding * 2),
-              layout: SwiperLayout.STACK,
-              scrollDirection: Axis.horizontal,
-            ),
-          ),
-        ],
+        ),
+      ),
+      error: (error, stack) => Scaffold(
+        appBar: AppBar(title: const Text('NFT Viewer')),
+        body: Center(child: Text('Error: $error')),
       ),
     );
   }

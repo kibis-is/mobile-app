@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ShowNftInfoNotifier extends StateNotifier<bool> {
-  ShowNftInfoNotifier() : super(true);
+  ShowNftInfoNotifier() : super(false);
 
   void toggle() {
     state = !state;

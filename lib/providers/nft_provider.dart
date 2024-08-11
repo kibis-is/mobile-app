@@ -1,29 +1,20 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:kibisis/models/nft.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-final nftNotifierProvider = StateNotifierProvider<NFTNotifier, NFTState>((ref) {
+final nftNotifierProvider =
+    StateNotifierProvider<NFTNotifier, AsyncValue<List<NFT>>>((ref) {
   return NFTNotifier();
 });
 
-class NFTState {
-  final List<NFT> nfts;
-  final String? error;
+class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
+  List<NFT> _allNfts = [];
 
-  NFTState({required this.nfts, this.error});
+  NFTNotifier() : super(const AsyncValue.loading());
 
-  NFTState.initial() : this(nfts: [], error: null);
-}
-
-class NFTNotifier extends StateNotifier<NFTState> {
-  NFTNotifier() : super(NFTState.initial()) {
-    // Load mock data by default for testing
-    _loadMockData();
-  }
-
-  // Method to fetch NFTs using a public key
   Future<void> fetchNFTs(String publicKey) async {
+    state = const AsyncValue.loading();
     final String url =
         'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicKey';
     try {
@@ -31,58 +22,47 @@ class NFTNotifier extends StateNotifier<NFTState> {
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
         final List<dynamic> tokens = body['tokens'];
-        final List<NFT> nfts =
-            tokens.map<NFT>((json) => NFT.fromJson(json)).toList();
-        state = NFTState(nfts: nfts);
+
+        final List<NFT> nfts = tokens.map<NFT>((json) {
+          final metadataJson = jsonDecode(json['metadata']);
+          return NFT(
+            contractId: json['contractId'],
+            tokenId: json['tokenId'],
+            owner: json['owner'],
+            metadataURI: json['metadataURI'],
+            name: metadataJson['name'],
+            description: metadataJson['description'],
+            imageUrl: metadataJson['image'],
+            imageMimetype: metadataJson['image_mimetype'],
+            properties: Map<String, String>.from(metadataJson['properties']),
+            royalties: metadataJson['royalties'],
+            mintRound: json['mint-round'],
+            isBurned: json['isBurned'],
+          );
+        }).toList();
+
+        _allNfts = nfts;
+        state = AsyncValue.data(nfts);
       } else {
         throw Exception(
             'Failed to load NFTs with status code: ${response.statusCode}');
       }
     } catch (e) {
-      state = NFTState(nfts: [], error: e.toString());
+      state = AsyncValue.error(e, StackTrace.current);
     }
   }
 
-  // Method to load mock data
-  void _loadMockData() {
-    final mockNfts = List<NFT>.generate(15, (index) {
-      return NFT(
-        contractId: index + 1,
-        tokenId: index + 1,
-        owner: "mockOwner",
-        metadataURI: "assets/nfts/${index + 1}.webp",
-        name: "Mock NFT #${index + 1}",
-        description: "This is a mock NFT for testing.",
-        imageUrl:
-            "assets/nfts/${index + 1}.webp", // Correctly reference the asset path
-        imageMimetype: "image/webp",
-        properties: {
-          "Property1": "Value1",
-          "Property2": "Value2"
-        }, // Example properties
-        royalties: "mockRoyalties",
-        mintRound: 1,
-        isBurned: false,
-      );
-    });
+  void setFilter(String query) {
+    if (query.isEmpty) {
+      state = AsyncValue.data(_allNfts);
+    } else {
+      final filteredNfts = _allNfts.where((nft) {
+        final nameLower = nft.name.toLowerCase();
+        final queryLower = query.toLowerCase();
+        return nameLower.contains(queryLower);
+      }).toList();
 
-    state = NFTState(nfts: mockNfts);
+      state = AsyncValue.data(filteredNfts);
+    }
   }
-
-  // Uncomment the following method to switch from mock data to real data fetching
-  /*
-  Future<void> loadNftsFromPublicKey(String publicKey) async {
-    state = NFTState(nfts: []); // Clear current state
-    await fetchNFTs(publicKey);
-  }
-  */
-
-  // Call this method to switch between mock data and real data fetching
-  /*
-  void switchToRealDataFetching(String publicKey) {
-    _loadMockData(); // Load mock data by default
-    // Call this to load real data when needed
-    // loadNftsFromPublicKey(publicKey);
-  }
-  */
 }
