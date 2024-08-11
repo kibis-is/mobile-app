@@ -9,6 +9,7 @@ import 'package:kibisis/models/nft.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/nft_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -135,7 +136,9 @@ class NftTabState extends ConsumerState<NftTab> {
           },
           child: Card(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kWidgetRadius),
+              borderRadius: viewType == NftViewType.grid
+                  ? BorderRadius.circular(0)
+                  : BorderRadius.circular(kWidgetRadius),
             ),
             clipBehavior: Clip.antiAlias,
             child: Stack(
@@ -168,9 +171,9 @@ class NftTabState extends ConsumerState<NftTab> {
                       width: double.infinity,
                       child: EllipsizedText(
                         nft.name,
-                        style: context.textTheme.displaySmall?.copyWith(
+                        style: context.textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: ColorPalette.darkThemeWhite,
                           shadows: const [
                             Shadow(
                               offset: Offset(1.0, 1.0),
