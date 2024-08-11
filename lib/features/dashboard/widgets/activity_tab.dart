@@ -52,8 +52,8 @@ class ActivityTab extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            width: 100,
-            height: 100,
+            width: 72,
+            height: 72,
             child: SvgPicture.asset('assets/images/empty.svg',
                 semanticsLabel: 'No Assets Found'),
           ),
@@ -61,7 +61,7 @@ class ActivityTab extends ConsumerWidget {
           Text('No Transactions Found', style: context.textTheme.titleMedium),
           const SizedBox(height: kScreenPadding / 2),
           Text(
-            'You have not made any transactions. Try making one now.',
+            'You have not made any transactions.',
             style: context.textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),

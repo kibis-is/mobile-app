@@ -183,15 +183,15 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            width: 100,
-            height: 100,
+            width: 72,
+            height: 72,
             child: SvgPicture.asset('assets/images/empty.svg',
                 semanticsLabel: 'No Assets Found'),
           ),
           const SizedBox(height: kScreenPadding / 2),
           Text('No Assets Found', style: context.textTheme.titleMedium),
           const SizedBox(height: kScreenPadding / 2),
-          Text('You have not added any assets. Try adding one now.',
+          Text('You have not added any assets.',
               style: context.textTheme.bodyMedium, textAlign: TextAlign.center),
           const SizedBox(height: kScreenPadding),
           TextButton(
