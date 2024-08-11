@@ -124,27 +124,48 @@ class ActivityTab extends ConsumerWidget {
       final otherPartyAddressAsset =
           transaction.assetTransferTransaction?.receiver ?? 'Unknown';
 
-      if (type == 'axfer') {
-        final asset =
-            await ref.read(algorandServiceProvider).getAssetById(assetId ?? -1);
-        transactionItems.add(TransactionItem(
-          transaction: transaction,
-          isOutgoing: isOutgoing,
-          otherPartyAddress: otherPartyAddressAsset,
-          note: note,
-          amount: assetAmount.toString(),
-          type: type,
-          assetName: asset.params.name ?? '',
-        ));
-      } else if (type == 'pay') {
-        transactionItems.add(TransactionItem(
-          transaction: transaction,
-          isOutgoing: isOutgoing,
-          otherPartyAddress: otherPartyAddress,
-          amount: amountInAlgos.toString(),
-          note: note,
-          type: type,
-        ));
+      switch (type) {
+        case 'axfer':
+          final asset = await ref
+              .read(algorandServiceProvider)
+              .getAssetById(assetId ?? -1);
+          transactionItems.add(TransactionItem(
+            transaction: transaction,
+            isOutgoing: isOutgoing,
+            otherPartyAddress: otherPartyAddressAsset,
+            note: note,
+            amount: assetAmount.toString(),
+            type: type,
+            assetName: asset.params.name ?? '',
+          ));
+          break;
+
+        case 'pay':
+          transactionItems.add(TransactionItem(
+            transaction: transaction,
+            isOutgoing: isOutgoing,
+            otherPartyAddress: otherPartyAddress,
+            amount: amountInAlgos.toString(),
+            note: note,
+            type: type,
+          ));
+          break;
+
+        case 'appl':
+          transactionItems.add(TransactionItem(
+            transaction: transaction,
+            isOutgoing: isOutgoing,
+            otherPartyAddress: otherPartyAddress,
+            amount: isOutgoing ? 'Outgoing' : 'Incoming',
+            note: note,
+            type: type,
+            assetName: 'App Call',
+          ));
+          break;
+
+        default:
+          debugPrint('Unknown transaction type: $type');
+          break;
       }
     }
 

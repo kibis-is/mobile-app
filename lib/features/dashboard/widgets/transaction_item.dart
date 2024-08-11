@@ -42,13 +42,17 @@ class TransactionItem extends ConsumerWidget {
       case 'axfer':
         iconData = AppIcons.asset;
         break;
+      case 'appl':
+        iconData = AppIcons.appCall;
+        break;
       default:
         iconData = AppIcons.error;
         break;
     }
 
     return Container(
-      padding: type == 'pay' ? const EdgeInsets.all(kScreenPadding / 4) : null,
+      padding:
+          type != 'axfer' ? const EdgeInsets.all(kScreenPadding / 4) : null,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
@@ -58,7 +62,7 @@ class TransactionItem extends ConsumerWidget {
       ),
       child: AppIcons.icon(
           icon: iconData,
-          size: type == 'pay' ? AppIcons.medium : AppIcons.large,
+          size: type == 'pay' ? AppIcons.medium : AppIcons.medium,
           color: context.colorScheme.primary),
     );
   }
@@ -66,7 +70,7 @@ class TransactionItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(isDarkModeProvider);
-    final network = ref.watch(networkProvider)?.value ?? 'network-voi';
+    final network = ref.watch(networkProvider)?.value ?? '';
     return Column(
       children: [
         Material(
@@ -104,25 +108,29 @@ class TransactionItem extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    EllipsizedText(
-                      type: EllipsisType.middle,
-                      ellipsis: '...',
-                      otherPartyAddress,
-                      style: context.textTheme.bodyMedium,
-                    ),
-                    EllipsizedText(
-                      type: EllipsisType.end,
-                      ellipsis: '...',
-                      note,
-                      style: context.textTheme.bodySmall,
-                    ),
+                    if (otherPartyAddress != '')
+                      EllipsizedText(
+                        type: EllipsisType.middle,
+                        ellipsis: '...',
+                        otherPartyAddress,
+                        style: context.textTheme.bodyMedium,
+                      ),
+                    if (note != '')
+                      EllipsizedText(
+                        type: EllipsisType.end,
+                        ellipsis: '...',
+                        note,
+                        style: context.textTheme.bodySmall,
+                      ),
                   ],
                 ),
                 trailing: Text(
-                  '${amount == '0' ? '0.' : (isOutgoing ? '-' : '+')}$amount',
+                  type == 'appl'
+                      ? '$amount'
+                      : '${amount == '0' ? '0.' : (isOutgoing ? '-' : '+')}$amount',
                   style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: amount == '0'
+                    color: (amount == '0' || type == 'appl')
                         ? context.colorScheme.onSurface
                         : isOutgoing
                             ? context.colorScheme.error

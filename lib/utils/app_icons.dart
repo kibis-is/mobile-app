@@ -47,6 +47,7 @@ class AppIcons {
   static const IconData search = Icons.search_rounded;
   static const IconData grid = Icons.grid_view_rounded;
   static const IconData card = Icons.view_list_rounded;
+  static const IconData appCall = Icons.extension_rounded;
 
   static const String svgBasePath = 'assets/images/';
 
