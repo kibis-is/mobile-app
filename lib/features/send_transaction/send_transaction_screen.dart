@@ -578,8 +578,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                     const SizedBox(height: 2),
                   ],
                 );
-              }).toList()
-                ..removeLast(),
+              }).toList(),
             ),
           ),
         );
