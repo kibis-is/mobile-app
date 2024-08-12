@@ -206,7 +206,7 @@ class PinPadState extends ConsumerState<PinPad> {
                                   },
                             child: Text(
                               key,
-                              style: context.textTheme.titleLarge,
+                              style: context.textTheme.titleMedium,
                             ),
                           ),
                         );
