@@ -245,14 +245,6 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          icon: const Icon(Icons.share),
-          onPressed: qrKeys.isNotEmpty
-              ? () => QRCodeUtils.shareQrImage(qrKeys[0])
-              : null,
-          tooltip: 'Share QR',
-        ),
-        const SizedBox(width: kScreenPadding),
-        IconButton(
           icon: const Icon(Icons.copy),
           onPressed: qrKeys.isNotEmpty
               ? () => copyToClipboard(
