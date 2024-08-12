@@ -11,6 +11,7 @@ import 'package:kibisis/providers/nft_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
@@ -37,7 +38,7 @@ class NftTabState extends ConsumerState<NftTab> {
   }
 
   void _onRefresh() async {
-    debugPrint('onRefresh called');
+    invalidateProviders(ref);
     final publicAddress = ref.read(
         accountProvider.select((state) => state.account?.publicAddress ?? ''));
     await ref.read(nftNotifierProvider.notifier).fetchNFTs(publicAddress);
