@@ -1,13 +1,14 @@
 import 'dart:convert';
 
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
-import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -25,13 +26,15 @@ class ActivityTab extends ConsumerWidget {
     final publicAddress = ref.watch(accountProvider
         .select((account) => account.account?.publicAddress ?? ''));
     final transactionsAsyncValue = ref.watch(transactionsProvider);
-    return SmartRefresher(
-      controller: refreshController,
-      onRefresh: () {
-        ref.read(transactionsProvider.notifier).getTransactions(publicAddress);
+
+    return CustomPullToRefresh(
+      refreshController: refreshController,
+      onRefresh: () async {
+        await ref
+            .read(transactionsProvider.notifier)
+            .getTransactions(publicAddress);
         refreshController.refreshCompleted();
       },
-      enablePullDown: true,
       child: transactionsAsyncValue.when(
         data: (transactions) {
           if (transactions.isEmpty) {

@@ -2,6 +2,7 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -63,9 +64,8 @@ class NftTabState extends ConsumerState<NftTab> {
     final nftState = ref.watch(nftNotifierProvider);
 
     return Scaffold(
-      body: SmartRefresher(
-        enablePullDown: true,
-        controller: _refreshController,
+      body: CustomPullToRefresh(
+        refreshController: _refreshController,
         onRefresh: _onRefresh,
         child: Column(
           children: [

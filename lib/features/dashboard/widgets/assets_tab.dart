@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
+import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
 import 'package:kibisis/models/select_item.dart';
@@ -67,9 +68,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             title: _buildSearchBar(context),
           ),
           SliverFillRemaining(
-            child: SmartRefresher(
-              enablePullDown: true,
-              controller: _refreshController,
+            child: CustomPullToRefresh(
+              refreshController: _refreshController,
               onRefresh: _onRefresh,
               child: assetsAsync.when(
                 data: (assets) => assets.isEmpty
