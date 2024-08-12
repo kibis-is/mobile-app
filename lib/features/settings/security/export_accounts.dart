@@ -61,6 +61,12 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   void startOrAdjustTimer() {
     final interval = ref.read(intervalProvider);
     if (interval == 0) {
@@ -69,6 +75,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     }
     _timer?.cancel();
     _timer = Timer.periodic(Duration(milliseconds: interval), (Timer timer) {
+      if (!mounted) return;
       final currentPage = ref.read(currentPageProvider);
       ref.read(currentPageProvider.notifier).state =
           (currentPage + 1) % qrKeys.length;
@@ -146,6 +153,9 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     return Flexible(
       child: qrDataAsyncValue.when(
         data: (List<String> qrData) {
+          if (!mounted) {
+            return const SizedBox.shrink();
+          }
           qrKeys = List.generate(qrData.length, (index) => GlobalKey());
           resetTimer();
           return qrData.length > 1

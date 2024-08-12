@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/pin_state.dart';
@@ -15,6 +14,8 @@ final pinEntryStateNotifierProvider =
 final isPinCompleteProvider = StateProvider<bool>((ref) => false);
 
 class PinEntryStateNotifier extends StateNotifier<PinState> {
+  String? _firstPin;
+
   final StateNotifierProviderRef<PinEntryStateNotifier, PinState> ref;
   final PinStateNotifier pinStateNotifier;
 
@@ -31,24 +32,29 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
     return state.pin.length == 6;
   }
 
+  void setFirstPin(String pin) {
+    _firstPin = pin;
+  }
+
+  String? getFirstPin() {
+    return _firstPin;
+  }
+
   Future<void> pinComplete(PinPadMode mode) async {
     try {
-      if (mode == PinPadMode.unlock) {
+      if (mode == PinPadMode.setup) {
+        await pinStateNotifier.setPin(state.pin);
+      } else if (mode == PinPadMode.unlock) {
         bool isPinVerified = await pinStateNotifier.verifyPin(state.pin);
         if (isPinVerified) {
-          debugPrint('PIN verified successfully');
           await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
           ref.read(isAuthenticatedProvider.notifier).state = true;
-          debugPrint('Authentication state set to true.');
           clearError();
         } else {
           throw Exception('Incorrect PIN');
         }
-      } else if (mode == PinPadMode.setup) {
-        await pinStateNotifier.setPin(state.pin);
       }
     } catch (e) {
-      debugPrint('Invalid PIN entered: $e');
       state = state.copyWith(error: 'Invalid PIN. Try again.', pin: '');
     }
   }

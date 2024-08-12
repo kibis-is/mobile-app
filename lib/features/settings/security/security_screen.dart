@@ -10,7 +10,7 @@ import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/common_widgets/pin_pad_dialog.dart'; // Import the PinPadDialog
+import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 
 class SecurityScreen extends ConsumerWidget {
   static const String title = 'Security';
@@ -39,8 +39,7 @@ class SecurityScreen extends ConsumerWidget {
             TransparentListTile(
               icon: AppIcons.importAccount,
               title: 'Export Accounts',
-              onTap: () => _showPinPadDialog(
-                  context, ref), // Updated onTap to trigger PIN dialog
+              onTap: () => _showPinPadDialog(context, ref),
             ),
           ],
         ),
@@ -52,7 +51,7 @@ class SecurityScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => PinPadDialog(
-        title: 'Confirm Export',
+        title: 'Verify Pin',
         onPinVerified: () {
           GoRouter.of(context).push('/settings/security/exportAccounts');
         },

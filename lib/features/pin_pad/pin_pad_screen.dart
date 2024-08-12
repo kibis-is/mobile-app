@@ -1,10 +1,8 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/pin_pad.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/providers/pin_entry_provider.dart';
+import 'package:kibisis/features/pin_pad/providers/pin_title_provider.dart';
 
 class PinPadScreen extends ConsumerWidget {
   final PinPadMode mode;
@@ -13,11 +11,13 @@ class PinPadScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(pinEntryStateNotifierProvider);
+    final title = mode == PinPadMode.setup
+        ? ref.watch(pinTitleProvider)
+        : (mode == PinPadMode.unlock ? "Unlock" : "Verify Pin");
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(mode == PinPadMode.setup ? 'Setup PIN' : 'Unlock'),
+        title: Text(title),
         automaticallyImplyLeading: false,
       ),
       body: Column(
