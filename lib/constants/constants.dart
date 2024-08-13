@@ -11,7 +11,7 @@ const String kVersionNumber = 'v0.1.1';
 const int kMaxAccountNameLength = 32;
 const double kDialogWidth = 0.75;
 
-enum PinPadMode { setup, unlock, verifyTransaction }
+enum PinPadMode { setup, unlock, verifyTransaction, changePin }
 
 enum AssetScreenMode { view, add }
 
