@@ -55,174 +55,160 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.accountFlow == AccountFlow.edit
-            ? 'Edit Account'
-            : 'Name Account'),
-        actions: [
-          if (widget.accountFlow == AccountFlow.edit)
-            Consumer(
-              builder: (context, ref, child) {
-                final accountsList = ref.watch(accountsListProvider);
-                if (accountsList.accounts.length > 1) {
-                  return IconButton(
-                    icon: AppIcons.icon(icon: AppIcons.delete),
-                    onPressed: () async {
-                      bool confirm = await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return const ConfirmationDialog(
-                                yesText: 'Delete',
-                                noText: 'Cancel',
-                                content:
-                                    'Are you sure you want to delete this account?',
-                              );
-                            },
-                          ) ??
-                          false;
-
-                      if (confirm) {
-                        await _deleteAccount(widget.accountId!);
-                      }
-                    },
-                  );
-                }
-                return Container();
-              },
-            ),
-        ],
+        title: Text(_getAppBarTitle()),
+        actions: [_buildDeleteAction()],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final loadingState = ref.watch(loadingProvider);
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: Padding(
-                  padding: const EdgeInsets.all(kScreenPadding),
-                  child: Form(
-                    key: formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: kScreenPadding),
-                        Text(
-                          widget.accountFlow == AccountFlow.edit
-                              ? 'Edit your account name'
-                              : 'Name your account',
-                          style: context.textTheme.bodyMedium?.copyWith(
-                            color: context.colorScheme.onSecondary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: kScreenPadding),
-                        Text(
-                          widget.accountFlow == AccountFlow.edit
-                              ? 'You can change your account name below.'
-                              : 'Give your account a nickname. Don’t worry, you can change this later.',
-                          style: context.textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: kScreenPadding),
-                        CustomTextField(
-                          maxLength: kMaxAccountNameLength,
-                          controller: accountNameController,
-                          labelText: 'Account Name',
-                          onChanged: (value) {},
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                        ),
-                        const Spacer(),
-                        CustomButton(
-                          text: widget.accountFlow == AccountFlow.edit
-                              ? 'Save'
-                              : 'Create',
-                          isFullWidth: true,
-                          // Disable button if loading or has been submitted
-                          onPressed: loadingState.isLoading ||
-                                  ref.watch(hasSubmittedProvider)
-                              ? null
-                              : () async {
-                                  ref
-                                      .read(hasSubmittedProvider.notifier)
-                                      .state = true; // Mark as submitted
-                                  if (formKey.currentState!.validate()) {
-                                    ref
-                                        .read(loadingProvider.notifier)
-                                        .startLoading(
-                                          message: widget.accountFlow ==
-                                                  AccountFlow.edit
-                                              ? 'Updating Account'
-                                              : 'Creating Account',
-                                          fullScreen: widget.accountFlow ==
-                                                  AccountFlow.edit
-                                              ? false
-                                              : true,
-                                          withProgressBar: widget.accountFlow ==
-                                                  AccountFlow.edit
-                                              ? false
-                                              : true,
-                                        );
-                                    try {
-                                      if (widget.accountFlow ==
-                                          AccountFlow.edit) {
-                                        await _updateAccountName();
-                                      } else {
-                                        await AccountSetupUtility
-                                            .completeAccountSetup(
-                                          ref: ref,
-                                          accountFlow: widget.accountFlow,
-                                          accountName:
-                                              accountNameController.text,
-                                          setFinalState: true,
-                                        );
-                                        invalidateProviders(ref);
-                                      }
-                                    } catch (e) {
-                                      if (!context.mounted) return;
-                                      showCustomSnackBar(
-                                        context: context,
-                                        snackType: SnackType.error,
-                                        message: '$e',
-                                      );
-                                      ref
-                                          .read(hasSubmittedProvider.notifier)
-                                          .state = false;
-                                    } finally {
-                                      if (context.mounted) {
-                                        GoRouter.of(context).go('/');
-                                      }
-                                      ref
-                                          .read(loadingProvider.notifier)
-                                          .stopLoading();
-                                    }
-                                  }
-                                },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(kScreenPadding),
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(context),
+              const SizedBox(height: kScreenPadding),
+              _buildDescription(context),
+              const SizedBox(height: kScreenPadding),
+              _buildAccountNameField(),
+              const SizedBox(height: kScreenPadding),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: _buildSubmitButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  String _getAppBarTitle() {
+    return widget.accountFlow == AccountFlow.edit
+        ? 'Edit Account'
+        : 'Name Account';
+  }
+
+  Widget _buildDeleteAction() {
+    if (widget.accountFlow != AccountFlow.edit) return Container();
+
+    final accountsList = ref.watch(accountsListProvider);
+    if (accountsList.accounts.length > 1) {
+      return IconButton(
+        icon: AppIcons.icon(icon: AppIcons.delete),
+        onPressed: () => _confirmDeleteAccount(),
+      );
+    }
+    return Container();
+  }
+
+  Future<void> _confirmDeleteAccount() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      bool confirm = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const ConfirmationDialog(
+                yesText: 'Delete',
+                noText: 'Cancel',
+                content: 'Are you sure you want to delete this account?',
+              );
+            },
+          ) ??
+          false;
+
+      if (confirm) {
+        await _deleteAccount(widget.accountId!);
+      }
+    });
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Text(
+      widget.accountFlow == AccountFlow.edit
+          ? 'Edit your account name'
+          : 'Name your account',
+      style: context.textTheme.bodyMedium?.copyWith(
+        color: context.colorScheme.onSecondary,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
 
+  Widget _buildDescription(BuildContext context) {
+    return Text(
+      widget.accountFlow == AccountFlow.edit
+          ? 'You can change your account name below.'
+          : 'Give your account a nickname. Don’t worry, you can change this later.',
+      style: context.textTheme.bodySmall,
+    );
+  }
+
+  Widget _buildAccountNameField() {
+    return CustomTextField(
+      maxLength: kMaxAccountNameLength,
+      controller: accountNameController,
+      labelText: 'Account Name',
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    final loadingState = ref.watch(loadingProvider);
+    return Padding(
+      padding: const EdgeInsets.all(kScreenPadding),
+      child: CustomButton(
+        text: widget.accountFlow == AccountFlow.edit ? 'Save' : 'Create',
+        isFullWidth: true,
+        onPressed: loadingState.isLoading || ref.watch(hasSubmittedProvider)
+            ? null
+            : () => _handleSubmit(),
+      ),
+    );
+  }
+
+  Future<void> _handleSubmit() async {
+    final ref = this.ref;
+    ref.read(hasSubmittedProvider.notifier).state = true;
+
+    if (formKey.currentState!.validate()) {
+      await _handleAccountSubmission();
+    }
+  }
+
+  Future<void> _handleAccountSubmission() async {
+    final ref = this.ref;
+    ref.read(loadingProvider.notifier).startLoading(
+          message: widget.accountFlow == AccountFlow.edit
+              ? 'Updating Account'
+              : 'Creating Account',
+          fullScreen: widget.accountFlow != AccountFlow.edit,
+          withProgressBar: widget.accountFlow != AccountFlow.edit,
+        );
+
+    try {
+      if (widget.accountFlow == AccountFlow.edit) {
+        await _updateAccountName();
+      } else {
+        await _createAccount();
+      }
+      _navigateHome();
+    } catch (e) {
+      _showError(e);
+    } finally {
+      ref.read(loadingProvider.notifier).stopLoading();
+    }
+  }
+
   Future<void> _updateAccountName() async {
     final accountName = accountNameController.text;
-    await ref.read(accountProvider.notifier).setAccountName(accountName);
-
     final accountId = ref.read(activeAccountProvider);
     if (accountId == null) {
       throw Exception('No active account ID found');
     }
 
+    await ref.read(accountProvider.notifier).setAccountName(accountName);
     await ref
         .read(accountsListProvider.notifier)
         .updateAccountName(accountId, accountName);
@@ -233,27 +219,45 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
       accountName: accountName,
       setFinalState: true,
     );
+
     ref.read(accountsListProvider.notifier).loadAccounts();
+    invalidateProviders(ref);
+  }
+
+  Future<void> _createAccount() async {
+    await AccountSetupUtility.completeAccountSetup(
+      ref: ref,
+      accountFlow: widget.accountFlow,
+      accountName: accountNameController.text,
+      setFinalState: true,
+    );
+
     invalidateProviders(ref);
   }
 
   Future<void> _deleteAccount(String accountId) async {
     try {
       await ref.read(accountProvider.notifier).deleteAccount(accountId);
-      if (!mounted) return;
       _navigateToWallets();
     } catch (e) {
-      if (!mounted) return;
-      showCustomSnackBar(
-        context: context,
-        snackType: SnackType.error,
-        message: '$e',
-      );
+      _showError(e);
     }
   }
 
+  void _navigateHome() {
+    GoRouter.of(context).go('/');
+  }
+
   void _navigateToWallets() {
-    if (!mounted) return;
     GoRouter.of(context).go('/wallets');
+  }
+
+  void _showError(dynamic error) {
+    showCustomSnackBar(
+      context: context,
+      snackType: SnackType.error,
+      message: '$error',
+    );
+    ref.read(hasSubmittedProvider.notifier).state = false;
   }
 }
