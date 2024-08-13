@@ -11,14 +11,13 @@ class PinPadScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final title = mode == PinPadMode.setup
-        ? ref.watch(pinTitleProvider)
-        : (mode == PinPadMode.unlock ? "Unlock" : "Verify Pin");
+    ref.listen(pinTitleProvider.notifier, (previous, next) {});
+    final title = ref.watch(pinTitleProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
       ),
       body: Column(
         children: [
