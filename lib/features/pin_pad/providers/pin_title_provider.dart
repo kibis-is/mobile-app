@@ -1,14 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PinTitleNotifier extends StateNotifier<String> {
-  PinTitleNotifier() : super("Create Pin");
+  PinTitleNotifier() : super('Create Pin');
 
   void setCreatePinTitle() {
-    state = "Create Pin";
+    state = 'Create Pin';
   }
 
   void setConfirmPinTitle() {
-    state = "Confirm Pin";
+    state = 'Confirm Pin';
+  }
+
+  void setUnlockTitle() {
+    state = 'Unlock';
+  }
+
+  void setVerifyTransactionTitle() {
+    state = 'Verify Transaction';
   }
 }
 
