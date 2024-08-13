@@ -48,6 +48,8 @@ class AppIcons {
   static const IconData grid = Icons.grid_view_rounded;
   static const IconData card = Icons.view_list_rounded;
   static const IconData appCall = Icons.extension_rounded;
+  static const IconData arrowBackIOS = Icons.arrow_back_ios_rounded;
+  static const IconData arrowBackAndroid = Icons.arrow_back_rounded;
 
   static const String svgBasePath = 'assets/images/';
 
