@@ -137,16 +137,25 @@ class AlgorandService {
 
   Future<String> getAccountBalance(String publicAddress) async {
     try {
-      final accountInfo =
+      final response =
           await algorand.algodClient.client.get('/v2/accounts/$publicAddress');
-      final balance = accountInfo.data['amount'] as int;
+
+      final balance = response.data['amount'] as int?;
+
+      if (balance == null) {
+        debugPrint('Account balance not found in the response.');
+        return '0';
+      }
+
       return Algo.fromMicroAlgos(balance).toString();
-    } on AlgorandException catch (e) {
-      debugPrint('Get Balance Algorand Exception: ${e.message}');
-      return '0';
     } catch (e) {
-      debugPrint('General Exception: $e');
-      throw Exception('Failed to get account balance: $e');
+      if (e.toString().contains('404')) {
+        debugPrint('Account not found for $publicAddress');
+        return '0';
+      } else {
+        debugPrint('General Exception: $e');
+        throw Exception('Failed to get account balance: $e');
+      }
     }
   }
 
