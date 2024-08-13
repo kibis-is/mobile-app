@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,23 +34,85 @@ class PinPad extends ConsumerStatefulWidget {
   PinPadState createState() => PinPadState();
 }
 
-class PinPadState extends ConsumerState<PinPad> {
+class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
+  bool isConfirmingPin = false;
+  late AnimationController _controller;
+  late List<Animation<Offset>> _positionAnimations;
+  late List<Animation<double>> _opacityAnimations;
+
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _initializeAnimations();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _triggerAnimation();
       ref.read(pinEntryStateNotifierProvider.notifier).clearPin();
     });
   }
 
-  bool isConfirmingPin = false;
+  void _initializeAnimations() {
+    final random = Random();
+
+    _positionAnimations = List.generate(
+      widget.pinLength,
+      (index) {
+        double startDelay = index * 0.05 + random.nextDouble() * 0.04;
+        double endDelay = (startDelay + 0.7).clamp(0.0, 1.0);
+
+        return Tween<Offset>(
+          begin: const Offset(0, 1),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Interval(
+              startDelay,
+              endDelay,
+              curve: Curves.easeOutBack,
+            ),
+          ),
+        );
+      },
+    );
+
+    _opacityAnimations = List.generate(
+      widget.pinLength,
+      (index) {
+        return Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(
+              0.0,
+              0.5,
+              curve: Curves.easeIn,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _triggerAnimation() {
+    _controller.reset();
+    _controller.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
     final pinEntryProvider = ref.watch(pinEntryStateNotifierProvider);
-    final pinState = ref.watch(pinEntryStateNotifierProvider);
-
-    bool isPinComplete = ref.watch(isPinCompleteProvider);
 
     return KeyboardListener(
       focusNode: FocusNode(),
@@ -65,9 +129,9 @@ class PinPadState extends ConsumerState<PinPad> {
               maintainSize: true,
               maintainAnimation: true,
               maintainState: true,
-              visible: pinState.error.isNotEmpty,
+              visible: pinEntryProvider.error.isNotEmpty,
               child: Text(
-                pinState.error,
+                pinEntryProvider.error,
                 style: TextStyle(color: context.colorScheme.error),
               ),
             ),
@@ -80,19 +144,32 @@ class PinPadState extends ConsumerState<PinPad> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(widget.pinLength, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(kScreenPadding / 2),
-                    child: CircleAvatar(
-                      radius: 10,
-                      backgroundColor: index < pinEntryProvider.pin.length
-                          ? context.colorScheme.onSurfaceVariant
-                          : Colors.transparent,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: context.colorScheme.onSurfaceVariant,
-                              width: 2),
+                  return AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset:
+                            _positionAnimations[index].value * 50, // Move 50px
+                        child: Opacity(
+                          opacity: _opacityAnimations[index].value,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(kScreenPadding / 2),
+                      child: CircleAvatar(
+                        radius: 10,
+                        backgroundColor: index < pinEntryProvider.pin.length
+                            ? context.colorScheme.onSurfaceVariant
+                            : Colors.transparent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: context.colorScheme.onSurfaceVariant,
+                                width: 2),
+                          ),
                         ),
                       ),
                     ),
@@ -137,7 +214,10 @@ class PinPadState extends ConsumerState<PinPad> {
                                     icon: AppIcons.refresh,
                                     size: AppIcons.large,
                                     color: context.colorScheme.onError),
-                                onPressed: isPinComplete
+                                onPressed: ref
+                                        .read(pinEntryStateNotifierProvider
+                                            .notifier)
+                                        .isPinComplete()
                                     ? null
                                     : () async {
                                         bool confirm = await showDialog(
@@ -168,7 +248,10 @@ class PinPadState extends ConsumerState<PinPad> {
                               icon: AppIcons.icon(
                                   icon: AppIcons.backspace,
                                   size: AppIcons.large),
-                              onPressed: isPinComplete
+                              onPressed: ref
+                                      .read(pinEntryStateNotifierProvider
+                                          .notifier)
+                                      .isPinComplete()
                                   ? null
                                   : () {
                                       ref
@@ -221,7 +304,10 @@ class PinPadState extends ConsumerState<PinPad> {
                                   },
                                 ),
                               ),
-                              onPressed: isPinComplete
+                              onPressed: ref
+                                      .read(pinEntryStateNotifierProvider
+                                          .notifier)
+                                      .isPinComplete()
                                   ? null
                                   : () {
                                       _handlePinKeyPressed(key);
@@ -274,6 +360,7 @@ class PinPadState extends ConsumerState<PinPad> {
         isConfirmingPin = true;
         pinTitleNotifier.setConfirmPinTitle();
         pinPadProvider.setFirstPin(pinPadProvider.getPin());
+        _triggerAnimation(); // Trigger animation on clear
         pinPadProvider.clearPin();
         pinPadProvider.clearError();
       } else {
@@ -350,6 +437,7 @@ class PinPadState extends ConsumerState<PinPad> {
           } else {
             if (mounted) {
               pinNotifier.setError('PINs do not match. Please try again.');
+              _triggerAnimation(); // Trigger animation on clear
               pinNotifier.clearPin();
               pinNotifier.setFirstPin('');
               isConfirmingPin = false;
@@ -380,6 +468,7 @@ class PinPadState extends ConsumerState<PinPad> {
             }
           } else {
             pinNotifier.setError('PINs do not match. Please try again.');
+            _triggerAnimation(); // Trigger animation on clear
             pinNotifier.clearPin();
             pinNotifier.setFirstPin('');
             isConfirmingPin = false;
@@ -389,6 +478,7 @@ class PinPadState extends ConsumerState<PinPad> {
           isConfirmingPin = true;
           pinTitleNotifier.setConfirmPinTitle();
           pinNotifier.setFirstPin(pin);
+          _triggerAnimation(); // Trigger animation on clear
           pinNotifier.clearPin();
         }
         break;
@@ -438,6 +528,7 @@ class PinPadState extends ConsumerState<PinPad> {
   void _cleanupAfterPin() {
     final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
     pinPadProvider.clearPin();
+    _triggerAnimation(); // Trigger animation on cleanup
     ref.read(isPinCompleteProvider.notifier).state = false;
   }
 
