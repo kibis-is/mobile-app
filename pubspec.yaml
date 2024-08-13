@@ -1,7 +1,7 @@
 name: kibisis
 description: "Kibisis Mobile App"
 publish_to: 'none'
-version: 0.1.1+2
+version: 0.2.0+3
 environment:
   sdk: '>=3.3.1 <4.0.0'
 
