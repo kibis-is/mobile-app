@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
+import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/settings_toggle.dart';
 import 'package:kibisis/common_widgets/transparent_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -9,8 +10,8 @@ import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 
 class SecurityScreen extends ConsumerWidget {
   static const String title = 'Security';
@@ -36,25 +37,9 @@ class SecurityScreen extends ConsumerWidget {
               buildTimeoutDropdown(ref),
             ],
             const SizedBox(height: kScreenPadding),
-            TransparentListTile(
-              icon: AppIcons.importAccount,
-              title: 'Export Accounts',
-              onTap: () => _showPinPadDialog(context, ref),
-            ),
+            buildSecurityOptions(context, ref),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showPinPadDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => PinPadDialog(
-        title: 'Verify Pin',
-        onPinVerified: () {
-          GoRouter.of(context).push('/settings/security/exportAccounts');
-        },
       ),
     );
   }
@@ -93,5 +78,43 @@ class SecurityScreen extends ConsumerWidget {
         }
       },
     );
+  }
+
+  Widget buildSecurityOptions(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+        TransparentListTile(
+          icon: AppIcons.importAccount,
+          title: 'Export Accounts',
+          onTap: () => _handleChangePin(context, ref, () {
+            GoRouter.of(context).pushNamed(exportAccountsRouteName);
+          }),
+        ),
+        const SizedBox(height: kScreenPadding),
+        TransparentListTile(
+          icon: AppIcons.importAccount,
+          title: 'Change Pin',
+          onTap: () => _handleChangePin(context, ref, () {
+            GoRouter.of(context).pushNamed(pinPadChangePinRouteName);
+          }),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _handleChangePin(
+      BuildContext context, WidgetRef ref, VoidCallback onPinVerified) async {
+    final pinVerified = await showDialog<bool>(
+      context: context,
+      builder: (context) => PinPadDialog(
+        title: 'Verify Current Pin',
+        onPinVerified: () {
+          Navigator.of(context).pop(true);
+        },
+      ),
+    );
+    if (pinVerified == true && context.mounted) {
+      onPinVerified();
+    }
   }
 }
