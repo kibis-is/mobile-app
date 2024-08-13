@@ -372,6 +372,18 @@ class RouterNotifier extends ChangeNotifier {
                             const ExportAccountsScreen(), state);
                       },
                     ),
+                    GoRoute(
+                      name: pinPadChangePinRouteName,
+                      path: pinPadChangePinRouteName,
+                      pageBuilder: (context, state) {
+                        return defaultTransitionPage(
+                          const PinPadScreen(
+                            mode: PinPadMode.changePin,
+                          ),
+                          state,
+                        );
+                      },
+                    ),
                   ],
                 ),
                 GoRoute(
