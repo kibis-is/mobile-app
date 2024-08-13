@@ -116,7 +116,11 @@ class StorageService {
   }
 
   String? getActiveAccount() {
-    return _prefs?.getString('activeAccount');
+    try {
+      return _prefs?.getString('activeAccount');
+    } catch (e) {
+      return '0';
+    }
   }
 
   String? getDefaultNetwork() {
