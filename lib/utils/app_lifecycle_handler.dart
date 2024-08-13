@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
+import 'package:kibisis/features/pin_pad/providers/pin_title_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
-
-// Provider to manage splash screen visibility
 
 class AppLifecycleHandler with WidgetsBindingObserver {
   DateTime? _backgroundTime;
@@ -45,7 +44,7 @@ class AppLifecycleHandler with WidgetsBindingObserver {
 
     if (_backgroundTime != null) {
       final duration = DateTime.now().difference(_backgroundTime!);
-      _backgroundTime = null; // Reset the background time
+      _backgroundTime = null;
 
       onResumed?.call(duration.inSeconds);
 
@@ -63,6 +62,7 @@ class AppLifecycleHandler with WidgetsBindingObserver {
     ref.read(isAuthenticatedProvider.notifier).state = false;
     ref.read(accountProvider.notifier).clearAccountState();
     ref.read(pinProvider.notifier).clearPinState();
+    ref.read(pinTitleProvider.notifier).setUnlockTitle();
   }
 
   void handleOnBackground() {
