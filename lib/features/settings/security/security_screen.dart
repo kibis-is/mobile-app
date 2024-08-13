@@ -107,9 +107,9 @@ class SecurityScreen extends ConsumerWidget {
     final pinVerified = await showDialog<bool>(
       context: context,
       builder: (context) => PinPadDialog(
-        title: 'Verify Current Pin',
+        title: 'Verify Pin',
         onPinVerified: () {
-          Navigator.of(context).pop(true);
+          //pop is handled by the pinpad
         },
       ),
     );

@@ -15,8 +15,8 @@ class PinTitleNotifier extends StateNotifier<String> {
     state = 'Unlock';
   }
 
-  void setVerifyTransactionTitle() {
-    state = 'Verify Transaction';
+  void setVerifyPinTitle() {
+    state = 'Verify Pin';
   }
 }
 

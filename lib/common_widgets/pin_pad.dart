@@ -33,6 +33,14 @@ class PinPad extends ConsumerStatefulWidget {
 }
 
 class PinPadState extends ConsumerState<PinPad> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(pinEntryStateNotifierProvider.notifier).clearPin();
+    });
+  }
+
   bool isConfirmingPin = false;
 
   @override
@@ -260,7 +268,9 @@ class PinPadState extends ConsumerState<PinPad> {
     pinPadProvider.addKey(key);
 
     if (pinPadProvider.isPinComplete()) {
-      if (widget.mode == PinPadMode.setup && !isConfirmingPin) {
+      if ((widget.mode == PinPadMode.setup ||
+              widget.mode == PinPadMode.changePin) &&
+          !isConfirmingPin) {
         isConfirmingPin = true;
         pinTitleNotifier.setConfirmPinTitle();
         pinPadProvider.setFirstPin(pinPadProvider.getPin());
@@ -298,6 +308,8 @@ class PinPadState extends ConsumerState<PinPad> {
         return 'Authenticating';
       case PinPadMode.verifyTransaction:
         return 'Verifying';
+      case PinPadMode.changePin:
+        return isConfirmingPin ? 'Confirming New PIN' : 'Setting New PIN';
       default:
         return '';
     }
@@ -351,6 +363,34 @@ class PinPadState extends ConsumerState<PinPad> {
         break;
       case PinPadMode.verifyTransaction:
         await _handleVerifyTransactionMode(pinNotifier, pin);
+        break;
+      case PinPadMode.changePin:
+        if (isConfirmingPin) {
+          if (pinNotifier.getFirstPin() == pin) {
+            await ref.read(pinProvider.notifier).setPin(pin);
+            if (mounted) {
+              Navigator.of(context).pop();
+              showCustomSnackBar(
+                context: context,
+                snackType: SnackType.success,
+                message: "PIN successfully changed",
+              );
+              isConfirmingPin = false;
+              pinTitleNotifier.setCreatePinTitle();
+            }
+          } else {
+            pinNotifier.setError('PINs do not match. Please try again.');
+            pinNotifier.clearPin();
+            pinNotifier.setFirstPin('');
+            isConfirmingPin = false;
+            pinTitleNotifier.setCreatePinTitle();
+          }
+        } else {
+          isConfirmingPin = true;
+          pinTitleNotifier.setConfirmPinTitle();
+          pinNotifier.setFirstPin(pin);
+          pinNotifier.clearPin();
+        }
         break;
       default:
         debugPrint('Unhandled mode in _handlePinComplete');

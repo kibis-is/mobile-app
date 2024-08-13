@@ -32,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
                     icon: settingsMenu[index].icon,
                     title: settingsMenu[index].name,
                     onTap: () => GoRouter.of(context)
-                        .go('/settings${settingsMenu[index].path}'),
+                        .push('/settings${settingsMenu[index].path}'),
                   );
                 },
               ),
