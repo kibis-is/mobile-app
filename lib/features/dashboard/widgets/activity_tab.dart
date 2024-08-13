@@ -162,7 +162,7 @@ class ActivityTab extends ConsumerWidget {
             amount: isOutgoing ? 'Outgoing' : 'Incoming',
             note: note,
             type: type,
-            assetName: 'App Call',
+            assetName: 'App Interaction',
           ));
           break;
 
