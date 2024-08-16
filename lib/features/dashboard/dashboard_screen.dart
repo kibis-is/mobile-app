@@ -36,6 +36,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  final _key = GlobalKey<ExpandableFabState>();
 
   @override
   void initState() {
@@ -45,12 +46,12 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
       vsync: this,
     );
 
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.elasticOut,
+      ),
     );
-
-    _controller.forward();
   }
 
   @override
@@ -68,6 +69,12 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
         _getAccountStateFuture(storageService, activeAccountId);
     final accountState = ref.watch(accountProvider);
     final showFAB = ref.watch(fabVisibilityProvider);
+
+    if (showFAB) {
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
 
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
@@ -87,12 +94,9 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
           ],
         ),
       ),
-      floatingActionButton: showFAB
-          ? ScaleTransition(
-              scale: _animation,
-              child: _buildFloatingActionButton(),
-            )
-          : const SizedBox.shrink(),
+      floatingActionButton: ScaleTransition(
+          scale: _animation,
+          child: showFAB ? _buildFloatingActionButton() : Container()),
       floatingActionButtonLocation: ExpandableFab.location,
     );
   }
@@ -100,8 +104,9 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
   Widget _buildFloatingActionButton() {
     final isDarkMode = ref.watch(isDarkModeProvider);
     return ExpandableFab(
-      type: ExpandableFabType.up,
-      distance: 70,
+      key: _key,
+      type: ExpandableFabType.fan,
+      distance: 140,
       pos: ExpandableFabPos.right,
       overlayStyle: ExpandableFabOverlayStyle(
         color: isDarkMode ? Colors.black54 : Colors.white54,
@@ -116,6 +121,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
         ),
       ),
       closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+        heroTag: 'fab',
         child: const Icon(AppIcons.cross),
         fabSize: ExpandableFabSize.small,
         foregroundColor: context.colorScheme.onSurface,
@@ -129,32 +135,64 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
           heroTag: 'send',
           backgroundColor: context.colorScheme.secondary,
           foregroundColor: Colors.white,
-          child: const Icon(AppIcons.send),
-          onPressed: () => context.goNamed(
-            sendTransactionRouteName,
-            pathParameters: {
-              'mode': 'payment',
-            },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(kWidgetRadius),
           ),
+          onPressed: () {
+            context.goNamed(
+              sendTransactionRouteName,
+              pathParameters: {
+                'mode': 'payment',
+              },
+            );
+            closeFab();
+          },
+          child: const Icon(AppIcons.send),
         ),
         FloatingActionButton.small(
           heroTag: 'scan',
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(kWidgetRadius),
+          ),
+          onPressed: () {
+            GoRouter.of(context).push('/qrScanner', extra: ScanMode.connect);
+            closeFab();
+          },
           child: const Icon(AppIcons.scan),
-          onPressed: () =>
-              GoRouter.of(context).push('/qrScanner', extra: ScanMode.connect),
         ),
         FloatingActionButton.small(
           heroTag: 'wallet',
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(kWidgetRadius),
+          ),
           child: const Icon(AppIcons.wallet),
-          onPressed: () => GoRouter.of(context).push('/$accountListRouteName'),
+          onPressed: () {
+            GoRouter.of(context).push('/$accountListRouteName');
+            closeFab();
+          },
         ),
         FloatingActionButton.small(
           heroTag: 'settings',
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(kWidgetRadius),
+          ),
           child: const Icon(AppIcons.settings),
-          onPressed: () => GoRouter.of(context).push('/$settingsRouteName'),
+          onPressed: () {
+            GoRouter.of(context).push('/$settingsRouteName');
+            closeFab();
+          },
         ),
       ],
     );
+  }
+
+  void closeFab() {
+    final state = _key.currentState;
+    if (state != null) {
+      if (state.isOpen) {
+        state.toggle();
+      }
+    }
   }
 
   Future<String?> _getAccountStateFuture(
