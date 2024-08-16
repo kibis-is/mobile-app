@@ -206,71 +206,90 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                         itemBuilder: (context, index) {
                           if (index == 9) {
                             if (kDebugMode) {
-                              return IconButton(
-                                style: IconButton.styleFrom(
-                                  backgroundColor: context.colorScheme.error,
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.all(kScreenPadding / 4),
+                                child: IconButton(
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: context.colorScheme.error,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(kWidgetRadius),
+                                    ),
+                                  ),
+                                  icon: AppIcons.icon(
+                                      icon: AppIcons.refresh,
+                                      size: AppIcons.large,
+                                      color: context.colorScheme.onError),
+                                  onPressed: ref
+                                          .read(pinEntryStateNotifierProvider
+                                              .notifier)
+                                          .isPinComplete()
+                                      ? null
+                                      : () async {
+                                          bool confirm = await showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return const ConfirmationDialog(
+                                                    yesText: 'Reset',
+                                                    noText: 'Cancel',
+                                                    content:
+                                                        'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
+                                                  );
+                                                },
+                                              ) ??
+                                              false;
+                                          if (confirm) {
+                                            _handleResetApp();
+                                          }
+                                        },
+                                  color: context.colorScheme.onSurface,
+                                  iconSize: kScreenPadding * 2,
                                 ),
-                                icon: AppIcons.icon(
-                                    icon: AppIcons.refresh,
-                                    size: AppIcons.large,
-                                    color: context.colorScheme.onError),
-                                onPressed: ref
-                                        .read(pinEntryStateNotifierProvider
-                                            .notifier)
-                                        .isPinComplete()
-                                    ? null
-                                    : () async {
-                                        bool confirm = await showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return const ConfirmationDialog(
-                                                  yesText: 'Reset',
-                                                  noText: 'Cancel',
-                                                  content:
-                                                      'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
-                                                );
-                                              },
-                                            ) ??
-                                            false;
-                                        if (confirm) {
-                                          _handleResetApp();
-                                        }
-                                      },
-                                color: context.colorScheme.onSurface,
-                                iconSize: kScreenPadding * 2,
                               );
                             } else {
                               return const SizedBox.shrink();
                             }
                           }
                           if (index == 11) {
-                            return IconButton(
-                              icon: AppIcons.icon(
-                                  icon: AppIcons.backspace,
-                                  size: AppIcons.large),
-                              onPressed: ref
-                                      .read(pinEntryStateNotifierProvider
-                                          .notifier)
-                                      .isPinComplete()
-                                  ? null
-                                  : () {
-                                      ref
-                                          .read(pinEntryStateNotifierProvider
-                                              .notifier)
-                                          .removeLastKey();
-                                    },
-                              color: context.colorScheme.onSurface,
-                              iconSize: kScreenPadding * 2,
+                            return Padding(
+                              padding: const EdgeInsets.all(kScreenPadding / 4),
+                              child: IconButton(
+                                style: IconButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(kWidgetRadius),
+                                )),
+                                icon: AppIcons.icon(
+                                    icon: AppIcons.backspace,
+                                    size: AppIcons.large),
+                                onPressed: ref
+                                        .read(pinEntryStateNotifierProvider
+                                            .notifier)
+                                        .isPinComplete()
+                                    ? null
+                                    : () {
+                                        ref
+                                            .read(pinEntryStateNotifierProvider
+                                                .notifier)
+                                            .removeLastKey();
+                                      },
+                                color: context.colorScheme.onSurface,
+                                iconSize: kScreenPadding * 2,
+                              ),
                             );
                           }
                           String key =
                               index == 10 ? '0' : (index + 1).toString();
                           return Padding(
-                            padding: const EdgeInsets.all(kScreenPadding / 2),
+                            padding: const EdgeInsets.all(kScreenPadding / 4),
                             child: ElevatedButton(
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
-                                    const CircleBorder()),
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            kWidgetRadius))),
                                 backgroundColor:
                                     MaterialStateProperty.resolveWith<Color>(
                                   (Set<MaterialState> states) {
