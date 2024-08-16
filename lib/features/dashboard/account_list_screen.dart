@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -22,7 +21,33 @@ class AccountListScreen extends ConsumerStatefulWidget {
   AccountListScreenState createState() => AccountListScreenState();
 }
 
-class AccountListScreenState extends ConsumerState<AccountListScreen> {
+class AccountListScreenState extends ConsumerState<AccountListScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticOut,
+    );
+
+    _controller.forward(); // Start the animation when the widget appears
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final accountsListState = ref.watch(accountsListProvider);
@@ -36,11 +61,16 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: _buildBody(context, accountsListState),
       ),
-      floatingActionButton: CustomFloatingActionButton(
-        icon: AppIcons.add,
-        onPressed: _navigateToAddAccount,
+      floatingActionButton: ScaleTransition(
+        scale: _animation,
+        child: FloatingActionButton(
+          onPressed: _navigateToAddAccount,
+          backgroundColor: context.colorScheme.secondary,
+          foregroundColor: Colors.white,
+          child: const Icon(AppIcons.add),
+        ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -125,7 +155,6 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
               _buildAccountName(context, accountName),
               const SizedBox(height: kScreenPadding / 2),
               _buildPublicKey(context, publicKey),
-              // _buildAccountBalance(context),
               const SizedBox(
                 height: kScreenPadding,
               ),

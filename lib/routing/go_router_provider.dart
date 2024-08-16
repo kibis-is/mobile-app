@@ -331,8 +331,8 @@ class RouterNotifier extends ChangeNotifier {
               },
               routes: [
                 GoRoute(
-                  name: qrScannerRouteName,
-                  path: qrScannerRouteName,
+                  name: sendTransactionQrScannerRouteName,
+                  path: sendTransactionQrScannerRouteName,
                   pageBuilder: (context, state) {
                     final scanMode = state.extra as ScanMode;
                     return defaultTransitionPage(
@@ -342,6 +342,17 @@ class RouterNotifier extends ChangeNotifier {
                   },
                 ),
               ],
+            ),
+            GoRoute(
+              name: qrScannerRouteName,
+              path: qrScannerRouteName,
+              pageBuilder: (context, state) {
+                final scanMode = state.extra as ScanMode;
+                return defaultTransitionPage(
+                  QrCodeScannerScreen(scanMode: scanMode),
+                  state,
+                );
+              },
             ),
             GoRoute(
               name: settingsRouteName,

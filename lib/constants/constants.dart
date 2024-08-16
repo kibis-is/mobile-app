@@ -50,4 +50,4 @@ List<SelectItem> timeoutList = [
   ),
 ];
 
-enum ScanMode { privateKey, publicKey }
+enum ScanMode { privateKey, publicKey, connect }

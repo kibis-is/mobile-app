@@ -50,6 +50,7 @@ class AppIcons {
   static const IconData appCall = Icons.extension_rounded;
   static const IconData arrowBackIOS = Icons.arrow_back_ios_rounded;
   static const IconData arrowBackAndroid = Icons.arrow_back_rounded;
+  static const IconData menu = Icons.menu_rounded;
 
   static const String svgBasePath = 'assets/images/';
 

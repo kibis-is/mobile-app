@@ -15,10 +15,11 @@ const String mainImportQrRouteName = 'addAccountImportQr';
 const String mainPrivateKeyRouteName = 'addAccountPrivateKey';
 
 const String editNameAccountRouteName = 'editAccount';
-const String accountListRouteName = 'wallets';
+const String accountListRouteName = 'accountList';
 const String sendTransactionRouteName = 'sendTransaction';
 const String addAssetRouteName = 'addAsset';
 const String viewAssetRouteName = 'viewAsset';
+const String sendTransactionQrScannerRouteName = 'sendTransactionQrScanner';
 const String qrScannerRouteName = 'qrScanner';
 const String viewNftRouteName = 'viewNft';
 

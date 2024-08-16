@@ -1,17 +1,18 @@
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
-import 'package:kibisis/common_widgets/custom_floating_action_button.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/fab_visibility_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
+import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
@@ -31,10 +32,31 @@ class DashboardScreen extends ConsumerStatefulWidget {
   DashboardScreenState createState() => DashboardScreenState();
 }
 
-class DashboardScreenState extends ConsumerState<DashboardScreen> {
+class DashboardScreenState extends ConsumerState<DashboardScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticOut,
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,22 +71,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
-    Widget buildFloatingActionButton() {
-      return Hero(
-        tag: 'fab',
-        child: CustomFloatingActionButton(
-          key: const ValueKey('fab'),
-          icon: AppIcons.send,
-          onPressed: () => context.goNamed(
-            sendTransactionRouteName,
-            pathParameters: {
-              'mode': 'payment',
-            },
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: _buildAppBar(context, ref, networks, accountState),
       body: Padding(
@@ -78,28 +84,76 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
             Expanded(
               child: DashboardTabController(tabs: tabs),
             ),
-            _buildBottomNavigationBar(context),
           ],
         ),
       ),
       floatingActionButton: showFAB
-          ? AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              switchInCurve: Curves.bounceIn,
-              switchOutCurve: Curves.easeOut,
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 1),
-                    end: const Offset(0, 0),
-                  ).animate(animation),
-                  child: child,
-                );
-              },
-              child: buildFloatingActionButton(),
+          ? ScaleTransition(
+              scale: _animation,
+              child: _buildFloatingActionButton(),
             )
           : const SizedBox.shrink(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: ExpandableFab.location,
+    );
+  }
+
+  Widget _buildFloatingActionButton() {
+    final isDarkMode = ref.watch(isDarkModeProvider);
+    return ExpandableFab(
+      type: ExpandableFabType.up,
+      distance: 70,
+      pos: ExpandableFabPos.right,
+      overlayStyle: ExpandableFabOverlayStyle(
+        color: isDarkMode ? Colors.black54 : Colors.white54,
+      ),
+      openButtonBuilder: RotateFloatingActionButtonBuilder(
+        child: const Icon(AppIcons.menu),
+        fabSize: ExpandableFabSize.regular,
+        foregroundColor: Colors.white,
+        backgroundColor: context.colorScheme.secondary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kWidgetRadius),
+        ),
+      ),
+      closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+        child: const Icon(AppIcons.cross),
+        fabSize: ExpandableFabSize.small,
+        foregroundColor: context.colorScheme.onSurface,
+        backgroundColor: context.colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kWidgetRadius),
+        ),
+      ),
+      children: [
+        FloatingActionButton.small(
+          heroTag: 'send',
+          backgroundColor: context.colorScheme.secondary,
+          foregroundColor: Colors.white,
+          child: const Icon(AppIcons.send),
+          onPressed: () => context.goNamed(
+            sendTransactionRouteName,
+            pathParameters: {
+              'mode': 'payment',
+            },
+          ),
+        ),
+        FloatingActionButton.small(
+          heroTag: 'scan',
+          child: const Icon(AppIcons.scan),
+          onPressed: () =>
+              GoRouter.of(context).push('/qrScanner', extra: ScanMode.connect),
+        ),
+        FloatingActionButton.small(
+          heroTag: 'wallet',
+          child: const Icon(AppIcons.wallet),
+          onPressed: () => GoRouter.of(context).push('/$accountListRouteName'),
+        ),
+        FloatingActionButton.small(
+          heroTag: 'settings',
+          child: const Icon(AppIcons.settings),
+          onPressed: () => GoRouter.of(context).push('/$settingsRouteName'),
+        ),
+      ],
     );
   }
 
@@ -157,8 +211,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
             ],
           ),
-          loading: () =>
-              const AnimatedDots(), // Show animated dots while waiting
+          loading: () => const AnimatedDots(),
           error: (error, stack) => const Text('Error'),
         ),
       ],
@@ -220,31 +273,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           return const Text('No account data available');
         }
       },
-    );
-  }
-
-  Widget _buildBottomNavigationBar(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.bottomCenter,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon:
-                  AppIcons.icon(icon: AppIcons.settings, size: AppIcons.medium),
-              color: context.colorScheme.onBackground,
-              onPressed: () => GoRouter.of(context).go('/settings'),
-            ),
-            IconButton(
-              icon: AppIcons.icon(icon: AppIcons.wallet, size: AppIcons.medium),
-              color: context.colorScheme.onBackground,
-              onPressed: () => GoRouter.of(context).push('/wallets'),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

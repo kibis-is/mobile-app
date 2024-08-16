@@ -461,7 +461,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                 ? () async {
                     final mode = ref.watch(sendTransactionScreenModeProvider);
                     final scannedData = await GoRouter.of(context).pushNamed(
-                      qrScannerRouteName,
+                      sendTransactionQrScannerRouteName,
                       pathParameters: {
                         'mode': mode == SendTransactionScreenMode.payment
                             ? 'payment'

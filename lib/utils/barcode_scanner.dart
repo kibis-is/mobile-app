@@ -74,19 +74,27 @@ class QRCodeScannerLogic {
       Uri uri = Uri.parse(rawData);
       Map<String, List<String>> params = _parseQueryParams(uri.query);
 
-      if (scanMode == ScanMode.privateKey) {
-        if (params.containsKey('page')) {
-          return await _handlePaginatedScan(uri, params);
-        } else {
-          return await _handlePrivateKey(rawData);
-        }
-      } else if (scanMode == ScanMode.publicKey) {
-        return await _handlePublicKey(rawData);
+      switch (scanMode) {
+        case ScanMode.privateKey:
+          if (params.containsKey('page')) {
+            return await _handlePaginatedScan(uri, params);
+          } else {
+            return await _handlePrivateKey(rawData);
+          }
+        case ScanMode.publicKey:
+          return await _handlePublicKey(rawData);
+        case ScanMode.connect:
+          return await _handleConnect(rawData);
+        default:
+          throw UnimplementedError('Unhandled scan mode: $scanMode');
       }
     } catch (e) {
       debugPrint('Error processing barcode data: $e');
       return false;
     }
+  }
+
+  Future<bool> _handleConnect(String? qrData) async {
     return false;
   }
 

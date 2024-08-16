@@ -13,7 +13,7 @@ import 'package:kibisis/utils/theme_extensions.dart';
 final isPaginatedScanProvider = StateProvider<bool>((ref) => false);
 
 class QrCodeScannerScreen extends ConsumerStatefulWidget {
-  static const String title = 'Scan QR';
+  static const String title = 'Scan QR Code';
   final AccountFlow? accountFlow;
   final ScanMode scanMode;
 
@@ -53,7 +53,6 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       extendBodyBehindAppBar: true,
       appBar: _buildAppBar(),
       body: Center(
-        // Add Center here
         child: Stack(
           fit: StackFit.loose,
           alignment: Alignment.center,
