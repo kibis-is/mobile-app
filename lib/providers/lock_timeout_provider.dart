@@ -1,8 +1,6 @@
-// Providers for managing lock timeout
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
-// Providers for managing lock timeout in seconds
 final lockTimeoutProvider =
     StateNotifierProvider<LockTimeoutNotifier, int>((ref) {
   final storageService = ref.watch(storageProvider);
@@ -14,7 +12,6 @@ class LockTimeoutNotifier extends StateNotifier<int> {
   static const defaultTimeout = 60;
 
   LockTimeoutNotifier(this._storageService) : super(defaultTimeout) {
-    // Default to 60 seconds if not set
     _loadTimeout();
   }
 
