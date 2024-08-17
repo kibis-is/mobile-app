@@ -123,7 +123,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
       closeButtonBuilder: DefaultFloatingActionButtonBuilder(
         heroTag: 'fab',
         child: const Icon(AppIcons.cross),
-        fabSize: ExpandableFabSize.small,
+        fabSize: ExpandableFabSize.regular,
         foregroundColor: context.colorScheme.onSurface,
         backgroundColor: context.colorScheme.surface,
         shape: RoundedRectangleBorder(
