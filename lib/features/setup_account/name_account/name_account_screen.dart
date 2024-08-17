@@ -10,6 +10,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
@@ -238,7 +239,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   Future<void> _deleteAccount(String accountId) async {
     try {
       await ref.read(accountProvider.notifier).deleteAccount(accountId);
-      _navigateToWallets();
+      _navigateToAccountList();
     } catch (e) {
       _showError(e);
     }
@@ -248,8 +249,8 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
     GoRouter.of(context).go('/');
   }
 
-  void _navigateToWallets() {
-    GoRouter.of(context).go('/wallets');
+  void _navigateToAccountList() {
+    GoRouter.of(context).go('/$accountListRouteName');
   }
 
   void _showError(dynamic error) {
