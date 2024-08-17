@@ -14,6 +14,11 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
   NFTNotifier() : super(const AsyncValue.loading());
 
   Future<void> fetchNFTs(String publicKey) async {
+    if (_allNfts.isNotEmpty) {
+      state = AsyncValue.data(_allNfts);
+      return;
+    }
+
     state = const AsyncValue.loading();
     final String url =
         'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicKey';
@@ -22,6 +27,10 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
         final List<dynamic> tokens = body['tokens'];
+
+        if (tokens.isEmpty) {
+          throw Exception('No tokens found in response');
+        }
 
         final List<NFT> nfts = tokens.map<NFT>((json) {
           final metadataJson = jsonDecode(json['metadata']);
