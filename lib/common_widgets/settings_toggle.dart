@@ -7,7 +7,7 @@ class SettingsToggle extends ConsumerWidget {
   final String title;
   final StateProvider<bool> provider;
   final String? description;
-  final VoidCallback onChanged;
+  final ValueChanged<bool> onChanged;
 
   const SettingsToggle({
     super.key,
@@ -33,7 +33,7 @@ class SettingsToggle extends ConsumerWidget {
               value: isSwitchedOn,
               onChanged: (newValue) {
                 ref.read(provider.notifier).state = newValue;
-                onChanged();
+                onChanged(newValue);
               },
             ),
           ],

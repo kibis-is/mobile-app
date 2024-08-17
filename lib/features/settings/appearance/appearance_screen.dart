@@ -25,7 +25,7 @@ class AppearanceScreen extends ConsumerWidget {
             SettingsToggle(
               title: 'Dark Mode',
               provider: isDarkModeStateAdapter,
-              onChanged: () {
+              onChanged: (newValue) {
                 final storage = ref.read(storageProvider);
                 storage.setIsDarkMode(ref.read(isDarkModeStateAdapter));
               },

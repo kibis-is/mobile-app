@@ -48,7 +48,8 @@ class SecurityScreen extends ConsumerWidget {
     return SettingsToggle(
       title: 'Enable Password Lock',
       provider: pinLockStateAdapter,
-      onChanged: () {
+      onChanged: (newValue) {
+        ref.read(pinLockProvider.notifier).setPasswordLock(newValue);
         final storage = ref.read(storageProvider);
         storage.setTimeoutEnabled(ref.read(pinLockStateAdapter));
       },
