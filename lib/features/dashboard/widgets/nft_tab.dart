@@ -12,7 +12,6 @@ import 'package:kibisis/providers/nft_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
@@ -27,6 +26,7 @@ class NftTab extends ConsumerStatefulWidget {
 }
 
 class NftTabState extends ConsumerState<NftTab> {
+  // Ensure the RefreshController is specific to this widget.
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   final TextEditingController filterController = TextEditingController();
@@ -35,14 +35,17 @@ class NftTabState extends ConsumerState<NftTab> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _onRefresh());
+    // Optionally, you can trigger an initial refresh if required
+    // WidgetsBinding.instance.addPostFrameCallback((_) => _onRefresh());
   }
 
   void _onRefresh() async {
-    invalidateProviders(ref);
+    ref.invalidate(nftNotifierProvider);
     final publicAddress = ref.read(
         accountProvider.select((state) => state.account?.publicAddress ?? ''));
-    await ref.read(nftNotifierProvider.notifier).fetchNFTs(publicAddress);
+    if (publicAddress.isNotEmpty) {
+      await ref.read(nftNotifierProvider.notifier).fetchNFTs();
+    }
     _refreshController.refreshCompleted();
   }
 
@@ -55,6 +58,8 @@ class NftTabState extends ConsumerState<NftTab> {
 
   @override
   void dispose() {
+    // Dispose the RefreshController properly.
+    _refreshController.dispose();
     filterController.dispose();
     super.dispose();
   }
@@ -64,14 +69,19 @@ class NftTabState extends ConsumerState<NftTab> {
     final nftState = ref.watch(nftNotifierProvider);
 
     return Scaffold(
-      body: CustomPullToRefresh(
-        refreshController: _refreshController,
-        onRefresh: _onRefresh,
-        child: Column(
-          children: [
-            _buildSearchBar(context),
-            const SizedBox(height: kScreenPadding / 4),
-            Expanded(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            titleSpacing: 0,
+            floating: true,
+            snap: true,
+            title: _buildSearchBar(context),
+          ),
+          SliverFillRemaining(
+            child: CustomPullToRefresh(
+              // Use the dedicated RefreshController here.
+              refreshController: _refreshController,
+              onRefresh: _onRefresh,
               child: nftState.when(
                 data: (nfts) => nfts.isEmpty
                     ? _buildEmptyNfts(context)
@@ -80,8 +90,8 @@ class NftTabState extends ConsumerState<NftTab> {
                 error: (error, stack) => _buildEmptyNfts(context),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

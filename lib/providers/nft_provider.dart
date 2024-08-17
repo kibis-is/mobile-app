@@ -1,28 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
 import 'package:kibisis/models/nft.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:kibisis/providers/account_provider.dart';
 
 final nftNotifierProvider =
     StateNotifierProvider<NFTNotifier, AsyncValue<List<NFT>>>((ref) {
-  return NFTNotifier();
+  final publicAddress = ref.watch(accountProvider).account?.publicAddress;
+  if (publicAddress != null) {
+    return NFTNotifier(ref, publicAddress);
+  }
+  return NFTNotifier(ref, '');
 });
 
 class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
+  final Ref ref;
+  final String publicAddress;
   List<NFT> _allNfts = [];
+  String _filter = '';
+  Sorting? _sorting;
 
-  NFTNotifier() : super(const AsyncValue.loading());
+  NFTNotifier(this.ref, this.publicAddress)
+      : super(const AsyncValue.loading()) {
+    fetchNFTs();
+  }
 
-  Future<void> fetchNFTs(String publicKey) async {
-    if (_allNfts.isNotEmpty) {
-      state = AsyncValue.data(_allNfts);
+  Future<void> fetchNFTs() async {
+    if (publicAddress.isEmpty) {
+      state = const AsyncValue.data([]);
       return;
     }
 
-    state = const AsyncValue.loading();
-    final String url =
-        'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicKey';
     try {
+      final String url =
+          'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicAddress';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
@@ -50,8 +62,8 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
           );
         }).toList();
 
-        _allNfts = nfts;
-        state = AsyncValue.data(nfts);
+        _allNfts = nfts; // Cache the NFTs
+        state = AsyncValue.data(_filteredNfts());
       } else {
         throw Exception(
             'Failed to load NFTs with status code: ${response.statusCode}');
@@ -61,17 +73,39 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
     }
   }
 
-  void setFilter(String query) {
-    if (query.isEmpty) {
-      state = AsyncValue.data(_allNfts);
-    } else {
-      final filteredNfts = _allNfts.where((nft) {
-        final nameLower = nft.name.toLowerCase();
-        final queryLower = query.toLowerCase();
-        return nameLower.contains(queryLower);
-      }).toList();
+  void setFilter(String filter) {
+    _filter = filter;
+    state = AsyncValue.data(_filteredNfts());
+  }
 
-      state = AsyncValue.data(filteredNfts);
+  void sortNFTs(Sorting sorting) {
+    _sorting = sorting;
+    state = AsyncValue.data(_filteredNfts());
+  }
+
+  List<NFT> _filteredNfts() {
+    List<NFT> filteredNfts = _allNfts;
+
+    if (_filter.isNotEmpty) {
+      filteredNfts = filteredNfts.where((nft) {
+        final nameLower = nft.name.toLowerCase();
+        final filterLower = _filter.toLowerCase();
+        return nameLower.contains(filterLower);
+      }).toList();
     }
+
+    switch (_sorting) {
+      case Sorting.assetId:
+        filteredNfts.sort((a, b) => a.tokenId.compareTo(b.tokenId));
+        break;
+      case Sorting.name:
+        filteredNfts.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        break;
+      default:
+        break;
+    }
+
+    return filteredNfts;
   }
 }
