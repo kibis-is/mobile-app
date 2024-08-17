@@ -148,8 +148,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                     animation: _controller,
                     builder: (context, child) {
                       return Transform.translate(
-                        offset:
-                            _positionAnimations[index].value * 50, // Move 50px
+                        offset: _positionAnimations[index].value * 50,
                         child: Opacity(
                           opacity: _opacityAnimations[index].value,
                           child: child,
@@ -379,7 +378,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         isConfirmingPin = true;
         pinTitleNotifier.setConfirmPinTitle();
         pinPadProvider.setFirstPin(pinPadProvider.getPin());
-        _triggerAnimation(); // Trigger animation on clear
+        _triggerAnimation();
         pinPadProvider.clearPin();
         pinPadProvider.clearError();
       } else {
@@ -456,7 +455,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
           } else {
             if (mounted) {
               pinNotifier.setError('PINs do not match. Please try again.');
-              _triggerAnimation(); // Trigger animation on clear
+              _triggerAnimation();
               pinNotifier.clearPin();
               pinNotifier.setFirstPin('');
               isConfirmingPin = false;
@@ -487,7 +486,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
             }
           } else {
             pinNotifier.setError('PINs do not match. Please try again.');
-            _triggerAnimation(); // Trigger animation on clear
+            _triggerAnimation();
             pinNotifier.clearPin();
             pinNotifier.setFirstPin('');
             isConfirmingPin = false;
@@ -497,7 +496,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
           isConfirmingPin = true;
           pinTitleNotifier.setConfirmPinTitle();
           pinNotifier.setFirstPin(pin);
-          _triggerAnimation(); // Trigger animation on clear
+          _triggerAnimation();
           pinNotifier.clearPin();
         }
         break;
@@ -547,7 +546,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   void _cleanupAfterPin() {
     final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
     pinPadProvider.clearPin();
-    _triggerAnimation(); // Trigger animation on cleanup
+    _triggerAnimation();
     ref.read(isPinCompleteProvider.notifier).state = false;
   }
 
