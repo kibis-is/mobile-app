@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
+import 'package:kibisis/common_widgets/custom_fab_child.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/fab_visibility_provider.dart';
@@ -105,78 +106,71 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     final isDarkMode = ref.watch(isDarkModeProvider);
     return ExpandableFab(
       key: _key,
-      type: ExpandableFabType.fan,
-      distance: 140,
+      type: ExpandableFabType.up,
+      distance: 70,
       pos: ExpandableFabPos.right,
       overlayStyle: ExpandableFabOverlayStyle(
         color: isDarkMode ? Colors.black54 : Colors.white54,
       ),
       openButtonBuilder: RotateFloatingActionButtonBuilder(
-        child: const Icon(AppIcons.menu),
-        fabSize: ExpandableFabSize.regular,
-        foregroundColor: Colors.white,
-        backgroundColor: context.colorScheme.secondary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kWidgetRadius),
-        ),
-      ),
-      closeButtonBuilder: DefaultFloatingActionButtonBuilder(
-        heroTag: 'fab',
-        child: const Icon(AppIcons.cross),
-        fabSize: ExpandableFabSize.regular,
-        foregroundColor: context.colorScheme.onSurface,
-        backgroundColor: context.colorScheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kWidgetRadius),
-        ),
+          child: const Icon(AppIcons.menu),
+          fabSize: ExpandableFabSize.regular,
+          foregroundColor: Colors.white,
+          backgroundColor: context.colorScheme.secondary,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(kWidgetRadius))),
+      closeButtonBuilder: FloatingActionButtonBuilder(
+        size: 56,
+        builder: (BuildContext context, void Function()? onPressed,
+            Animation<double> progress) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(kWidgetRadius),
+            ),
+            child: IconButton(
+              onPressed: onPressed,
+              icon: const Icon(
+                AppIcons.cross,
+              ),
+            ),
+          );
+        },
       ),
       children: [
-        FloatingActionButton.small(
-          heroTag: 'send',
+        CustomFabChild(
+          icon: AppIcons.send,
           backgroundColor: context.colorScheme.secondary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(kWidgetRadius),
-          ),
+          iconColor: Colors.white,
           onPressed: () {
             context.goNamed(
               sendTransactionRouteName,
-              pathParameters: {
-                'mode': 'payment',
-              },
+              pathParameters: {'mode': 'payment'},
             );
             closeFab();
           },
-          child: const Icon(AppIcons.send),
         ),
-        FloatingActionButton.small(
-          heroTag: 'scan',
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(kWidgetRadius),
-          ),
+        CustomFabChild(
+          icon: AppIcons.scan,
+          backgroundColor: context.colorScheme.primary,
+          iconColor: context.colorScheme.onPrimary,
           onPressed: () {
             GoRouter.of(context).push('/qrScanner', extra: ScanMode.connect);
             closeFab();
           },
-          child: const Icon(AppIcons.scan),
         ),
-        FloatingActionButton.small(
-          heroTag: 'wallet',
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(kWidgetRadius),
-          ),
-          child: const Icon(AppIcons.wallet),
+        CustomFabChild(
+          icon: AppIcons.wallet,
+          backgroundColor: context.colorScheme.primary,
+          iconColor: context.colorScheme.onPrimary,
           onPressed: () {
             GoRouter.of(context).push('/$accountListRouteName');
             closeFab();
           },
         ),
-        FloatingActionButton.small(
-          heroTag: 'settings',
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(kWidgetRadius),
-          ),
-          child: const Icon(AppIcons.settings),
+        CustomFabChild(
+          icon: AppIcons.settings,
+          backgroundColor: context.colorScheme.primary,
+          iconColor: context.colorScheme.onPrimary,
           onPressed: () {
             GoRouter.of(context).push('/$settingsRouteName');
             closeFab();
