@@ -10,6 +10,7 @@ import 'package:kibisis/features/scan_qr/scan_qr_screen.dart';
 import 'package:kibisis/features/scan_qr/widgets/progress_bar.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -249,7 +250,7 @@ class QRCodeScannerLogic {
       }
     } else {
       if (context.mounted) {
-        GoRouter.of(context).push('/wallets');
+        GoRouter.of(context).push('/$accountListRouteName');
       }
     }
   }
