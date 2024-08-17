@@ -19,12 +19,15 @@ Future<dynamic> customBottomSheet({
 
   return showModalBottomSheet(
     context: context,
+    isScrollControlled:
+        true, // Allows the bottom sheet to shrinkwrap its content
     builder: (BuildContext context) {
       return Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: kScreenPadding * 2, vertical: kScreenPadding),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize:
+              MainAxisSize.min, // Ensure the column takes only needed space
           children: [
             _buildHeader(context, header),
             const SizedBox(height: kScreenPadding),
@@ -53,11 +56,12 @@ Future<dynamic> customBottomSheet({
 
 Widget _buildHeader(BuildContext context, String header) {
   return Padding(
-      padding: const EdgeInsets.all(kSizedBoxSpacing),
-      child: Text(header,
-          style: context.textTheme.titleMedium?.copyWith(
-            color: context.colorScheme.onSurface,
-          )));
+    padding: const EdgeInsets.all(kSizedBoxSpacing),
+    child: Text(header,
+        style: context.textTheme.titleMedium?.copyWith(
+          color: context.colorScheme.onSurface,
+        )),
+  );
 }
 
 Widget _buildItemList(
@@ -65,13 +69,15 @@ Widget _buildItemList(
   List<dynamic> items,
   Function(SelectItem) onPressed,
 ) {
-  return Expanded(
-    child: ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildListItem(context, items[index], onPressed);
-      },
-    ),
+  // Removed the Expanded here to allow the ListView to shrinkwrap
+  return ListView.builder(
+    shrinkWrap: true, // Ensures the ListView takes up only the necessary space
+    physics:
+        const NeverScrollableScrollPhysics(), // Prevents scrolling inside the sheet
+    itemCount: items.length,
+    itemBuilder: (BuildContext context, int index) {
+      return _buildListItem(context, items[index], onPressed);
+    },
   );
 }
 
