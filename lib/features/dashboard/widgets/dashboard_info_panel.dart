@@ -1,5 +1,5 @@
-import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
+import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -63,43 +63,39 @@ class DashboardInfoPanel extends StatelessWidget {
                     context.textTheme.bodySmall?.copyWith(letterSpacing: 1.5),
               ),
             ),
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  customBottomSheet(
-                    context: context,
-                    items: items,
-                    header: "Options",
-                    onPressed: (SelectItem item) {},
-                  ).then((value) {
-                    if (value == "Copy Address") {
-                      copyToClipboard(context, publicKey);
-                    } else if (value == "Edit") {
-                      GoRouter.of(context).push(
-                        '/editAccount/${accountState.accountId}',
-                        extra: {
-                          'accountName': accountState.accountName ?? '',
-                        },
-                      );
-                    } else if (value == "Share Address") {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) => QrDialog(
-                          qrData: publicKey,
-                        ),
-                      );
-                    }
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(kScreenPadding / 3),
-                  child: AppIcons.icon(
-                    icon: AppIcons.verticalDots,
-                    size: AppIcons.medium,
-                  ),
-                ),
+            IconButton(
+              icon: AppIcons.icon(
+                icon: AppIcons.verticalDots,
+                size: AppIcons.medium,
               ),
+              onPressed: () {
+                customBottomSheet(
+                  context: context,
+                  items: items,
+                  header: "Options",
+                  onPressed: (SelectItem item) {},
+                ).then((value) {
+                  if (value == "Copy Address") {
+                    copyToClipboard(context, publicKey);
+                  } else if (value == "Edit") {
+                    GoRouter.of(context).push(
+                      '/editAccount/${accountState.accountId}',
+                      extra: {
+                        'accountName': accountState.accountName ?? '',
+                      },
+                    );
+                  } else if (value == "Share Address") {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => QrDialog(
+                        qrData: publicKey,
+                      ),
+                    );
+                  }
+                });
+              },
+              padding: const EdgeInsets.all(kScreenPadding / 2),
+              constraints: const BoxConstraints(),
             ),
           ],
         ),
