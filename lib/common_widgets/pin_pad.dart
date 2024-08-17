@@ -1,14 +1,13 @@
 import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/pin_pad/providers/pin_title_provider.dart';
+import 'package:kibisis/models/pin_state.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
@@ -36,6 +35,7 @@ class PinPad extends ConsumerStatefulWidget {
 
 class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   bool isConfirmingPin = false;
+  bool isPinCompleted = false;
   late AnimationController _controller;
   late List<Animation<Offset>> _positionAnimations;
   late List<Animation<double>> _opacityAnimations;
@@ -106,6 +106,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   }
 
   void _triggerAnimation() {
+    if (isPinCompleted) return;
     _controller.reset();
     _controller.forward();
   }
@@ -114,264 +115,262 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final pinEntryProvider = ref.watch(pinEntryStateNotifierProvider);
 
-    return KeyboardListener(
-      focusNode: FocusNode(),
-      autofocus: true,
-      onKeyEvent: _handleKeyPress,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: kScreenPadding),
-          Padding(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: kScreenPadding),
+        Padding(
+          padding: const EdgeInsets.all(kScreenPadding),
+          child: Visibility(
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: pinEntryProvider.error.isNotEmpty,
+            child: Text(
+              pinEntryProvider.error,
+              style: TextStyle(color: context.colorScheme.error),
+            ),
+          ),
+        ),
+        const SizedBox(height: kScreenPadding),
+        FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Padding(
             padding: const EdgeInsets.all(kScreenPadding),
-            child: Visibility(
-              maintainSize: true,
-              maintainAnimation: true,
-              maintainState: true,
-              visible: pinEntryProvider.error.isNotEmpty,
-              child: Text(
-                pinEntryProvider.error,
-                style: TextStyle(color: context.colorScheme.error),
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(widget.pinLength, (index) {
+                return isPinCompleted
+                    ? _buildStaticCircle(context, pinEntryProvider, index)
+                    : _buildAnimatedCircle(context, pinEntryProvider, index);
+              }),
             ),
           ),
-          const SizedBox(height: kScreenPadding),
-          FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Padding(
-              padding: const EdgeInsets.all(kScreenPadding),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(widget.pinLength, (index) {
-                  return AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: _positionAnimations[index].value * 50,
-                        child: Opacity(
-                          opacity: _opacityAnimations[index].value,
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(kScreenPadding / 2),
-                      child: CircleAvatar(
-                        radius: 10,
-                        backgroundColor: index < pinEntryProvider.pin.length
-                            ? context.colorScheme.onSurfaceVariant
-                            : Colors.transparent,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                                color: context.colorScheme.onSurfaceVariant,
-                                width: 2),
-                          ),
-                        ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kScreenPadding * 4),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double width = constraints.maxWidth;
+                double height = width * 4 / 3;
+
+                if (height > constraints.maxHeight) {
+                  height = constraints.maxHeight;
+                  width = height * 3 / 4;
+                }
+
+                return Center(
+                  child: SizedBox(
+                    width: width,
+                    height: height,
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 12,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
                       ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kScreenPadding * 4),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  double width = constraints.maxWidth;
-                  double height = width * 4 / 3;
-
-                  if (height > constraints.maxHeight) {
-                    height = constraints.maxHeight;
-                    width = height * 3 / 4;
-                  }
-
-                  return Center(
-                    child: SizedBox(
-                      width: width,
-                      height: height,
-                      child: GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: 12,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                        ),
-                        itemBuilder: (context, index) {
-                          if (index == 9) {
-                            if (kDebugMode) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.all(kScreenPadding / 4),
-                                child: IconButton(
-                                  style: IconButton.styleFrom(
-                                    backgroundColor: context.colorScheme.error,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(kWidgetRadius),
-                                    ),
-                                  ),
-                                  icon: AppIcons.icon(
-                                      icon: AppIcons.refresh,
-                                      size: AppIcons.large,
-                                      color: context.colorScheme.onError),
-                                  onPressed: ref
-                                          .read(pinEntryStateNotifierProvider
-                                              .notifier)
-                                          .isPinComplete()
-                                      ? null
-                                      : () async {
-                                          bool confirm = await showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return const ConfirmationDialog(
-                                                    yesText: 'Reset',
-                                                    noText: 'Cancel',
-                                                    content:
-                                                        'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
-                                                  );
-                                                },
-                                              ) ??
-                                              false;
-                                          if (confirm) {
-                                            _handleResetApp();
-                                          }
-                                        },
-                                  color: context.colorScheme.onSurface,
-                                  iconSize: kScreenPadding * 2,
-                                ),
-                              );
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          }
-                          if (index == 11) {
+                      itemBuilder: (context, index) {
+                        if (index == 9) {
+                          if (kDebugMode) {
                             return Padding(
                               padding: const EdgeInsets.all(kScreenPadding / 4),
                               child: IconButton(
                                 style: IconButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(kWidgetRadius),
-                                )),
+                                  backgroundColor: context.colorScheme.error,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(kWidgetRadius),
+                                  ),
+                                ),
                                 icon: AppIcons.icon(
-                                    icon: AppIcons.backspace,
-                                    size: AppIcons.large),
-                                onPressed: ref
-                                        .read(pinEntryStateNotifierProvider
-                                            .notifier)
-                                        .isPinComplete()
+                                    icon: AppIcons.refresh,
+                                    size: AppIcons.large,
+                                    color: context.colorScheme.onError),
+                                onPressed: isPinCompleted
                                     ? null
-                                    : () {
-                                        ref
-                                            .read(pinEntryStateNotifierProvider
-                                                .notifier)
-                                            .removeLastKey();
+                                    : () async {
+                                        bool confirm = await showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return const ConfirmationDialog(
+                                                  yesText: 'Reset',
+                                                  noText: 'Cancel',
+                                                  content:
+                                                      'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
+                                                );
+                                              },
+                                            ) ??
+                                            false;
+                                        if (confirm) {
+                                          _handleResetApp();
+                                        }
                                       },
                                 color: context.colorScheme.onSurface,
                                 iconSize: kScreenPadding * 2,
                               ),
                             );
+                          } else {
+                            return const SizedBox.shrink();
                           }
-                          String key =
-                              index == 10 ? '0' : (index + 1).toString();
+                        }
+                        if (index == 11) {
                           return Padding(
                             padding: const EdgeInsets.all(kScreenPadding / 4),
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            kWidgetRadius))),
-                                backgroundColor:
-                                    MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
-                                    if (states
-                                        .contains(MaterialState.disabled)) {
-                                      return context.colorScheme.surface
-                                          .withOpacity(0.12);
-                                    }
-                                    return context.colorScheme.surface;
-                                  },
-                                ),
-                                foregroundColor:
-                                    MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
-                                    if (states
-                                        .contains(MaterialState.disabled)) {
-                                      return context.colorScheme.onSurface
-                                          .withOpacity(0.38);
-                                    }
-                                    return context.colorScheme.onSurface;
-                                  },
-                                ),
-                                shadowColor:
-                                    MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
-                                    if (states
-                                        .contains(MaterialState.disabled)) {
-                                      return Colors.transparent;
-                                    }
-                                    return context.colorScheme.shadow;
-                                  },
-                                ),
-                              ),
-                              onPressed: ref
-                                      .read(pinEntryStateNotifierProvider
-                                          .notifier)
-                                      .isPinComplete()
+                            child: IconButton(
+                              style: IconButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(kWidgetRadius),
+                              )),
+                              icon: AppIcons.icon(
+                                  icon: AppIcons.backspace,
+                                  size: AppIcons.large),
+                              onPressed: isPinCompleted
                                   ? null
                                   : () {
-                                      _handlePinKeyPressed(key);
+                                      ref
+                                          .read(pinEntryStateNotifierProvider
+                                              .notifier)
+                                          .removeLastKey();
                                     },
-                              child: Text(
-                                key,
-                                style: context.textTheme.titleMedium,
-                              ),
+                              color: context.colorScheme.onSurface,
+                              iconSize: kScreenPadding * 2,
                             ),
                           );
-                        },
-                      ),
+                        }
+                        String key = index == 10 ? '0' : (index + 1).toString();
+                        return Padding(
+                          padding: const EdgeInsets.all(kScreenPadding / 4),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          kWidgetRadius))),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
+                                    return context.colorScheme.surface
+                                        .withOpacity(0.12);
+                                  }
+                                  return context.colorScheme.surface;
+                                },
+                              ),
+                              foregroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
+                                    return context.colorScheme.onSurface
+                                        .withOpacity(0.38);
+                                  }
+                                  return context.colorScheme.onSurface;
+                                },
+                              ),
+                              shadowColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
+                                    return Colors.transparent;
+                                  }
+                                  return context.colorScheme.shadow;
+                                },
+                              ),
+                            ),
+                            onPressed: isPinCompleted
+                                ? null
+                                : () {
+                                    _handlePinKeyPressed(key);
+                                  },
+                            child: Text(
+                              key,
+                              style: context.textTheme.titleMedium,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
-        ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAnimatedCircle(
+      BuildContext context, PinState pinEntryProvider, int index) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: _positionAnimations[index].value * 50,
+          child: Opacity(
+            opacity: _opacityAnimations[index].value,
+            child: child,
+          ),
+        );
+      },
+      child: _buildCircle(context, pinEntryProvider, index),
+    );
+  }
+
+  Widget _buildStaticCircle(
+      BuildContext context, PinState pinEntryProvider, int index) {
+    return Padding(
+      padding: const EdgeInsets.all(kScreenPadding / 2),
+      child: CircleAvatar(
+        radius: 10,
+        backgroundColor: index < pinEntryProvider.pin.length
+            ? context.colorScheme.onSurfaceVariant
+            : Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+                color: context.colorScheme.onSurfaceVariant, width: 2),
+          ),
+        ),
       ),
     );
   }
 
-  void _handleKeyPress(KeyEvent event) {
-    if (event is KeyDownEvent) {
-      String? keyLabel;
-
-      if (event.logicalKey == LogicalKeyboardKey.backspace) {
-        ref.read(pinEntryStateNotifierProvider.notifier).removeLastKey();
-      } else {
-        keyLabel = event.logicalKey.keyLabel;
-      }
-
-      if (keyLabel != null && RegExp(r'^[0-9]$').hasMatch(keyLabel)) {
-        _handlePinKeyPressed(keyLabel);
-      }
-    }
+  Widget _buildCircle(
+      BuildContext context, PinState pinEntryProvider, int index) {
+    return Padding(
+      padding: const EdgeInsets.all(kScreenPadding / 2),
+      child: CircleAvatar(
+        radius: 10,
+        backgroundColor: index < pinEntryProvider.pin.length
+            ? context.colorScheme.onSurfaceVariant
+            : Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+                color: context.colorScheme.onSurfaceVariant, width: 2),
+          ),
+        ),
+      ),
+    );
   }
 
   void _handlePinKeyPressed(String key) {
+    if (isPinCompleted) return; // Prevent input if PIN is completed
+
     final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
     final pinTitleNotifier = ref.read(pinTitleProvider.notifier);
 
     pinPadProvider.addKey(key);
 
     if (pinPadProvider.isPinComplete()) {
+      isPinCompleted = true; // Set flag to prevent further input
+
       if ((widget.mode == PinPadMode.setup ||
               widget.mode == PinPadMode.changePin) &&
           !isConfirmingPin) {
@@ -381,6 +380,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         _triggerAnimation();
         pinPadProvider.clearPin();
         pinPadProvider.clearError();
+        isPinCompleted = false; // Re-enable input after clearing
       } else {
         _processCompletePin();
       }
@@ -432,6 +432,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
     } finally {
       if (mounted) {
         ref.read(loadingProvider.notifier).stopLoading();
+        isPinCompleted = false; // Re-enable input after processing
       }
     }
   }
