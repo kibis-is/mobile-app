@@ -70,6 +70,7 @@ class NftTabState extends ConsumerState<NftTab> {
         child: Column(
           children: [
             _buildSearchBar(context),
+            const SizedBox(height: kScreenPadding / 4),
             Expanded(
               child: nftState.when(
                 data: (nfts) => nfts.isEmpty
@@ -122,8 +123,6 @@ class NftTabState extends ConsumerState<NftTab> {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
         childAspectRatio: 1.0,
-        mainAxisSpacing: kScreenPadding / 2,
-        crossAxisSpacing: kScreenPadding / 2,
       ),
       itemCount: nfts.length,
       itemBuilder: (context, index) {
@@ -136,6 +135,9 @@ class NftTabState extends ConsumerState<NftTab> {
             );
           },
           child: Card(
+            margin: viewType == NftViewType.grid
+                ? const EdgeInsets.all(0)
+                : const EdgeInsets.only(bottom: kScreenPadding / 2),
             shape: RoundedRectangleBorder(
               borderRadius: viewType == NftViewType.grid
                   ? BorderRadius.circular(0)
