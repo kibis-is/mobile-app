@@ -26,17 +26,14 @@ class NftTab extends ConsumerStatefulWidget {
 }
 
 class NftTabState extends ConsumerState<NftTab> {
-  // Ensure the RefreshController is specific to this widget.
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  late final RefreshController _refreshController;
   final TextEditingController filterController = TextEditingController();
   NftViewType viewType = NftViewType.grid;
 
   @override
   void initState() {
     super.initState();
-    // Optionally, you can trigger an initial refresh if required
-    // WidgetsBinding.instance.addPostFrameCallback((_) => _onRefresh());
+    _refreshController = RefreshController(initialRefresh: false);
   }
 
   void _onRefresh() async {
@@ -58,9 +55,9 @@ class NftTabState extends ConsumerState<NftTab> {
 
   @override
   void dispose() {
-    // Dispose the RefreshController properly.
     _refreshController.dispose();
     filterController.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 
@@ -79,7 +76,6 @@ class NftTabState extends ConsumerState<NftTab> {
           ),
           SliverFillRemaining(
             child: CustomPullToRefresh(
-              // Use the dedicated RefreshController here.
               refreshController: _refreshController,
               onRefresh: _onRefresh,
               child: nftState.when(

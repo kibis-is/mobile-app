@@ -30,8 +30,7 @@ class AssetsTab extends ConsumerStatefulWidget {
 }
 
 class _AssetsTabState extends ConsumerState<AssetsTab> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  late final RefreshController _refreshController;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController filterController = TextEditingController();
 
@@ -44,12 +43,14 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   @override
   void initState() {
     super.initState();
+    _refreshController = RefreshController(initialRefresh: false);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     filterController.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 
