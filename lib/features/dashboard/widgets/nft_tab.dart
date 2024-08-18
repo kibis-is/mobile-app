@@ -125,13 +125,10 @@ class NftTabState extends ConsumerState<NftTab> {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
           childAspectRatio: 1.0,
-          mainAxisSpacing: kScreenPadding / 2,
-          crossAxisSpacing: kScreenPadding / 2,
         ),
         itemCount: nfts.length,
-        shrinkWrap: true, // Prevents unbounded height error
-        physics:
-            const NeverScrollableScrollPhysics(), // Parent handles scrolling
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           final nft = nfts[index];
           return GestureDetector(
