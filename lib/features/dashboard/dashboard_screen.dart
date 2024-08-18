@@ -19,8 +19,6 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
-import 'package:kibisis/providers/active_account_provider.dart';
-import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -64,12 +62,10 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
   @override
   Widget build(BuildContext context) {
     final networks = networkOptions;
-    final activeAccountId = ref.watch(activeAccountProvider);
-    final storageService = ref.watch(storageProvider);
-    final accountStateFuture =
-        _getAccountStateFuture(storageService, activeAccountId);
     final accountState = ref.watch(accountProvider);
     final showFAB = ref.watch(fabVisibilityProvider);
+    final publicKey = accountState.account
+        ?.publicAddress; // Using the public address directly from the account provider
 
     if (showFAB) {
       _controller.forward();
@@ -87,7 +83,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
           children: [
             const SizedBox(height: kScreenPadding),
             _buildDashboardInfoPanel(
-                context, ref, networks, accountStateFuture, accountState),
+                context, ref, networks, publicKey, accountState),
             const SizedBox(height: kScreenPadding),
             Expanded(
               child: DashboardTabController(tabs: tabs),
@@ -189,11 +185,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     }
   }
 
-  Future<String?> _getAccountStateFuture(
-      StorageService storageService, String? activeAccountId) {
-    return storageService.getAccountData(activeAccountId ?? '', 'publicKey');
-  }
-
   PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
     return SplitAppBar(
@@ -285,26 +276,16 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
       BuildContext context,
       WidgetRef ref,
       List<SelectItem> networks,
-      Future<String?> accountStateFuture,
+      String? publicKey, // Pass the public key directly from the provider
       AccountState accountState) {
-    return FutureBuilder<String?>(
-      future: accountStateFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return const Text('Error fetching account data');
-        } else if (snapshot.hasData && snapshot.data != null) {
-          final publicKey = snapshot.data!;
-          return DashboardInfoPanel(
-            networks: networks,
-            accountState: accountState,
-            publicKey: publicKey,
-          );
-        } else {
-          return const Text('No account data available');
-        }
-      },
-    );
+    if (publicKey == null) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return DashboardInfoPanel(
+        networks: networks,
+        accountState: accountState,
+        publicKey: publicKey,
+      );
+    }
   }
 }
