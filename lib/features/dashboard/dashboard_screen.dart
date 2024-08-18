@@ -76,6 +76,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(context, ref, networks, accountState),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
