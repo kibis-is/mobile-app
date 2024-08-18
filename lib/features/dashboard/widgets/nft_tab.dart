@@ -57,7 +57,6 @@ class NftTabState extends ConsumerState<NftTab> {
   void dispose() {
     _refreshController.dispose();
     filterController.dispose();
-    _refreshController.dispose();
     super.dispose();
   }
 
@@ -65,8 +64,10 @@ class NftTabState extends ConsumerState<NftTab> {
   Widget build(BuildContext context) {
     final nftState = ref.watch(nftNotifierProvider);
 
-    return Scaffold(
-      body: CustomScrollView(
+    return CustomPullToRefresh(
+      refreshController: _refreshController,
+      onRefresh: _onRefresh,
+      child: CustomScrollView(
         slivers: [
           SliverAppBar(
             titleSpacing: 0,
@@ -74,18 +75,12 @@ class NftTabState extends ConsumerState<NftTab> {
             snap: true,
             title: _buildSearchBar(context),
           ),
-          SliverFillRemaining(
-            child: CustomPullToRefresh(
-              refreshController: _refreshController,
-              onRefresh: _onRefresh,
-              child: nftState.when(
-                data: (nfts) => nfts.isEmpty
-                    ? _buildEmptyNfts(context)
-                    : _buildNftGridOrCard(nfts, ref),
-                loading: () => _buildLoadingNfts(context),
-                error: (error, stack) => _buildEmptyNfts(context),
-              ),
-            ),
+          nftState.when(
+            data: (nfts) => nfts.isEmpty
+                ? _buildEmptyNfts(context)
+                : _buildNftGridOrCard(nfts),
+            loading: () => _buildLoadingNfts(context),
+            error: (error, stack) => _buildEmptyNfts(context),
           ),
         ],
       ),
@@ -124,90 +119,94 @@ class NftTabState extends ConsumerState<NftTab> {
     );
   }
 
-  Widget _buildNftGridOrCard(List<NFT> nfts, WidgetRef ref) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
-        childAspectRatio: 1.0,
-      ),
-      itemCount: nfts.length,
-      itemBuilder: (context, index) {
-        final nft = nfts[index];
-        return GestureDetector(
-          onTap: () {
-            context.goNamed(
-              viewNftRouteName,
-              pathParameters: {'index': index.toString()},
-            );
-          },
-          child: Card(
-            margin: viewType == NftViewType.grid
-                ? const EdgeInsets.all(0)
-                : const EdgeInsets.only(bottom: kScreenPadding / 2),
-            shape: RoundedRectangleBorder(
-              borderRadius: viewType == NftViewType.grid
-                  ? BorderRadius.circular(0)
-                  : BorderRadius.circular(kWidgetRadius),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Stack(
-              children: [
-                Image.network(
-                  nft.imageUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
-                Positioned.fill(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.center,
-                        colors: [
-                          Colors.black87,
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
+  Widget _buildNftGridOrCard(List<NFT> nfts) {
+    return SliverToBoxAdapter(
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
+          childAspectRatio: 1.0,
+          mainAxisSpacing: kScreenPadding / 2,
+          crossAxisSpacing: kScreenPadding / 2,
+        ),
+        itemCount: nfts.length,
+        shrinkWrap: true, // Prevents unbounded height error
+        physics:
+            const NeverScrollableScrollPhysics(), // Parent handles scrolling
+        itemBuilder: (context, index) {
+          final nft = nfts[index];
+          return GestureDetector(
+            onTap: () {
+              context.pushNamed(
+                viewNftRouteName,
+                pathParameters: {'index': index.toString()},
+              );
+            },
+            child: Card(
+              margin: viewType == NftViewType.grid
+                  ? const EdgeInsets.all(0)
+                  : const EdgeInsets.only(bottom: kScreenPadding / 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: viewType == NftViewType.grid
+                    ? BorderRadius.circular(0)
+                    : BorderRadius.circular(kWidgetRadius),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Stack(
+                children: [
+                  Image.network(
+                    nft.imageUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(kScreenPadding / 2),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: EllipsizedText(
-                        nft.name,
-                        style: context.textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: ColorPalette.darkThemeWhite,
-                          shadows: const [
-                            Shadow(
-                              offset: Offset(1.0, 1.0),
-                              blurRadius: 2.0,
-                              color: Colors.black,
-                            ),
+                  Positioned.fill(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.center,
+                          colors: [
+                            Colors.black87,
+                            Colors.transparent,
                           ],
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(kScreenPadding / 2),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: EllipsizedText(
+                          nft.name,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: ColorPalette.darkThemeWhite,
+                            shadows: const [
+                              Shadow(
+                                offset: Offset(1.0, 1.0),
+                                blurRadius: 2.0,
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
   Widget _buildLoadingNfts(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: context.colorScheme.surface,
-      highlightColor: Colors.grey.shade100,
-      period: const Duration(milliseconds: 2000),
+    return SliverToBoxAdapter(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
@@ -216,31 +215,40 @@ class NftTabState extends ConsumerState<NftTab> {
           crossAxisSpacing: kScreenPadding / 2,
         ),
         itemCount: 12,
-        itemBuilder: (context, index) => Container(
-          color: context.colorScheme.surface,
+        shrinkWrap: true, // Prevents unbounded height error
+        physics:
+            const NeverScrollableScrollPhysics(), // Parent handles scrolling
+        itemBuilder: (context, index) => Shimmer.fromColors(
+          baseColor: context.colorScheme.surface,
+          highlightColor: Colors.grey.shade100,
+          child: Container(
+            color: context.colorScheme.surface,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildEmptyNfts(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width / 4,
-              maxHeight: MediaQuery.of(context).size.height / 4,
+    return SliverToBoxAdapter(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width / 4,
+                maxHeight: MediaQuery.of(context).size.height / 4,
+              ),
+              child: SvgPicture.asset(
+                'assets/images/empty.svg',
+                semanticsLabel: 'No NFTs Found',
+              ),
             ),
-            child: SvgPicture.asset(
-              'assets/images/empty.svg',
-              semanticsLabel: 'No NFTs Found',
-            ),
-          ),
-          const SizedBox(height: kScreenPadding / 2),
-          Text('No NFTs Found', style: context.textTheme.titleMedium),
-        ],
+            const SizedBox(height: kScreenPadding / 2),
+            Text('No NFTs Found', style: context.textTheme.titleMedium),
+          ],
+        ),
       ),
     );
   }

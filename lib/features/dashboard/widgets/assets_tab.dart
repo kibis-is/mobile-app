@@ -58,31 +58,29 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   Widget build(BuildContext context) {
     final assetsAsync = ref.watch(assetsProvider);
 
-    return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            titleSpacing: 0,
-            floating: true,
-            snap: true,
-            title: _buildSearchBar(context),
-          ),
-          SliverFillRemaining(
-            child: CustomPullToRefresh(
-              refreshController: _refreshController,
-              onRefresh: _onRefresh,
-              child: assetsAsync.when(
-                data: (assets) => assets.isEmpty
-                    ? _buildEmptyAssets(context, ref)
-                    : _buildAssetsList(context, assets),
-                loading: () => _buildLoadingAssets(context),
-                error: (error, stack) => _buildEmptyAssets(context, ref),
-              ),
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        SliverAppBar(
+          titleSpacing: 0,
+          floating: true,
+          snap: true,
+          title: _buildSearchBar(context),
+        ),
+        SliverFillRemaining(
+          child: CustomPullToRefresh(
+            refreshController: _refreshController,
+            onRefresh: _onRefresh,
+            child: assetsAsync.when(
+              data: (assets) => assets.isEmpty
+                  ? _buildEmptyAssets(context, ref)
+                  : _buildAssetsList(context, assets),
+              loading: () => _buildLoadingAssets(context),
+              error: (error, stack) => _buildEmptyAssets(context, ref),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
