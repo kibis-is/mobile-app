@@ -105,7 +105,6 @@ class ViewAssetScreen extends ConsumerWidget {
     } catch (e, stack) {
       if (!context.mounted) return;
       _handleGeneralException(e, stack, context);
-    } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
   }
@@ -227,6 +226,49 @@ class AssetHeader extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    activeAsset?.index == 0
+                        ? const SizedBox()
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kScreenPadding / 2,
+                                vertical: kScreenPadding),
+                            child: Chip(
+                              padding: const EdgeInsets.all(kScreenPadding / 4),
+                              label: Text(
+                                'ASA',
+                                style: context.textTheme.displaySmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
+                              backgroundColor:
+                                  ColorPalette.cardGradientMediumBlue,
+                            ),
+                          ),
+                    Row(
+                      children: [
+                        Text(
+                          activeAsset?.index.toString() ?? '',
+                          style: context.textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        InkWell(
+                          onTap: () => copyToClipboard(
+                              context, activeAsset?.index.toString() ?? ''),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: kScreenPadding),
+                            child: AppIcons.icon(icon: AppIcons.copy),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 Container(
                   padding: const EdgeInsets.all(kScreenPadding),
                   decoration: const BoxDecoration(
@@ -242,55 +284,11 @@ class AssetHeader extends ConsumerWidget {
                         const ColorFilter.mode(Colors.white, BlendMode.srcATop),
                   ),
                 ),
-                const SizedBox(height: kScreenPadding),
+                const SizedBox(height: kScreenPadding * 2),
                 Text(
                   activeAsset?.params.name ?? 'Unnamed Asset',
-                  style: context.textTheme.titleMedium?.copyWith(
+                  style: context.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        if ((activeAsset?.index ?? 0) != 0)
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: kScreenPadding / 2, vertical: kScreenPadding),
-              child: Chip(
-                padding: const EdgeInsets.all(kScreenPadding / 4),
-                label: Text(
-                  'ASA',
-                  style: context.textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: isDarkMode ? Colors.white : Colors.black),
-                ),
-                backgroundColor: ColorPalette.cardGradientMediumBlue,
-              ),
-            ),
-          ),
-        Positioned(
-          right: 0,
-          top: 0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: kScreenPadding / 2, vertical: kScreenPadding),
-            child: Row(
-              children: [
-                Text(
-                  activeAsset?.index.toString() ?? '',
-                  style: context.textTheme.bodySmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                InkWell(
-                  onTap: () => copyToClipboard(
-                      context, activeAsset?.index.toString() ?? ''),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: kScreenPadding),
-                    child: AppIcons.icon(icon: AppIcons.copy),
                   ),
                 ),
               ],
