@@ -171,7 +171,6 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
         accountHandler.handleAccountSelection(account['accountId']).then((_) {
           invalidateProviders(ref);
           GoRouter.of(context).go('/');
-          ref.read(loadingProvider.notifier).stopLoading();
         }).catchError((e) {
           debugPrint('Error handling account selection: ${e.toString()}');
           ref.read(loadingProvider.notifier).stopLoading();

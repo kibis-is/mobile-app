@@ -395,33 +395,17 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
       AppResetUtil.resetApp(ref);
       GoRouter.of(context).go('/setup');
     } catch (e) {
+      debugPrint(e.toString());
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
         message: e.toString(),
       );
-    } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
   }
 
-  String _getOverlayText() {
-    switch (widget.mode) {
-      case PinPadMode.setup:
-        return isConfirmingPin ? 'Confirming PIN' : 'Setting Up';
-      case PinPadMode.unlock:
-        return 'Authenticating';
-      case PinPadMode.verifyTransaction:
-        return 'Verifying';
-      case PinPadMode.changePin:
-        return isConfirmingPin ? 'Confirming New PIN' : 'Setting New PIN';
-      default:
-        return '';
-    }
-  }
-
   Future<void> _processCompletePin() async {
-    ref.read(loadingProvider.notifier).startLoading(message: _getOverlayText());
     try {
       await _handlePinComplete();
       if (mounted) {
@@ -429,10 +413,10 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
       }
     } catch (e) {
       debugPrint('Error during PIN completion: $e');
+      ref.read(loadingProvider.notifier).stopLoading();
     } finally {
       if (mounted) {
-        ref.read(loadingProvider.notifier).stopLoading();
-        isPinCompleted = false; // Re-enable input after processing
+        isPinCompleted = false;
       }
     }
   }
@@ -441,6 +425,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
     final pinNotifier = ref.read(pinEntryStateNotifierProvider.notifier);
     final pinTitleNotifier = ref.read(pinTitleProvider.notifier);
     final pin = pinNotifier.getPin();
+    const pinErrorString = 'PIN does not match.';
 
     switch (widget.mode) {
       case PinPadMode.setup:
@@ -455,7 +440,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
             }
           } else {
             if (mounted) {
-              pinNotifier.setError('PINs do not match. Please try again.');
+              pinNotifier.setError(pinErrorString);
               _triggerAnimation();
               pinNotifier.clearPin();
               pinNotifier.setFirstPin('');
@@ -486,7 +471,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
               pinTitleNotifier.setCreatePinTitle();
             }
           } else {
-            pinNotifier.setError('PINs do not match. Please try again.');
+            pinNotifier.setError(pinErrorString);
             _triggerAnimation();
             pinNotifier.clearPin();
             pinNotifier.setFirstPin('');

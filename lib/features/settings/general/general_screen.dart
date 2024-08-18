@@ -93,7 +93,6 @@ class GeneralScreen extends ConsumerWidget {
         snackType: SnackType.error,
         message: e.toString(),
       );
-    } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
   }

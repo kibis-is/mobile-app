@@ -197,7 +197,6 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
       _navigateHome();
     } catch (e) {
       _showError(e);
-    } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
   }

@@ -3,6 +3,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/pin_state.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 
 final pinEntryStateNotifierProvider =
@@ -40,6 +41,21 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
     return _firstPin;
   }
 
+  String _getOverlayText(PinPadMode mode) {
+    switch (mode) {
+      case PinPadMode.setup:
+        return 'Setting Up';
+      case PinPadMode.unlock:
+        return 'Authenticating';
+      case PinPadMode.verifyTransaction:
+        return 'Verifying';
+      case PinPadMode.changePin:
+        return 'Setting New PIN';
+      default:
+        return '';
+    }
+  }
+
   Future<void> pinComplete(PinPadMode mode) async {
     try {
       if (mode == PinPadMode.setup) {
@@ -47,6 +63,9 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
       } else if (mode == PinPadMode.unlock) {
         bool isPinVerified = await pinStateNotifier.verifyPin(state.pin);
         if (isPinVerified) {
+          ref
+              .read(loadingProvider.notifier)
+              .startLoading(message: _getOverlayText(mode));
           await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
           ref.read(isAuthenticatedProvider.notifier).state = true;
           clearError();
@@ -56,6 +75,7 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
       }
     } catch (e) {
       state = state.copyWith(error: 'Invalid PIN. Try again.', pin: '');
+      ref.read(loadingProvider.notifier).stopLoading();
     }
   }
 

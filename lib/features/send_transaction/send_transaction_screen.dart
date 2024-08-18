@@ -222,7 +222,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       debugPrint(errorMessage);
     } finally {
       goBack();
-      ref.read(loadingProvider.notifier).stopLoading();
     }
   }
 

@@ -161,7 +161,6 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
         snackType: SnackType.error,
         message: e.toString(),
       );
-    } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
   }

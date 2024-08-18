@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -28,6 +27,7 @@ import 'package:kibisis/features/send_transaction/send_transaction_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
 import 'package:kibisis/features/view_asset/view_asset_screen.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
+import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -63,6 +63,7 @@ class RouterNotifier extends ChangeNotifier {
       (_, __) => notifyListeners(),
     );
   }
+
   Future<String?> _redirectLogic(
       BuildContext context, GoRouterState state) async {
     final container = ProviderScope.containerOf(context);
@@ -73,7 +74,13 @@ class RouterNotifier extends ChangeNotifier {
 
     bool hasAccount = await container.read(storageProvider).accountExists();
 
-    FlutterNativeSplash.remove();
+    // Execute logic when popping to the root page
+    if (state.fullPath == '/' || state.fullPath == '/$welcomeRouteName') {
+      ref.read(loadingProvider.notifier).stopLoading();
+      debugPrint('Popped back to root page!');
+    }
+
+    // Handle the redirect logic as needed
     if (!hasAccount &&
         !state.uri.toString().startsWith('/setup') &&
         !isSetupComplete) {
