@@ -74,13 +74,15 @@ class RouterNotifier extends ChangeNotifier {
 
     bool hasAccount = await container.read(storageProvider).accountExists();
 
-    // Execute logic when popping to the root page
     if (state.fullPath == '/' || state.fullPath == '/$welcomeRouteName') {
-      ref.read(loadingProvider.notifier).stopLoading();
-      debugPrint('Popped back to root page!');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          ref.read(loadingProvider.notifier).stopLoading();
+          debugPrint('Popped back to root page!');
+        });
+      });
     }
 
-    // Handle the redirect logic as needed
     if (!hasAccount &&
         !state.uri.toString().startsWith('/setup') &&
         !isSetupComplete) {
