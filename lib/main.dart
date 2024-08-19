@@ -19,8 +19,6 @@ import 'package:kibisis/utils/app_lifecycle_handler.dart';
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
-// Connectivity Notifier using Riverpod
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: Kibisis()));
@@ -60,8 +58,6 @@ class _KibisisState extends ConsumerState<Kibisis> {
       builder: (context, ref, _) {
         final sharedPreferences = ref.watch(sharedPreferencesProvider);
         final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
-
-        // Watch the connectivity status
         final isConnected = ref.watch(connectivityProvider);
 
         return sharedPreferences.when(
@@ -73,11 +69,20 @@ class _KibisisState extends ConsumerState<Kibisis> {
             final message = ref.watch(loadingProvider).message;
             final isLoading = ref.watch(loadingProvider).isLoading;
 
-            SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-              systemNavigationBarColor: context.colorScheme.background,
-              systemNavigationBarIconBrightness:
-                  isDarkTheme ? Brightness.light : Brightness.dark,
-            ));
+            SystemChrome.setSystemUIOverlayStyle(
+              SystemUiOverlayStyle(
+                statusBarColor: isDarkTheme
+                    ? const Color(0xFF1A202C)
+                    : const Color(0xFFF3F1F3),
+                statusBarIconBrightness:
+                    isDarkTheme ? Brightness.dark : Brightness.light,
+                systemNavigationBarColor: isDarkTheme
+                    ? const Color(0xFF1A202C)
+                    : const Color(0xFFF3F1F3),
+                systemNavigationBarIconBrightness:
+                    isDarkTheme ? Brightness.light : Brightness.dark,
+              ),
+            );
 
             return MaterialApp.router(
               scaffoldMessengerKey: rootScaffoldMessengerKey,
