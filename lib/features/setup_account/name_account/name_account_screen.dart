@@ -156,25 +156,31 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   }
 
   Widget _buildSubmitButton() {
-    final loadingState = ref.watch(loadingProvider);
+    final isLoading = ref.watch(loadingProvider).isLoading;
+    final hasSubmitted = ref.watch(hasSubmittedProvider);
+
     return Padding(
       padding: const EdgeInsets.all(kScreenPadding),
       child: CustomButton(
         text: widget.accountFlow == AccountFlow.edit ? 'Save' : 'Create',
         isFullWidth: true,
-        onPressed: loadingState.isLoading || ref.watch(hasSubmittedProvider)
-            ? null
-            : () => _handleSubmit(),
+        onPressed: isLoading || hasSubmitted ? null : _handleSubmit,
       ),
     );
   }
 
   Future<void> _handleSubmit() async {
-    final ref = this.ref;
-    ref.read(hasSubmittedProvider.notifier).state = true;
-
     if (formKey.currentState!.validate()) {
-      await _handleAccountSubmission();
+      ref.read(hasSubmittedProvider.notifier).state = true;
+
+      try {
+        await _handleAccountSubmission();
+        _navigateHome();
+      } catch (e) {
+        _showError(e);
+      } finally {
+        ref.read(hasSubmittedProvider.notifier).state = false;
+      }
     }
   }
 
@@ -194,9 +200,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
       } else {
         await _createAccount();
       }
-      _navigateHome();
-    } catch (e) {
-      _showError(e);
+    } finally {
       ref.read(loadingProvider.notifier).stopLoading();
     }
   }
