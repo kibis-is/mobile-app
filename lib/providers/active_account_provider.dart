@@ -36,7 +36,7 @@ class ActiveAccountNotifier extends StateNotifier<String?> {
     }
   }
 
-  Future<void> clearActiveAccount() async {
+  Future<void> reset() async {
     try {
       await storageService.setActiveAccount('');
       state = null;

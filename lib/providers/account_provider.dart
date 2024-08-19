@@ -285,13 +285,13 @@ class AccountNotifier extends StateNotifier<AccountState> {
         error: null,
       );
 
-      ref.read(temporaryAccountProvider.notifier).clear();
+      ref.read(temporaryAccountProvider.notifier).reset();
     } catch (e) {
       state = state.copyWith(error: 'Failed to finalize account creation: $e');
     }
   }
 
-  void clearAccountState() {
+  void reset() {
     state = AccountState();
   }
 }

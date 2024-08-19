@@ -30,7 +30,7 @@ class AccountSetupUtility {
         await ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
       }
 
-      ref.read(temporaryAccountProvider.notifier).clear();
+      ref.read(temporaryAccountProvider.notifier).reset();
 
       await ref.refresh(storageProvider).accountExists();
 

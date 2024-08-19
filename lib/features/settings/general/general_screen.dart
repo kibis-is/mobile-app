@@ -7,7 +7,6 @@ import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/loading_provider.dart';
-import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -80,12 +79,15 @@ class GeneralScreen extends ConsumerWidget {
     }
   }
 
-  void _handleResetApp(WidgetRef ref, BuildContext context) {
+  void _handleResetApp(WidgetRef ref, BuildContext context) async {
     try {
       ref
           .read(loadingProvider.notifier)
           .startLoading(message: 'Resetting App', fullScreen: true);
-      AppResetUtil.resetApp(ref);
+
+      await AppResetUtil.resetApp(ref);
+
+      if (!context.mounted) return;
       GoRouter.of(context).go('/setup');
     } catch (e) {
       showCustomSnackBar(
@@ -102,9 +104,8 @@ class GeneralScreen extends ConsumerWidget {
       context: context,
       builder: (context) => PinPadDialog(
         title: 'Confirm Reset',
-        onPinVerified: () {
+        onPinVerified: () async {
           _handleResetApp(ref, context);
-          GoRouter.of(context).goNamed(welcomeRouteName);
         },
       ),
     );

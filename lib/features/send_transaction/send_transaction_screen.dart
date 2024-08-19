@@ -267,13 +267,13 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     Navigator.of(context).pop();
   }
 
-  // Helper function to get the balance as a double
-  double getBalance(WidgetRef ref) {
-    return ref.watch(balanceProvider);
-  }
-
   Future<double> getMaxAmount(WidgetRef ref) async {
-    final double balance = getBalance(ref);
+    final double balance = ref.watch(balanceProvider).when(
+          data: (balance) => balance,
+          loading: () => 0.0,
+          error: (error, stackTrace) => 0.0,
+        );
+
     final double minimumBalance = ref.watch(minimumBalanceProvider);
     const double transactionFee = 0.0001;
     final sum = balance - minimumBalance - transactionFee;

@@ -110,4 +110,11 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
 
     return filteredAssets;
   }
+
+  void reset() {
+    _filter = '';
+    _showFrozen = false;
+    _sorting = null;
+    state = AsyncValue.data(_filteredAssets());
+  }
 }

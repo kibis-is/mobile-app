@@ -39,4 +39,8 @@ class SelectedAssetNotifier extends StateNotifier<SelectItem?> {
   void setAsset(SelectItem asset) {
     state = asset;
   }
+
+  void reset() {
+    state = null;
+  }
 }

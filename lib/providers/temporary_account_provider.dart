@@ -195,7 +195,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     return state.seedPhrase!.split(' ');
   }
 
-  void clear() {
+  void reset() {
     state = TemporaryAccountState();
   }
 }

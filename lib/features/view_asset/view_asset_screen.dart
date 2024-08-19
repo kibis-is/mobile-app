@@ -118,13 +118,17 @@ class ViewAssetScreen extends ConsumerWidget {
     final algorandService = ref.read(algorandServiceProvider);
     final account = ref.read(accountProvider).account;
     final activeAsset = ref.read(activeAssetProvider);
-    final balance = ref.read(balanceProvider);
+    final balanceState = ref.read(balanceProvider);
 
     if (account == null || activeAsset == null) {
       throw Exception('Account or active asset is null');
     }
 
-    // Pre-check the account balance
+    final balance = balanceState.maybeWhen(
+      data: (balance) => balance,
+      orElse: () => 0.0,
+    );
+
     if (balance == 0) {
       showCustomSnackBar(
         context: context,

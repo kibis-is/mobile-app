@@ -12,4 +12,8 @@ class FetchStatusNotifier extends StateNotifier<bool> {
   void setFetched(bool fetched) {
     state = fetched;
   }
+
+  void reset() {
+    state = false;
+  }
 }

@@ -53,7 +53,7 @@ class PinStateNotifier extends StateNotifier<PinState> {
     }
   }
 
-  void clearPinState() {
+  void reset() {
     state = PinState();
   }
 }

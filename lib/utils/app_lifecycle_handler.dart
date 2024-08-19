@@ -60,8 +60,8 @@ class AppLifecycleHandler with WidgetsBindingObserver {
 
   void handleTimeout() {
     ref.read(isAuthenticatedProvider.notifier).state = false;
-    ref.read(accountProvider.notifier).clearAccountState();
-    ref.read(pinProvider.notifier).clearPinState();
+    ref.read(accountProvider.notifier).reset();
+    ref.read(pinProvider.notifier).reset();
     ref.read(pinTitleProvider.notifier).setUnlockTitle();
   }
 

@@ -33,4 +33,8 @@ class SetupCompleteNotifier extends StateNotifier<bool> {
       // Handle the error appropriately, e.g., log the error
     }
   }
+
+  void reset() {
+    state = false;
+  }
 }

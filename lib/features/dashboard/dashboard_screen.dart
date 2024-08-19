@@ -196,7 +196,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
 
   Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
-    final balanceAsync = ref.watch(balanceNotifierProvider);
+    final balanceAsync = ref.watch(balanceProvider);
     return Row(
       children: [
         balanceAsync.when(

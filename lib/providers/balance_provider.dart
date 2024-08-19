@@ -2,11 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 
-final balanceProvider = Provider<double>((ref) {
-  return ref.watch(balanceNotifierProvider).asData?.value ?? 0.0;
-});
-
-final balanceNotifierProvider =
+final balanceProvider =
     StateNotifierProvider<BalanceNotifier, AsyncValue<double>>((ref) {
   final publicAddress = ref.watch(accountProvider).account?.publicAddress ?? '';
   return BalanceNotifier(ref, publicAddress);
@@ -30,10 +26,14 @@ class BalanceNotifier extends StateNotifier<AsyncValue<double>> {
       if (mounted) {
         state = AsyncValue.data(balance);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        state = AsyncValue.error(e, StackTrace.current);
+        state = AsyncValue.error(e, stackTrace);
       }
     }
+  }
+
+  void reset() {
+    state = const AsyncValue.data(0.0);
   }
 }

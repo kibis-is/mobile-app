@@ -22,4 +22,8 @@ class ShowFrozenAssetsProvider extends StateNotifier<bool> {
     final storageService = ref.read(storageProvider);
     storageService.setShowFrozenAssets(showFrozenAssets);
   }
+
+  void reset() {
+    state = true;
+  }
 }

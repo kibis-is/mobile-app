@@ -26,4 +26,8 @@ class IsDarkModeNotifier extends StateNotifier<bool> {
     final storageService = ref.read(storageProvider);
     storageService.setIsDarkMode(isDarkMode);
   }
+
+  void reset() {
+    state = true;
+  }
 }

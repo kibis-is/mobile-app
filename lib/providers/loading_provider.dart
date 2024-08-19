@@ -35,7 +35,6 @@ class LoadingState {
 
 class LoadingStateNotifier extends StateNotifier<LoadingState> {
   Timer? _timer;
-  Timer? _messageTimer;
 
   // Predefined follow-up messages
   final List<String> _followUpMessages = [
@@ -56,6 +55,9 @@ class LoadingStateNotifier extends StateNotifier<LoadingState> {
     int totalTime = 30000,
     bool fullScreen = false,
   }) {
+    // Cancel any existing timers
+    _cancelTimers();
+
     state = LoadingState(
       isLoading: true,
       message: message,
@@ -64,56 +66,59 @@ class LoadingStateNotifier extends StateNotifier<LoadingState> {
       fullScreen: fullScreen,
     );
 
-    if (withProgressBar) {
-      _startProgress(duration);
-    }
-
-    _startMessageRotation(totalTime);
+    _startProgressAndMessageRotation(withProgressBar, duration, totalTime);
   }
 
-  void _startProgress(int duration) {
+  void _startProgressAndMessageRotation(
+      bool withProgressBar, int duration, int totalTime) {
     const int stepDuration = 100;
-    final double stepProgress = 1.0 / (duration / stepDuration);
+    const int messageInterval = 5000;
+    double stepProgress = withProgressBar ? 1.0 / (duration / stepDuration) : 0;
+    int elapsedTime = 0;
 
     _timer =
         Timer.periodic(const Duration(milliseconds: stepDuration), (timer) {
-      if (state.progress! >= 1.0 || !state.isLoading) {
-        timer.cancel();
-        state = state.copyWith(progress: 1.0);
-      } else {
-        state = state.copyWith(progress: state.progress! + stepProgress);
+      elapsedTime += stepDuration;
+
+      // Update progress if applicable
+      if (withProgressBar && state.progress != null) {
+        double newProgress = state.progress! + stepProgress;
+        if (newProgress >= 1.0 || !state.isLoading) {
+          state = state.copyWith(progress: 1.0);
+          _cancelTimers();
+          return;
+        } else {
+          state = state.copyWith(progress: newProgress);
+        }
       }
-    });
-  }
 
-  void _startMessageRotation(int totalTime) {
-    const int messageInterval = 5000;
-    int elapsedTime = 0;
-
-    _messageTimer =
-        Timer.periodic(const Duration(milliseconds: messageInterval), (timer) {
-      elapsedTime += messageInterval;
-
-      if (elapsedTime >= totalTime || !state.isLoading) {
-        timer.cancel();
-      } else {
+      // Update message rotation
+      if (elapsedTime % messageInterval == 0) {
         int messageIndex =
             (elapsedTime ~/ messageInterval) % _followUpMessages.length;
         state = state.copyWith(message: _followUpMessages[messageIndex]);
+      }
+
+      // Stop timers after total time or if loading has stopped
+      if (elapsedTime >= totalTime || !state.isLoading) {
+        _cancelTimers();
       }
     });
   }
 
   void stopLoading() {
+    _cancelTimers();
+    state = state.copyWith(isLoading: false, message: '', progress: null);
+  }
+
+  void _cancelTimers() {
     _timer?.cancel();
-    _messageTimer?.cancel();
-    state = LoadingState(isLoading: false, message: '');
+    _timer = null;
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
-    _messageTimer?.cancel();
+    _cancelTimers();
     super.dispose();
   }
 }

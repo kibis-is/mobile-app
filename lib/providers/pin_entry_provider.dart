@@ -91,7 +91,7 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
     return state.pin;
   }
 
-  void clearPin() {
+  void reset() {
     state = state.copyWith(pin: '');
   }
 
