@@ -15,6 +15,7 @@ class ColorPalette {
   static const Color lightThemeShadow = Color(0xFF000000);
   static const Color lightThemeFrozenColor = Color(0xFF37ABFF);
   static const Color lightThemeAssetColor = Color(0xFF029B7F);
+  static const Color lightThemeSnow = Color(0xFFFAF8FA);
 
   // Dark Theme Colors
   static const Color darkThemeMauve = Color(0xFFE0B0FF);
@@ -32,7 +33,7 @@ class ColorPalette {
   static const Color darkThemeFrozenColor = Color(0xFFAFD9FF);
   static const Color darkThemeFrozenSurfaceColor = Color(0xFF495569);
   static const Color darkThemeAssetColor = Color(0xFFD3FFB0);
-
+  static const Color darkThemeRichBlack = Color(0xFF0C0F14);
   // Gradient Colors
   static const Color cardGradientPurpleA = Color(0xFF8048A5);
   static const Color cardGradientPurpleB = Color(0xFF522E6A);

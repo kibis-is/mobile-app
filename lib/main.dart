@@ -10,6 +10,7 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -94,9 +95,11 @@ class _KibisisState extends ConsumerState<Kibisis> {
                     ),
                     isLoading: isLoading,
                     color: isFullScreen
-                        ? context.colorScheme.background
-                        : Colors.black,
-                    opacity: isFullScreen ? 1.0 : 0.6,
+                        ? isDarkTheme
+                            ? ColorPalette.darkThemeRichBlack
+                            : ColorPalette.lightThemeSnow
+                        : context.colorScheme.background,
+                    opacity: isFullScreen ? 1.0 : 0.54,
                     child: Stack(
                       children: [
                         DefaultColorInitializer(child: Center(child: widget)),
