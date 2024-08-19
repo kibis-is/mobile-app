@@ -69,20 +69,13 @@ class _KibisisState extends ConsumerState<Kibisis> {
             final message = ref.watch(loadingProvider).message;
             final isLoading = ref.watch(loadingProvider).isLoading;
 
-            SystemChrome.setSystemUIOverlayStyle(
-              SystemUiOverlayStyle(
-                statusBarColor: isDarkTheme
-                    ? const Color(0xFF1A202C)
-                    : const Color(0xFFF3F1F3),
-                statusBarIconBrightness:
-                    isDarkTheme ? Brightness.dark : Brightness.light,
-                systemNavigationBarColor: isDarkTheme
-                    ? const Color(0xFF1A202C)
-                    : const Color(0xFFF3F1F3),
-                systemNavigationBarIconBrightness:
-                    isDarkTheme ? Brightness.light : Brightness.dark,
-              ),
-            );
+            SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness:
+                  isDarkTheme ? Brightness.dark : Brightness.light,
+              systemNavigationBarColor: Colors.black,
+              systemNavigationBarIconBrightness: Brightness.light,
+            ));
 
             return MaterialApp.router(
               scaffoldMessengerKey: rootScaffoldMessengerKey,
