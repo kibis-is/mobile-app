@@ -72,7 +72,7 @@ final ThemeData darkTheme = ThemeData(
     primary: ColorPalette.darkThemeMauve,
     onPrimary: ColorPalette.darkThemeRaisinBlack,
     secondary: ColorPalette.darkThemeKeppel,
-    onSecondary: ColorPalette.darkThemeRaisinBlack,
+    onSecondary: ColorPalette.darkThemeAntiflashWhite,
     error: ColorPalette.darkThemeError,
     onError: ColorPalette.darkThemeAntiflashWhite,
     background: ColorPalette.darkThemeRaisinBlack,
