@@ -9,13 +9,13 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 class CustomLoadingOverlay extends ConsumerWidget {
   final String text;
   final double? percent;
-  final bool fullScreen;
+  final bool isVisible;
 
   const CustomLoadingOverlay({
     super.key,
     required this.text,
     this.percent,
-    this.fullScreen = false,
+    this.isVisible = true,
   });
 
   @override
@@ -29,11 +29,9 @@ class CustomLoadingOverlay extends ConsumerWidget {
         padding: const EdgeInsets.all(kScreenPadding),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(kWidgetRadius),
-            color: fullScreen
-                ? context.colorScheme.background
-                : isDarkMode
-                    ? ColorPalette.darkThemeRichBlack
-                    : ColorPalette.lightThemeSnow),
+            color: isDarkMode
+                ? ColorPalette.darkThemeRichBlack
+                : ColorPalette.lightThemeAntiFlashWhite),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -54,11 +52,9 @@ class CustomLoadingOverlay extends ConsumerWidget {
                 child: LinearPercentIndicator(
                     lineHeight: kScreenPadding,
                     percent: percent!.clamp(0.0, 1.0),
-                    backgroundColor: fullScreen
-                        ? isDarkMode
-                            ? ColorPalette.darkThemeRichBlack
-                            : ColorPalette.lightThemeSnow
-                        : context.colorScheme.background,
+                    backgroundColor: isDarkMode
+                        ? ColorPalette.darkThemeRichBlack
+                        : ColorPalette.lightThemeAntiFlashWhite,
                     progressColor: percent!.clamp(0.0, 1.0) >= 1
                         ? context.colorScheme.secondary
                         : context.colorScheme.primary),

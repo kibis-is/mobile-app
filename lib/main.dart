@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_loading_overlay.dart';
+import 'package:kibisis/common_widgets/loading_overlay.dart';
 import 'package:kibisis/common_widgets/splash_screen.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
@@ -14,7 +15,6 @@ import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
-import 'package:loading_overlay/loading_overlay.dart';
 import 'package:kibisis/utils/app_lifecycle_handler.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
@@ -65,7 +65,6 @@ class _KibisisState extends ConsumerState<Kibisis> {
           data: (prefs) {
             final isDarkTheme = ref.watch(isDarkModeStateAdapter);
             final router = ref.watch(goRouterProvider);
-            final isFullScreen = ref.watch(loadingProvider).fullScreen;
             final progress = ref.watch(loadingProvider).progress;
             final message = ref.watch(loadingProvider).message;
             final isLoading = ref.watch(loadingProvider).isLoading;
@@ -94,12 +93,10 @@ class _KibisisState extends ConsumerState<Kibisis> {
                       percent: progress,
                     ),
                     isLoading: isLoading,
-                    color: isFullScreen
-                        ? isDarkTheme
-                            ? ColorPalette.darkThemeRichBlack
-                            : ColorPalette.lightThemeSnow
-                        : context.colorScheme.background,
-                    opacity: isFullScreen ? 1.0 : 0.54,
+                    color: isDarkTheme
+                        ? ColorPalette.darkThemeRichBlack
+                        : ColorPalette.lightThemeSnow,
+                    opacity: 1.0,
                     child: Stack(
                       children: [
                         DefaultColorInitializer(child: Center(child: widget)),

@@ -165,7 +165,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
       onTap: () {
         ref
             .read(loadingProvider.notifier)
-            .startLoading(message: 'Loading Account', fullScreen: true);
+            .startLoading(message: 'Loading Account');
         final accountHandler = AccountHandler(ref);
 
         accountHandler.handleAccountSelection(account['accountId']).then((_) {

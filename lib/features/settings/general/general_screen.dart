@@ -81,9 +81,7 @@ class GeneralScreen extends ConsumerWidget {
 
   void _handleResetApp(WidgetRef ref, BuildContext context) async {
     try {
-      ref
-          .read(loadingProvider.notifier)
-          .startLoading(message: 'Resetting App', fullScreen: true);
+      ref.read(loadingProvider.notifier).startLoading(message: 'Resetting App');
 
       await AppResetUtil.resetApp(ref);
 

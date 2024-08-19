@@ -177,7 +177,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             message: widget.mode == SendTransactionScreenMode.payment
                 ? 'Sending Payment'
                 : 'Sending Asset',
-            fullScreen: false,
             withProgressBar: true,
           );
       final account = ref.read(accountProvider).account;

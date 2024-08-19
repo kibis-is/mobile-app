@@ -190,7 +190,6 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
           message: widget.accountFlow == AccountFlow.edit
               ? 'Updating Account'
               : 'Creating Account',
-          fullScreen: widget.accountFlow != AccountFlow.edit,
           withProgressBar: widget.accountFlow != AccountFlow.edit,
         );
 

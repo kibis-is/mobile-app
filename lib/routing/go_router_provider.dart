@@ -76,7 +76,7 @@ class RouterNotifier extends ChangeNotifier {
 
     if (state.fullPath == '/' || state.fullPath == '/$welcomeRouteName') {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(milliseconds: 300), () {
+        Future.delayed(const Duration(milliseconds: 500), () {
           ref.read(loadingProvider.notifier).stopLoading();
           debugPrint('Popped back to root page!');
         });

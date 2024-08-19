@@ -93,10 +93,9 @@ class ViewAssetScreen extends ConsumerWidget {
       return;
     }
 
-    ref.read(loadingProvider.notifier).startLoading(
-        message: 'Opting in to asset',
-        withProgressBar: true,
-        fullScreen: false);
+    ref
+        .read(loadingProvider.notifier)
+        .startLoading(message: 'Opting in to asset', withProgressBar: true);
     try {
       await _addAsset(context, ref);
     } on AlgorandException catch (algorandError) {
@@ -336,8 +335,7 @@ class AssetControlsState extends ConsumerState<AssetControls> {
         message: activeAsset?.params.defaultFrozen ?? false
             ? 'Unfreezing asset'
             : 'Freezing asset',
-        withProgressBar: true,
-        fullScreen: false);
+        withProgressBar: true);
     final accountState = ref.read(accountProvider);
     final algorandService = ref.read(algorandServiceProvider);
 

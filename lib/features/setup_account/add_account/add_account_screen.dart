@@ -146,7 +146,7 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
     try {
       ref
           .read(loadingProvider.notifier)
-          .startLoading(message: 'Importing Mock Accounts', fullScreen: false);
+          .startLoading(message: 'Importing Mock Accounts');
       QRCodeScannerLogic(
         context: context,
         ref: ref,

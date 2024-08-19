@@ -6,14 +6,12 @@ class LoadingState {
   final String message;
   final double? progress;
   final int duration;
-  final bool fullScreen;
 
   LoadingState({
     required this.isLoading,
     required this.message,
     this.progress,
     this.duration = 0,
-    this.fullScreen = false,
   });
 
   LoadingState copyWith({
@@ -21,14 +19,12 @@ class LoadingState {
     String? message,
     double? progress,
     int? duration,
-    bool? fullScreen,
   }) {
     return LoadingState(
       isLoading: isLoading ?? this.isLoading,
       message: message ?? this.message,
       progress: progress ?? this.progress,
       duration: duration ?? this.duration,
-      fullScreen: fullScreen ?? this.fullScreen,
     );
   }
 }
@@ -53,7 +49,6 @@ class LoadingStateNotifier extends StateNotifier<LoadingState> {
     bool withProgressBar = false,
     int duration = 5000,
     int totalTime = 30000,
-    bool fullScreen = false,
   }) {
     // Cancel any existing timers
     _cancelTimers();
@@ -63,7 +58,6 @@ class LoadingStateNotifier extends StateNotifier<LoadingState> {
       message: message,
       progress: withProgressBar ? 0.0 : null,
       duration: duration,
-      fullScreen: fullScreen,
     );
 
     _startProgressAndMessageRotation(withProgressBar, duration, totalTime);

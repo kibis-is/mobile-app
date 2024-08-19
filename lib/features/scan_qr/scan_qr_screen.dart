@@ -99,7 +99,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         }
         ref
             .read(loadingProvider.notifier)
-            .startLoading(message: 'Importing Accounts', fullScreen: true);
+            .startLoading(message: 'Importing Accounts');
         isProcessing = true;
         controller.stop();
         _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {

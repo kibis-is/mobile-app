@@ -389,9 +389,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
 
   void _handleResetApp() async {
     try {
-      ref
-          .read(loadingProvider.notifier)
-          .startLoading(message: 'Resetting App', fullScreen: true);
+      ref.read(loadingProvider.notifier).startLoading(message: 'Resetting App');
       await AppResetUtil.resetApp(ref);
       if (!mounted) return;
       GoRouter.of(context).go('/setup');
