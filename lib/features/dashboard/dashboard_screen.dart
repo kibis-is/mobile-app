@@ -64,8 +64,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     final networks = networkOptions;
     final accountState = ref.watch(accountProvider);
     final showFAB = ref.watch(fabVisibilityProvider);
-    final publicKey = accountState.account
-        ?.publicAddress; // Using the public address directly from the account provider
+    final publicKey = accountState.account?.publicAddress;
 
     if (showFAB) {
       _controller.forward();
