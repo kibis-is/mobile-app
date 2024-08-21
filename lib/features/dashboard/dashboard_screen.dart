@@ -145,15 +145,15 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
             closeFab();
           },
         ),
-        CustomFabChild(
-          icon: AppIcons.scan,
-          backgroundColor: context.colorScheme.primary,
-          iconColor: context.colorScheme.onPrimary,
-          onPressed: () {
-            GoRouter.of(context).push('/qrScanner', extra: ScanMode.connect);
-            closeFab();
-          },
-        ),
+        // CustomFabChild(
+        //   icon: AppIcons.scan,
+        //   backgroundColor: context.colorScheme.primary,
+        //   iconColor: context.colorScheme.onPrimary,
+        //   onPressed: () {
+        //     GoRouter.of(context).push('/qrScanner', extra: ScanMode.connect);
+        //     closeFab();
+        //   },
+        // ),
         CustomFabChild(
           icon: AppIcons.wallet,
           backgroundColor: context.colorScheme.primary,
