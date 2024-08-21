@@ -47,20 +47,48 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         child: ErrorScreen(errorMessage: errorMessage),
       );
     },
+    observers: [
+      CustomNavigatorObserver(ref),
+    ],
   );
 });
 
+class CustomNavigatorObserver extends NavigatorObserver {
+  final Ref ref;
+
+  CustomNavigatorObserver(this.ref);
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    super.didPop(route, previousRoute);
+    ref.read(loadingProvider.notifier).stopLoading();
+    debugPrint('Screen popped, stopped loading!');
+  }
+}
+
 class RouterNotifier extends ChangeNotifier {
   final Ref ref;
+  bool? _previousSetupComplete;
+  bool? _previousIsAuthenticated;
 
   RouterNotifier(this.ref) {
     ref.listen<bool>(
       setupCompleteProvider,
-      (_, __) => notifyListeners(),
+      (previous, next) {
+        if (_previousSetupComplete != next) {
+          _previousSetupComplete = next;
+          notifyListeners();
+        }
+      },
     );
     ref.listen<bool>(
       isAuthenticatedProvider,
-      (_, __) => notifyListeners(),
+      (previous, next) {
+        if (_previousIsAuthenticated != next) {
+          _previousIsAuthenticated = next;
+          notifyListeners();
+        }
+      },
     );
   }
 
@@ -71,34 +99,34 @@ class RouterNotifier extends ChangeNotifier {
     final isSetupComplete = container.read(setupCompleteProvider);
     final isAuthenticated = container.read(isAuthenticatedProvider);
     final isPasswordLockEnabled = container.read(pinLockProvider);
-
     bool hasAccount = await container.read(storageProvider).accountExists();
 
-    if (state.fullPath == '/' || state.fullPath == '/$welcomeRouteName') {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(milliseconds: 500), () {
-          ref.read(loadingProvider.notifier).stopLoading();
-          debugPrint('Popped back to root page!');
-        });
-      });
-    }
+    String? redirectPath;
 
     if (!hasAccount &&
         !state.uri.toString().startsWith('/setup') &&
         !isSetupComplete) {
-      return '/setup';
+      redirectPath = '/setup';
     } else if (hasAccount &&
         !isAuthenticated &&
         isPasswordLockEnabled &&
         !state.uri.toString().startsWith('/pinPadUnlock')) {
-      return '/pinPadUnlock';
+      redirectPath = '/pinPadUnlock';
     } else if (hasAccount &&
         (isAuthenticated || !isPasswordLockEnabled) &&
         (state.uri.toString().startsWith('/setup') ||
             state.uri.toString().startsWith('/pinPad'))) {
-      return '/';
+      redirectPath = '/';
     }
-    return null;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        ref.read(loadingProvider.notifier).stopLoading();
+        debugPrint('Navigation logic completed, stopped loading!');
+      });
+    });
+
+    return redirectPath;
   }
 
   List<GoRoute> get _routes => [
@@ -441,13 +469,47 @@ class RouterNotifier extends ChangeNotifier {
         ),
       ];
 
-  CustomTransitionPage defaultTransitionPage(
-      Widget child, GoRouterState state) {
-    return CustomTransitionPage(
+  // CustomTransitionPage defaultTransitionPage(
+  //     Widget child, GoRouterState state) {
+  //   return CustomTransitionPage(
+  //     key: state.pageKey,
+  //     child: child,
+  //     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+  //         child,
+  //   );
+  // }
+
+  CustomTransitionPage<void> defaultTransitionPage(
+    Widget child,
+    GoRouterState state, {
+    Duration duration = const Duration(milliseconds: 300),
+  }) {
+    return CustomTransitionPage<void>(
       key: state.pageKey,
       child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-          child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: Stack(
+            children: [
+              // Slight white overlay to give the effect
+              FadeTransition(
+                opacity: animation.drive(
+                  Tween<double>(begin: 0.3, end: 0.0).chain(
+                    CurveTween(curve: Curves.easeOut),
+                  ),
+                ),
+                child: Container(
+                  color: Colors.white,
+                ),
+              ),
+              // The actual child content fading in
+              child,
+            ],
+          ),
+        );
+      },
+      transitionDuration: duration,
     );
   }
 }
