@@ -106,7 +106,6 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   }
 
   void _triggerAnimation() {
-    if (isPinCompleted) return;
     _controller.reset();
     _controller.forward();
   }
@@ -377,6 +376,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         isConfirmingPin = true;
         pinTitleNotifier.setConfirmPinTitle();
         pinPadProvider.setFirstPin(pinPadProvider.getPin());
+        _controller.reset();
         _triggerAnimation();
         pinPadProvider.reset();
         pinPadProvider.clearError();
