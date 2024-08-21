@@ -170,10 +170,14 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   Widget _buildAssetsList(BuildContext context, List<Asset> assets) {
     return ListView.separated(
-      itemCount: assets.length,
+      itemCount: assets.length + 1,
       shrinkWrap: true,
-      itemBuilder: (context, index) =>
-          AssetListItem(asset: assets[index], mode: AssetScreenMode.view),
+      itemBuilder: (context, index) {
+        if (index == assets.length) {
+          return const SizedBox(height: 100);
+        }
+        return AssetListItem(asset: assets[index], mode: AssetScreenMode.view);
+      },
       separatorBuilder: (_, __) => const SizedBox(height: kScreenPadding / 2),
     );
   }
