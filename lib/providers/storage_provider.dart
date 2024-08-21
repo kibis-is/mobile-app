@@ -61,6 +61,8 @@ class StorageService {
     return returnOnError as T;
   }
 
+  SharedPreferences? get prefs => _prefs;
+
   Future<void> setAccounts(Map<String, Map<String, String>> accounts) async {
     final accountsJson = jsonEncode(accounts);
     await _secureStorage.write(key: 'accounts', value: accountsJson);
