@@ -70,5 +70,6 @@ class AppLifecycleHandler with WidgetsBindingObserver {
     if (Platform.isAndroid || Platform.isIOS) {
       ref.read(isSplashScreenVisibleProvider.notifier).state = true;
     }
+    ref.read(pinTitleProvider.notifier).setUnlockTitle();
   }
 }
