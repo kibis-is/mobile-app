@@ -95,7 +95,7 @@ class ViewAssetScreen extends ConsumerWidget {
 
     ref
         .read(loadingProvider.notifier)
-        .startLoading(message: 'Opting in to asset', withProgressBar: true);
+        .startLoading(message: 'Opting in', withProgressBar: true);
     try {
       await _addAsset(context, ref);
     } on AlgorandException catch (algorandError) {
