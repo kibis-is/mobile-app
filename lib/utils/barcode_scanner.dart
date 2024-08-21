@@ -33,11 +33,15 @@ class QRCodeScannerLogic {
   });
 
   Future<void> handleBarcode(BarcodeCapture capture) async {
-    bool isSuccess = false;
     try {
       String rawData = capture.barcodes.first.rawValue ?? '';
+      if (rawData.isEmpty) {
+        throw Exception('Invalid QR code data');
+      }
+
       await _handleVibration();
-      isSuccess = await _processBarcodeData(rawData);
+      await _processBarcodeData(rawData);
+      controller?.stop();
     } catch (e) {
       _resetProviders();
       if (context.mounted) {
@@ -47,9 +51,8 @@ class QRCodeScannerLogic {
           message: e.toString(),
         );
       }
+      controller?.start();
       rethrow;
-    } finally {
-      isSuccess ? controller?.stop() : controller?.start();
     }
   }
 
@@ -71,7 +74,7 @@ class QRCodeScannerLogic {
     }
   }
 
-  Future<bool> _processBarcodeData(String rawData) async {
+  Future<void> _processBarcodeData(String rawData) async {
     try {
       Uri uri = Uri.parse(rawData);
       Map<String, List<String>> params = _parseQueryParams(uri.query);
@@ -79,20 +82,23 @@ class QRCodeScannerLogic {
       switch (scanMode) {
         case ScanMode.privateKey:
           if (params.containsKey('page')) {
-            return await _handlePaginatedScan(uri, params);
+            await _handlePaginatedScan(uri, params);
           } else {
-            return await _handlePrivateKey(rawData);
+            await _handlePrivateKey(rawData);
           }
+          break;
         case ScanMode.publicKey:
-          return await _handlePublicKey(rawData);
+          await _handlePublicKey(rawData);
+          break;
         case ScanMode.connect:
-          return await _handleConnect(rawData);
+          await _handleConnect(rawData);
+          break;
         default:
           throw UnimplementedError('Unhandled scan mode: $scanMode');
       }
     } catch (e) {
       debugPrint('Error processing barcode data: $e');
-      return false;
+      throw Exception('Failed to process barcode data: $e');
     }
   }
 
