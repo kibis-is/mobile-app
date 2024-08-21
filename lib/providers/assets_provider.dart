@@ -59,17 +59,13 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
   }
 
   void sortAssets(Sorting sorting) {
-    // Store the current sorting method for use in _filteredAssets
     _sorting = sorting;
 
-    // Perform the sorting logic
     _allAssets.sort((a, b) {
-      // First, sort by the frozen status: non-frozen assets come first
       if (a.params.defaultFrozen != b.params.defaultFrozen) {
         return a.params.defaultFrozen ?? false ? 1 : -1;
       }
 
-      // Then sort by the selected sorting criteria
       switch (sorting) {
         case Sorting.assetId:
           return a.index.compareTo(b.index);
@@ -83,7 +79,6 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
       }
     });
 
-    // Update the state with the sorted and filtered assets
     state = AsyncValue.data(_filteredAssets());
   }
 
@@ -106,7 +101,6 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
           .toList();
     }
 
-    // Apply sorting with frozen assets at the bottom
     filteredAssets.sort((a, b) {
       if (a.params.defaultFrozen != b.params.defaultFrozen) {
         return a.params.defaultFrozen ?? false ? 1 : -1;
