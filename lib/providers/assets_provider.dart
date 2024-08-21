@@ -59,19 +59,32 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
   }
 
   void sortAssets(Sorting sorting) {
-    switch (sorting) {
-      case Sorting.assetId:
-        _allAssets.sort((a, b) => a.index.compareTo(b.index));
-        break;
-      case Sorting.name:
-        _allAssets.sort((a, b) =>
-            a.params.name
-                ?.toLowerCase()
-                .compareTo(b.params.name!.toLowerCase()) ??
-            0);
-        break;
-    }
-    state = AsyncValue.data(_filteredAssets()); // Update state with sorted data
+    // Store the current sorting method for use in _filteredAssets
+    _sorting = sorting;
+
+    // Perform the sorting logic
+    _allAssets.sort((a, b) {
+      // First, sort by the frozen status: non-frozen assets come first
+      if (a.params.defaultFrozen != b.params.defaultFrozen) {
+        return a.params.defaultFrozen ?? false ? 1 : -1;
+      }
+
+      // Then sort by the selected sorting criteria
+      switch (sorting) {
+        case Sorting.assetId:
+          return a.index.compareTo(b.index);
+        case Sorting.name:
+          return a.params.name
+                  ?.toLowerCase()
+                  .compareTo(b.params.name?.toLowerCase() ?? '') ??
+              0;
+        default:
+          return 0;
+      }
+    });
+
+    // Update the state with the sorted and filtered assets
+    state = AsyncValue.data(_filteredAssets());
   }
 
   List<Asset> _filteredAssets() {
@@ -93,20 +106,24 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
           .toList();
     }
 
-    switch (_sorting) {
-      case Sorting.assetId:
-        filteredAssets.sort((a, b) => a.index.compareTo(b.index));
-        break;
-      case Sorting.name:
-        filteredAssets.sort((a, b) =>
-            a.params.name
-                ?.toLowerCase()
-                .compareTo(b.params.name?.toLowerCase() ?? '') ??
-            0);
-        break;
-      default:
-        break;
-    }
+    // Apply sorting with frozen assets at the bottom
+    filteredAssets.sort((a, b) {
+      if (a.params.defaultFrozen != b.params.defaultFrozen) {
+        return a.params.defaultFrozen ?? false ? 1 : -1;
+      }
+
+      switch (_sorting) {
+        case Sorting.assetId:
+          return a.index.compareTo(b.index);
+        case Sorting.name:
+          return a.params.name
+                  ?.toLowerCase()
+                  .compareTo(b.params.name?.toLowerCase() ?? '') ??
+              0;
+        default:
+          return 0;
+      }
+    });
 
     return filteredAssets;
   }

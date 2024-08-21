@@ -8,13 +8,13 @@ final showFrozenAssetsProvider =
 
 class ShowFrozenAssetsProvider extends StateNotifier<bool> {
   final Ref ref;
-  ShowFrozenAssetsProvider(this.ref) : super(true) {
+  ShowFrozenAssetsProvider(this.ref) : super(false) {
     loadInitialState();
   }
 
   void loadInitialState() async {
     final storageService = ref.read(storageProvider);
-    state = storageService.getShowFrozenAssets() ?? true;
+    state = storageService.getShowFrozenAssets() ?? false;
   }
 
   void setShowFrozenAssets(bool showFrozenAssets) {
@@ -24,6 +24,6 @@ class ShowFrozenAssetsProvider extends StateNotifier<bool> {
   }
 
   void reset() {
-    state = true;
+    state = false;
   }
 }
