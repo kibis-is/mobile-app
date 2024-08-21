@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -169,12 +170,15 @@ class QRCodeScannerLogic {
       final names = params['name'] ?? [];
       final keys = params['privatekey'] ?? [];
 
+      if (names.isEmpty) {
+        names.add('Imported Account');
+      }
+
       if (!_validateAccounts(names, keys)) {
         debugPrint('Validation failed for accounts');
         return false;
       }
 
-      // Assuming restoreAccounts is an async API call that requires awaiting
       await _restoreAccounts(names, keys);
 
       if (isFinalPart) {
@@ -194,39 +198,67 @@ class QRCodeScannerLogic {
     List<Uint8List> validSeeds = [];
 
     for (int i = 0; i < names.length; i++) {
-      final base64Key = keys[i];
+      final key = keys[i];
+      Uint8List? seed;
 
       try {
-        final seed = base64Url.decode(base64Key);
+        if (key.length == 44 && RegExp(r'^[A-Za-z0-9\-_]+=*$').hasMatch(key)) {
+          seed = base64Url.decode(key);
+        } else if (RegExp(r'^[0-9a-fA-F]+$').hasMatch(key)) {
+          if (key.length == 128) {
+            final privateKeyHex = key.substring(0, 64);
+            seed = Uint8List.fromList(hex.decode(privateKeyHex));
+          } else if (key.length == 64) {
+            seed = Uint8List.fromList(hex.decode(key));
+          } else {
+            throw Exception('Invalid private key length');
+          }
+        } else {
+          debugPrint('Key is neither valid Base64 nor valid Hex: $key');
+          continue;
+        }
+
+        if (seed.length != 32) {
+          debugPrint('Seed is not 32 bytes: $seed');
+          throw Exception('Invalid account');
+        }
+
         if (await ref
             .read(temporaryAccountProvider.notifier)
-            .accountAlreadyExists(base64Key)) {
+            .accountAlreadyExists(key)) {
+          debugPrint('Account already exists for key: $key');
           continue;
         }
 
         validNames.add(names[i]);
         validSeeds.add(seed);
       } catch (e) {
+        debugPrint('Error handling private key: $e\nKey: $key');
         continue;
       }
     }
 
     if (validSeeds.isEmpty || validNames.isEmpty) {
-      throw Exception('No valid private keys found in QR code');
+      throw Exception('No valid private key');
     }
 
     for (int i = 0; i < validNames.length; i++) {
-      await ref
-          .read(temporaryAccountProvider.notifier)
-          .restoreAccountFromSeed(validSeeds[i], name: validNames[i]);
+      try {
+        await ref
+            .read(temporaryAccountProvider.notifier)
+            .restoreAccountFromSeed(validSeeds[i], name: validNames[i]);
 
-      await AccountSetupUtility.completeAccountSetup(
-        ref: ref,
-        accountFlow: accountFlow!,
-        accountName: validNames[i],
-        setFinalState: i == validNames.length - 1,
-      );
-      invalidateProviders(ref);
+        await AccountSetupUtility.completeAccountSetup(
+          ref: ref,
+          accountFlow: accountFlow!,
+          accountName: validNames[i],
+          setFinalState: i == validNames.length - 1,
+        );
+        invalidateProviders(ref);
+      } catch (e) {
+        debugPrint('Error during account setup for ${validNames[i]}: $e');
+        throw Exception('Error adding account');
+      }
     }
   }
 
@@ -298,11 +330,19 @@ class QRCodeScannerLogic {
 
     Set<String> seenKeys = {};
     for (int i = 0; i < keys.length; i++) {
-      if (keys[i].length != 44 ||
-          !RegExp(r'^[A-Za-z0-9\-_]+=*$').hasMatch(keys[i])) {
+      final key = keys[i];
+
+      bool isBase64 =
+          key.length == 44 && RegExp(r'^[A-Za-z0-9\-_]+=*$').hasMatch(key);
+
+      bool isHex =
+          RegExp(r'^[0-9a-fA-F]+$').hasMatch(key) && (key.length % 2 == 0);
+
+      if (!isBase64 && !isHex) {
         return false;
       }
-      if (!seenKeys.add(keys[i])) {
+
+      if (!seenKeys.add(key)) {
         continue;
       }
     }
