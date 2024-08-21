@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class NFT {
   final int contractId;
   final int tokenId;
@@ -29,20 +27,36 @@ class NFT {
     required this.isBurned,
   });
 
-  factory NFT.fromJson(Map<String, dynamic> json) {
-    Map<String, dynamic> metadata = jsonDecode(json['metadata']);
+  Map<String, dynamic> toJson() {
+    return {
+      'contractId': contractId,
+      'tokenId': tokenId,
+      'owner': owner,
+      'metadataURI': metadataURI,
+      'name': name,
+      'description': description,
+      'imageUrl': imageUrl,
+      'imageMimetype': imageMimetype,
+      'properties': properties,
+      'royalties': royalties,
+      'mintRound': mintRound,
+      'isBurned': isBurned,
+    };
+  }
+
+  static NFT fromJson(Map<String, dynamic> json) {
     return NFT(
       contractId: json['contractId'],
       tokenId: json['tokenId'],
       owner: json['owner'],
       metadataURI: json['metadataURI'],
-      name: metadata['name'],
-      description: metadata['description'],
-      imageUrl: metadata['image'],
-      imageMimetype: metadata['image_mimetype'],
-      properties: metadata['properties'],
+      name: json['name'],
+      description: json['description'],
+      imageUrl: json['imageUrl'],
+      imageMimetype: json['imageMimetype'],
+      properties: Map<String, dynamic>.from(json['properties']),
       royalties: json['royalties'],
-      mintRound: json['mint-round'],
+      mintRound: json['mintRound'],
       isBurned: json['isBurned'],
     );
   }

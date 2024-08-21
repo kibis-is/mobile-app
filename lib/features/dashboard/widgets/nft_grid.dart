@@ -6,6 +6,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 
 enum NftViewType { grid, card }
 
@@ -98,11 +99,28 @@ class NftImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      imageUrl,
-      fit: BoxFit.cover,
-      width: double.infinity,
-      height: double.infinity,
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      imageBuilder: (context, imageProvider) => Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: imageProvider,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+      placeholder: (context, url) => Shimmer.fromColors(
+        baseColor: context.colorScheme.surface,
+        highlightColor: Colors.grey.shade100,
+        child: Container(
+          color: context.colorScheme.surface,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+      ),
+      errorWidget: (context, url, error) => const Center(
+        child: Icon(Icons.broken_image, color: Colors.red),
+      ),
     );
   }
 }

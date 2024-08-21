@@ -4,6 +4,7 @@ import 'package:kibisis/models/nft.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 
 final nftNotifierProvider =
     StateNotifierProvider<NFTNotifier, AsyncValue<List<NFT>>>((ref) {
@@ -23,7 +24,20 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
 
   NFTNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
-    fetchNFTs();
+    _loadCachedNFTs();
+  }
+
+  Future<void> _loadCachedNFTs() async {
+    final storageService = ref.read(storageProvider);
+    final cachedNftsJson = storageService.prefs?.getString('cachedNfts');
+
+    if (cachedNftsJson != null) {
+      final List<dynamic> cachedNfts = json.decode(cachedNftsJson);
+      _allNfts = cachedNfts.map<NFT>((json) => NFT.fromJson(json)).toList();
+      state = AsyncValue.data(_filteredNfts());
+    } else {
+      fetchNFTs();
+    }
   }
 
   Future<void> fetchNFTs() async {
@@ -64,6 +78,12 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
 
         _allNfts = nfts; // Cache the NFTs
         state = AsyncValue.data(_filteredNfts());
+
+        // Cache the fetched NFTs in SharedPreferences
+        final storageService = ref.read(storageProvider);
+        final String encodedNfts =
+            jsonEncode(nfts.map((nft) => nft.toJson()).toList());
+        await storageService.prefs?.setString('cachedNfts', encodedNfts);
       } else {
         throw Exception(
             'Failed to load NFTs with status code: ${response.statusCode}');
