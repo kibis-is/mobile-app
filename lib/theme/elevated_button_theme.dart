@@ -8,11 +8,11 @@ ElevatedButtonThemeData elevatedButtonTheme({
 }) {
   return ElevatedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(backgroundColor),
-      foregroundColor: MaterialStateProperty.all(foregroundColor),
-      textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 24)),
-      padding: MaterialStateProperty.all(const EdgeInsets.all(kButtonPadding)),
-      shape: MaterialStateProperty.all(
+      backgroundColor: WidgetStateProperty.all(backgroundColor),
+      foregroundColor: WidgetStateProperty.all(foregroundColor),
+      textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 24)),
+      padding: WidgetStateProperty.all(const EdgeInsets.all(kButtonPadding)),
+      shape: WidgetStateProperty.all(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(kWidgetRadius),
         ),
