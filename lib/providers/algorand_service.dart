@@ -324,9 +324,9 @@ class AlgorandService {
 
   String parseAlgorandException(AlgorandException e) {
     if (e.message.contains('frozen')) {
-      return 'The asset you are trying to send is frozen and cannot be transferred.';
+      return 'Asset is frozen';
     }
-    return e.toString();
+    return e.message;
   }
 
   Future<void> toggleFreezeAsset({
