@@ -26,6 +26,7 @@ import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 final dropdownItemsProvider = StateProvider<List<SelectItem>>((ref) => []);
@@ -209,16 +210,15 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       }
       ref.invalidate(transactionsProvider);
       ref.invalidate(balanceProvider);
+    } on AlgorandException catch (e) {
+      String errorMessage =
+          ref.read(algorandServiceProvider).parseAlgorandException(e);
+      debugPrint('Error: $errorMessage');
+      _showErrorSnackbar(errorMessage);
     } catch (e) {
       String errorMessage = 'An error occurred';
-      if (e is AlgorandException) {
-        errorMessage =
-            ref.read(algorandServiceProvider).parseAlgorandException(e);
-      } else {
-        errorMessage = e.toString();
-      }
+      debugPrint('Error: $errorMessage');
       _showErrorSnackbar(errorMessage);
-      debugPrint(errorMessage);
     } finally {
       goBack();
     }
@@ -303,8 +303,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       // Direct synchronous access for asset mode
       final int maxAssetAmount =
           ref.read(activeAssetProvider)?.params.total ?? 0;
-      final assetName = selectedItem?.name ?? 'Asset';
-      return Text('Max: $maxAssetAmount $assetName');
+      final String formattedAmount =
+          NumberShortener.format(maxAssetAmount.toDouble());
+      return Text('Max: $formattedAmount');
     }
   }
 
@@ -343,15 +344,12 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Hero(
-        tag: 'fab',
-        child: Padding(
-          padding: const EdgeInsets.all(kScreenPadding),
-          child: CustomButton(
-            isFullWidth: true,
-            text: "Send",
-            onPressed: () => _showPinPadDialog(ref),
-          ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(kScreenPadding),
+        child: CustomButton(
+          isFullWidth: true,
+          text: "Send",
+          onPressed: () => _showPinPadDialog(ref),
         ),
       ),
     );
@@ -428,7 +426,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     return CustomTextField(
       labelText: 'Amount',
       keyboardType: TextInputType.number,
-      textInputAction: TextInputAction.next,
+      textInputAction: TextInputAction.done,
       textAlign: TextAlign.right,
       autoCorrect: false,
       controller: amountController,
