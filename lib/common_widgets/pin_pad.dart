@@ -245,14 +245,14 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                           padding: const EdgeInsets.all(kScreenPadding / 4),
                           child: ElevatedButton(
                             style: ButtonStyle(
-                              shape: WidgetStateProperty.all(
+                              shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(
                                           kWidgetRadius))),
                               backgroundColor:
-                                  WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
-                                  if (states.contains(WidgetState.disabled)) {
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
                                     return context.colorScheme.surface
                                         .withOpacity(0.12);
                                   }
@@ -260,9 +260,9 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                                 },
                               ),
                               foregroundColor:
-                                  WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
-                                  if (states.contains(WidgetState.disabled)) {
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
                                     return context.colorScheme.onSurface
                                         .withOpacity(0.38);
                                   }
@@ -270,9 +270,9 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                                 },
                               ),
                               shadowColor:
-                                  WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
-                                  if (states.contains(WidgetState.disabled)) {
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
                                     return Colors.transparent;
                                   }
                                   return context.colorScheme.shadow;

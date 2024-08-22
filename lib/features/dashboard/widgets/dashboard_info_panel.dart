@@ -79,7 +79,6 @@ class DashboardInfoPanel extends StatelessWidget {
                     if (!context.mounted) return;
                     copyToClipboard(context, publicKey);
                   } else if (value == "Edit") {
-                    if (!context.mounted) return;
                     GoRouter.of(context).push(
                       '/editAccount/${accountState.accountId}',
                       extra: {
@@ -87,7 +86,6 @@ class DashboardInfoPanel extends StatelessWidget {
                       },
                     );
                   } else if (value == "Share Address") {
-                    if (!context.mounted) return;
                     showDialog(
                       context: context,
                       builder: (BuildContext context) => QrDialog(

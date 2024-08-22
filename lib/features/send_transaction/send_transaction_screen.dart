@@ -477,19 +477,19 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         const SizedBox(width: kScreenPadding / 2),
         IconButton(
           style: ButtonStyle(
-            padding: WidgetStateProperty.all<EdgeInsets>(
+            padding: MaterialStateProperty.all<EdgeInsets>(
               const EdgeInsets.symmetric(
                   horizontal: kScreenPadding, vertical: 14),
             ),
-            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(kWidgetRadius),
               ),
             ),
-            backgroundColor: WidgetStateProperty.all<Color>(
+            backgroundColor: MaterialStateProperty.all<Color>(
               context.colorScheme.surface,
             ),
-            foregroundColor: WidgetStateProperty.all<Color>(
+            foregroundColor: MaterialStateProperty.all<Color>(
               context.colorScheme.onSurface,
             ),
           ),

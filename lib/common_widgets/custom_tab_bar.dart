@@ -20,7 +20,7 @@ class CustomTabBar extends StatelessWidget {
       indicator: const BoxDecoration(),
       indicatorSize: TabBarIndicatorSize.tab,
       indicatorWeight: 0,
-      overlayColor: WidgetStateProperty.all(Colors.transparent),
+      overlayColor: MaterialStateProperty.all(Colors.transparent),
       labelPadding: const EdgeInsets.only(right: kScreenPadding / 2),
       padding: EdgeInsets.zero,
       indicatorPadding: EdgeInsets.zero,
