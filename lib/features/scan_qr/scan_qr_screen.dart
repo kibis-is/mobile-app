@@ -142,8 +142,8 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             style: context.textTheme.displayMedium
                 ?.copyWith(color: context.colorScheme.onSecondary),
           ),
-          color: WidgetStateProperty.resolveWith<Color?>(
-            (Set<WidgetState> states) {
+          color: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
               return context.colorScheme.secondary;
             },
           ),
