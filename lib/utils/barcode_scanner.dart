@@ -90,9 +90,6 @@ class QRCodeScannerLogic {
         case ScanMode.publicKey:
           await _handlePublicKey(rawData);
           break;
-        case ScanMode.connect:
-          await _handleConnect(rawData);
-          break;
         default:
           throw UnimplementedError('Unhandled scan mode: $scanMode');
       }
@@ -100,10 +97,6 @@ class QRCodeScannerLogic {
       debugPrint('Error processing barcode data: $e');
       throw Exception('Failed to process barcode data: $e');
     }
-  }
-
-  Future<bool> _handleConnect(String? qrData) async {
-    return false;
   }
 
   Future<bool> _handlePaginatedScan(

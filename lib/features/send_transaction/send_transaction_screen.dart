@@ -463,7 +463,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                             ? 'payment'
                             : 'asset',
                       },
-                      extra: ScanMode.publicKey,
+                      extra: ScanMode.publicKey, // Specify the mode here
                     );
 
                     if (scannedData != null) {

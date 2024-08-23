@@ -1,12 +1,18 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
 import 'package:kibisis/features/scan_qr/widgets/progress_bar.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
-import 'package:kibisis/utils/barcode_scanner.dart';
+import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/account_setup.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -16,11 +22,13 @@ class QrCodeScannerScreen extends ConsumerStatefulWidget {
   static const String title = 'Scan QR Code';
   final AccountFlow? accountFlow;
   final ScanMode scanMode;
+  final void Function(String)? onScanned;
 
   const QrCodeScannerScreen({
     super.key,
     this.accountFlow,
     required this.scanMode,
+    this.onScanned,
   });
 
   @override
@@ -99,20 +107,20 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         }
         ref
             .read(loadingProvider.notifier)
-            .startLoading(message: 'Importing Accounts');
+            .startLoading(message: 'Processing QR Code');
         isProcessing = true;
         controller.stop();
+
         _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
           var scannerLogic = QRCodeScannerLogic(
-            context: context,
-            ref: ref,
+            accountFlow: widget.accountFlow ?? AccountFlow.setup,
             scanMode: widget.scanMode,
-            controller: controller,
-            accountFlow: widget.accountFlow,
           );
           try {
-            await scannerLogic.handleBarcode(capture);
+            dynamic scanResult = await scannerLogic.handleBarcode(capture);
+            await _handleScanResult(scanResult);
           } catch (e) {
+            controller.start();
             if (mounted) {
               showCustomSnackBar(
                 context: context,
@@ -127,6 +135,85 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         });
       },
     );
+  }
+
+  Future<void> _handleScanResult(dynamic scanResult) async {
+    if (scanResult is List<Map<String, dynamic>>) {
+      try {
+        for (var account in scanResult) {
+          final String name = account['name'];
+          final Uint8List seed = account['seed'];
+
+          bool accountExists;
+          try {
+            accountExists = await ref
+                .read(temporaryAccountProvider.notifier)
+                .accountAlreadyExists(seed.toString());
+          } catch (e) {
+            debugPrint('Error checking if account exists for key $seed: $e');
+            throw Exception('Failed to check existing accounts.');
+          }
+
+          if (accountExists) {
+            debugPrint('Account already exists for key: $seed');
+            throw Exception('Account already exists.');
+          }
+
+          try {
+            await ref
+                .read(temporaryAccountProvider.notifier)
+                .restoreAccountFromSeed(seed, name: name);
+          } catch (e) {
+            debugPrint('Error restoring account for $name: $e');
+            throw Exception('Failed to restore account.');
+          }
+
+          try {
+            await AccountSetupUtility.completeAccountSetup(
+              ref: ref,
+              accountFlow: widget.accountFlow!,
+              accountName: name,
+              setFinalState: account == scanResult.last,
+            );
+          } catch (e) {
+            debugPrint('Error completing account setup for $name: $e');
+            throw Exception('Failed to complete account setup.');
+          }
+          try {
+            invalidateProviders(ref);
+            _navigateToAccountPage(scanResult.length);
+          } catch (e) {
+            debugPrint('Error invalidating providers: $e');
+            throw Exception('Failed to invalidate providers.');
+          }
+        }
+      } catch (e) {
+        debugPrint('Error processing scan result: $e');
+        rethrow;
+      }
+    } else if (scanResult is String) {
+      try {
+        if (widget.onScanned != null) {
+          widget.onScanned!(scanResult);
+        }
+        Navigator.of(context).pop();
+      } catch (e) {
+        debugPrint('Error handling public key: $e');
+        throw Exception('Error processing public key');
+      }
+    }
+  }
+
+  void _navigateToAccountPage(int numberOfImportedAccounts) {
+    if (numberOfImportedAccounts == 1) {
+      if (context.mounted) {
+        GoRouter.of(context).go('/');
+      }
+    } else {
+      if (context.mounted) {
+        GoRouter.of(context).push('/$accountListRouteName');
+      }
+    }
   }
 
   Widget _buildNextQrCodeText() {
