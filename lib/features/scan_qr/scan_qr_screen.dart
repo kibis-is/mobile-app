@@ -196,7 +196,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         if (widget.onScanned != null) {
           widget.onScanned!(scanResult);
         }
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(scanResult);
       } catch (e) {
         debugPrint('Error handling public key: $e');
         throw Exception('Error processing public key');

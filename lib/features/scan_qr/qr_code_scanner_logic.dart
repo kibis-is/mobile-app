@@ -14,13 +14,13 @@ enum QrType {
 }
 
 class QRCodeScannerLogic {
-  final Function(String)? onDataScanned;
+  // final Function(String)? onDataScanned;
   final AccountFlow accountFlow;
   final ScanMode scanMode;
 
   QRCodeScannerLogic({
     required this.accountFlow,
-    this.onDataScanned,
+    // this.onDataScanned,
     this.scanMode = ScanMode.general,
   });
 
@@ -69,10 +69,8 @@ class QRCodeScannerLogic {
   }
 
   String _handleNonUriData(String rawData) {
-    if (onDataScanned != null &&
-        (scanMode == ScanMode.publicKey || scanMode == ScanMode.general)) {
+    if ((scanMode == ScanMode.publicKey || scanMode == ScanMode.general)) {
       if (isPublicKeyFormat(rawData)) {
-        onDataScanned!(rawData);
         return rawData;
       } else {
         throw Exception('Invalid QR Code');
@@ -108,17 +106,17 @@ class QRCodeScannerLogic {
   }
 
   bool isPublicKeyFormat(String data) {
-    return data.length == 44 && RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(data);
+    return data.length == 58 && RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(data);
   }
 
   QrType getQrType(Map<String, List<String>> queryParams) {
-    if (queryParams.containsKey('privateKey') &&
+    if (queryParams.containsKey('privatekey') &&
         queryParams.containsKey('page')) {
       return QrType.privateKeyPaginated;
-    } else if (queryParams.containsKey('privateKey') &&
+    } else if (queryParams.containsKey('privatkey') &&
         queryParams.containsKey('encoding')) {
       return QrType.privateKeyLegacy;
-    } else if (queryParams.containsKey('privateKey')) {
+    } else if (queryParams.containsKey('privatekey')) {
       return QrType.privateKey;
     }
     throw Exception('Invalid URI');

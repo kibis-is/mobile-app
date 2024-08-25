@@ -451,24 +451,11 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
             controller: recipientAddressController,
-            suffixIcon: isMobile ? AppIcons.scan : null,
+            suffixIcon: AppIcons.scan,
             autoCorrect: false,
             onTrailingPressed: isMobile
                 ? () async {
-                    final mode = ref.watch(sendTransactionScreenModeProvider);
-                    final scannedData = await GoRouter.of(context).pushNamed(
-                      sendTransactionQrScannerRouteName,
-                      pathParameters: {
-                        'mode': mode == SendTransactionScreenMode.payment
-                            ? 'payment'
-                            : 'asset',
-                      },
-                      extra: ScanMode.publicKey, // Specify the mode here
-                    );
-
-                    if (scannedData != null) {
-                      recipientAddressController.text = scannedData as String;
-                    }
+                    getScannedAddress(context, ref);
                   }
                 : null,
             validator: _validateAlgorandAddress,
@@ -608,6 +595,21 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         ),
       ),
     );
+  }
+
+  void getScannedAddress(BuildContext context, WidgetRef ref) async {
+    final mode = ref.watch(sendTransactionScreenModeProvider);
+    final scannedData = await GoRouter.of(context).pushNamed(
+      sendTransactionQrScannerRouteName,
+      pathParameters: {
+        'mode': mode == SendTransactionScreenMode.payment ? 'payment' : 'asset',
+      },
+      extra: ScanMode.publicKey,
+    );
+
+    if (scannedData != null) {
+      recipientAddressController.text = scannedData as String;
+    }
   }
 
   @override
