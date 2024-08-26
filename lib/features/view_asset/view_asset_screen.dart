@@ -507,7 +507,7 @@ class AssetDetailsList extends ConsumerWidget {
         const SizedBox(height: kScreenPadding),
         AssetDetail(
           text: 'Total Supply',
-          value: NumberShortener.format(
+          value: NumberShortener.formatBalance(
               double.parse(activeAsset?.params.total.toString() ?? '0')),
         ),
         const SizedBox(height: kScreenPadding),
