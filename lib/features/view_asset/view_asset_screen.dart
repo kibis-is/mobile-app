@@ -9,6 +9,7 @@ import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
@@ -342,12 +343,13 @@ class AssetControlsState extends ConsumerState<AssetControls> {
           freeze: !frozen,
         );
 
-        final updatedAsset = Asset(
+        final updatedAsset = CombinedAsset(
           index: activeAsset.index,
           createdAtRound: activeAsset.createdAtRound,
           deleted: activeAsset.deleted,
           destroyedAtRound: activeAsset.destroyedAtRound,
-          params: AssetParameters(
+          assetType: activeAsset.assetType,
+          params: CombinedAssetParameters(
             defaultFrozen: frozen,
             decimals: activeAsset.params.decimals,
             creator: activeAsset.params.creator,

@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:algorand_dart/algorand_dart.dart';
+import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/utils/conver_to_combined_asset.dart';
 
-final searchProvider =
-    StateNotifierProvider.autoDispose<SearchNotifier, AsyncValue<List<Asset>>>(
-        (ref) {
+final searchProvider = StateNotifierProvider.autoDispose<SearchNotifier,
+    AsyncValue<List<CombinedAsset>>>((ref) {
   return SearchNotifier(ref);
 });
 
-class SearchNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
+class SearchNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
   SearchNotifier(this.ref) : super(const AsyncValue.data([]));
   final Ref ref;
   Timer? _debounce;
@@ -35,7 +35,10 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
               maxCurrency,
               limit,
             );
-        state = AsyncValue.data(response.assets);
+
+        final combinedAssets =
+            response.assets.map(convertToCombinedAsset).toList();
+        state = AsyncValue.data(combinedAssets);
       } on Exception catch (e) {
         debugPrint('Exception: $e');
         state = AsyncValue.error(e, StackTrace.current);

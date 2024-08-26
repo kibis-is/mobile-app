@@ -1,4 +1,3 @@
-import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +6,7 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
+import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -168,7 +168,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     ref.read(assetsProvider.notifier).setShowFrozen(showFrozen);
   }
 
-  Widget _buildAssetsList(BuildContext context, List<Asset> assets) {
+  Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
     return ListView.separated(
       itemCount: assets.length + 1,
       shrinkWrap: true,

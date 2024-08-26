@@ -1,12 +1,15 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
-import 'package:algorand_dart/algorand_dart.dart';
+import 'package:kibisis/utils/arc200_service.dart';
+import '../models/combined_asset.dart';
 
 final assetsProvider =
-    StateNotifierProvider<AssetsNotifier, AsyncValue<List<Asset>>>((ref) {
+    StateNotifierProvider<AssetsNotifier, AsyncValue<List<CombinedAsset>>>(
+        (ref) {
   final publicAddress = ref.watch(accountProvider).account?.publicAddress;
   if (publicAddress != null) {
     return AssetsNotifier(ref, publicAddress);
@@ -14,10 +17,10 @@ final assetsProvider =
   return AssetsNotifier(ref, '');
 });
 
-class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
+class AssetsNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
   final Ref ref;
   final String publicAddress;
-  List<Asset> _allAssets = [];
+  List<CombinedAsset> _allAssets = [];
   String _filter = '';
   bool _showFrozen = false;
   Sorting? _sorting;
@@ -35,7 +38,27 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
     }
     try {
       final algorandService = ref.read(algorandServiceProvider);
-      _allAssets = await algorandService.getAccountAssets(publicAddress);
+      final arc200Service = Arc200Service();
+
+      // Fetch standard assets
+      final standardAssets =
+          await algorandService.getAccountAssets(publicAddress);
+      final standardCombinedAssets = standardAssets.map((asset) {
+        return CombinedAsset(
+          index: asset.index,
+          params: asset.params,
+          createdAtRound: asset.createdAtRound,
+          deleted: asset.deleted,
+          destroyedAtRound: asset.destroyedAtRound,
+          assetType: AssetType.standard,
+        );
+      }).toList();
+
+      // Fetch ARC200 assets
+      final arc200Assets = await arc200Service.fetchArc200Assets(publicAddress);
+
+      // Combine both asset types
+      _allAssets = [...standardCombinedAssets, ...arc200Assets];
       state = AsyncValue.data(_filteredAssets());
     } on AlgorandException {
       if (mounted) {
@@ -82,8 +105,8 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<Asset>>> {
     state = AsyncValue.data(_filteredAssets());
   }
 
-  List<Asset> _filteredAssets() {
-    List<Asset> filteredAssets = _allAssets;
+  List<CombinedAsset> _filteredAssets() {
+    List<CombinedAsset> filteredAssets = _allAssets;
 
     if (_filter.isNotEmpty) {
       filteredAssets = filteredAssets

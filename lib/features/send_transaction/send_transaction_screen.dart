@@ -14,6 +14,7 @@ import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
+import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
@@ -88,7 +89,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final assetsAsync = ref.read(assetsProvider);
     final network = ref.read(networkProvider);
 
-    if (assetsAsync is! AsyncData<List<Asset>>) {
+    if (assetsAsync is! AsyncData<List<CombinedAsset>>) {
       // If assets are not loaded yet, return empty list
       return [];
     }

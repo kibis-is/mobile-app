@@ -1,5 +1,7 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
+import 'package:kibisis/models/combined_asset.dart';
+import 'package:kibisis/utils/conver_to_combined_asset.dart';
 
 class AlgorandService {
   final Algorand algorand;
@@ -44,13 +46,13 @@ class AlgorandService {
     }
   }
 
-  Future<List<Asset>> getAccountAssets(String publicAddress) async {
+  Future<List<CombinedAsset>> getAccountAssets(String publicAddress) async {
     try {
       final accountInfo =
           await algorand.algodClient.client.get('/v2/accounts/$publicAddress');
       final holdings = accountInfo.data['assets'] as List<dynamic>;
 
-      List<Future<Asset?>> assetFutures = holdings.map((holding) async {
+      List<Future<CombinedAsset?>> assetFutures = holdings.map((holding) async {
         try {
           return await getAssetById(holding['asset-id']);
         } catch (e) {
@@ -60,25 +62,26 @@ class AlgorandService {
         }
       }).toList();
 
-      List<Asset?> assets = await Future.wait(assetFutures);
+      List<CombinedAsset?> assets = await Future.wait(assetFutures);
 
-      List<Asset> validAssets =
-          assets.where((asset) => asset != null).cast<Asset>().toList();
+      List<CombinedAsset> validAssets =
+          assets.where((asset) => asset != null).cast<CombinedAsset>().toList();
 
       return validAssets;
     } on AlgorandException catch (e) {
       debugPrint('Get Account Assets Algorand Exception: ${e.message}');
-      return <Asset>[];
+      return <CombinedAsset>[];
     } catch (e) {
       debugPrint('Failed to fetch assets: $e');
-      return <Asset>[];
+      return <CombinedAsset>[];
     }
   }
 
-  Future<Asset> getAssetById(int assetId) async {
+  Future<CombinedAsset> getAssetById(int assetId) async {
     try {
-      final response = await algorand.indexer().getAssetById(assetId);
-      return response.asset;
+      final AssetResponse response =
+          await algorand.indexer().getAssetById(assetId);
+      return convertToCombinedAsset(response.asset);
     } on FormatException {
       throw Exception(
           'Invalid asset ID format. Asset ID must be a valid integer.');
