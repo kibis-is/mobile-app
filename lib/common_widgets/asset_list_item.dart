@@ -10,6 +10,7 @@ import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AssetListItem extends ConsumerWidget {
@@ -27,7 +28,6 @@ class AssetListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Stack(
-      alignment: Alignment.topRight,
       children: [
         Hero(
           tag: asset.index.toString(),
@@ -40,6 +40,7 @@ class AssetListItem extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(kWidgetRadius),
                     ),
               child: ListTile(
+                visualDensity: VisualDensity.standard,
                 tileColor: Colors.transparent,
                 horizontalTitleGap: kScreenPadding * 2,
                 leading: _buildAssetIcon(
@@ -65,12 +66,14 @@ class AssetListItem extends ConsumerWidget {
           ),
         ),
         if (asset.params.defaultFrozen ?? false)
-          Padding(
-            padding: const EdgeInsets.all(kScreenPadding / 2),
+          Positioned(
+            top: kScreenPadding / 2,
+            right: kScreenPadding / 2,
             child: AppIcons.icon(
-                icon: AppIcons.freeze,
-                size: AppIcons.small,
-                color: context.colorScheme.onSurfaceVariant),
+              icon: AppIcons.freeze,
+              size: AppIcons.small,
+              color: context.colorScheme.onSurfaceVariant,
+            ),
           ),
       ],
     );
@@ -100,25 +103,18 @@ class AssetListItem extends ConsumerWidget {
     final isDarkMode = ref.watch(isDarkModeProvider);
     return Container(
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-            width: 3,
-            color: isFrozenDefault
-                ? isDarkMode
-                    ? ColorPalette.darkThemeFrozenColor
-                    : ColorPalette.lightThemeFrozenColor
-                : context.colorScheme.primary),
-      ),
+          shape: BoxShape.circle,
+          color: isFrozenDefault
+              ? isDarkMode
+                  ? ColorPalette.darkThemeFrozenColor
+                  : ColorPalette.lightThemeFrozenColor
+              : context.colorScheme.primary),
       child: Padding(
         padding: const EdgeInsets.all(kScreenPadding / 3),
         child: AppIcons.icon(
-            icon: _getAssetTypeIcon(asset.assetType),
-            color: isFrozenDefault
-                ? isDarkMode
-                    ? ColorPalette.darkThemeFrozenColor
-                    : ColorPalette.lightThemeFrozenColor
-                : context.colorScheme.primary,
-            size: AppIcons.large),
+            icon: AppIcons.voiCircleIcon,
+            color: context.colorScheme.onPrimary,
+            size: AppIcons.xlarge),
       ),
     );
   }
@@ -126,20 +122,10 @@ class AssetListItem extends ConsumerWidget {
   String _getAssetTypeLabel(AssetType assetType) {
     switch (assetType) {
       case AssetType.arc200:
-        return 'ARC200';
+        return 'ARC0200';
       case AssetType.standard:
       default:
         return 'ASA';
-    }
-  }
-
-  IconData _getAssetTypeIcon(AssetType assetType) {
-    switch (assetType) {
-      case AssetType.arc200:
-        return AppIcons.arc200;
-      case AssetType.standard:
-      default:
-        return AppIcons.asset;
     }
   }
 
@@ -152,10 +138,24 @@ class AssetListItem extends ConsumerWidget {
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Chip(
-                  label: Text(
-                    _getAssetTypeLabel(asset.assetType),
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      NumberShortener.formatAssetTotal(asset.params.total),
+                      style: context.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: kScreenPadding / 4),
+                    Chip(
+                      padding: const EdgeInsets.all(0),
+                      label: Text(
+                        _getAssetTypeLabel(asset.assetType),
+                      ),
+                    ),
+                  ],
                 ),
                 AppIcons.icon(icon: AppIcons.arrowRight),
               ],

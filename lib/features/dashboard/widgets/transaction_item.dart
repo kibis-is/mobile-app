@@ -32,39 +32,18 @@ class TransactionItem extends ConsumerWidget {
 
   Widget _getTransactionIcon(
       BuildContext context, bool isDarkMode, String network) {
-    dynamic iconData;
-
-    switch (type) {
-      case 'pay':
-        iconData = network == 'network-voi'
-            ? AppIcons.voiCircleIcon
-            : AppIcons.algorandIcon;
-        break;
-      case 'axfer':
-        iconData = AppIcons.asset;
-        break;
-      case 'appl':
-        iconData = AppIcons.appCall;
-        break;
-      default:
-        iconData = AppIcons.error;
-        break;
-    }
-
     return Container(
-      padding:
-          type != 'axfer' ? const EdgeInsets.all(kScreenPadding / 4) : null,
+      padding: const EdgeInsets.all(kScreenPadding / 3),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          width: 3,
-          color: context.colorScheme.primary,
-        ),
+        color: context.colorScheme.primary,
       ),
       child: AppIcons.icon(
-          icon: iconData,
-          size: type == 'pay' ? AppIcons.medium : AppIcons.medium,
-          color: context.colorScheme.primary),
+          icon: network == 'network-voi'
+              ? AppIcons.voiCircleIcon
+              : AppIcons.algorandIcon,
+          size: AppIcons.xlarge,
+          color: context.colorScheme.onPrimary),
     );
   }
 
@@ -128,10 +107,17 @@ class TransactionItem extends ConsumerWidget {
                 trailing: Text(
                   type == 'appl'
                       ? '$amount'
-                      : '${amount == '0' ? '0.' : (isOutgoing ? '-' : '+')}$amount',
+                      : (amount != null &&
+                              amount != '0' &&
+                              !(amount?.startsWith('0') ?? false))
+                          ? '${isOutgoing ? '-' : '+'}$amount'
+                          : '$amount',
                   style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: (amount == '0' || type == 'appl')
+                    color: (amount == null ||
+                            amount == '0' ||
+                            amount?.startsWith('0') == true ||
+                            type == 'appl')
                         ? context.colorScheme.onSurface
                         : isOutgoing
                             ? context.colorScheme.error

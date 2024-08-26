@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -132,6 +134,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
           );
         },
       ),
+      childrenOffset: const Offset(5, 0),
       children: [
         CustomFabChild(
           icon: AppIcons.send,
@@ -145,15 +148,16 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
             closeFab();
           },
         ),
-        // CustomFabChild(
-        //   icon: AppIcons.scan,
-        //   backgroundColor: context.colorScheme.primary,
-        //   iconColor: context.colorScheme.onPrimary,
-        //   onPressed: () {
-        //     GoRouter.of(context).push('/qrScanner', extra: ScanMode.connect);
-        //     closeFab();
-        //   },
-        // ),
+        if (Platform.isAndroid || Platform.isIOS)
+          CustomFabChild(
+            icon: AppIcons.scan,
+            backgroundColor: context.colorScheme.primary,
+            iconColor: context.colorScheme.onPrimary,
+            onPressed: () {
+              GoRouter.of(context).push('/qrScanner', extra: ScanMode.general);
+              closeFab();
+            },
+          ),
         CustomFabChild(
           icon: AppIcons.wallet,
           backgroundColor: context.colorScheme.primary,
@@ -207,14 +211,14 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
                 balance.toStringAsFixed(2),
                 style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.primary),
+                    color: context.colorScheme.secondary),
               ),
               SvgPicture.asset(
                 'assets/images/${networks[0].icon}.svg',
                 semanticsLabel: networks[0].name,
                 height: 12,
                 colorFilter: ColorFilter.mode(
-                    context.colorScheme.primary, BlendMode.srcATop),
+                    context.colorScheme.secondary, BlendMode.srcATop),
               ),
               IconButton(
                 icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small),

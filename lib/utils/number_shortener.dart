@@ -1,5 +1,5 @@
 class NumberShortener {
-  static String format(double number) {
+  static String formatBalance(double number) {
     String formattedNumber;
 
     if (number >= 1e12) {
@@ -14,11 +14,27 @@ class NumberShortener {
       formattedNumber = number.toStringAsFixed(2);
     }
 
-    if (formattedNumber.endsWith('.00T') ||
-        formattedNumber.endsWith('.00B') ||
-        formattedNumber.endsWith('.00M') ||
-        formattedNumber.endsWith('.00K')) {
-      formattedNumber = formattedNumber.replaceAll('.00', '');
+    if (formattedNumber.endsWith('.00')) {
+      formattedNumber =
+          formattedNumber.substring(0, formattedNumber.length - 3);
+    }
+
+    return formattedNumber;
+  }
+
+  static String formatAssetTotal(int number) {
+    String formattedNumber;
+
+    if (number >= 1e12) {
+      formattedNumber = '${number ~/ 1e12}T';
+    } else if (number >= 1e9) {
+      formattedNumber = '${number ~/ 1e9}B';
+    } else if (number >= 1e6) {
+      formattedNumber = '${number ~/ 1e6}M';
+    } else if (number >= 1e3) {
+      formattedNumber = '${number ~/ 1e3}K';
+    } else {
+      formattedNumber = number.toString();
     }
 
     return formattedNumber;
