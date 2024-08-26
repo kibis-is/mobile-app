@@ -1,15 +1,26 @@
 class NumberShortener {
   static String format(double number) {
+    String formattedNumber;
+
     if (number >= 1e12) {
-      return '${(number / 1e12).toStringAsFixed(2)}T';
+      formattedNumber = '${(number / 1e12).toStringAsFixed(2)}T';
     } else if (number >= 1e9) {
-      return '${(number / 1e9).toStringAsFixed(2)}B';
+      formattedNumber = '${(number / 1e9).toStringAsFixed(2)}B';
     } else if (number >= 1e6) {
-      return '${(number / 1e6).toStringAsFixed(2)}M';
+      formattedNumber = '${(number / 1e6).toStringAsFixed(2)}M';
     } else if (number >= 1e3) {
-      return '${(number / 1e3).toStringAsFixed(2)}K';
+      formattedNumber = '${(number / 1e3).toStringAsFixed(2)}K';
     } else {
-      return number.toStringAsFixed(2);
+      formattedNumber = number.toStringAsFixed(2);
     }
+
+    if (formattedNumber.endsWith('.00T') ||
+        formattedNumber.endsWith('.00B') ||
+        formattedNumber.endsWith('.00M') ||
+        formattedNumber.endsWith('.00K')) {
+      formattedNumber = formattedNumber.replaceAll('.00', '');
+    }
+
+    return formattedNumber;
   }
 }
