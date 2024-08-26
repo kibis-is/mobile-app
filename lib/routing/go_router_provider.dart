@@ -471,17 +471,17 @@ class RouterNotifier extends ChangeNotifier {
         ),
       ];
 
-  // CustomTransitionPage defaultTransitionPage(
-  //     Widget child, GoRouterState state) {
-  //   return CustomTransitionPage(
-  //     key: state.pageKey,
-  //     child: child,
-  //     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-  //         child,
-  //   );
-  // }
+  CustomTransitionPage defaultTransitionPage(
+      Widget child, GoRouterState state) {
+    return CustomTransitionPage(
+      key: state.pageKey,
+      child: child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          child,
+    );
+  }
 
-  CustomTransitionPage<void> defaultTransitionPage(
+  CustomTransitionPage<void> fadeTransitionPage(
     Widget child,
     GoRouterState state, {
     Duration duration = const Duration(milliseconds: 300),
