@@ -70,7 +70,6 @@ flutter:
   
   assets:
     - assets/images/
-    - assets/nfts/
 
   # fonts:
   #   - family: Anonymous Pro
