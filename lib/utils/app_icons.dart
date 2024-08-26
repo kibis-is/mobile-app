@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AppIcons {
-  // Define sizes
   static const double small = 16.0;
   static const double medium = 24.0;
   static const double large = 32.0;
   static const double xlarge = 48.0;
 
-  // Static IconData examples
   static const IconData arrowRight = Icons.arrow_forward_ios_rounded;
   static const IconData freeze = Icons.ac_unit_rounded;
   static const IconData widget = Icons.widgets_rounded;
@@ -56,16 +54,15 @@ class AppIcons {
   static const String svgBasePath = 'assets/images/';
 
   static const String voiIcon = 'voi-asset-icon';
+  static const String voiCircleIcon = 'voi-circle';
   static const String algorandIcon = 'algorand-logo';
 
   static Color? defaultColor;
 
-  // Initialize default color (call this once during app initialization)
   static void initializeDefaultColor(BuildContext context) {
     defaultColor = Theme.of(context).colorScheme.onSurface;
   }
 
-  // Function to get Icon or SVG with a shorter method name
   static Widget icon({
     required dynamic icon,
     double size = medium,

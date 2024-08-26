@@ -36,8 +36,9 @@ class TransactionItem extends ConsumerWidget {
 
     switch (type) {
       case 'pay':
-        iconData =
-            network == 'network-voi' ? AppIcons.voiIcon : AppIcons.algorandIcon;
+        iconData = network == 'network-voi'
+            ? AppIcons.voiCircleIcon
+            : AppIcons.algorandIcon;
         break;
       case 'axfer':
         iconData = AppIcons.asset;
