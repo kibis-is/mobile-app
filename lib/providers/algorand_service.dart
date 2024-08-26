@@ -21,13 +21,10 @@ class AlgorandService {
         note: note,
       );
 
-      // Check that the transaction ID is not 'error' or empty
       if (txId.isNotEmpty && txId != 'error') {
-        // Wait for the transaction to be confirmed with a specified timeout
         final transactionResponse =
             await algorand.waitForConfirmation(txId, timeout: 4);
 
-        // Check that confirmedRound is not null and greater than zero
         if (transactionResponse.confirmedRound != null &&
             transactionResponse.confirmedRound! > 0) {
           debugPrint(
@@ -99,8 +96,7 @@ class AlgorandService {
       final maxCurrencyValue = currencyIsGreaterThan.isFinite &&
               currencyIsGreaterThan < double.maxFinite
           ? currencyIsGreaterThan
-          : 1e15; // Use a high but reasonable value
-
+          : 1e15;
       var assetsQuery = algorand
           .indexer()
           .assets()
@@ -122,10 +118,10 @@ class AlgorandService {
       return assets;
     } on AlgorandException catch (e) {
       debugPrint('Search Assets AlgorandException: ${e.message}');
-      throw Exception('Failed to fetch assets zxc: ${e.message}');
+      throw Exception('Failed to fetch assets: ${e.message}');
     } catch (e) {
       debugPrint('General Exception: $e');
-      throw Exception('Failed to fetch assets abc: $e');
+      throw Exception('Failed to fetch assets: $e');
     }
   }
 
@@ -173,7 +169,6 @@ class AlgorandService {
         decimals: decimals,
       );
 
-      // Wait for the transaction to be confirmed
       if (transactionId.isNotEmpty && transactionId != 'error') {
         final transactionResponse =
             await algorand.waitForConfirmation(transactionId, timeout: 4);
@@ -272,7 +267,6 @@ class AlgorandService {
         account: account,
       );
 
-      // Wait for the transaction to be confirmed
       if (txId.isNotEmpty && txId != 'error') {
         final transactionResponse =
             await algorand.waitForConfirmation(txId, timeout: 4);
@@ -305,7 +299,6 @@ class AlgorandService {
         amount: amount,
       );
 
-      // Wait for the transaction to be confirmed
       if (txId.isNotEmpty && txId != 'error') {
         final transactionResponse =
             await algorand.waitForConfirmation(txId, timeout: 4);

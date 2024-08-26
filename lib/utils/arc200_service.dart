@@ -1,6 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../models/combined_asset.dart';
+
+final arc200ServiceProvider = Provider<Arc200Service>((ref) {
+  return Arc200Service();
+});
 
 class Arc200Service {
   final String baseUrl;
@@ -46,5 +51,32 @@ class Arc200Service {
     final tokenJson = json.decode(tokenResponse.body);
     final token = tokenJson['tokens'][0];
     return token;
+  }
+
+  Future<List<CombinedAsset>> searchArc200AssetsByContractIdOrName(
+      String query) async {
+    final searchUrl = '$baseUrl/tokens?limit=100';
+    final response = await http.get(Uri.parse(searchUrl));
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to search ARC200 assets');
+    }
+
+    final jsonResponse = json.decode(response.body);
+    final List<dynamic> tokens = jsonResponse['tokens'] ?? [];
+
+    return tokens.where((data) {
+      final contractIdMatches = data['contractId'].toString().contains(query);
+      final metadata = data['metadata']?.toLowerCase() ?? '';
+      final nameMatches = metadata.contains(query.toLowerCase());
+
+      return contractIdMatches || nameMatches;
+    }).map<CombinedAsset>((data) {
+      return CombinedAsset(
+        index: data['contractId'],
+        params: CombinedAssetParameters.fromArc200(data),
+        assetType: AssetType.arc200,
+      );
+    }).toList();
   }
 }
