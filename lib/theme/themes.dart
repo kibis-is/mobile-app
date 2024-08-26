@@ -51,6 +51,15 @@ final ThemeData lightTheme = ThemeData(
     labelColor: ColorPalette.lightThemeMauveine,
     unselectedLabelColor: ColorPalette.lightThemeChineseViolet,
   ),
+  chipTheme: const ChipThemeData(
+    backgroundColor: ColorPalette.cardGradientMediumBlue,
+    padding: EdgeInsets.zero,
+    labelStyle: TextStyle(
+      color: ColorPalette.lightThemeAntiFlashWhite,
+      fontSize: 12,
+    ),
+    brightness: Brightness.light,
+  ),
 );
 
 // Dark Theme
@@ -92,5 +101,14 @@ final ThemeData darkTheme = ThemeData(
   tabBarTheme: const TabBarTheme(
     labelColor: ColorPalette.darkThemeMauve,
     unselectedLabelColor: ColorPalette.darkThemeCadetGray,
+  ),
+  chipTheme: const ChipThemeData(
+    backgroundColor: ColorPalette.cardGradientMediumBlue,
+    padding: EdgeInsets.zero,
+    labelStyle: TextStyle(
+      color: ColorPalette.lightThemeAntiFlashWhite,
+      fontSize: 12,
+    ),
+    brightness: Brightness.dark,
   ),
 );

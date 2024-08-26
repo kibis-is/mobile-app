@@ -112,7 +112,7 @@ class AssetListItem extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.all(kScreenPadding / 3),
         child: AppIcons.icon(
-            icon: AppIcons.asset,
+            icon: _getAssetTypeIcon(asset.assetType),
             color: isFrozenDefault
                 ? isDarkMode
                     ? ColorPalette.darkThemeFrozenColor
@@ -121,6 +121,26 @@ class AssetListItem extends ConsumerWidget {
             size: AppIcons.large),
       ),
     );
+  }
+
+  String _getAssetTypeLabel(AssetType assetType) {
+    switch (assetType) {
+      case AssetType.arc200:
+        return 'ARC200';
+      case AssetType.standard:
+      default:
+        return 'ASA';
+    }
+  }
+
+  IconData _getAssetTypeIcon(AssetType assetType) {
+    switch (assetType) {
+      case AssetType.arc200:
+        return AppIcons.arc200;
+      case AssetType.standard:
+      default:
+        return AppIcons.asset;
+    }
   }
 
   Widget _buildAssetAmount(BuildContext context) {
@@ -132,6 +152,11 @@ class AssetListItem extends ConsumerWidget {
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                Chip(
+                  label: Text(
+                    _getAssetTypeLabel(asset.assetType),
+                  ),
+                ),
                 AppIcons.icon(icon: AppIcons.arrowRight),
               ],
             ),
