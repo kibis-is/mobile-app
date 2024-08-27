@@ -62,7 +62,7 @@ class TransactionItem extends ConsumerWidget {
                   right: kScreenPadding,
                   child: Text(
                     _formatDateTime(transaction.roundTime!),
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ),
               ListTile(

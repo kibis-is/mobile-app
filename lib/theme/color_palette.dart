@@ -34,6 +34,7 @@ class ColorPalette {
   static const Color darkThemeFrozenSurfaceColor = Color(0xFF495569);
   static const Color darkThemeAssetColor = Color(0xFFD3FFB0);
   static const Color darkThemeRichBlack = Color(0xFF0C0F14);
+
   // Gradient Colors
   static const Color cardGradientPurpleA = Color(0xFF8048A5);
   static const Color cardGradientPurpleB = Color(0xFF522E6A);
@@ -43,4 +44,5 @@ class ColorPalette {
 
   // Other Colors
   static const Color voiPurple = Color(0xFF5A21B6);
+  static const Color chipVanilla = Color(0xFFeee8a9);
 }

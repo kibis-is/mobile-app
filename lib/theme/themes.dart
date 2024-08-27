@@ -13,6 +13,7 @@ String fontFamily = 'SF Pro';
 
 // Light Theme
 final ThemeData lightTheme = ThemeData(
+  useMaterial3: true,
   fontFamily: fontFamily,
   brightness: Brightness.light,
   textTheme: textThemeLight(),
@@ -64,6 +65,7 @@ final ThemeData lightTheme = ThemeData(
 
 // Dark Theme
 final ThemeData darkTheme = ThemeData(
+  useMaterial3: true,
   fontFamily: fontFamily,
   brightness: Brightness.dark,
   textTheme: textThemeDark(),

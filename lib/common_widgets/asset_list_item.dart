@@ -2,6 +2,8 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_chip.dart';
+import 'package:kibisis/common_widgets/flexible_listtile.dart';
 import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
@@ -39,21 +41,18 @@ class AssetListItem extends ConsumerWidget {
                       color: context.colorScheme.surface,
                       borderRadius: BorderRadius.circular(kWidgetRadius),
                     ),
-              child: ListTile(
-                visualDensity: VisualDensity.standard,
-                tileColor: Colors.transparent,
-                horizontalTitleGap: kScreenPadding * 2,
+              child: FlexibleListTile(
                 leading: _buildAssetIcon(
                     context, ref, asset.params.defaultFrozen ?? false),
                 title: EllipsizedText(
                   asset.params.name ?? 'Unknown',
-                  style: context.textTheme.titleSmall?.copyWith(
+                  style: context.textTheme.displaySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: EllipsizedText(
                   asset.params.unitName ?? 'Unknown',
-                  style: context.textTheme.titleSmall?.copyWith(
+                  style: context.textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: context.colorScheme.onSurface),
                 ),
@@ -144,16 +143,21 @@ class AssetListItem extends ConsumerWidget {
                   children: [
                     Text(
                       NumberShortener.formatAssetTotal(asset.params.total),
-                      style: context.textTheme.bodySmall?.copyWith(
+                      style: context.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: kScreenPadding / 4),
-                    Chip(
-                      padding: const EdgeInsets.all(0),
-                      label: Text(
-                        _getAssetTypeLabel(asset.assetType),
-                      ),
+                    const SizedBox(height: kScreenPadding / 2),
+                    CustomChip(
+                      label: _getAssetTypeLabel(asset.assetType),
+                      backgroundColor: asset.assetType == AssetType.arc200
+                          ? ColorPalette.chipVanilla
+                          : ColorPalette.cardGradientMediumBlue,
+                      labelColor: asset.assetType == AssetType.arc200
+                          ? ColorPalette.darkThemeRaisinBlack
+                          : ColorPalette.darkThemeAntiflashWhite,
+                      borderRadius: const BorderRadius.all(
+                          Radius.circular(kWidgetRadius)),
                     ),
                   ],
                 ),

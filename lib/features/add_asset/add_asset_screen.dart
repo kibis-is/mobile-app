@@ -64,7 +64,7 @@ class AssetList extends ConsumerWidget {
             );
           }
 
-          return ListView.builder(
+          return ListView.separated(
             itemCount: assets.length,
             itemBuilder: (context, index) {
               final asset = assets[index];
@@ -78,6 +78,8 @@ class AssetList extends ConsumerWidget {
                   mode: AssetScreenMode.add,
                   onPressed: isOwned ? null : () {});
             },
+            separatorBuilder: (BuildContext context, int index) =>
+                const SizedBox(height: kScreenPadding / 2),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
