@@ -111,6 +111,7 @@ class ViewAssetScreen extends ConsumerWidget {
   Future<void> _addAsset(BuildContext context, WidgetRef ref) async {
     final algorandService = ref.read(algorandServiceProvider);
     final account = ref.read(accountProvider).account;
+    final applicationId = ref.read(accountProvider).applicationId;
     final activeAsset = ref.read(activeAssetProvider);
     final balanceState = ref.read(balanceProvider);
 
@@ -133,7 +134,16 @@ class ViewAssetScreen extends ConsumerWidget {
     }
 
     try {
-      await algorandService.optInAsset(activeAsset.index, account);
+      if (activeAsset.assetType == AssetType.arc200) {
+        await algorandService.callContract(
+          int.parse(applicationId ?? ''),
+          account,
+          ['opt_in', account.publicAddress],
+        );
+      } else {
+        await algorandService.optInAsset(activeAsset.index, account);
+      }
+
       invalidateProviders(ref);
 
       if (context.mounted) {

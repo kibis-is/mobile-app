@@ -1,3 +1,4 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,22 +20,17 @@ class AccountSetupUtility {
     required bool setFinalState,
   }) async {
     try {
-      await _finalizeAccount(ref, accountName);
+      await ref
+          .read(accountProvider.notifier)
+          .finalizeAccountCreation(accountName);
       await _handleAccountPostSetup(ref, accountFlow, setFinalState);
-
-      // Deploy a smart contract for the new account
-      await _deploySmartContractForAccount(ref);
+      //TODO:  Deploy smart contract
+      // await _deploySmartContract(ref);
+      await _handleCleanUp(ref, accountFlow, setFinalState);
     } catch (e) {
       debugPrint('Failed to complete account setup: $e');
       throw Exception('Failed to complete account setup: ${e.toString()}');
     }
-  }
-
-  static Future<void> _finalizeAccount(
-      WidgetRef ref, String accountName) async {
-    await ref
-        .read(accountProvider.notifier)
-        .finalizeAccountCreation(accountName);
   }
 
   static Future<void> _handleAccountPostSetup(
@@ -44,39 +40,49 @@ class AccountSetupUtility {
 
     await ref.read(accountsListProvider.notifier).loadAccounts();
 
-    if (accountFlow == AccountFlow.setup && setFinalState) {
-      ref.read(isAuthenticatedProvider.notifier).state = true;
-      await ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
-    }
-
-    ref.read(temporaryAccountProvider.notifier).reset();
-    await ref.refresh(storageProvider).accountExists();
-
     if (newAccountId.isNotEmpty) {
       final accountHandler = AccountHandler(ref);
       accountHandler.handleAccountSelection(newAccountId);
     }
   }
 
-  static Future<void> _deploySmartContractForAccount(WidgetRef ref) async {
-    try {
-      final algorandService = ref.read(algorandServiceProvider);
-      final account = ref.read(accountProvider).account;
+  static Future<void> _handleCleanUp(
+      WidgetRef ref, AccountFlow accountFlow, bool setFinalState) async {
+    ref.read(temporaryAccountProvider.notifier).reset();
+    await ref.refresh(storageProvider).accountExists();
+    if (accountFlow == AccountFlow.setup && setFinalState) {
+      ref.read(isAuthenticatedProvider.notifier).state = true;
+      await ref.read(setupCompleteProvider.notifier).setSetupComplete(true);
+    }
+  }
 
+  static Future<Account?> _getActiveAccount(WidgetRef ref) async {
+    const maxRetries = 5;
+    for (int i = 0; i < maxRetries; i++) {
+      final account = ref.read(accountProvider).account;
+      if (account != null) {
+        return account;
+      }
+      await Future.delayed(const Duration(seconds: 1));
+    }
+    return null;
+  }
+
+  static Future<void> _deploySmartContract(WidgetRef ref) async {
+    try {
+      final account = await _getActiveAccount(ref);
       if (account == null) {
         throw Exception('No active account available for contract deployment');
       }
 
-      // Deploy the smart contract
-      final applicationId = await algorandService.deployContract(account);
+      final applicationId =
+          await ref.read(algorandServiceProvider).deployContract(account);
 
-      // Store the applicationId in the storage service
-      final accountId = await ref.read(accountProvider.notifier).getAccountId();
+      // Save the applicationId in the storage
+      final accountId = ref.read(accountProvider).accountId;
       if (accountId != null) {
         await ref.read(storageProvider).setAccountData(
             accountId, 'applicationId', applicationId.toString());
-        debugPrint(
-            'Smart contract deployed and applicationId stored for account: $accountId');
       }
     } catch (e) {
       debugPrint('Failed to deploy smart contract: $e');

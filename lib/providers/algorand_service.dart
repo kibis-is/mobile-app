@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/models/combined_asset.dart';
@@ -10,6 +9,7 @@ class AlgorandService {
   final Algorand algorand;
 
   AlgorandService(this.algorand);
+
   Future<String> sendPayment(
       Account senderAccount, String recipientAddress, double amountInAlgos,
       [String? note]) async {
@@ -443,18 +443,44 @@ class AlgorandService {
           .build();
 
       final signedTx = await transaction.sign(account);
+
+      debugPrint('Signed Transaction Details:');
+      debugPrint('Transaction ID: ${signedTx.transaction.id}');
+      debugPrint('Transaction Sender: ${signedTx.transaction.sender}');
+      debugPrint('Transaction Fee: ${signedTx.transaction.fee}');
+      debugPrint('Transaction First Valid: ${signedTx.transaction.firstValid}');
+      debugPrint('Transaction Last Valid: ${signedTx.transaction.lastValid}');
+      debugPrint('Transaction Genesis ID: ${signedTx.transaction.genesisId}');
+      debugPrint(
+          'Transaction Genesis Hash: ${signedTx.transaction.genesisHash}');
+      debugPrint('Transaction Group: ${signedTx.transaction.group}');
+      debugPrint('Transaction Lease: ${signedTx.transaction.lease}');
+      debugPrint('Transaction Note: ${signedTx.transaction.note}');
+      debugPrint('Transaction Type: ${signedTx.transaction.type}');
+      debugPrint('Transaction RekeyTo: ${signedTx.transaction.rekeyTo}');
+      debugPrint('Signed Transaction Signature: ${signedTx.signature}');
+
       final txId =
           await algorand.sendTransaction(signedTx, waitForConfirmation: true);
 
-      // Retrieve the Application ID from the transaction
       final transactionResponse =
           await algorand.getPendingTransactionById(txId);
-      final applicationId = transactionResponse.applicationIndex!;
 
+      if (transactionResponse.applicationIndex == null) {
+        throw Exception("Transaction failed, no Application ID returned.");
+      }
+
+      final applicationId = transactionResponse.applicationIndex!;
       debugPrint('Smart contract deployed with Application ID: $applicationId');
       return applicationId;
-    } catch (e) {
-      debugPrint("Failed to deploy smart contract: $e");
+    } on AlgorandException catch (e, stackTrace) {
+      debugPrint("AlgorandException Message: ${e.message}");
+      debugPrint("AlgorandException Details: ${e.error}");
+      debugPrint("AlgorandException StackTrace: $stackTrace");
+      throw Exception("Failed to deploy smart contract: ${e.message}");
+    } catch (e, stackTrace) {
+      debugPrint("General Exception: $e");
+      debugPrint("General Exception StackTrace: $stackTrace");
       throw Exception("Failed to deploy smart contract: $e");
     }
   }
@@ -485,7 +511,6 @@ class AlgorandService {
     try {
       final params = await algorand.getSuggestedTransactionParams();
 
-      // Convert arguments to Uint8List
       final convertedArgs =
           arguments.map((arg) => Uint8List.fromList(arg.codeUnits)).toList();
 
