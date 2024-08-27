@@ -4,7 +4,6 @@
         android:name="${applicationName}"
         android:allowBackup="false"
         android:icon="@mipmap/launcher_icon">
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -12,39 +11,37 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|screenLayout|density|layoutDirection|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait">
+            android:windowSoftInputMode="adjustResize">
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <!-- Meta-data for Flutter embedding -->
         <meta-data
             android:name="flutterEmbedding"
-            android:value="2" />
+            android:value="2"/>
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
-            android:value="true" />
+            android:value="true"/>
     </application>
-
     <!-- Permissions for QR code scanning -->
-    <uses-permission android:name="android.permission.CAMERA"/>
-
+    <uses-permission
+        android:name="android.permission.CAMERA"/>
     <!-- Required to query activities that can process text, used by the Flutter engine -->
     <queries>
         <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT"/>
-            <data android:mimeType="text/plain"/>
+            <action
+                android:name="android.intent.action.PROCESS_TEXT"/>
+            <data
+                android:mimeType="text/plain"/>
         </intent>
     </queries>
-
     <!-- Declaring camera feature usage which could be used by scanner for better device filtering -->
-    <uses-feature android:name="android.hardware.camera" android:required="true"/>
-
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
 </manifest>
