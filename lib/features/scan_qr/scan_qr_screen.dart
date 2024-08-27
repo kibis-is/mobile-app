@@ -60,31 +60,35 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: _buildAppBar(),
-      body: Center(
-        child: Stack(
-          fit: StackFit.loose,
-          alignment: Alignment.center,
-          children: [
-            _buildScannerView(),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * kDialogWidth,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (isPaginatedScan) ...[
-                    const AnimatedProgressBar(),
-                    const SizedBox(height: kScreenPadding),
-                  ],
-                  _buildScanTargetIndicator(),
-                  if (isPaginatedScan) ...[
-                    const SizedBox(height: kScreenPadding),
-                    _buildNextQrCodeText(),
-                  ],
-                ],
-              ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Center(
+            child: Stack(
+              fit: StackFit.loose,
+              alignment: Alignment.center,
+              children: [
+                _buildScannerView(),
+                SizedBox(
+                  width: constraints.maxWidth * kDialogWidth,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (isPaginatedScan) ...[
+                        const AnimatedProgressBar(),
+                        const SizedBox(height: kScreenPadding),
+                      ],
+                      _buildScanTargetIndicator(),
+                      if (isPaginatedScan) ...[
+                        const SizedBox(height: kScreenPadding),
+                        _buildNextQrCodeText(),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -113,7 +117,10 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
 
         _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
           var scannerLogic = QRCodeScannerLogic(
-            accountFlow: widget.accountFlow ?? AccountFlow.setup,
+            accountFlow: (widget.accountFlow ??
+                (widget.scanMode == ScanMode.general
+                    ? AccountFlow.general
+                    : AccountFlow.setup)),
             scanMode: widget.scanMode,
           );
           try {
@@ -171,7 +178,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           try {
             await AccountSetupUtility.completeAccountSetup(
               ref: ref,
-              accountFlow: widget.accountFlow!,
+              accountFlow: widget.accountFlow ?? AccountFlow.general,
               accountName: name,
               setFinalState: account == scanResult.last,
             );
