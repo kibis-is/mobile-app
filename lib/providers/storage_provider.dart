@@ -257,4 +257,12 @@ class StorageService {
         _prefs?.getInt('lastTransactionFetchTime$accountId') ?? 0;
     return lastFetchTime;
   }
+
+  Future<void> setApplicationId(String accountId, String applicationId) async {
+    await setAccountData(accountId, 'applicationId', applicationId);
+  }
+
+  Future<String?> getApplicationId(String accountId) async {
+    return await getAccountData(accountId, 'applicationId');
+  }
 }

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/models/combined_asset.dart';
@@ -403,6 +406,104 @@ class AlgorandService {
     } catch (e) {
       debugPrint('Failed to fetch transactions: $e');
       return [];
+    }
+  }
+
+  Future<int> deployContract(Account account) async {
+    try {
+      // Load the TEAL files from the filesystem
+      final approvalProgramSource =
+          await File('teal/approval.teal').readAsString();
+      final clearProgramSource =
+          await File('teal/clear_state.teal').readAsString();
+
+      // Compile the TEAL programs
+      final approvalProgram =
+          await algorand.applicationManager.compileTEAL(approvalProgramSource);
+      final clearProgram =
+          await algorand.applicationManager.compileTEAL(clearProgramSource);
+
+      // Get the suggested transaction params
+      final params = await algorand.getSuggestedTransactionParams();
+
+      // Build and deploy the smart contract
+      final transaction = await (ApplicationCreateTransactionBuilder()
+            ..sender = account.address
+            ..approvalProgram = approvalProgram.program
+            ..clearStateProgram = clearProgram.program
+            ..globalStateSchema = StateSchema(
+              numUint: 1,
+              numByteSlice: 0,
+            )
+            ..localStateSchema = StateSchema(
+              numUint: 1,
+              numByteSlice: 1,
+            )
+            ..suggestedParams = params)
+          .build();
+
+      final signedTx = await transaction.sign(account);
+      final txId =
+          await algorand.sendTransaction(signedTx, waitForConfirmation: true);
+
+      // Retrieve the Application ID from the transaction
+      final transactionResponse =
+          await algorand.getPendingTransactionById(txId);
+      final applicationId = transactionResponse.applicationIndex!;
+
+      debugPrint('Smart contract deployed with Application ID: $applicationId');
+      return applicationId;
+    } catch (e) {
+      debugPrint("Failed to deploy smart contract: $e");
+      throw Exception("Failed to deploy smart contract: $e");
+    }
+  }
+
+  Future<void> optInToContract(int applicationId, Account account) async {
+    try {
+      final params = await algorand.getSuggestedTransactionParams();
+
+      final transaction = await (ApplicationOptInTransactionBuilder()
+            ..sender = account.address
+            ..applicationId = applicationId
+            ..suggestedParams = params)
+          .build();
+
+      final signedTx = await transaction.sign(account);
+      final txId =
+          await algorand.sendTransaction(signedTx, waitForConfirmation: true);
+
+      debugPrint('Opted into contract with transaction ID: $txId');
+    } catch (e) {
+      debugPrint("Failed to opt-in to contract: $e");
+      throw Exception("Failed to opt-in to contract: $e");
+    }
+  }
+
+  Future<void> callContract(
+      int applicationId, Account account, List<String> arguments) async {
+    try {
+      final params = await algorand.getSuggestedTransactionParams();
+
+      // Convert arguments to Uint8List
+      final convertedArgs =
+          arguments.map((arg) => Uint8List.fromList(arg.codeUnits)).toList();
+
+      final transaction = await (ApplicationCallTransactionBuilder()
+            ..sender = account.address
+            ..applicationId = applicationId
+            ..arguments = convertedArgs
+            ..suggestedParams = params)
+          .build();
+
+      final signedTx = await transaction.sign(account);
+      final txId =
+          await algorand.sendTransaction(signedTx, waitForConfirmation: true);
+
+      debugPrint('Contract call made with transaction ID: $txId');
+    } catch (e) {
+      debugPrint("Failed to call contract: $e");
+      throw Exception("Failed to call contract: $e");
     }
   }
 }

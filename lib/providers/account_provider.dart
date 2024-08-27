@@ -22,6 +22,7 @@ class AccountState {
   final String? accountId;
   final String? privateKey;
   final String? seedPhrase;
+  final String? applicationId; // New property to store applicationId
   final String? error;
 
   AccountState({
@@ -30,6 +31,7 @@ class AccountState {
     this.accountId,
     this.privateKey,
     this.seedPhrase,
+    this.applicationId, // Initialize applicationId
     this.error,
   });
 
@@ -39,6 +41,7 @@ class AccountState {
     String? accountId,
     String? privateKey,
     String? seedPhrase,
+    String? applicationId, // Add applicationId to copyWith
     String? error,
   }) {
     return AccountState(
@@ -47,6 +50,7 @@ class AccountState {
       accountId: accountId ?? this.accountId,
       privateKey: privateKey ?? this.privateKey,
       seedPhrase: seedPhrase ?? this.seedPhrase,
+      applicationId: applicationId ?? this.applicationId, // Copy applicationId
       error: error ?? this.error,
     );
   }
@@ -76,7 +80,13 @@ class AccountNotifier extends StateNotifier<AccountState> {
       final privateKey =
           await storageService.getAccountData(activeAccountId, 'privateKey') ??
               '';
-      initialiseFromPrivateKey(accountName, privateKey, activeAccountId);
+      final applicationId = await storageService
+          .getApplicationId(activeAccountId); // Retrieve applicationId
+
+      await initialiseFromPrivateKey(accountName, privateKey, activeAccountId);
+
+      // Update state with applicationId
+      state = state.copyWith(applicationId: applicationId);
     } catch (e) {
       state = state.copyWith(error: 'Failed to initialize account: $e');
     }
@@ -86,10 +96,14 @@ class AccountNotifier extends StateNotifier<AccountState> {
       String accountName, String privateKey, String activeAccountId) async {
     if (privateKey.isNotEmpty) {
       final account = await algorand.loadAccountFromPrivateKey(privateKey);
+      final applicationId = await storageService
+          .getApplicationId(activeAccountId); // Retrieve applicationId
+
       state = state.copyWith(
         accountId: activeAccountId,
         accountName: accountName,
         account: account,
+        applicationId: applicationId, // Update state with applicationId
       );
     }
   }
@@ -140,9 +154,12 @@ class AccountNotifier extends StateNotifier<AccountState> {
           await storageService.setActiveAccount(otherAccounts.first);
           final accountData = await storageService.getAccountData(
               otherAccounts.first, 'accountName');
+          final applicationId = await storageService.getApplicationId(
+              otherAccounts.first); // Retrieve new account's applicationId
           state = state.copyWith(
             accountId: otherAccounts.first,
             accountName: accountData,
+            applicationId: applicationId, // Update applicationId
           );
         } else {
           state = AccountState();
@@ -173,11 +190,13 @@ class AccountNotifier extends StateNotifier<AccountState> {
           accountId, 'seedPhrase', seedPhraseString);
       await storageService.setActiveAccount(accountId);
 
+      // Initialize applicationId as null for a newly restored account
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
         privateKey: encodedPrivateKey,
         seedPhrase: seedPhraseString,
+        applicationId: null, // No applicationId yet
         error: null,
       );
     } catch (e) {
@@ -197,6 +216,9 @@ class AccountNotifier extends StateNotifier<AccountState> {
           await storageService.getAccountData(activeAccountId, 'privateKey');
       final accountName =
           await storageService.getAccountData(activeAccountId, 'accountName');
+      final applicationId = await storageService
+          .getApplicationId(activeAccountId); // Retrieve applicationId
+
       if (privateKey == null || accountName == null) {
         throw Exception('Missing account data for the active account');
       }
@@ -210,6 +232,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
         account: account,
         privateKey: privateKey,
         seedPhrase: seedPhrase.join(' '),
+        applicationId: applicationId, // Update state with applicationId
         error: null,
       );
     } catch (e) {
@@ -277,11 +300,13 @@ class AccountNotifier extends StateNotifier<AccountState> {
       final publicKey = tempAccountState.account!.publicAddress.toString();
       await storageService.setAccountData(accountId, 'publicKey', publicKey);
 
+      // Initialize applicationId as null for a newly created account
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
         privateKey: tempAccountState.privateKey,
         seedPhrase: tempAccountState.seedPhrase,
+        applicationId: null, // No applicationId yet
         error: null,
       );
 

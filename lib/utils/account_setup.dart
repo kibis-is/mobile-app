@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
+import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -20,6 +21,9 @@ class AccountSetupUtility {
     try {
       await _finalizeAccount(ref, accountName);
       await _handleAccountPostSetup(ref, accountFlow, setFinalState);
+
+      // Deploy a smart contract for the new account
+      await _deploySmartContractForAccount(ref);
     } catch (e) {
       debugPrint('Failed to complete account setup: $e');
       throw Exception('Failed to complete account setup: ${e.toString()}');
@@ -51,6 +55,32 @@ class AccountSetupUtility {
     if (newAccountId.isNotEmpty) {
       final accountHandler = AccountHandler(ref);
       accountHandler.handleAccountSelection(newAccountId);
+    }
+  }
+
+  static Future<void> _deploySmartContractForAccount(WidgetRef ref) async {
+    try {
+      final algorandService = ref.read(algorandServiceProvider);
+      final account = ref.read(accountProvider).account;
+
+      if (account == null) {
+        throw Exception('No active account available for contract deployment');
+      }
+
+      // Deploy the smart contract
+      final applicationId = await algorandService.deployContract(account);
+
+      // Store the applicationId in the storage service
+      final accountId = await ref.read(accountProvider.notifier).getAccountId();
+      if (accountId != null) {
+        await ref.read(storageProvider).setAccountData(
+            accountId, 'applicationId', applicationId.toString());
+        debugPrint(
+            'Smart contract deployed and applicationId stored for account: $accountId');
+      }
+    } catch (e) {
+      debugPrint('Failed to deploy smart contract: $e');
+      throw Exception('Failed to deploy smart contract: $e');
     }
   }
 }
