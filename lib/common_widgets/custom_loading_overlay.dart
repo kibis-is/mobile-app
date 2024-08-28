@@ -31,7 +31,7 @@ class CustomLoadingOverlay extends ConsumerWidget {
             borderRadius: BorderRadius.circular(kWidgetRadius),
             color: isDarkMode
                 ? ColorPalette.darkThemeRichBlack
-                : ColorPalette.lightThemeAntiFlashWhite),
+                : ColorPalette.lightThemeSnow),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
