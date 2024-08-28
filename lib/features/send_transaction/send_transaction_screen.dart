@@ -494,14 +494,33 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final accountsState = ref.watch(accountsListProvider);
 
     if (accountsState.error != null) {
-      return showDialog<void>(
+      return showGeneralDialog<void>(
         context: context,
-        builder: (BuildContext context) {
+        barrierDismissible: true,
+        barrierLabel: '',
+        barrierColor: Colors.black54,
+        transitionDuration: Duration(milliseconds: 300),
+        pageBuilder: (context, animation1, animation2) {
           return AlertDialog(
             contentPadding: EdgeInsets.zero,
             titlePadding: const EdgeInsets.all(kScreenPadding),
             title: const Text('Error'),
             content: Text(accountsState.error!),
+          );
+        },
+        transitionBuilder: (context, animation1, animation2, child) {
+          return FadeTransition(
+            opacity: CurvedAnimation(
+              parent: animation1,
+              curve: Curves.easeInOut,
+            ),
+            child: ScaleTransition(
+              scale: CurvedAnimation(
+                parent: animation1,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            ),
           );
         },
       );
@@ -514,9 +533,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final accounts = ref.read(accountsListProvider).accounts;
 
     if (!context.mounted) return;
-    final selectedAccount = await showDialog<Map<String, String>>(
+
+    final selectedAccount = await showGeneralDialog<Map<String, String>>(
       context: context,
-      builder: (BuildContext context) {
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black54,
+      transitionDuration: Duration(milliseconds: 300),
+      pageBuilder: (context, animation1, animation2) {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           titlePadding: const EdgeInsets.all(kScreenPadding),
@@ -525,6 +549,11 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             'Select Address',
             textAlign: TextAlign.center,
           ),
+          actions: [
+            SizedBox(
+              height: kScreenPadding,
+            )
+          ],
           content: SingleChildScrollView(
             child: ListBody(
               children: accounts.map<Widget>((account) {
@@ -564,6 +593,21 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                 );
               }).toList(),
             ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation1, animation2, child) {
+        return FadeTransition(
+          opacity: CurvedAnimation(
+            parent: animation1,
+            curve: Curves.easeInOut,
+          ),
+          child: ScaleTransition(
+            scale: CurvedAnimation(
+              parent: animation1,
+              curve: Curves.easeInOut,
+            ),
+            child: child,
           ),
         );
       },
