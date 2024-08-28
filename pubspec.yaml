@@ -1,7 +1,7 @@
 name: kibisis
 description: "Kibisis Mobile App"
 publish_to: 'none'
-version: 0.2.0+3
+version: 0.3.0+4
 environment:
   sdk: '>=3.3.1 <4.0.0'
 
@@ -27,7 +27,6 @@ dependencies:
   pull_to_refresh: ^2.0.0
   shimmer: ^3.0.0
   flutter_launcher_icons: ^0.13.1
-  mobile_scanner: ^5.1.1
   path_provider: ^2.1.3
   image_gallery_saver: ^2.0.3
   share_plus: ^9.0.0
@@ -40,6 +39,7 @@ dependencies:
   base32: ^2.1.3
   connectivity_plus: ^6.0.5
   flutter_expandable_fab: ^2.2.0
+  mobile_scanner: ^5.1.1
 
 dev_dependencies:
   flutter_test:
