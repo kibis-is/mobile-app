@@ -38,6 +38,8 @@ dependencies:
   base32: ^2.1.3
   connectivity_plus: ^6.0.5
   flutter_expandable_fab: ^2.2.0
+dependency_overrides:
+  win32: 5.4.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -72,15 +74,14 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-  # fonts:
-  #   - family: Anonymous Pro
-  #     fonts:
-  #       - asset: assets/fonts/AnonymousPro-Regular.ttf
-  #       - asset: assets/fonts/AnonymousPro-Bold.ttf
-  #         weight: 700
   fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito/Nunito-Bold.ttf
+          weight: 700
     - family: SF Pro
       fonts:
-        - asset: assets/fonts/SFPRODISPLAYREGULAR.OTF
-        - asset: assets/fonts/SFPRODISPLAYBOLD.OTF
+        - asset: assets/fonts/SFProDisplay/SFProDisplay-Regular.ttf
+        - asset: assets/fonts/SFProDisplay/SFProDisplay-Bold.ttf
           weight: 700
