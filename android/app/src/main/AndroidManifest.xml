@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission
+        android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
     <application
         android:label="Kibisis"
         android:name="${applicationName}"
@@ -10,7 +14,7 @@
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|screenLayout|density|layoutDirection|uiMode"
-            android:hardwareAccelerated="true"
+            android:hardwareAccelerated="false"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
@@ -26,12 +30,8 @@
             android:value="2"/>
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
-            android:value="true"/>
+            android:value="false"/>
     </application>
-    <!-- Permissions for QR code scanning -->
-    <uses-permission
-        android:name="android.permission.CAMERA"/>
-    <!-- Required to query activities that can process text, used by the Flutter engine -->
     <queries>
         <intent>
             <action
@@ -40,8 +40,4 @@
                 android:mimeType="text/plain"/>
         </intent>
     </queries>
-    <!-- Declaring camera feature usage which could be used by scanner for better device filtering -->
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true"/>
 </manifest>
