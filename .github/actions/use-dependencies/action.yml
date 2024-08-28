@@ -5,6 +5,11 @@ description: "Installs the Flutter SDK and a project dependencies with caching."
 runs:
   using: "composite"
   steps:
+    - name: "☕ Set up Java"
+      uses: actions/setup-java@v3
+      with:
+        java-version: "17"
+        distribution: "zulu"
     - name: "🔧 Setup"
       uses: subosito/flutter-action@v2
       with:
