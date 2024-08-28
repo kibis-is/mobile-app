@@ -209,14 +209,19 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
                 balance.toStringAsFixed(2),
                 style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.secondary),
+                    color: balance > 0
+                        ? context.colorScheme.secondary
+                        : context.colorScheme.onBackground),
               ),
               SvgPicture.asset(
                 'assets/images/${networks[0].icon}.svg',
                 semanticsLabel: networks[0].name,
                 height: 12,
                 colorFilter: ColorFilter.mode(
-                    context.colorScheme.secondary, BlendMode.srcATop),
+                    balance > 0
+                        ? context.colorScheme.secondary
+                        : context.colorScheme.onBackground,
+                    BlendMode.srcATop),
               ),
               IconButton(
                 icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small),
