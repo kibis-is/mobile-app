@@ -227,7 +227,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
   }
 
   Widget _buildAccountName(BuildContext context, String accountName) {
-    return Text(accountName,
+    return EllipsizedText(accountName,
         style: context.textTheme.titleLarge
             ?.copyWith(fontWeight: FontWeight.bold)
             .copyWith(
