@@ -1,18 +1,7 @@
-buildscript {
-    ext.kotlin_version = '1.8.22'
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 plugins {
-    id "com.android.application"
-    id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin"
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin'
 }
 
 def localProperties = new Properties()
@@ -32,7 +21,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "is.kibis.kibisis"
+    namespace 'is.kibis.kibisis'
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -50,7 +39,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "is.kibis.kibisis"
+        applicationId 'is.kibis.kibisis'
         minSdkVersion localProperties.getProperty('flutter.minSdkVersion') ? localProperties.getProperty('flutter.minSdkVersion').toInteger() : 29
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -89,7 +78,7 @@ allprojects {
     configurations.all {
         resolutionStrategy.eachDependency { details ->
             if (details.requested.group == 'org.jetbrains.kotlin') {
-                details.useVersion "1.8.22"  // Force all dependencies to use Kotlin 1.8.22
+                details.useVersion '1.8.22'  // Force all dependencies to use Kotlin 1.8.22
             }
         }
     }
