@@ -11,6 +11,7 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -97,7 +98,15 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: const Text(QrCodeScannerScreen.title),
+      title: const Text(QrCodeScannerScreen.title,
+          style: TextStyle(color: ColorPalette.lightThemeAntiFlashWhite)),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back,
+            color: ColorPalette.lightThemeAntiFlashWhite),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
     );
   }
 
