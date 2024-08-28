@@ -145,7 +145,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   }
 
   Future<void> _handleScanResult(dynamic scanResult) async {
-    if (scanResult is List<Map<String, dynamic>>) {
+    if (scanResult is Set<Map<String, dynamic>>) {
       try {
         for (var account in scanResult) {
           final String name = account['name'];
@@ -186,13 +186,13 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             debugPrint('Error completing account setup for $name: $e');
             throw Exception('Failed to complete account setup.');
           }
-          try {
-            invalidateProviders(ref);
-            _navigateToAccountPage(scanResult.length);
-          } catch (e) {
-            debugPrint('Error invalidating providers: $e');
-            throw Exception('Failed to invalidate providers.');
-          }
+        }
+        try {
+          invalidateProviders(ref);
+          _navigateToAccountPage(scanResult.length);
+        } catch (e) {
+          debugPrint('Error invalidating providers: $e');
+          throw Exception('Failed to invalidate providers.');
         }
       } catch (e) {
         debugPrint('Error processing scan result: $e');
@@ -208,6 +208,9 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         debugPrint('Error handling public key: $e');
         throw Exception('Error processing public key');
       }
+    } else {
+      debugPrint('Invalid scan result: $scanResult');
+      throw Exception('Invalid scan result');
     }
   }
 

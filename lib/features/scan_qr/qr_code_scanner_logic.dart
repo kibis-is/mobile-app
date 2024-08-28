@@ -41,8 +41,8 @@ class QRCodeScannerLogic {
     }
   }
 
-  Future<List<Map<String, dynamic>>> _handleUri(String rawData) async {
-    List<Map<String, dynamic>> accounts = [];
+  Future<Set<Map<String, dynamic>>> _handleUri(String rawData) async {
+    Set<Map<String, dynamic>> accounts = {};
 
     if (scanMode == ScanMode.general || scanMode == ScanMode.privateKey) {
       Map<String, List<String>> params = getQueryParameters(rawData);
@@ -50,13 +50,13 @@ class QRCodeScannerLogic {
 
       switch (qrType) {
         case QrType.privateKeyPaginated:
-          // Handle paginated QR code parts.
-          break;
+          throw Exception('Paginated QR code not yet supported');
         case QrType.privateKey:
-          accounts.add(handleModernUri(params));
+          accounts.addAll(handleModernUri(
+              params)); // Use addAll to add all maps from the set
           break;
         case QrType.privateKeyLegacy:
-          accounts.add(handleLegacyUri(params));
+          accounts.addAll(handleLegacyUri(params)); // Same for the legacy case
           break;
         default:
           throw Exception('Invalid URI');
@@ -87,17 +87,41 @@ class QRCodeScannerLogic {
   }
 
   Map<String, List<String>> getQueryParameters(String query) {
-    var params = <String, List<String>>{};
-    var parts = query.split('&');
+    // Initialize the lists to store names and private keys
+    List<String> names = [];
+    List<String> privateKeys = [];
+    int importedAccountCounter = 1;
+    String? lastName;
+
+    // Remove the scheme part (avm://account/import?) from the query string
+    var queryString = query.split('?').last;
+    var parts = queryString.split('&');
+
     for (var part in parts) {
       var index = part.indexOf('=');
       if (index != -1) {
         var key = Uri.decodeComponent(part.substring(0, index));
         var value = Uri.decodeComponent(part.substring(index + 1));
-        params.putIfAbsent(key, () => []).add(value);
+
+        if (key == 'name') {
+          lastName = value; // Capture the name
+        } else if (key == 'privatekey') {
+          if (lastName != null) {
+            // Use the captured name
+            names.add(lastName);
+            lastName = null; // Reset lastName after use
+          } else {
+            // If no name found before this private key, use a default name
+            names.add('Imported Account $importedAccountCounter');
+            importedAccountCounter++;
+          }
+          privateKeys.add(value);
+        }
       }
     }
-    return params;
+
+    // Combine names and private keys into a map
+    return {'name': names, 'privatekey': privateKeys};
   }
 
   bool isValidUri(String uriString) {
@@ -122,19 +146,43 @@ class QRCodeScannerLogic {
     throw Exception('Invalid URI');
   }
 
-  Map<String, dynamic> handleModernUri(Map<String, List<String>> params) {
-    final String name = params['name']?.first ?? 'Imported Account';
-    final String key = params['privatekey']?.first ?? '';
-    Uint8List? seed = _decodePrivateKey(key);
+  Set<Map<String, dynamic>> handleModernUri(Map<String, List<String>> params) {
+    print(params);
+    Set<Map<String, dynamic>> result = {};
 
-    if (seed == null || seed.length != 32) {
-      throw Exception('Invalid private key');
+    List<String> names = params['name'] ?? [];
+    List<String> privateKeys = params['privatekey'] ?? [];
+
+    // Handle the case where there's at least one name
+    int importedAccountCounter = 1;
+
+    for (int i = 0; i < privateKeys.length; i++) {
+      String name;
+
+      if (i < names.length) {
+        // Use the provided name if it exists
+        name = names[i];
+      } else {
+        // Use the default name and increment the counter for each additional key
+        name = 'Imported Account $importedAccountCounter';
+        importedAccountCounter++;
+      }
+
+      Uint8List? seed = _decodePrivateKey(privateKeys[i]);
+
+      if (seed == null || seed.length != 32) {
+        throw Exception('Invalid private key');
+      }
+
+      result.add({'name': name, 'seed': seed});
     }
 
-    return {'name': name, 'seed': seed};
+    return result;
   }
 
-  Map<String, dynamic> handleLegacyUri(Map<String, List<String>> params) {
+  Set<Map<String, dynamic>> handleLegacyUri(Map<String, List<String>> params) {
+    Set<Map<String, dynamic>> result = {};
+
     const String name = 'Imported Account';
     final String key = params['privatekey']?.first ?? '';
     Uint8List? seed = _decodePrivateKey(key);
@@ -143,7 +191,9 @@ class QRCodeScannerLogic {
       throw Exception('Invalid private key');
     }
 
-    return {'name': name, 'seed': seed};
+    result.add({'name': name, 'seed': seed});
+
+    return result;
   }
 
   Uint8List? _decodePrivateKey(String key) {
