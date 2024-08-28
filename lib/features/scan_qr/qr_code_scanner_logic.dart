@@ -147,7 +147,6 @@ class QRCodeScannerLogic {
   }
 
   Set<Map<String, dynamic>> handleModernUri(Map<String, List<String>> params) {
-    print(params);
     Set<Map<String, dynamic>> result = {};
 
     List<String> names = params['name'] ?? [];
