@@ -499,7 +499,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         barrierDismissible: true,
         barrierLabel: '',
         barrierColor: Colors.black54,
-        transitionDuration: Duration(milliseconds: 300),
+        transitionDuration: const Duration(milliseconds: 300),
         pageBuilder: (context, animation1, animation2) {
           return AlertDialog(
             contentPadding: EdgeInsets.zero,
@@ -539,7 +539,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       barrierDismissible: true,
       barrierLabel: '',
       barrierColor: Colors.black54,
-      transitionDuration: Duration(milliseconds: 300),
+      transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, animation1, animation2) {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
@@ -549,7 +549,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             'Select Address',
             textAlign: TextAlign.center,
           ),
-          actions: [
+          actions: const [
             SizedBox(
               height: kScreenPadding,
             )
