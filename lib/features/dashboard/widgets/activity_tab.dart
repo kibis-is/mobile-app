@@ -15,93 +15,141 @@ import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ActivityTab extends ConsumerWidget {
+class ActivityTab extends ConsumerStatefulWidget {
   const ActivityTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final RefreshController refreshController =
-        RefreshController(initialRefresh: false);
+  ConsumerState<ActivityTab> createState() => _ActivityTabState();
+}
 
-    final publicAddress = ref.watch(accountProvider
-        .select((account) => account.account?.publicAddress ?? ''));
+class _ActivityTabState extends ConsumerState<ActivityTab> {
+  late final RefreshController _refreshController;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshController = RefreshController(initialRefresh: false);
+  }
+
+  void _onRefresh() async {
+    final publicAddress =
+        ref.read(accountProvider).account?.publicAddress ?? '';
+    await ref
+        .read(transactionsProvider.notifier)
+        .getTransactions(publicAddress);
+    _refreshController.refreshCompleted();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final transactionsAsyncValue = ref.watch(transactionsProvider);
 
-    return CustomPullToRefresh(
-      refreshController: refreshController,
-      onRefresh: () async {
-        await ref
-            .read(transactionsProvider.notifier)
-            .getTransactions(publicAddress);
-        refreshController.refreshCompleted();
-      },
-      child: transactionsAsyncValue.when(
-        data: (transactions) {
-          if (transactions.isEmpty) {
-            return _buildEmptyTransactions(context, ref);
-          }
-          return _buildTransactionsList(
-              context, ref, transactions, publicAddress);
-        },
-        loading: () => _buildLoadingTransactions(context),
-        error: (error, stack) => _buildEmptyTransactions(context, ref),
+    return Column(
+      children: [
+        const SizedBox(height: kScreenPadding / 4),
+        Expanded(
+          child: CustomPullToRefresh(
+            refreshController: _refreshController,
+            onRefresh: _onRefresh,
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                transactionsAsyncValue.when(
+                  data: (transactions) {
+                    if (transactions.isEmpty) {
+                      return _buildEmptyTransactions(context, ref);
+                    }
+                    return _buildTransactionsList(context, ref, transactions);
+                  },
+                  loading: () => _buildLoadingTransactions(context),
+                  error: (error, stack) =>
+                      _buildEmptyTransactions(context, ref),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTitleBar(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
+      child: Text(
+        'Activity',
+        style: context.textTheme.headline6,
       ),
     );
   }
 
   Widget _buildEmptyTransactions(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 72,
-            height: 72,
-            child: SvgPicture.asset('assets/images/empty.svg',
-                semanticsLabel: 'No Assets Found'),
-          ),
-          const SizedBox(height: kScreenPadding / 2),
-          Text('No Transactions Found', style: context.textTheme.titleMedium),
-          const SizedBox(height: kScreenPadding / 2),
-          Text(
-            'You have not made any transactions.',
-            style: context.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: kScreenPadding),
-          TextButton(
-            onPressed: () {
-              invalidateProviders(ref);
-            },
-            child: const Text('Retry'),
-          ),
-          const SizedBox(height: kScreenPadding),
-        ],
+    return SliverToBoxAdapter(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 72,
+              height: 72,
+              child: SvgPicture.asset('assets/images/empty.svg',
+                  semanticsLabel: 'No Assets Found'),
+            ),
+            const SizedBox(height: kScreenPadding / 2),
+            Text('No Transactions Found', style: context.textTheme.titleMedium),
+            const SizedBox(height: kScreenPadding / 2),
+            Text(
+              'You have not made any transactions.',
+              style: context.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: kScreenPadding),
+            TextButton(
+              onPressed: () {
+                invalidateProviders(ref);
+              },
+              child: const Text('Retry'),
+            ),
+            const SizedBox(height: kScreenPadding),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildLoadingTransactions(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: context.colorScheme.background,
-      highlightColor: Colors.grey.shade100,
-      period: const Duration(milliseconds: 2000),
-      child: ListView.separated(
-        itemCount: 3,
-        itemBuilder: (context, index) => ListTile(
-          leading: const CircleAvatar(),
-          title: Container(
-              width: double.infinity,
-              height: kScreenPadding,
-              color: context.colorScheme.surface),
-          subtitle: Container(
-              width: double.infinity,
-              height: kScreenPadding,
-              color: context.colorScheme.surface),
+    return SliverToBoxAdapter(
+      child: Shimmer.fromColors(
+        baseColor: context.colorScheme.background,
+        highlightColor: Colors.grey.shade100,
+        period: const Duration(milliseconds: 2000),
+        child: ListView.separated(
+          itemCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) => ListTile(
+            leading: const CircleAvatar(),
+            title: Container(
+                width: double.infinity,
+                height: kScreenPadding,
+                color: context.colorScheme.surface),
+            subtitle: Container(
+                width: double.infinity,
+                height: kScreenPadding,
+                color: context.colorScheme.surface),
+          ),
+          separatorBuilder: (BuildContext context, int index) {
+            return const SizedBox(height: kScreenPadding / 2);
+          },
         ),
-        separatorBuilder: (BuildContext context, int index) {
-          return const SizedBox(height: kScreenPadding / 2);
-        },
       ),
     );
   }
@@ -175,26 +223,28 @@ class ActivityTab extends ConsumerWidget {
     return transactionItems;
   }
 
-  Widget _buildTransactionsList(BuildContext context, WidgetRef ref,
-      List<Transaction> transactions, String publicAddress) {
+  Widget _buildTransactionsList(
+      BuildContext context, WidgetRef ref, List<Transaction> transactions) {
+    final publicAddress =
+        ref.read(accountProvider).account?.publicAddress ?? '';
+
     return FutureBuilder<List<TransactionItem>>(
       future: _buildTransactionItems(transactions, publicAddress, ref),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildLoadingTransactions(context);
         } else if (snapshot.hasError) {
-          return const Center(
-              child: Text('Failed to load transaction details'));
+          return const SliverToBoxAdapter(
+              child: Center(child: Text('Failed to load transaction details')));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return _buildEmptyTransactions(context, ref);
         } else {
-          return ListView.separated(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              return snapshot.data![index];
-            },
-            separatorBuilder: (context, index) => const SizedBox(
-              height: kScreenPadding / 2,
+          return SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return snapshot.data![index];
+              },
+              childCount: snapshot.data!.length,
             ),
           );
         }
