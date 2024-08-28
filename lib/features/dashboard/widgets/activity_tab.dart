@@ -81,16 +81,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
     );
   }
 
-  Widget _buildTitleBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
-      child: Text(
-        'Activity',
-        style: context.textTheme.headline6,
-      ),
-    );
-  }
-
   Widget _buildEmptyTransactions(BuildContext context, WidgetRef ref) {
     return SliverToBoxAdapter(
       child: Center(
@@ -242,7 +232,13 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
           return SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return snapshot.data![index];
+                return Column(
+                  children: [
+                    snapshot.data![index],
+                    if (index < snapshot.data!.length - 1)
+                      const SizedBox(height: 10),
+                  ],
+                );
               },
               childCount: snapshot.data!.length,
             ),
