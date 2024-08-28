@@ -20,7 +20,7 @@ class ColorPalette {
   // Dark Theme Colors
   static const Color darkThemeMauve = Color(0xFFE0B0FF);
   static const Color darkThemeHeliotrope = Color(0xFFC875FF);
-  static const Color darkThemeKeppel = Color(0xFF009F9A);
+  static const Color darkThemePersianGreen = Color(0xFF009F9A);
   static const Color darkThemeFluorescentCyan = Color(0xFF00D2CB);
   static const Color darkThemeRaisinBlack = Color(0xFF1A202C);
   static const Color darkThemeGunmetal = Color(0xFF303846);
