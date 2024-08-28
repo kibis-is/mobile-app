@@ -3,6 +3,8 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/common_widgets/flexible_listtile.dart';
+import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
@@ -65,63 +67,73 @@ class TransactionItem extends ConsumerWidget {
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ),
-              ListTile(
-                horizontalTitleGap: kScreenPadding * 2,
-                onTap: () {
-                  Clipboard.setData(
-                      ClipboardData(text: transaction.id ?? 'No ID'));
-                  showCustomSnackBar(
-                    context: context,
-                    snackType: SnackType.neutral,
-                    message: 'Transaction ID Copied',
-                  );
-                },
-                leading: _getTransactionIcon(context, isDarkMode, network),
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    EllipsizedText(
-                      type: EllipsisType.end,
-                      ellipsis: '...',
-                      type == 'pay' ? 'Payment' : assetName ?? 'Asset Transfer',
-                      style: context.textTheme.titleSmall?.copyWith(
+              Material(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: context.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(kWidgetRadius),
+                  ),
+                  child: FlexibleListTile(
+                    onTap: () {
+                      Clipboard.setData(
+                          ClipboardData(text: transaction.id ?? 'No ID'));
+                      showCustomSnackBar(
+                        context: context,
+                        snackType: SnackType.neutral,
+                        message: 'Transaction ID Copied',
+                      );
+                    },
+                    leading: _getTransactionIcon(context, isDarkMode, network),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        EllipsizedText(
+                          type: EllipsisType.end,
+                          ellipsis: '...',
+                          type == 'pay'
+                              ? 'Payment'
+                              : assetName ?? 'Asset Transfer',
+                          style: context.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        if (otherPartyAddress != '')
+                          EllipsizedText(
+                            type: EllipsisType.middle,
+                            ellipsis: '...',
+                            otherPartyAddress,
+                            style: context.textTheme.bodyMedium,
+                          ),
+                        if (note != '')
+                          EllipsizedText(
+                            type: EllipsisType.end,
+                            ellipsis: '...',
+                            note,
+                            style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colorScheme.secondary),
+                          ),
+                      ],
+                    ),
+                    trailing: Text(
+                      type == 'appl'
+                          ? '$amount'
+                          : (amount != null &&
+                                  amount != '0' &&
+                                  !(amount?.startsWith('0') ?? false))
+                              ? '${isOutgoing ? '-' : '+'}$amount'
+                              : '$amount',
+                      style: context.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: (amount == null ||
+                                amount == '0' ||
+                                amount?.startsWith('0') == true ||
+                                type == 'appl')
+                            ? context.colorScheme.onSurface
+                            : isOutgoing
+                                ? context.colorScheme.error
+                                : context.colorScheme.secondary,
                       ),
                     ),
-                    if (otherPartyAddress != '')
-                      EllipsizedText(
-                        type: EllipsisType.middle,
-                        ellipsis: '...',
-                        otherPartyAddress,
-                        style: context.textTheme.bodyMedium,
-                      ),
-                    if (note != '')
-                      EllipsizedText(
-                        type: EllipsisType.end,
-                        ellipsis: '...',
-                        note,
-                        style: context.textTheme.bodySmall,
-                      ),
-                  ],
-                ),
-                trailing: Text(
-                  type == 'appl'
-                      ? '$amount'
-                      : (amount != null &&
-                              amount != '0' &&
-                              !(amount?.startsWith('0') ?? false))
-                          ? '${isOutgoing ? '-' : '+'}$amount'
-                          : '$amount',
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: (amount == null ||
-                            amount == '0' ||
-                            amount?.startsWith('0') == true ||
-                            type == 'appl')
-                        ? context.colorScheme.onSurface
-                        : isOutgoing
-                            ? context.colorScheme.error
-                            : context.colorScheme.secondary,
                   ),
                 ),
               ),
