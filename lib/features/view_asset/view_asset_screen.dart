@@ -87,6 +87,12 @@ class ViewAssetScreen extends ConsumerWidget {
   }
 
   Future<void> _handleButtonPress(BuildContext context, WidgetRef ref) async {
+    final asset = ref.read(activeAssetProvider);
+    if (asset?.assetType == AssetType.arc200) {
+      _handleGeneralException(
+          "ARC200 assets not yet supported", StackTrace.current, context);
+      return;
+    }
     if (mode == AssetScreenMode.view) {
       context.pushNamed(sendTransactionRouteName,
           pathParameters: {'mode': 'asset'});
@@ -135,11 +141,12 @@ class ViewAssetScreen extends ConsumerWidget {
 
     try {
       if (activeAsset.assetType == AssetType.arc200) {
-        await algorandService.callContract(
-          int.parse(applicationId ?? ''),
-          account,
-          ['opt_in', account.publicAddress],
-        );
+        throw Exception('Asset type not yet supported');
+        // await algorandService.callContract(
+        //   int.parse(applicationId ?? ''),
+        //   account,
+        //   ['opt_in', account.publicAddress],
+        // );
       } else {
         await algorandService.optInAsset(activeAsset.index, account);
       }
@@ -181,7 +188,7 @@ class ViewAssetScreen extends ConsumerWidget {
     showCustomSnackBar(
       context: context,
       snackType: SnackType.error,
-      message: 'An unexpected error occurred',
+      message: e.toString(),
     );
   }
 }
