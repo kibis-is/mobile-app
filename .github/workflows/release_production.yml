@@ -1,0 +1,15 @@
+name: "Release - Production"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: "🔖 Release"
+    uses: ./.github/workflows/release.yml
+    with:
+      environment: "production"
+    secrets:
+      WRITE_REPOS_TOKEN: ${{ secrets.WRITE_REPOS_TOKEN }}

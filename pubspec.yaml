@@ -1,14 +1,12 @@
 name: kibisis
-description: "Kibisis Mobile App"
+description: 'Kibisis Mobile App'
 publish_to: 'none'
 version: 0.2.0+3
 environment:
   sdk: '>=3.3.1 <4.0.0'
-
 dependencies:
   flutter:
     sdk: flutter
-  
   equatable: ^2.0.5
   flutter_riverpod: ^2.3.6
   go_router: ^13.2.2
@@ -40,57 +38,50 @@ dependencies:
   base32: ^2.1.3
   connectivity_plus: ^6.0.5
   flutter_expandable_fab: ^2.2.0
-
+dependency_overrides:
+  win32: ^5.5.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^3.0.0
-
+  commitlint_cli: ^0.7.1
+  husky: ^0.1.7
 flutter_native_splash:
-  color: "#1A202C"
-  image: "assets/images/splash-logo.png"
-
+  color: '#1A202C'
+  image: 'assets/images/splash-logo.png'
   android_12:
     # For Android 12 and later, the launcher icon will be used as the splash screen icon by default.
-    image: "assets/images/splash-logo.png"
-    color: "#1A202C"
-
-
+    image: 'assets/images/splash-logo.png'
+    color: '#1A202C'
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: 'launcher_icon'
   ios: true
-  image_path: "assets/icon/app_icon.png"
+  image_path: 'assets/icon/app_icon.png'
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
-    image_path: "assets/icon/app_icon.png"
-    background_color: "#FF8D029B"
-    theme_color: "#FFFFFFFF"
+    image_path: 'assets/icon/app_icon.png'
+    background_color: '#FF8D029B'
+    theme_color: '#FFFFFFFF'
   windows:
     generate: true
-    image_path: "assets/icon/app_icon.png"
+    image_path: 'assets/icon/app_icon.png'
     icon_size: 48 # min:48, max:256, default: 48
   macos:
     generate: true
-    image_path: "assets/icon/app_icon.png"
-
+    image_path: 'assets/icon/app_icon.png'
 flutter:
   uses-material-design: true
-  
   assets:
-    - assets/images/
-
-  # fonts:
-  #   - family: Anonymous Pro
-  #     fonts:
-  #       - asset: assets/fonts/AnonymousPro-Regular.ttf
-  #       - asset: assets/fonts/AnonymousPro-Bold.ttf
-  #         weight: 700
-
+    - 'assets/images/'
   fonts:
-    - family: SF Pro
+    - family: 'Nunito'
       fonts:
-        - asset: assets/fonts/SFPRODISPLAYREGULAR.OTF
-        - asset: assets/fonts/SFPRODISPLAYBOLD.OTF
+        - asset: 'assets/fonts/Nunito/Nunito-Regular.ttf'
+        - asset: 'assets/fonts/Nunito/Nunito-Bold.ttf'
+          weight: 700
+    - family: 'SF Pro Display'
+      fonts:
+        - asset: 'assets/fonts/SFProDisplay/SFProDisplay-Regular.ttf'
+        - asset: 'assets/fonts/SFProDisplay/SFProDisplay-Bold.ttf'
           weight: 700

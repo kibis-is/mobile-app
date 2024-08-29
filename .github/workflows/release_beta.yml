@@ -1,0 +1,15 @@
+name: "Release - Beta"
+
+on:
+  push:
+    branches:
+      - beta
+
+jobs:
+  deploy:
+    name: "🔖 Release"
+    uses: ./.github/workflows/release.yml
+    with:
+      environment: "beta"
+    secrets:
+      WRITE_REPOS_TOKEN: ${{ secrets.WRITE_REPOS_TOKEN }}
