@@ -1,0 +1,12 @@
+name: "Deploy - Beta"
+
+on:
+  release:
+    types: [prereleased] # triggered on beta branch releases
+
+jobs:
+  deploy:
+    name: "🚀 Deploy"
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: "beta"
