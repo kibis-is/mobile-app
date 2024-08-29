@@ -9,7 +9,6 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';

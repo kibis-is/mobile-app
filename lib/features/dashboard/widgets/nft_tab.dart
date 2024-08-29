@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';

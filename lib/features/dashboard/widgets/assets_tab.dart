@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
@@ -14,7 +13,6 @@ import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
