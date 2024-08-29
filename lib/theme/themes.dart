@@ -9,7 +9,7 @@ import 'package:kibisis/theme/list_tile_theme.dart';
 import 'package:kibisis/theme/page_transitions.dart';
 import 'package:kibisis/theme/text_theme.dart';
 
-String fontFamily = 'SF Pro';
+String fontFamily = 'SF Pro Display';
 
 // Light Theme
 final ThemeData lightTheme = ThemeData(

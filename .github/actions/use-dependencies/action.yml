@@ -1,0 +1,25 @@
+name: "Use Flutter Dependencies"
+
+description: "Installs the Flutter SDK and a project dependencies with caching."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "☕ Set up Java"
+      uses: actions/setup-java@v3
+      with:
+        java-version: "17"
+        distribution: "zulu"
+    - name: "🔧 Setup"
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: true
+        cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
+        cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+        flutter-version: 3.22.3
+        pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache of dart pub get dependencies
+        pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+    - name: "📦 Install"
+      run: flutter pub get
+      shell: bash
