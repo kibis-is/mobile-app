@@ -178,8 +178,6 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                       onPressed: checkboxValue
                           ? () {
                               if (formKey.currentState?.validate() ?? false) {
-                                ref.read(checkboxProvider.notifier).state =
-                                    false;
                                 GoRouter.of(context).push(
                                     widget.accountFlow == AccountFlow.setup
                                         ? '/setup/setupNameAccount'
