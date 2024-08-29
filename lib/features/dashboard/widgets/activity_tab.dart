@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
@@ -33,6 +32,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
   }
 
   void _onRefresh() async {
+    ref.invalidate(transactionsProvider);
     final publicAddress =
         ref.read(accountProvider).account?.publicAddress ?? '';
     await ref
@@ -82,29 +82,21 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
   }
 
   Widget _buildEmptyTransactions(BuildContext context, WidgetRef ref) {
-    return SliverToBoxAdapter(
+    return SliverFillRemaining(
+      hasScrollBody: false,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: 72,
-              height: 72,
-              child: SvgPicture.asset('assets/images/empty.svg',
-                  semanticsLabel: 'No Assets Found'),
-            ),
+            Text('No Transactions Found', style: context.textTheme.titleSmall),
             const SizedBox(height: kScreenPadding / 2),
-            Text('No Transactions Found', style: context.textTheme.titleMedium),
-            const SizedBox(height: kScreenPadding / 2),
-            Text(
-              'You have not made any transactions.',
-              style: context.textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
+            Text('You have not made any transactions.',
+                style: context.textTheme.bodySmall,
+                textAlign: TextAlign.center),
             const SizedBox(height: kScreenPadding),
             TextButton(
               onPressed: () {
-                invalidateProviders(ref);
+                _onRefresh();
               },
               child: const Text('Retry'),
             ),

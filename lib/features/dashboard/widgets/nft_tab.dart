@@ -140,23 +140,25 @@ class NftTabState extends ConsumerState<NftTab> {
   }
 
   Widget _buildEmptyNfts(BuildContext context) {
-    return SliverToBoxAdapter(
+    return SliverFillRemaining(
+      hasScrollBody: false, // Prevents the sliver from being scrollable
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment
+              .center, // Centers the column's children vertically
           children: [
-            Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width / 4,
-                maxHeight: MediaQuery.of(context).size.height / 4,
-              ),
-              child: SvgPicture.asset(
-                'assets/images/empty.svg',
-                semanticsLabel: 'No NFTs Found',
-              ),
-            ),
+            Text('No NFTs Found', style: context.textTheme.titleSmall),
             const SizedBox(height: kScreenPadding / 2),
-            Text('No NFTs Found', style: context.textTheme.titleMedium),
+            Text('You have not added any NFTs.',
+                style: context.textTheme.bodySmall,
+                textAlign: TextAlign.center),
+            const SizedBox(height: kScreenPadding),
+            TextButton(
+              onPressed: () {
+                _onRefresh(); // Ensures the refresh action is triggered
+              },
+              child: const Text('Retry'), // Button to retry the fetch action
+            ),
           ],
         ),
       ),

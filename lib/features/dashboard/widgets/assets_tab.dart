@@ -35,7 +35,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   final TextEditingController filterController = TextEditingController();
 
   void _onRefresh() {
-    invalidateProviders(ref);
+    ref.invalidate(assetsProvider);
     ref.read(assetsProvider.notifier).fetchAssets();
     _refreshController.refreshCompleted();
   }
@@ -187,25 +187,17 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 72,
-            height: 72,
-            child: SvgPicture.asset('assets/images/empty.svg',
-                semanticsLabel: 'No Assets Found'),
-          ),
-          const SizedBox(height: kScreenPadding / 2),
-          Text('No Assets Found', style: context.textTheme.titleMedium),
+          Text('No Assets Found', style: context.textTheme.titleSmall),
           const SizedBox(height: kScreenPadding / 2),
           Text('You have not added any assets.',
-              style: context.textTheme.bodyMedium, textAlign: TextAlign.center),
+              style: context.textTheme.bodySmall, textAlign: TextAlign.center),
           const SizedBox(height: kScreenPadding),
           TextButton(
             onPressed: () {
-              invalidateProviders(ref);
+              _onRefresh();
             },
             child: const Text('Retry'),
           ),
-          const SizedBox(height: kScreenPadding),
         ],
       ),
     );
