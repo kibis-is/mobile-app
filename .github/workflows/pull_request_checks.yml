@@ -47,9 +47,9 @@ jobs:
       - name: "🔧 Setup"
         uses: ./.github/actions/use-dependencies
       - name: "🏗️ Build APK"
-        run: flutter build apk
+        run: flutter build apk --debug
       - name: "🏗️ Build AppBundle"
-        run: flutter build appbundle
+        run: flutter build appbundle --debug
 
 #  build_ios:
 #    name: "Build iOS"

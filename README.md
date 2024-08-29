@@ -63,15 +63,15 @@ Refer to the [documentation](https://kibis.is/overview) for information on how t
 
 ### 3.1. Requirements
 
-* Install [Flutter SDK v3.3.1+][flutter]
+* Install [Flutter SDK v3.22.3][flutter]
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
 ### 3.2. Setup
 
-1. Install the dependencies:
+1. Simply run:
 ```bash
-$ flutter pub get
+$ make
 ```
 
 <sup>[Back to top ^][table-of-contents]</sup>
@@ -89,7 +89,12 @@ $ flutter run
 
 ### 4.1. Useful Commands
 
-See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-commands) reference for how to build.
+| Command        | Description                                                                   |
+|----------------|-------------------------------------------------------------------------------|
+| `make`         | Deletes the `build/` and `.dart_tool/` directories and installs dependencies. |
+| `make clean`   | Deletes the `build/` and `.dart_tool/` directories.                           |
+
+See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-commands) reference for a full list of available commands.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
