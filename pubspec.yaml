@@ -50,11 +50,13 @@ dev_dependencies:
 flutter_native_splash:
   color: "#1A202C"
   image: "assets/images/splash-logo.png"
-
   android_12:
-    # For Android 12 and later, the launcher icon will be used as the splash screen icon by default.
     image: "assets/images/splash-logo.png"
     color: "#1A202C"
+  android: true
+  ios: true
+  web: true
+  fullscreen: true 
 
 
 flutter_launcher_icons:
