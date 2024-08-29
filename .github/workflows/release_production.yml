@@ -1,0 +1,13 @@
+name: "Release - Production"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: "🔖 Release"
+    uses: ./.github/workflows/release.yml
+    with:
+      environment: "production"
