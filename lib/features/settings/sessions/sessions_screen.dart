@@ -124,21 +124,22 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
       appBar: AppBar(
         title: Text(SessionsScreen.title),
         actions: [
-          if (_isClearingAccountSessions)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
+          if (accountsState.accounts.isNotEmpty)
+            if (_isClearingAccountSessions)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            else
+              IconButton(
+                icon: const Icon(AppIcons.disconnect),
+                onPressed: _disconnectAllSessions,
+                color: context.colorScheme.error,
+                tooltip: 'Clear All Sessions',
               ),
-            )
-          else
-            IconButton(
-              icon: const Icon(AppIcons.disconnect),
-              onPressed: _disconnectAllSessions,
-              color: context.colorScheme.error,
-              tooltip: 'Clear All Sessions',
-            ),
         ],
       ),
       body: FutureBuilder<List<SessionData>>(
@@ -185,98 +186,148 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
             return const Center(child: Text('No active sessions.'));
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-            itemCount: activeAccounts.length,
-            itemBuilder: (context, index) {
-              final account = activeAccounts[index];
-              final accountName = account['accountName'] ?? 'Unnamed Account';
-              final publicKey = account['publicKey'] ?? 'No Public Key';
-              final sessionsForAccount = accountSessions[publicKey]!;
+          return Column(
+            children: [
+              const SizedBox(
+                  height: 20), // This is the SizedBox added at the top
+              Expanded(
+                // Use Expanded to allow the ListView to take up the remaining space
+                child: ListView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: kScreenPadding),
+                  itemCount: activeAccounts.length,
+                  itemBuilder: (context, index) {
+                    final account = activeAccounts[index];
+                    final accountName =
+                        account['accountName'] ?? 'Unnamed Account';
+                    final publicKey = account['publicKey'] ?? 'No Public Key';
+                    final sessionsForAccount = accountSessions[publicKey]!;
 
-              return ExpansionTile(
-                title: EllipsizedText(
-                  accountName,
-                  style: context.textTheme.titleMedium,
-                ),
-                subtitle: EllipsizedText(
-                  publicKey,
-                  type: EllipsisType.middle,
-                  style: context.textTheme.bodyMedium,
-                ),
-                leading: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: context.colorScheme.primary,
-                    ),
-                    padding: const EdgeInsets.all(kScreenPadding / 2),
-                    child: Icon(
-                      AppIcons.wallet,
-                      size: AppIcons.large,
-                      color: context.colorScheme.onPrimary,
-                    )),
-                collapsedIconColor: context.colorScheme.onSurface,
-                iconColor: context.colorScheme.onSurface,
-                childrenPadding: const EdgeInsets.only(
-                    bottom: kScreenPadding / 2,
-                    left: 0,
-                    right: kScreenPadding,
-                    top: kScreenPadding / 2),
-                children: [
-                  TextButton(
-                      onPressed: _isClearingAccountSessions
-                          ? null
-                          : () => _disconnectSessionsForAccount(publicKey),
-                      child: Row(
-                        children: [
-                          Icon(
-                            AppIcons.disconnect,
-                            size: AppIcons.large,
-                            color: context.colorScheme.error,
-                          ),
-                          const SizedBox(
-                            width: kScreenPadding,
-                          ),
-                          Text('Disconnect All',
-                              style: context.textTheme.titleSmall
-                                  ?.copyWith(color: context.colorScheme.error)),
-                        ],
-                      )),
-                  const SizedBox(height: kScreenPadding / 2),
-                  ...sessionsForAccount.map((session) {
-                    final isLoading = _loadingSessionTopic == session.topic;
-                    debugPrint(
-                        'Displaying session: ${session.peer.metadata.name}');
+                    if (accountsState.accounts.length == 1 &&
+                        sessionsForAccount.length == 1) {
+                      final session = sessionsForAccount.first;
+                      final isLoading = _loadingSessionTopic == session.topic;
 
-                    return ListTile(
+                      return ListTile(
+                        title: EllipsizedText(
+                          session.peer.metadata.name,
+                          style: context.textTheme.titleMedium,
+                        ),
+                        subtitle: EllipsizedText(
+                          session.peer.metadata.url,
+                          style: context.textTheme.bodyMedium,
+                        ),
+                        trailing: isLoading
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : IconButton(
+                                icon: Icon(AppIcons.disconnect,
+                                    size: AppIcons.large,
+                                    color: context.colorScheme.error),
+                                onPressed: () => _disconnectSession(
+                                  session.topic,
+                                  session.peer.metadata.name,
+                                ),
+                              ),
+                      );
+                    }
+
+                    return ExpansionTile(
                       title: EllipsizedText(
-                        session.peer.metadata.name,
+                        accountName,
                         style: context.textTheme.titleMedium,
                       ),
                       subtitle: EllipsizedText(
-                        session.peer.metadata.url,
+                        publicKey,
+                        type: EllipsisType.middle,
                         style: context.textTheme.bodyMedium,
                       ),
-                      trailing: isLoading
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : IconButton(
-                              icon: Icon(AppIcons.disconnect,
-                                  size: AppIcons.large,
-                                  color: context.colorScheme.error),
-                              onPressed: () => _disconnectSession(
-                                session.topic,
-                                session.peer.metadata.name,
-                              ),
+                      leading: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: context.colorScheme.primary,
+                          ),
+                          padding: const EdgeInsets.all(kScreenPadding / 2),
+                          child: Icon(
+                            AppIcons.wallet,
+                            size: AppIcons.large,
+                            color: context.colorScheme.onPrimary,
+                          )),
+                      collapsedIconColor: context.colorScheme.onSurface,
+                      iconColor: context.colorScheme.onSurface,
+                      childrenPadding: const EdgeInsets.only(
+                          bottom: kScreenPadding / 2,
+                          left: 0,
+                          right: kScreenPadding,
+                          top: kScreenPadding / 2),
+                      children: [
+                        if (sessionsForAccount.length > 1)
+                          TextButton(
+                              onPressed: _isClearingAccountSessions
+                                  ? null
+                                  : () =>
+                                      _disconnectSessionsForAccount(publicKey),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    AppIcons.disconnect,
+                                    size: AppIcons.large,
+                                    color: context.colorScheme.error,
+                                  ),
+                                  const SizedBox(
+                                    width: kScreenPadding,
+                                  ),
+                                  Text('Disconnect All',
+                                      style: context.textTheme.titleSmall
+                                          ?.copyWith(
+                                              color:
+                                                  context.colorScheme.error)),
+                                ],
+                              )),
+                        const SizedBox(height: kScreenPadding / 2),
+                        ...sessionsForAccount.map((session) {
+                          final isLoading =
+                              _loadingSessionTopic == session.topic;
+                          debugPrint(
+                              'Displaying session: ${session.peer.metadata.name}');
+
+                          return ListTile(
+                            title: EllipsizedText(
+                              session.peer.metadata.name,
+                              style: context.textTheme.titleMedium,
                             ),
+                            subtitle: EllipsizedText(
+                              session.peer.metadata.url,
+                              style: context.textTheme.bodyMedium,
+                            ),
+                            trailing: isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2),
+                                  )
+                                : IconButton(
+                                    icon: Icon(AppIcons.disconnect,
+                                        size: AppIcons.large,
+                                        color: context.colorScheme.error),
+                                    onPressed: () => _disconnectSession(
+                                      session.topic,
+                                      session.peer.metadata.name,
+                                    ),
+                                  ),
+                          );
+                        }),
+                      ],
                     );
-                  }),
-                ],
-              );
-            },
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),
