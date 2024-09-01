@@ -2,6 +2,7 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -37,25 +38,42 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
 
   Future<void> _disconnectSession(String topic, String sessionName) async {
     setState(() {
-      _loadingSessionTopic = topic;
+      _loadingSessionTopic = topic; // Show the loading spinner for this session
     });
 
     final walletConnectManager = WalletConnectManager();
-    await walletConnectManager.disconnectSession(topic);
+    bool success = false;
 
-    if (!mounted) return;
-    showCustomSnackBar(
-      context: context,
-      snackType: SnackType.success,
-      message: '$sessionName disconnected successfully.',
-    );
+    try {
+      await walletConnectManager.disconnectSession(topic);
+      success = true; // Mark success only if no exception is thrown
+    } catch (e) {
+      debugPrint('Failed to disconnect session $topic: $e');
+      if (!mounted) return;
+
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'Failed to disconnect $sessionName. Please try again.',
+      );
+    }
+
+    if (success) {
+      if (!mounted) return;
+
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.success,
+        message: '$sessionName disconnected successfully.',
+      );
+
+      // Reload sessions to refresh the UI
+      _loadSessions();
+    }
 
     setState(() {
       _loadingSessionTopic = null; // Stop the loading spinner
     });
-
-    // Reload sessions to refresh the UI
-    _loadSessions();
   }
 
   void _disconnectAllSessions() async {
@@ -81,6 +99,25 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
     _loadSessions();
   }
 
+  Future<void> _confirmDisconnect(
+      String message, VoidCallback onConfirm) async {
+    final bool confirm = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return ConfirmationDialog(
+              yesText: 'Disconnect',
+              noText: 'Cancel',
+              content: message,
+            );
+          },
+        ) ??
+        false;
+
+    if (confirm) {
+      onConfirm(); // Correctly invoke the callback
+    }
+  }
+
   Future<void> _disconnectSessionsForAccount(String publicKey) async {
     setState(() {
       _isClearingAccountSessions = true; // Show the loading spinner
@@ -97,10 +134,8 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
     );
 
     setState(() {
-      _isClearingAccountSessions = false; // Stop the loading spinner
+      _isClearingAccountSessions = false;
     });
-
-    // Reload sessions to refresh the UI
     _loadSessions();
   }
 
@@ -108,44 +143,45 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
   Widget build(BuildContext context) {
     final accountsState = ref.watch(accountsListProvider);
 
-    if (accountsState.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (accountsState.error != null) {
-      return Center(child: Text('Error: ${accountsState.error}'));
-    }
-
-    if (accountsState.accounts.isEmpty) {
-      return const Center(child: Text('No accounts available.'));
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(SessionsScreen.title),
         actions: [
-          if (accountsState.accounts.isNotEmpty)
-            if (_isClearingAccountSessions)
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-            else
-              IconButton(
-                icon: const Icon(AppIcons.disconnect),
-                onPressed: _disconnectAllSessions,
-                color: context.colorScheme.error,
-                tooltip: 'Clear All Sessions',
-              ),
+          FutureBuilder<List<SessionData>>(
+            future: _sessionsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(); // Placeholder while loading
+              }
+
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Container(); // No sessions, no icon
+              }
+
+              return _isClearingAccountSessions
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : IconButton(
+                      icon: const Icon(AppIcons.disconnect),
+                      onPressed: () => _confirmDisconnect(
+                        'Disconnect all sessions?',
+                        _disconnectAllSessions,
+                      ),
+                      color: context.colorScheme.error,
+                      tooltip: 'Disconnect All Sessions?',
+                    );
+            },
+          ),
         ],
       ),
       body: FutureBuilder<List<SessionData>>(
         future: _sessionsFuture,
         builder: (context, snapshot) {
-          debugPrint('Fetching active sessions...');
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -269,8 +305,11 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
                           TextButton(
                               onPressed: _isClearingAccountSessions
                                   ? null
-                                  : () =>
-                                      _disconnectSessionsForAccount(publicKey),
+                                  : () => _confirmDisconnect(
+                                        'Disconnect all sessions for this account?',
+                                        () => _disconnectSessionsForAccount(
+                                            publicKey),
+                                      ),
                               child: Row(
                                 children: [
                                   Icon(
