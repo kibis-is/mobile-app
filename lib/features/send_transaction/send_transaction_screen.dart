@@ -525,6 +525,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       builder: (context) {
         return CustomAlertDialog(
           title: 'Select Address',
+          icon: AppIcons.contacts,
           items: accounts,
         );
       },

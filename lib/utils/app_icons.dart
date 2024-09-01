@@ -50,6 +50,9 @@ class AppIcons {
   static const IconData arrowBackAndroid = Icons.arrow_back_rounded;
   static const IconData menu = Icons.menu_rounded;
   static const IconData arc200 = Icons.summarize_rounded;
+  static const IconData disconnect = Icons.power_off_rounded;
+  static const IconData connect = Icons.power_rounded;
+  static const IconData contacts = Icons.contacts_rounded;
 
   static const String svgBasePath = 'assets/images/';
 

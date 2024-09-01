@@ -15,6 +15,7 @@ import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_setup.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/wallet_connect_manageer.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -44,7 +45,7 @@ class QrCodeScannerScreen extends ConsumerStatefulWidget {
 class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
-  MobileScannerController controller = MobileScannerController(
+  MobileScannerController scanController = MobileScannerController(
     formats: [BarcodeFormat.qrCode],
   );
   Timer? _debounceTimer;
@@ -61,9 +62,9 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   @override
   void reassemble() {
     super.reassemble();
-    controller.stop();
+    scanController.stop();
     if (mounted) {
-      controller.start();
+      scanController.start();
     }
   }
 
@@ -125,7 +126,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   Widget _buildScannerView() {
     return MobileScanner(
       key: qrKey,
-      controller: controller,
+      controller: scanController,
       onDetect: (BarcodeCapture capture) {
         if (_debounceTimer?.isActive ?? false || isProcessing) {
           return;
@@ -134,7 +135,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             .read(loadingProvider.notifier)
             .startLoading(message: 'Processing QR Code');
         isProcessing = true;
-        controller.stop();
+        scanController.stop();
 
         _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
           var scannerLogic = QRCodeScannerLogic(
@@ -148,7 +149,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             dynamic scanResult = await scannerLogic.handleBarcode(capture);
             await _handleScanResult(scanResult);
           } catch (e) {
-            controller.start();
+            scanController.start();
             if (mounted) {
               showCustomSnackBar(
                 context: context,
@@ -195,6 +196,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           debugPrint('Session proposal received: ${proposal.id}');
 
           try {
+            scanController.stop();
             String? selectedAccount =
                 await _showAccountSelectionDialog(proposal);
 
@@ -210,8 +212,8 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             }
           } catch (e) {
             debugPrint('Error during session approval: $e');
+            scanController.start();
           }
-
           return null;
         },
       );
@@ -223,6 +225,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         snackType: SnackType.error,
         message: 'Failed to connect via WalletConnect: $e',
       );
+      scanController.start();
     }
   }
 
@@ -244,7 +247,9 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         context: context,
         builder: (context) {
           return CustomAlertDialog(
-            title: 'Connect to ${proposal.params.proposer.metadata.name}?',
+            title: 'Connect to:',
+            subtitle: '${proposal.params.proposer.metadata.name}?',
+            icon: AppIcons.connect,
             items: accounts,
           );
         },
@@ -399,7 +404,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   @override
   void dispose() {
     _debounceTimer?.cancel();
-    controller.dispose();
+    scanController.dispose();
     super.dispose();
   }
 }

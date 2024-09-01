@@ -55,4 +55,5 @@ enum ScanMode {
   privateKey,
   publicKey,
   general,
+  session,
 }
