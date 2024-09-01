@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -10,17 +11,16 @@ enum QrType {
   privateKey,
   privateKeyPaginated,
   publicKey,
+  walletConnect,
   unknown
 }
 
 class QRCodeScannerLogic {
-  // final Function(String)? onDataScanned;
   final AccountFlow accountFlow;
   final ScanMode scanMode;
 
   QRCodeScannerLogic({
-    required this.accountFlow,
-    // this.onDataScanned,
+    this.accountFlow = AccountFlow.general,
     this.scanMode = ScanMode.general,
   });
 
@@ -31,52 +31,53 @@ class QRCodeScannerLogic {
 
       await _handleVibration();
 
-      if (isValidUri(rawData)) {
-        return await _handleUri(rawData);
+      if (isImportAccountUri(rawData)) {
+        return _handleImportAccountUri(rawData);
+      } else if (isSupportedWalletConnectUri(rawData)) {
+        return Uri.parse(rawData);
+      } else if (isPublicKeyFormat(rawData)) {
+        return _handlePublicKey(rawData); // Handle public key
       } else {
-        return _handleNonUriData(rawData);
+        throw Exception('Unknown QR Code type');
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<Set<Map<String, dynamic>>> _handleUri(String rawData) async {
-    Set<Map<String, dynamic>> accounts = {};
-
-    if (scanMode == ScanMode.general || scanMode == ScanMode.privateKey) {
-      Map<String, List<String>> params = getQueryParameters(rawData);
-      QrType qrType = getQrType(params);
-
-      switch (qrType) {
-        case QrType.privateKeyPaginated:
-          throw Exception('Paginated QR code not yet supported');
-        case QrType.privateKey:
-          accounts.addAll(handleModernUri(
-              params)); // Use addAll to add all maps from the set
-          break;
-        case QrType.privateKeyLegacy:
-          accounts.addAll(handleLegacyUri(params)); // Same for the legacy case
-          break;
-        default:
-          throw Exception('Invalid URI');
+  bool isSupportedWalletConnectUri(String rawData) {
+    try {
+      Uri uri = Uri.parse(rawData);
+      final segments = uri.toString().split('@');
+      if (segments.length > 1) {
+        final version = int.tryParse(segments[1].substring(0, 1));
+        if (version == 1) {
+          throw UnsupportedError('WalletConnect V1 URIs are not supported.');
+        } else if (version == 2) {
+          return true; // It's a supported WalletConnect V2 URI
+        } else {
+          throw UnsupportedError(
+              'Unknown WalletConnect version. Unable to pair.');
+        }
+      } else {
+        throw UnsupportedError('Invalid WalletConnect URI format.');
       }
-    } else {
-      throw Exception("Invalid Account");
+    } catch (e) {
+      throw UnsupportedError('Failed to parse WalletConnect URI: $e');
     }
-
-    return accounts;
   }
 
-  String _handleNonUriData(String rawData) {
-    if ((scanMode == ScanMode.publicKey || scanMode == ScanMode.general)) {
-      if (isPublicKeyFormat(rawData)) {
-        return rawData;
-      } else {
-        throw Exception('Invalid QR Code');
-      }
+  bool isImportAccountUri(String uriString) {
+    Uri? uri = Uri.tryParse(uriString);
+    if (uri == null) return false;
+    return uri.hasAbsolutePath && uriString.contains('import');
+  }
+
+  String _handlePublicKey(String rawData) {
+    if (isPublicKeyFormat(rawData)) {
+      return rawData;
     } else {
-      throw Exception('Invalid QR Code');
+      throw Exception('Invalid Public Key Format');
     }
   }
 
@@ -86,14 +87,39 @@ class QRCodeScannerLogic {
     }
   }
 
+  Future<void> _handleImportAccountUri(String uri) async {
+    // Your implementation for handling import account URIs
+    debugPrint('Handle import account URI: $uri');
+  }
+
+  bool isPublicKeyFormat(String data) {
+    return data.length == 58 && RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(data);
+  }
+
+  QrType getQrType(Map<String, List<String>> queryParams, String rawData) {
+    if (rawData.startsWith('wc:')) {
+      return QrType.walletConnect;
+    }
+
+    if (queryParams.containsKey('privatekey') &&
+        queryParams.containsKey('page')) {
+      return QrType.privateKeyPaginated;
+    } else if (queryParams.containsKey('privatkey') &&
+        queryParams.containsKey('encoding')) {
+      return QrType.privateKeyLegacy;
+    } else if (queryParams.containsKey('privatekey')) {
+      return QrType.privateKey;
+    }
+
+    return QrType.unknown;
+  }
+
   Map<String, List<String>> getQueryParameters(String query) {
-    // Initialize the lists to store names and private keys
     List<String> names = [];
     List<String> privateKeys = [];
     int importedAccountCounter = 1;
     String? lastName;
 
-    // Remove the scheme part (avm://account/import?) from the query string
     var queryString = query.split('?').last;
     var parts = queryString.split('&');
 
@@ -104,14 +130,12 @@ class QRCodeScannerLogic {
         var value = Uri.decodeComponent(part.substring(index + 1));
 
         if (key == 'name') {
-          lastName = value; // Capture the name
+          lastName = value;
         } else if (key == 'privatekey') {
           if (lastName != null) {
-            // Use the captured name
             names.add(lastName);
-            lastName = null; // Reset lastName after use
+            lastName = null;
           } else {
-            // If no name found before this private key, use a default name
             names.add('Imported Account $importedAccountCounter');
             importedAccountCounter++;
           }
@@ -120,30 +144,7 @@ class QRCodeScannerLogic {
       }
     }
 
-    // Combine names and private keys into a map
     return {'name': names, 'privatekey': privateKeys};
-  }
-
-  bool isValidUri(String uriString) {
-    Uri? uri = Uri.tryParse(uriString);
-    return uri?.hasAbsolutePath ?? false;
-  }
-
-  bool isPublicKeyFormat(String data) {
-    return data.length == 58 && RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(data);
-  }
-
-  QrType getQrType(Map<String, List<String>> queryParams) {
-    if (queryParams.containsKey('privatekey') &&
-        queryParams.containsKey('page')) {
-      return QrType.privateKeyPaginated;
-    } else if (queryParams.containsKey('privatkey') &&
-        queryParams.containsKey('encoding')) {
-      return QrType.privateKeyLegacy;
-    } else if (queryParams.containsKey('privatekey')) {
-      return QrType.privateKey;
-    }
-    throw Exception('Invalid URI');
   }
 
   Set<Map<String, dynamic>> handleModernUri(Map<String, List<String>> params) {
@@ -151,18 +152,14 @@ class QRCodeScannerLogic {
 
     List<String> names = params['name'] ?? [];
     List<String> privateKeys = params['privatekey'] ?? [];
-
-    // Handle the case where there's at least one name
     int importedAccountCounter = 1;
 
     for (int i = 0; i < privateKeys.length; i++) {
       String name;
 
       if (i < names.length) {
-        // Use the provided name if it exists
         name = names[i];
       } else {
-        // Use the default name and increment the counter for each additional key
         name = 'Imported Account $importedAccountCounter';
         importedAccountCounter++;
       }

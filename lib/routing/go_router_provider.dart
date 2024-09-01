@@ -122,10 +122,7 @@ class RouterNotifier extends ChangeNotifier {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        ref.read(loadingProvider.notifier).stopLoading();
-        debugPrint('Navigation logic completed, stopped loading!');
-      });
+      ref.read(loadingProvider.notifier).stopLoading();
     });
 
     return redirectPath;

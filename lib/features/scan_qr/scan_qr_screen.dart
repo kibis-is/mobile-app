@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_dialog_picker.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
@@ -10,12 +11,16 @@ import 'package:kibisis/features/scan_qr/widgets/progress_bar.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
+import 'package:kibisis/utils/wallet_connect_manageer.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
+import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_events.dart';
 
 final isPaginatedScanProvider = StateProvider<bool>((ref) => false);
 
@@ -42,9 +47,16 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   MobileScannerController controller = MobileScannerController(
     formats: [BarcodeFormat.qrCode],
   );
-
   Timer? _debounceTimer;
   bool isProcessing = false;
+
+  late WalletConnectManager walletConnectManager;
+
+  @override
+  void initState() {
+    super.initState();
+    walletConnectManager = WalletConnectManager();
+  }
 
   @override
   void reassemble() {
@@ -155,84 +167,198 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
 
   Future<void> _handleScanResult(dynamic scanResult) async {
     if (scanResult is Set<Map<String, dynamic>>) {
-      try {
-        for (var account in scanResult) {
-          final String name = account['name'];
-          final Uint8List seed = account['seed'];
-
-          bool accountExists;
-          try {
-            accountExists = await ref
-                .read(temporaryAccountProvider.notifier)
-                .accountAlreadyExists(seed.toString());
-          } catch (e) {
-            debugPrint('Error checking if account exists for key $seed: $e');
-            throw Exception('Failed to check existing accounts.');
-          }
-
-          if (accountExists) {
-            debugPrint('Account already exists for key: $seed');
-            throw Exception('Account already exists.');
-          }
-
-          try {
-            await ref
-                .read(temporaryAccountProvider.notifier)
-                .restoreAccountFromSeed(seed, name: name);
-          } catch (e) {
-            debugPrint('Error restoring account for $name: $e');
-            throw Exception('Failed to restore account.');
-          }
-
-          try {
-            await AccountSetupUtility.completeAccountSetup(
-              ref: ref,
-              accountFlow: widget.accountFlow ?? AccountFlow.general,
-              accountName: name,
-              setFinalState: account == scanResult.last,
-            );
-          } catch (e) {
-            debugPrint('Error completing account setup for $name: $e');
-            throw Exception('Failed to complete account setup.');
-          }
-        }
-        try {
-          invalidateProviders(ref);
-          _navigateToAccountPage(scanResult.length);
-        } catch (e) {
-          debugPrint('Error invalidating providers: $e');
-          throw Exception('Failed to invalidate providers.');
-        }
-      } catch (e) {
-        debugPrint('Error processing scan result: $e');
-        rethrow;
-      }
+      await _handleAccountImportResult(scanResult);
     } else if (scanResult is String) {
-      try {
-        if (widget.onScanned != null) {
-          widget.onScanned!(scanResult);
-        }
-        Navigator.of(context).pop(scanResult);
-      } catch (e) {
-        debugPrint('Error handling public key: $e');
-        throw Exception('Error processing public key');
-      }
+      await _handleStringResult(scanResult);
+    } else if (scanResult is Uri) {
+      await _handleWalletConnectResult(scanResult);
     } else {
       debugPrint('Invalid scan result: $scanResult');
       throw Exception('Invalid scan result');
     }
   }
 
+  Future<void> _handleWalletConnectResult(Uri uri) async {
+    try {
+      debugPrint('Starting WalletConnect process...');
+
+      if (!walletConnectManager.isInitialized) {
+        await walletConnectManager.initialize();
+        debugPrint('WalletConnectManager initialized');
+      }
+
+      final PairingInfo pairingInfo = await walletConnectManager.pair(uri);
+      debugPrint('WalletConnect pairing successful: ${pairingInfo.topic}');
+
+      await walletConnectManager.listenForSessionProposals(
+        (SessionProposalEvent proposal) async {
+          debugPrint('Session proposal received: ${proposal.id}');
+
+          try {
+            String? selectedAccount =
+                await _showAccountSelectionDialog(proposal);
+
+            if (selectedAccount != null) {
+              debugPrint(
+                  'Selected account: $selectedAccount, approving session');
+              await walletConnectManager.approveSession(
+                  proposal, selectedAccount);
+              debugPrint('Session approved successfully!');
+              _navigateToSessions();
+            } else {
+              debugPrint('User canceled the WalletConnect process.');
+            }
+          } catch (e) {
+            debugPrint('Error during session approval: $e');
+          }
+
+          return null;
+        },
+      );
+    } catch (e) {
+      debugPrint('Failed to handle WalletConnect URI: $e');
+      if (!mounted) return;
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'Failed to connect via WalletConnect: $e',
+      );
+    }
+  }
+
+  Future<String?> _showAccountSelectionDialog(
+      SessionProposalEvent proposal) async {
+    try {
+      await ref.read(accountsListProvider.notifier).loadAccounts();
+
+      if (!mounted) return null;
+
+      final accounts = ref.read(accountsListProvider).accounts;
+
+      if (accounts.isEmpty) {
+        await _showErrorDialog('No accounts available.');
+        return null;
+      }
+
+      final selectedAccount = await showDialog<Map<String, String>>(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog(
+            title: 'Connect to ${proposal.params.proposer.metadata.name}?',
+            items: accounts,
+          );
+        },
+      );
+
+      return selectedAccount?['publicKey'];
+    } catch (e) {
+      debugPrint('Error loading accounts: $e');
+      return null;
+    }
+  }
+
+  Future<void> _showErrorDialog(String message) async {
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          titlePadding: const EdgeInsets.all(kScreenPadding),
+          title: const Text('Error'),
+          content: Text(message),
+        );
+      },
+    );
+  }
+
+  Future<void> _handleAccountImportResult(
+      Set<Map<String, dynamic>> accounts) async {
+    try {
+      for (var account in accounts) {
+        final String name = account['name'];
+        final Uint8List seed = account['seed'];
+
+        bool accountExists;
+        try {
+          accountExists = await ref
+              .read(temporaryAccountProvider.notifier)
+              .accountAlreadyExists(seed.toString());
+        } catch (e) {
+          debugPrint('Error checking if account exists for key $seed: $e');
+          throw Exception('Failed to check existing accounts.');
+        }
+
+        if (accountExists) {
+          debugPrint('Account already exists for key: $seed');
+          throw Exception('Account already exists.');
+        }
+
+        try {
+          await ref
+              .read(temporaryAccountProvider.notifier)
+              .restoreAccountFromSeed(seed, name: name);
+        } catch (e) {
+          debugPrint('Error restoring account for $name: $e');
+          throw Exception('Failed to restore account.');
+        }
+
+        try {
+          await AccountSetupUtility.completeAccountSetup(
+            ref: ref,
+            accountFlow: widget.accountFlow ?? AccountFlow.general,
+            accountName: name,
+            setFinalState: account == accounts.last,
+          );
+        } catch (e) {
+          debugPrint('Error completing account setup for $name: $e');
+          throw Exception('Failed to complete account setup.');
+        }
+      }
+
+      try {
+        invalidateProviders(ref);
+        _navigateToAccountPage(accounts.length);
+      } catch (e) {
+        debugPrint('Error invalidating providers: $e');
+        throw Exception('Failed to invalidate providers.');
+      }
+    } catch (e) {
+      debugPrint('Error processing scan result: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> _handleStringResult(String result) async {
+    try {
+      if (widget.onScanned != null) {
+        widget.onScanned!(result);
+      }
+      Navigator.of(context).pop(result);
+    } catch (e) {
+      debugPrint('Error handling public key: $e');
+      throw Exception('Error processing public key');
+    }
+  }
+
   void _navigateToAccountPage(int numberOfImportedAccounts) {
     if (numberOfImportedAccounts == 1) {
-      if (context.mounted) {
+      if (mounted) {
         GoRouter.of(context).go('/');
       }
     } else {
-      if (context.mounted) {
+      if (mounted) {
         GoRouter.of(context).push('/$accountListRouteName');
       }
     }
+  }
+
+  void _navigateToSessions() {
+    showCustomSnackBar(
+      context: context,
+      snackType: SnackType.success,
+      message: 'Successfully connected',
+    );
+    GoRouter.of(context).goNamed(sessionsRouteName);
   }
 
   Widget _buildNextQrCodeText() {

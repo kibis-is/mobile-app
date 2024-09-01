@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
+import 'package:kibisis/common_widgets/custom_dialog_picker.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
@@ -508,21 +509,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             content: Text(accountsState.error!),
           );
         },
-        transitionBuilder: (context, animation1, animation2, child) {
-          return FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation1,
-              curve: Curves.easeInOut,
-            ),
-            child: ScaleTransition(
-              scale: CurvedAnimation(
-                parent: animation1,
-                curve: Curves.easeInOut,
-              ),
-              child: child,
-            ),
-          );
-        },
       );
     }
 
@@ -534,81 +520,12 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
     if (!context.mounted) return;
 
-    final selectedAccount = await showGeneralDialog<Map<String, String>>(
+    final selectedAccount = await showDialog<Map<String, String>>(
       context: context,
-      barrierDismissible: true,
-      barrierLabel: '',
-      barrierColor: Colors.black54,
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, animation1, animation2) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          titlePadding: const EdgeInsets.all(kScreenPadding),
-          scrollable: true,
-          title: const Text(
-            'Select Address',
-            textAlign: TextAlign.center,
-          ),
-          actions: const [
-            SizedBox(
-              height: kScreenPadding,
-            )
-          ],
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: accounts.map<Widget>((account) {
-                return Column(
-                  children: [
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context, account),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.all(kScreenPadding),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(kWidgetRadius),
-                            color: context.colorScheme.surface,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              EllipsizedText(
-                                account['accountName']!,
-                                type: EllipsisType.end,
-                                style: context.textTheme.displayMedium,
-                              ),
-                              EllipsizedText(
-                                account['publicKey']!,
-                                type: EllipsisType.middle,
-                                style: context.textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
-      transitionBuilder: (context, animation1, animation2, child) {
-        return FadeTransition(
-          opacity: CurvedAnimation(
-            parent: animation1,
-            curve: Curves.easeInOut,
-          ),
-          child: ScaleTransition(
-            scale: CurvedAnimation(
-              parent: animation1,
-              curve: Curves.easeInOut,
-            ),
-            child: child,
-          ),
+      builder: (context) {
+        return CustomAlertDialog(
+          title: 'Select Address',
+          items: accounts,
         );
       },
     );

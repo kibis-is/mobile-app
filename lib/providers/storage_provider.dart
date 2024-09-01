@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
 
 final sharedPreferencesProvider =
     FutureProvider<SharedPreferences>((ref) async {
@@ -264,5 +265,22 @@ class StorageService {
 
   Future<String?> getApplicationId(String accountId) async {
     return await getAccountData(accountId, 'applicationId');
+  }
+
+  Future<void> setPairingInfo(String topic, PairingInfo pairingInfo) async {
+    final pairingJson = jsonEncode(pairingInfo.toJson());
+    await _secureStorage.write(key: 'pairing_$topic', value: pairingJson);
+  }
+
+  Future<PairingInfo?> getPairingInfo(String topic) async {
+    final pairingJson = await _secureStorage.read(key: 'pairing_$topic');
+    if (pairingJson == null) return null;
+
+    final Map<String, dynamic> decoded = jsonDecode(pairingJson);
+    return PairingInfo.fromJson(decoded);
+  }
+
+  Future<void> deletePairingInfo(String topic) async {
+    await _secureStorage.delete(key: 'pairing_$topic');
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -146,16 +148,16 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
             closeFab();
           },
         ),
-        // if (Platform.isAndroid || Platform.isIOS)
-        //   CustomFabChild(
-        //     icon: AppIcons.scan,
-        //     backgroundColor: context.colorScheme.primary,
-        //     iconColor: context.colorScheme.onPrimary,
-        //     onPressed: () {
-        //       GoRouter.of(context).push('/qrScanner', extra: ScanMode.general);
-        //       closeFab();
-        //     },
-        //   ),
+        if (Platform.isAndroid || Platform.isIOS)
+          CustomFabChild(
+            icon: AppIcons.scan,
+            backgroundColor: context.colorScheme.primary,
+            iconColor: context.colorScheme.onPrimary,
+            onPressed: () {
+              GoRouter.of(context).push('/qrScanner', extra: ScanMode.general);
+              closeFab();
+            },
+          ),
         CustomFabChild(
           icon: AppIcons.wallet,
           backgroundColor: context.colorScheme.primary,
