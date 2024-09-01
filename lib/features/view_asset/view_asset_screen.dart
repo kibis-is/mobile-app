@@ -117,6 +117,7 @@ class ViewAssetScreen extends ConsumerWidget {
   Future<void> _addAsset(BuildContext context, WidgetRef ref) async {
     final algorandService = ref.read(algorandServiceProvider);
     final account = ref.read(accountProvider).account;
+    // ignore: unused_local_variable
     final applicationId = ref.read(accountProvider).applicationId;
     final activeAsset = ref.read(activeAssetProvider);
     final balanceState = ref.read(balanceProvider);
