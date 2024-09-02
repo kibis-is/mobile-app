@@ -1,9 +1,12 @@
-name: "Deploy"
+name: "Publish"
 
 on:
   workflow_call:
     inputs:
       environment:
+        required: true
+        type: string
+      track:
         required: true
         type: string
     secrets:
@@ -15,10 +18,12 @@ on:
         required: true
       ANDROID_KEYSTORE_PASSWORD:
         required: true
+      GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY:
+        required: true
 
 jobs:
-  deploy_to_play_store:
-    name: "Deploy To The Play Store"
+  publish_to_play_store:
+    name: "Publish To The Play Store"
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -34,12 +39,17 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: ./scripts/create_android_signing_keys.sh
       - name: "🏗️ Build AppBundle"
-        run: flutter build appbundle --release
-      - name: " Deploy To Play Store"
-        uses: r0adkll/upload-google-play@v1.0.18
+        run: flutter build aab --release
+      - name: "⛏️ Get Package Name"
+        id: get_package_name
+        run: |
+          application_id=$(grep -oP 'def\s+applicationId\s*=\s*'\''\K[^'\'']+' android/app/build.gradle)
+          echo "::set-output name=package_name::$application_id"
+      - name: "🚀 Publish"
+        uses: r0adkll/upload-google-play@v1
         with:
+          packageName: ${{ steps.get_package_name.outputs.package_name }}
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          releaseName: "v${{ github.event.release.tag_name }}"
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          packageName: com.example.app
-          releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
-          mappingFile: ./build/app/outputs/mapping/release/mapping.txt
-          track: internal
+          track: ${{ inputs.track }}

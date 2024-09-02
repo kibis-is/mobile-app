@@ -1,4 +1,4 @@
-name: "Deploy - Production"
+name: "Publish - Production"
 
 on:
   release:
@@ -6,12 +6,13 @@ on:
 
 jobs:
   deploy:
-    name: "🚀 Deploy"
-    uses: ./.github/workflows/deploy.yml
+    name: "🚀 Publish"
+    uses: ./.github/workflows/publish.yml
     with:
       environment: "production"
+      track: "production"
     secrets:
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
       ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }}
