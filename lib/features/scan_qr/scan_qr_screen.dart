@@ -8,6 +8,7 @@ import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
 import 'package:kibisis/features/scan_qr/widgets/progress_bar.dart';
+import 'package:kibisis/features/scan_qr/widgets/scanner_overlay.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
@@ -24,6 +25,7 @@ import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.
 import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_events.dart';
 
 final isPaginatedScanProvider = StateProvider<bool>((ref) => false);
+final isTorchEnabledProvider = StateProvider<bool>((ref) => false);
 
 class QrCodeScannerScreen extends ConsumerStatefulWidget {
   static const String title = 'Scan QR Code';
@@ -64,6 +66,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     super.reassemble();
     scanController.stop();
     if (mounted) {
+      !scanController.value.isRunning;
       scanController.start();
     }
   }
@@ -71,7 +74,24 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   @override
   Widget build(BuildContext context) {
     final isPaginatedScan = ref.watch(isPaginatedScanProvider);
+
+    // Calculate the dimensions of the scan window
+    double screenWidth = MediaQuery.of(context).size.width;
+    double scanWindowWidth = screenWidth * 0.8; // 80% of the screen width
+    double scanWindowHeight = scanWindowWidth; // 1:1 aspect ratio
+    double scanWindowTop =
+        (MediaQuery.of(context).size.height - scanWindowHeight) / 2;
+    double scanWindowLeft = (screenWidth - scanWindowWidth) / 2;
+
+    Rect scanWindowRect = Rect.fromLTWH(
+      scanWindowLeft,
+      scanWindowTop,
+      scanWindowWidth,
+      scanWindowHeight,
+    );
+
     return Scaffold(
+      backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       appBar: _buildAppBar(),
       body: LayoutBuilder(
@@ -81,7 +101,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
               fit: StackFit.loose,
               alignment: Alignment.center,
               children: [
-                _buildScannerView(),
+                _buildScannerView(scanWindowRect),
                 SizedBox(
                   width: constraints.maxWidth * kDialogWidth,
                   child: Column(
@@ -91,7 +111,6 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
                         const AnimatedProgressBar(),
                         const SizedBox(height: kScreenPadding),
                       ],
-                      _buildScanTargetIndicator(),
                       if (isPaginatedScan) ...[
                         const SizedBox(height: kScreenPadding),
                         _buildNextQrCodeText(),
@@ -108,11 +127,14 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   }
 
   AppBar _buildAppBar() {
+    final isTorchEnabled = ref.watch(isTorchEnabledProvider);
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: const Text(QrCodeScannerScreen.title,
-          style: TextStyle(color: ColorPalette.lightThemeAntiFlashWhite)),
+      title: Text(
+        _getAppBarTitle(),
+        style: const TextStyle(color: ColorPalette.lightThemeAntiFlashWhite),
+      ),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back,
             color: ColorPalette.lightThemeAntiFlashWhite),
@@ -120,13 +142,43 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           Navigator.of(context).pop();
         },
       ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            isTorchEnabled ? Icons.flash_on : Icons.flash_off,
+            color: ColorPalette.lightThemeAntiFlashWhite,
+          ),
+          onPressed: () {
+            scanController.toggleTorch();
+            ref.read(isTorchEnabledProvider.notifier).state = !isTorchEnabled;
+          },
+        ),
+      ],
     );
   }
 
-  Widget _buildScannerView() {
+  String _getAppBarTitle() {
+    switch (widget.scanMode) {
+      case ScanMode.privateKey:
+        return 'Import Account';
+      case ScanMode.publicKey:
+        return 'Scan Address';
+      case ScanMode.session:
+        return 'Connect';
+      case ScanMode.general:
+      default:
+        return QrCodeScannerScreen.title;
+    }
+  }
+
+  Widget _buildScannerView(Rect scanWindowRect) {
     return MobileScanner(
       key: qrKey,
       controller: scanController,
+      scanWindow: scanWindowRect,
+      overlayBuilder: (BuildContext context, BoxConstraints constraints) {
+        return ScannerOverlay(scanWindowRect: scanWindowRect);
+      },
       onDetect: (BarcodeCapture capture) {
         if (_debounceTimer?.isActive ?? false || isProcessing) {
           return;
@@ -149,6 +201,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             dynamic scanResult = await scannerLogic.handleBarcode(capture);
             await _handleScanResult(scanResult);
           } catch (e) {
+            !scanController.value.isRunning;
             scanController.start();
             if (mounted) {
               showCustomSnackBar(
@@ -212,6 +265,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             }
           } catch (e) {
             debugPrint('Error during session approval: $e');
+            !scanController.value.isRunning;
             scanController.start();
           }
           return null;
@@ -225,6 +279,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         snackType: SnackType.error,
         message: 'Failed to connect via WalletConnect: $e',
       );
+      !scanController.value.isRunning;
       scanController.start();
     }
   }
@@ -251,6 +306,11 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             subtitle: '${proposal.params.proposer.metadata.name}?',
             icon: AppIcons.connect,
             items: accounts,
+            onCancel: () {
+              Navigator.pop(context);
+              !scanController.value.isRunning;
+              scanController.start();
+            },
           );
         },
       );
@@ -386,18 +446,6 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildScanTargetIndicator() {
-    return AspectRatio(
-      aspectRatio: 1 / 1,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: context.colorScheme.primary, width: 2),
-          borderRadius: BorderRadius.circular(kWidgetRadius),
-        ),
-      ),
     );
   }
 
