@@ -57,7 +57,7 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       maxLength: maxLength,
       maxLines: maxLines,
-      enabled: isEnabled,
+      enabled: isEnabled, // Disable the field
       textAlign: textAlign,
       controller: controller,
       focusNode: focusNode,
@@ -65,7 +65,8 @@ class CustomTextField extends StatelessWidget {
       style: TextStyle(
           fontSize: isSmall
               ? context.textTheme.bodySmall?.fontSize
-              : context.textTheme.bodyMedium?.fontSize),
+              : context.textTheme.bodyMedium?.fontSize,
+          color: isEnabled ? context.colorScheme.onSurface : Colors.grey),
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
         counterText: "",
@@ -73,12 +74,16 @@ class CustomTextField extends StatelessWidget {
             ? Icon(
                 leadingIcon,
                 size: isSmall ? AppIcons.small : AppIcons.medium,
-                color: context.colorScheme.onSurface,
+                color: isEnabled
+                    ? context.colorScheme.onSurface
+                    : Colors.grey, // Adjust color for disabled state
               )
             : null,
         labelText: labelText,
-        labelStyle: TextStyle(fontSize: context.textTheme.bodySmall?.fontSize)
-            .copyWith(color: context.colorScheme.onSurface),
+        labelStyle: TextStyle(
+          fontSize: context.textTheme.bodySmall?.fontSize,
+          color: isEnabled ? context.colorScheme.onSurface : Colors.grey,
+        ),
         contentPadding: EdgeInsets.symmetric(
             horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding / 2,
             vertical: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
@@ -109,6 +114,24 @@ class CustomTextField extends StatelessWidget {
                     },
                   )
                 : null,
+        disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: context.colorScheme.onSurface.withOpacity(0.2),
+            width: 1.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: context.colorScheme.onSurface.withOpacity(0.5),
+            width: 1.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: context.colorScheme.primary,
+            width: 2.0,
+          ),
+        ),
       ),
       validator: validator,
       onChanged: onChanged,
