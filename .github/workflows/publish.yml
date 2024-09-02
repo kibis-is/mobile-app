@@ -1,0 +1,55 @@
+name: "Publish"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      track:
+        required: true
+        type: string
+    secrets:
+      ANDROID_KEY_ALIAS:
+        required: true
+      ANDROID_KEY_PASSWORD:
+        required: true
+      ANDROID_KEYSTORE:
+        required: true
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+      GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY:
+        required: true
+
+jobs:
+  publish_to_play_store:
+    name: "Publish To The Play Store"
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: "🛎 Checkout"
+        uses: actions/checkout@v4
+      - name: "🔧 Setup Flutter"
+        uses: ./.github/actions/use-flutter-dependencies
+      - name: "🔑 Create Android signing keys"
+        env:
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: ./scripts/create_android_signing_keys.sh
+      - name: "🏗️ Build AppBundle"
+        run: flutter build aab --release
+      - name: "⛏️ Get Package Name"
+        id: get_package_name
+        run: |
+          application_id=$(grep -oP 'def\s+applicationId\s*=\s*'\''\K[^'\'']+' android/app/build.gradle)
+          echo "::set-output name=package_name::$application_id"
+      - name: "🚀 Publish"
+        uses: r0adkll/upload-google-play@v1
+        with:
+          packageName: ${{ steps.get_package_name.outputs.package_name }}
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          releaseName: "v${{ github.event.release.tag_name }}"
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          track: ${{ inputs.track }}

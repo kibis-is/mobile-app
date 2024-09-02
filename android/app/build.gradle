@@ -6,26 +6,29 @@ plugins {
 
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+
+def _applicationId = 'is.kibis.kibisis'
+def _compileSdkVersion = localProperties.getProperty('flutter.compileSdkVersion', '34').toInteger()
+def _minSdkVersion = localProperties.getProperty('flutter.minSdkVersion', '21').toInteger()
+def _targetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion', '34').toInteger()
+def _versionCode = localProperties.getProperty('flutter.versionCode', '1').toInteger()
+def _versionName = localProperties.getProperty('flutter.versionName', '1.0')
+
+// load local.properties
 if (localPropertiesFile.exists()) {
     localProperties.load(localPropertiesFile.newReader('UTF-8'))
 }
 
-def flutterCompileSdkVersion = localProperties.getProperty('flutter.compileSdkVersion', '34').toInteger()
-def flutterMinSdkVersion = localProperties.getProperty('flutter.minSdkVersion', '21').toInteger()
-def flutterTargetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion', '34').toInteger()
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '1').toInteger()
-def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0')
-
-// Load keystore properties
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
+// load key.properties
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
-    namespace 'is.kibis.kibisis'
-    compileSdk flutterCompileSdkVersion
+    namespace _applicationId
+    compileSdk _compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -34,11 +37,11 @@ android {
     }
 
     defaultConfig {
-        applicationId 'is.kibis.kibisis'
-        minSdkVersion flutterMinSdkVersion
-        targetSdkVersion flutterTargetSdkVersion
-        versionCode flutterVersionCode
-        versionName flutterVersionName
+        applicationId _applicationId
+        minSdkVersion _minSdkVersion
+        targetSdkVersion _targetSdkVersion
+        versionCode _versionCode
+        versionName _versionName
     }
 
     kotlinOptions {
