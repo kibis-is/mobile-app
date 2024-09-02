@@ -16,6 +16,7 @@ import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:kibisis/utils/app_lifecycle_handler.dart';
+import 'package:kibisis/utils/wallet_connect_manageer.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -34,10 +35,14 @@ class Kibisis extends ConsumerStatefulWidget {
 
 class _KibisisState extends ConsumerState<Kibisis> {
   late AppLifecycleHandler _lifecycleHandler;
+  late WalletConnectManager walletConnectManager;
 
   @override
   void initState() {
     super.initState();
+    final storageService = ref.read(storageProvider);
+    walletConnectManager = WalletConnectManager(storageService);
+    walletConnectManager.reconnectSessions();
     _lifecycleHandler = AppLifecycleHandler(
       ref: ref,
       onResumed: (seconds) {

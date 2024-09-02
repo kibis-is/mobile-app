@@ -11,6 +11,7 @@ import 'package:kibisis/features/scan_qr/widgets/progress_bar.dart';
 import 'package:kibisis/features/scan_qr/widgets/scanner_overlay.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -53,12 +54,23 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   Timer? _debounceTimer;
   bool isProcessing = false;
 
-  late WalletConnectManager walletConnectManager;
+  WalletConnectManager? walletConnectManager;
 
   @override
-  void initState() {
-    super.initState();
-    walletConnectManager = WalletConnectManager();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (walletConnectManager == null) {
+      final storageService = ref.read(storageProvider);
+      walletConnectManager = WalletConnectManager(storageService);
+      walletConnectManager!.initialize().then((_) {
+        if (mounted) {
+          setState(() {
+            // Trigger a rebuild after WalletConnectManager is initialized
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -75,10 +87,9 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   Widget build(BuildContext context) {
     final isPaginatedScan = ref.watch(isPaginatedScanProvider);
 
-    // Calculate the dimensions of the scan window
     double screenWidth = MediaQuery.of(context).size.width;
-    double scanWindowWidth = screenWidth * 0.8; // 80% of the screen width
-    double scanWindowHeight = scanWindowWidth; // 1:1 aspect ratio
+    double scanWindowWidth = screenWidth * 0.8;
+    double scanWindowHeight = scanWindowWidth;
     double scanWindowTop =
         (MediaQuery.of(context).size.height - scanWindowHeight) / 2;
     double scanWindowLeft = (screenWidth - scanWindowWidth) / 2;
@@ -236,15 +247,15 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     try {
       debugPrint('Starting WalletConnect process...');
 
-      if (!walletConnectManager.isInitialized) {
-        await walletConnectManager.initialize();
+      if (!walletConnectManager!.isInitialized) {
+        await walletConnectManager!.initialize();
         debugPrint('WalletConnectManager initialized');
       }
 
-      final PairingInfo pairingInfo = await walletConnectManager.pair(uri);
+      final PairingInfo pairingInfo = await walletConnectManager!.pair(uri);
       debugPrint('WalletConnect pairing successful: ${pairingInfo.topic}');
 
-      await walletConnectManager.listenForSessionProposals(
+      await walletConnectManager!.listenForSessionProposals(
         (SessionProposalEvent proposal) async {
           debugPrint('Session proposal received: ${proposal.id}');
 
@@ -256,8 +267,8 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             if (selectedAccount != null) {
               debugPrint(
                   'Selected account: $selectedAccount, approving session');
-              await walletConnectManager.approveSession(
-                  proposal, selectedAccount);
+              await walletConnectManager!
+                  .approveSession(proposal, selectedAccount);
               debugPrint('Session approved successfully!');
               _navigateToSessions();
             } else {

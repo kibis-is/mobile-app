@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
 
 final sharedPreferencesProvider =
     FutureProvider<SharedPreferences>((ref) async {
@@ -38,6 +37,8 @@ class StorageService {
   static const Duration _retryDelay = Duration(milliseconds: 400);
 
   StorageService(this._prefs, this._secureStorage);
+
+  static const String _sessionsKey = 'walletconnect_sessions';
 
   StorageService.initPending(this._secureStorage) : _prefs = null;
 
@@ -134,7 +135,6 @@ class StorageService {
     _prefs?.setString('defaultNetwork', network);
   }
 
-//TODO:Decide if this is to be removed, no longer used
   Future<void> clearAll() async {
     await _retryOnException(() async {
       if (_prefs == null) {
@@ -267,20 +267,39 @@ class StorageService {
     return await getAccountData(accountId, 'applicationId');
   }
 
-  Future<void> setPairingInfo(String topic, PairingInfo pairingInfo) async {
-    final pairingJson = jsonEncode(pairingInfo.toJson());
-    await _secureStorage.write(key: 'pairing_$topic', value: pairingJson);
+  Future<void> saveSessions(List<Map<String, dynamic>> sessions) async {
+    final sessionsJson =
+        sessions.map((session) => jsonEncode(session)).toList();
+    await _retryOnException(
+      () async => _prefs?.setStringList(_sessionsKey, sessionsJson),
+      'Failed to save sessions',
+    );
   }
 
-  Future<PairingInfo?> getPairingInfo(String topic) async {
-    final pairingJson = await _secureStorage.read(key: 'pairing_$topic');
-    if (pairingJson == null) return null;
-
-    final Map<String, dynamic> decoded = jsonDecode(pairingJson);
-    return PairingInfo.fromJson(decoded);
+  Future<List<Map<String, dynamic>>> getSessions() async {
+    final sessionsJson = await _retryOnException(
+      () async => _prefs?.getStringList(_sessionsKey),
+      'Failed to retrieve sessions',
+    );
+    if (sessionsJson == null) {
+      return [];
+    }
+    return sessionsJson
+        .map((sessionString) =>
+            jsonDecode(sessionString) as Map<String, dynamic>)
+        .toList();
   }
 
-  Future<void> deletePairingInfo(String topic) async {
-    await _secureStorage.delete(key: 'pairing_$topic');
+  Future<void> removeSessions() async {
+    await _retryOnException(
+      () async => _prefs?.remove(_sessionsKey),
+      'Failed to remove sessions',
+    );
+  }
+
+  Future<void> removeSessionByTopic(String topic) async {
+    final sessions = await getSessions();
+    sessions.removeWhere((session) => session['topic'] == topic);
+    await saveSessions(sessions);
   }
 }

@@ -2,8 +2,10 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:kibisis/utils/wallet_connect_manageer.dart';
@@ -21,7 +23,7 @@ class SessionsScreen extends ConsumerStatefulWidget {
 
 class SessionsScreenState extends ConsumerState<SessionsScreen> {
   late Future<List<SessionData>> _sessionsFuture;
-  String? _loadingSessionTopic; // Track the session being disconnected
+  String? _loadingSessionTopic;
   bool _isClearingAccountSessions = false;
 
   @override
@@ -31,22 +33,23 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
   }
 
   void _loadSessions() {
-    final walletConnectManager = WalletConnectManager();
+    final storageService = ref.read(storageProvider);
+    final walletConnectManager = WalletConnectManager(storageService);
     _sessionsFuture = walletConnectManager.getActiveSessions();
     debugPrint('Fetching active sessions...');
   }
 
   Future<void> _disconnectSession(String topic, String sessionName) async {
     setState(() {
-      _loadingSessionTopic = topic; // Show the loading spinner for this session
+      _loadingSessionTopic = topic;
     });
-
-    final walletConnectManager = WalletConnectManager();
+    final storageService = ref.read(storageProvider);
+    final walletConnectManager = WalletConnectManager(storageService);
     bool success = false;
 
     try {
       await walletConnectManager.disconnectSession(topic);
-      success = true; // Mark success only if no exception is thrown
+      success = true;
     } catch (e) {
       debugPrint('Failed to disconnect session $topic: $e');
       if (!mounted) return;
@@ -67,21 +70,20 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
         message: '$sessionName disconnected successfully.',
       );
 
-      // Reload sessions to refresh the UI
       _loadSessions();
     }
 
     setState(() {
-      _loadingSessionTopic = null; // Stop the loading spinner
+      _loadingSessionTopic = null;
     });
   }
 
   void _disconnectAllSessions() async {
     setState(() {
-      _isClearingAccountSessions = true; // Show the loading spinner
+      _isClearingAccountSessions = true;
     });
-
-    final walletConnectManager = WalletConnectManager();
+    final storageService = ref.read(storageProvider);
+    final walletConnectManager = WalletConnectManager(storageService);
     await walletConnectManager.disconnectAllSessions();
 
     if (!mounted) return;
@@ -92,10 +94,9 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
     );
 
     setState(() {
-      _isClearingAccountSessions = false; // Stop the loading spinner
+      _isClearingAccountSessions = false;
     });
 
-    // Reload sessions to refresh the UI
     _loadSessions();
   }
 
@@ -114,16 +115,16 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
         false;
 
     if (confirm) {
-      onConfirm(); // Correctly invoke the callback
+      onConfirm();
     }
   }
 
   Future<void> _disconnectSessionsForAccount(String publicKey) async {
     setState(() {
-      _isClearingAccountSessions = true; // Show the loading spinner
+      _isClearingAccountSessions = true;
     });
-
-    final walletConnectManager = WalletConnectManager();
+    final storageService = ref.read(storageProvider);
+    final walletConnectManager = WalletConnectManager(storageService);
     await walletConnectManager.disconnectAllSessionsForAccount(publicKey);
 
     if (!mounted) return;
@@ -151,11 +152,11 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
             future: _sessionsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container(); // Placeholder while loading
+                return Container();
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Container(); // No sessions, no icon
+                return Container();
               }
 
               return _isClearingAccountSessions
@@ -194,7 +195,6 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
           final sessions = snapshot.data!;
           debugPrint('Active sessions found: ${sessions.length}');
 
-          // Group sessions by account public key
           final Map<String, List<SessionData>> accountSessions = {};
           for (var session in sessions) {
             for (var namespace in session.namespaces.values) {
@@ -210,7 +210,6 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
             }
           }
 
-          // Filter accounts with active sessions
           final List<Map<String, String>> activeAccounts = accountsState
               .accounts
               .where((account) =>
@@ -224,10 +223,8 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
 
           return Column(
             children: [
-              const SizedBox(
-                  height: 20), // This is the SizedBox added at the top
+              const SizedBox(height: 20),
               Expanded(
-                // Use Expanded to allow the ListView to take up the remaining space
                 child: ListView.builder(
                   padding:
                       const EdgeInsets.symmetric(horizontal: kScreenPadding),
@@ -249,9 +246,17 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
                           session.peer.metadata.name,
                           style: context.textTheme.titleMedium,
                         ),
-                        subtitle: EllipsizedText(
-                          session.peer.metadata.url,
-                          style: context.textTheme.bodyMedium,
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            EllipsizedText(
+                              session.peer.metadata.url,
+                              style: context.textTheme.bodyMedium,
+                            ),
+                            EllipsizedText(
+                                'Expires: ${DateFormat.yMMMd().add_Hms().format(DateTime.fromMillisecondsSinceEpoch(session.expiry * 1000))}',
+                                style: context.textTheme.bodySmall),
+                          ],
                         ),
                         trailing: isLoading
                             ? const SizedBox(
@@ -335,13 +340,25 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
                               'Displaying session: ${session.peer.metadata.name}');
 
                           return ListTile(
+                            isThreeLine: true,
                             title: EllipsizedText(
                               session.peer.metadata.name,
                               style: context.textTheme.titleMedium,
                             ),
-                            subtitle: EllipsizedText(
-                              session.peer.metadata.url,
-                              style: context.textTheme.bodyMedium,
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                EllipsizedText(
+                                  session.peer.metadata.url,
+                                  style: context.textTheme.bodyMedium,
+                                ),
+                                Text(
+                                  'Expires: ${DateFormat.yMMMd().add_Hms().format(DateTime.fromMillisecondsSinceEpoch(session.expiry * 1000))}',
+                                  style: context.textTheme.bodySmall?.copyWith(
+                                    color: context.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
                             ),
                             trailing: isLoading
                                 ? const SizedBox(

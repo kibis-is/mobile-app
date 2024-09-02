@@ -41,6 +41,7 @@ dependencies:
   flutter_expandable_fab: ^2.2.0
   mobile_scanner: ^5.1.1
   walletconnect_flutter_v2: ^2.3.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

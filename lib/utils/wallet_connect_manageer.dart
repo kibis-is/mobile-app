@@ -1,9 +1,13 @@
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 import 'package:flutter/foundation.dart';
 
 class WalletConnectManager {
   late Web3Wallet _walletConnectClient;
   bool _isInitialized = false;
+  final StorageService _storageService;
+
+  WalletConnectManager(this._storageService);
 
   Future<void> initialize() async {
     if (!_isInitialized) {
@@ -33,16 +37,15 @@ class WalletConnectManager {
 
   Future<PairingInfo> pair(Uri uri) async {
     if (!_isInitialized) {
-      await initialize(); // Attempt to initialize if not already initialized
+      await initialize();
     }
     return await _walletConnectClient.pair(uri: uri);
   }
 
-  /// Listen for session proposals and prompt the user to select an account.
   Future<void> listenForSessionProposals(
       Future<String?> Function(SessionProposalEvent) onSessionProposal) async {
     if (!_isInitialized) {
-      await initialize(); // Ensure initialization before listening
+      await initialize();
     }
 
     debugPrint('Listening for session proposals...');
@@ -66,16 +69,13 @@ class WalletConnectManager {
   Future<void> approveSession(
       SessionProposalEvent proposal, String selectedAccount) async {
     try {
-      // Extract required namespaces from the proposal
       final requiredNamespaces = proposal.params.requiredNamespaces;
 
       debugPrint('Approving session with ID: ${proposal.id}');
       debugPrint('Initial namespaces: $requiredNamespaces');
 
-      // Create a map for the namespaces to approve the session
       final Map<String, Namespace> namespaces = {};
 
-      // Loop through required namespaces and populate the namespaces map
       requiredNamespaces.forEach((key, value) {
         final formattedAccount = '${value.chains?.first}:$selectedAccount';
         debugPrint('Formatted account: $formattedAccount');
@@ -94,21 +94,18 @@ class WalletConnectManager {
         namespaces: namespaces,
       );
 
-      debugPrint('Session approved successfully!');
+      await _saveSession(proposal.id);
 
-      final activeSessions = await getActiveSessions();
-      debugPrint(
-          'Total active sessions after approval: ${activeSessions.length}');
+      debugPrint('Session approved successfully!');
     } catch (e) {
       debugPrint('Failed to approve session: $e');
       throw Exception('Failed to approve session');
     }
   }
 
-  /// Disconnect a single session by its topic
   Future<void> disconnectSession(String topic) async {
     if (!_isInitialized) {
-      await initialize(); // Ensure initialization before disconnecting
+      await initialize();
     }
 
     try {
@@ -119,6 +116,9 @@ class WalletConnectManager {
           message: "User disconnected the session",
         ),
       );
+
+      await _removeSessionByTopic(topic);
+
       debugPrint('Session $topic disconnected successfully.');
     } catch (e) {
       debugPrint('Failed to disconnect session $topic: $e');
@@ -126,10 +126,9 @@ class WalletConnectManager {
     }
   }
 
-  /// Disconnect all active sessions
   Future<void> disconnectAllSessions() async {
     if (!_isInitialized) {
-      await initialize(); // Ensure initialization before disconnecting
+      await initialize();
     }
 
     final sessions = await getActiveSessions();
@@ -140,10 +139,9 @@ class WalletConnectManager {
     debugPrint('All sessions disconnected successfully.');
   }
 
-  /// Disconnect all sessions associated with a specific account
   Future<void> disconnectAllSessionsForAccount(String publicKey) async {
     if (!_isInitialized) {
-      await initialize(); // Ensure initialization before disconnecting
+      await initialize();
     }
 
     final sessions = await getActiveSessions();
@@ -173,6 +171,61 @@ class WalletConnectManager {
     }
 
     return sessions;
+  }
+
+  Future<void> reconnectSessions() async {
+    if (!_isInitialized) {
+      await initialize();
+    }
+
+    try {
+      final sessions = await getActiveSessions();
+      final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+      for (var session in sessions) {
+        if (session.expiry < currentTime) {
+          debugPrint(
+              'Session ${session.topic} has expired. Handling expiration...');
+          continue;
+        }
+
+        await _walletConnectClient.updateSession(
+          topic: session.topic,
+          namespaces: session.namespaces,
+        );
+        debugPrint('Reconnected to session: ${session.topic}');
+      }
+    } catch (e) {
+      debugPrint('Failed to reconnect sessions: $e');
+    }
+  }
+
+  Future<void> _saveSession(int id) async {
+    try {
+      final sessions = await getActiveSessions();
+      final sessionData =
+          sessions.firstWhere((session) => session.topic == id.toString());
+
+      final sessionMap = {
+        'topic': sessionData.topic,
+        'expiry': sessionData.expiry,
+        'namespaces': sessionData.namespaces,
+      };
+
+      await _storageService.saveSessions([sessionMap]);
+      debugPrint('Session $id saved locally.');
+    } catch (e) {
+      debugPrint('Failed to save session $id: $e');
+    }
+  }
+
+  Future<void> _removeSessionByTopic(String topic) async {
+    try {
+      await _storageService.removeSessionByTopic(topic);
+      debugPrint('Session $topic removed from local storage.');
+    } catch (e) {
+      debugPrint('Failed to remove session $topic: $e');
+    }
   }
 
   Web3Wallet get client => _walletConnectClient;
