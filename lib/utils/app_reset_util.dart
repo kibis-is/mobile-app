@@ -16,13 +16,15 @@ import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
+import 'package:kibisis/utils/wallet_connect_manageer.dart';
 
 class AppResetUtil {
   static Future<void> resetApp(WidgetRef ref) async {
     try {
       debugPrint('Starting reset process...');
 
-      // Run the reset process without an isolate
+      await _disconnectAllSessions(ref);
+
       await _clearStorage(ref);
       await _resetProvidersInBatches(ref);
       _resetSimpleProviders(ref);
@@ -32,6 +34,19 @@ class AppResetUtil {
       debugPrint('Error during reset process: $e');
       debugPrint('Stack trace: $stackTrace');
       throw Exception('Reset app failed: $e');
+    }
+  }
+
+  static Future<void> _disconnectAllSessions(WidgetRef ref) async {
+    final storageService = ref.read(storageProvider);
+    final walletConnectManager = WalletConnectManager(storageService);
+
+    try {
+      await walletConnectManager.disconnectAllSessions();
+      debugPrint('All WalletConnect sessions disconnected.');
+    } catch (e) {
+      debugPrint('Error disconnecting WalletConnect sessions: $e');
+      throw Exception('Failed to disconnect WalletConnect sessions: $e');
     }
   }
 
@@ -83,8 +98,7 @@ class AppResetUtil {
         await Future.wait(batch.map((resetFunction) async {
           resetFunction();
         }));
-        await Future.delayed(
-            const Duration(milliseconds: 50)); // Small delay between batches
+        await Future.delayed(const Duration(milliseconds: 50));
       }
     } catch (e) {
       debugPrint('Error resetting providers in batches: $e');
