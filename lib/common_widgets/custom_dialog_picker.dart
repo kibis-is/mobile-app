@@ -9,12 +9,14 @@ class CustomAlertDialog extends StatelessWidget {
   final String? subtitle;
   final IconData? icon;
   final List<Map<String, String>> items;
+  final VoidCallback? onCancel;
 
   const CustomAlertDialog({
     required this.title,
     this.subtitle,
     required this.items,
     this.icon,
+    this.onCancel,
     super.key,
   });
 
@@ -131,7 +133,7 @@ class CustomAlertDialog extends StatelessWidget {
                     ),
                     const SizedBox(height: kScreenPadding),
                     TextButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: onCancel ?? () => Navigator.pop(context),
                         child: Text(
                           'Cancel',
                           style: context.textTheme.bodyMedium,
