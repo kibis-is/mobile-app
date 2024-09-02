@@ -15,7 +15,7 @@ jobs:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
       - name: "🔧 Setup"
-        uses: ./.github/actions/use-dependencies
+        uses: ./.github/actions/use-flutter-dependencies
 
   ##
   # validation
@@ -28,7 +28,7 @@ jobs:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
       - name: "🔧 Setup"
-        uses: ./.github/actions/use-dependencies
+        uses: ./.github/actions/use-flutter-dependencies
       - name: "✅ Validate"
         run: echo ${{ github.event.pull_request.title }} | dart run commitlint_cli
 
@@ -45,7 +45,7 @@ jobs:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
       - name: "🔧 Setup"
-        uses: ./.github/actions/use-dependencies
+        uses: ./.github/actions/use-flutter-dependencies
       - name: "🏗️ Build APK"
         run: flutter build apk --debug
       - name: "🏗️ Build AppBundle"
@@ -60,6 +60,6 @@ jobs:
 #      - name: "🛎 Checkout"
 #        uses: actions/checkout@v4
 #      - name: "🔧 Setup"
-#        uses: ./.github/actions/use-dependencies
+#        uses: ./.github/actions/use-flutter-dependencies
 #      - name: "🏗️ Build ios"
 #        run: flutter build ios --release --no-codesign
