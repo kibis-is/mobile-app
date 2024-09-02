@@ -23,7 +23,6 @@ class QRCodeScannerLogic {
     this.accountFlow = AccountFlow.general,
     this.scanMode = ScanMode.general,
   });
-
   Future<dynamic> handleBarcode(BarcodeCapture capture) async {
     try {
       String rawData = capture.barcodes.first.rawValue ?? '';
@@ -31,14 +30,44 @@ class QRCodeScannerLogic {
 
       await _handleVibration();
 
-      if (isImportAccountUri(rawData)) {
-        return _handleImportAccountUri(rawData);
-      } else if (isSupportedWalletConnectUri(rawData)) {
-        return Uri.parse(rawData);
-      } else if (isPublicKeyFormat(rawData)) {
-        return _handlePublicKey(rawData); // Handle public key
-      } else {
-        throw Exception('Unknown QR Code type');
+      switch (scanMode) {
+        case ScanMode.privateKey:
+          if (isPublicKeyFormat(rawData)) {
+            throw Exception(
+                'Expected a private key QR code but found a public key.');
+          } else if (isSupportedWalletConnectUri(rawData)) {
+            throw Exception(
+                'Expected a private key QR code but found a WalletConnect URI.');
+          }
+          // Handle private key specific logic
+          return _handleImportAccountUri(
+              rawData); // Implement _handlePrivateKey method
+
+        case ScanMode.publicKey:
+          if (!isPublicKeyFormat(rawData)) {
+            throw Exception(
+                'Expected a public key QR code but found something else.');
+          }
+          return _handlePublicKey(rawData);
+
+        case ScanMode.session:
+          if (!isSupportedWalletConnectUri(rawData)) {
+            throw Exception(
+                'Expected a WalletConnect session QR code but found something else.');
+          }
+          return Uri.parse(rawData);
+
+        case ScanMode.general:
+          // General mode should handle all cases
+          if (isImportAccountUri(rawData)) {
+            return _handleImportAccountUri(rawData);
+          } else if (isSupportedWalletConnectUri(rawData)) {
+            return Uri.parse(rawData);
+          } else if (isPublicKeyFormat(rawData)) {
+            return _handlePublicKey(rawData);
+          } else {
+            throw Exception('Unknown QR Code type');
+          }
       }
     } catch (e) {
       rethrow;
