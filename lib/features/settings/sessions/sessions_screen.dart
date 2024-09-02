@@ -372,7 +372,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
-            GoRouter.of(context).push('/qrScanner', extra: ScanMode.general),
+            GoRouter.of(context).push('/qrScanner', extra: ScanMode.session),
         backgroundColor: context.colorScheme.secondary,
         foregroundColor: Colors.white,
         child: const Icon(AppIcons.scan),
