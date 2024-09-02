@@ -11,7 +11,6 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_fab_child.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/features/dashboard/providers/fab_visibility_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
@@ -65,14 +64,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
   Widget build(BuildContext context) {
     final networks = networkOptions;
     final accountState = ref.watch(accountProvider);
-    final showFAB = ref.watch(fabVisibilityProvider);
     final publicKey = accountState.account?.publicAddress;
-
-    if (showFAB) {
-      _controller.forward();
-    } else {
-      _controller.reverse();
-    }
 
     List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
@@ -94,8 +86,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
         ),
       ),
       floatingActionButton: ScaleTransition(
-          scale: _animation,
-          child: showFAB ? _buildFloatingActionButton() : Container()),
+          scale: _animation, child: _buildFloatingActionButton()),
       floatingActionButtonLocation: ExpandableFab.location,
     );
   }
