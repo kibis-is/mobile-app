@@ -46,13 +46,18 @@
 * [2. Usage](#-2-usage)
 * [3. Development](#-3-development)
     * [3.1. Requirements](#31-requirements)
-    * [3.2. Create A Personal Doppler Config](#32-create-a-personal-doppler-config)
-    * [3.3. Setup `doppler`](#33-setup-doppler)
+    * [3.2. Install Dependencies](#32-install-dependencies)
     * [3.3. Run](#33-run)
-* [4. Appendix](#-4-appendix)
-    * [4.1. Useful Commands](#41-useful-commands)
-* [5. How To Contribute](#-5-how-to-contribute)
-* [6. License](#-6-license)
+* [4. Releases](#-4-releases)
+  * [4.1. Overview](#41-overview)
+  * [4.2. Requirements](#42-requirements)
+  * [4.3. Create A Personal Doppler Config](#43-create-a-personal-doppler-config)
+  * [4.4. Setup `doppler`](#44-setup-doppler)
+  * [4.5. Build](#45-build)
+* [5. Appendix](#-5-appendix)
+    * [5.1. Useful Commands](#51-useful-commands)
+* [6. How To Contribute](#-6-how-to-contribute)
+* [7. License](#-7-license)
 
 ## 🗂️ 1. Overview
 
@@ -68,32 +73,7 @@ Refer to the [documentation](https://kibis.is/overview) for information on how t
 
 ### 3.1. Requirements
 
-* [Doppler CLI][doppler]
 * [Flutter SDK v3.22.3][flutter]
-* [Make][make] (optional)
-
-<sup>[Back to top ^][table-of-contents]</sup>
-
-## 3.2. Create A Personal Doppler Config
-
-To start using your own Doppler config, go to the project on [Doppler](https://dashboard.doppler.com/workplace/ae8c01548486ba93b8fd/projects/kibisis-mobile-app) and press the "+" to create a new personal branch config in the "Development" config
-
-<p align="center">
-  <img alt="Screen grab of the Doppler dashboard when creating a branch config" src=".github/assets/create_doppler_config.png" style="padding-top: 15px" height="512" />
-</p>
-
-> ⚠️ **NOTE:** Use your name in lowercase with underscores instead of spaces (snake_case).
-
-<sup>[Back to top ^][table-of-contents]</sup>
-
-### 3.3. Setup `doppler`
-
-Follow the instructions [here](https://docs.doppler.com/docs/install-cli#local-development) to:
-
-* login to Doppler, and;
-* setup Doppler to use the `kibisis-mobile-app` project with your personal config.
-
-> ⚠️ **NOTE:** When naming your token, it is recommended you use: "<your_name>-<device_name>".
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
@@ -101,20 +81,10 @@ Follow the instructions [here](https://docs.doppler.com/docs/install-cli#local-d
 
 1. Simply run:
 ```bash
-$ flutter pub get && ./scripts/post_install.sh
+$ flutter pub get
 ```
 
 > ⚠️ **NOTE:** This will install the required dependencies and generate the development keys that can be used for signing the development version of the app.
-> 
-<sup>[Back to top ^][table-of-contents]</sup>
-
-#### Using Make (optional)
-
-Optionally you can just use make to perform the above by simply running:
-
-```shell
-make
-```
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
@@ -127,26 +97,85 @@ $ flutter run
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 📑 4. Appendix
+## 🔖 4. Releases
 
-### 4.1. Useful Commands
+### 4.1. Overview
 
-| Command        | Description                                                                   |
-|----------------|-------------------------------------------------------------------------------|
-| `make`         | Deletes the `build/` and `.dart_tool/` directories and installs dependencies. |
-| `make clean`   | Deletes the `build/` and `.dart_tool/` directories.                           |
+Releases are automated by CI/CD, but you can run a build locally using the keys stored on [Doppler](https://www.doppler.com/).  
 
-> ⚠️ **NOTE:** See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-commands) reference for a full list of available commands.
+### 4.2. Requirements
+
+* [Doppler CLI][doppler]
+* [Flutter SDK v3.22.3][flutter]
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 👏 5. How To Contribute
+### 4.3. Create A Personal Doppler Config
+
+To start using your own Doppler config, go to the project on [Doppler](https://dashboard.doppler.com/workplace/ae8c01548486ba93b8fd/projects/kibisis-mobile-app) and press the "+" to create a new personal branch config in the "Development" config
+
+<p align="center">
+  <img alt="Screen grab of the Doppler dashboard when creating a branch config" src=".github/assets/create_doppler_config.png" style="padding-top: 15px" height="512" />
+</p>
+
+> ⚠️ **NOTE:** Use your name in lowercase with underscores instead of spaces (snake_case).
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+### 4.4. Setup `doppler`
+
+Follow the instructions [here](https://docs.doppler.com/docs/install-cli#local-development) to:
+
+* login to Doppler, and;
+* setup Doppler to use the `kibisis-mobile-app` project with your personal config.
+
+> ⚠️ **NOTE:** When naming your token, it is recommended you use: "<your_name>-<device_name>".
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+### 4.5. Build
+
+#### Android
+
+1. Create the signing keys with a wrapped Doppler command:
+```shell
+doppler run -- ./scripts/create_android_signing_keys.sh
+```
+
+> ⚠️ **NOTE:** The wrapped Doppler command will fetch the secrets for the active config and inject them into the command shell.
+
+2. Build a release:
+```shell
+flutter build <apk | aab> --release
+```
+
+3. The APK or AAB will use the signing keys from step 2 and add the file.
+   i. APK builds will be in: `build/app/outputs/apk/release/app-release.apk`
+   ii. AAB builds will be in: `build/app/outputs/bundle/release/app-release.aab`
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+#### iOS
+
+Coming soon...
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+## 📑 5. Appendix
+
+### 5.1. Useful Commands
+
+See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-commands) reference for a full list of available commands.
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+## 👏 6. How To Contribute
 
 Please read the [**Contributing Guide**][contribute] to learn about the development process.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 📄 6. License
+## 📄 7. License
 
 Please refer to the [COPYING][license] file.
 
