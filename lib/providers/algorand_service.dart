@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/models/combined_asset.dart';
-import 'package:kibisis/utils/conver_to_combined_asset.dart';
 
 class AlgorandService {
   final Algorand algorand;
@@ -48,25 +48,17 @@ class AlgorandService {
 
   Future<List<CombinedAsset>> getAccountAssets(String publicAddress) async {
     try {
-      final accountInfo =
-          await algorand.algodClient.client.get('/v2/accounts/$publicAddress');
+      final accountInfo = await _fetchAccountInfo(publicAddress);
       final holdings = accountInfo.data['assets'] as List<dynamic>;
-
-      List<Future<CombinedAsset?>> assetFutures = holdings.map((holding) async {
-        try {
-          return await getAssetById(holding['asset-id']);
-        } catch (e) {
-          debugPrint(
-              'Failed to fetch asset details for asset-id ${holding['asset-id']}: $e');
-          return null;
-        }
+      final List<Future<CombinedAsset?>> assetFutures = holdings.map((holding) {
+        return _fetchAndConvertAsset(holding);
       }).toList();
 
-      List<CombinedAsset?> assets = await Future.wait(assetFutures);
+      // Waiting for all asset futures to complete
+      final List<CombinedAsset?> assets = await Future.wait(assetFutures);
 
-      List<CombinedAsset> validAssets =
-          assets.where((asset) => asset != null).cast<CombinedAsset>().toList();
-
+      // Filtering out valid assets
+      final List<CombinedAsset> validAssets = _filterValidAssets(assets);
       return validAssets;
     } on AlgorandException catch (e) {
       debugPrint('Get Account Assets Algorand Exception: ${e.message}');
@@ -77,15 +69,136 @@ class AlgorandService {
     }
   }
 
-  Future<CombinedAsset> getAssetById(int assetId) async {
+  Future<dynamic> _fetchAccountInfo(String publicAddress) async {
+    try {
+      final response =
+          await algorand.algodClient.client.get('/v2/accounts/$publicAddress');
+      return response;
+    } on AlgorandException catch (e) {
+      debugPrint('Failed to fetch account info: ${e.message}');
+      rethrow; // Rethrow to be caught by the main function's try-catch
+    } catch (e) {
+      debugPrint(
+          'Generic Exception fetching account info for $publicAddress: $e');
+      rethrow;
+    }
+  }
+
+  Future<CombinedAsset?> _fetchAndConvertAsset(
+      Map<String, dynamic> holding) async {
+    final int assetId = holding['asset-id'];
+    final int amount = holding['amount'];
+    final bool isFrozen = holding['is-frozen'];
+
     try {
       final AssetResponse response =
           await algorand.indexer().getAssetById(assetId);
-      return convertToCombinedAsset(response.asset);
+
+      final asset = _convertToCombinedAsset(response.asset, amount, isFrozen);
+      return asset;
+    } on AlgorandException catch (e) {
+      debugPrint('AlgorandException for assetId $assetId: ${e.message}');
+      return null;
+    } catch (e) {
+      debugPrint(
+          'Generic Exception fetching or converting asset for assetId $assetId: $e');
+      return null;
+    }
+  }
+
+  CombinedAsset _convertToCombinedAsset(
+      Asset asset, int amount, bool isFrozen) {
+    debugPrint('Converting asset with id: ${asset.index}');
+
+    final combinedAsset = CombinedAsset(
+      index: asset.index,
+      params: CombinedAssetParameters(
+        total: asset.params.total,
+        decimals: asset.params.decimals,
+        creator: asset.params.creator,
+        clawback: asset.params.clawback,
+        defaultFrozen: asset.params.defaultFrozen,
+        freeze: asset.params.freeze,
+        manager: asset.params.manager,
+        name: asset.params.name,
+        reserve: asset.params.reserve,
+        unitName: asset.params.unitName,
+        url: asset.params.url,
+        metadataHash: asset.params.metadataHash,
+      ),
+      createdAtRound: asset.createdAtRound,
+      deleted: asset.deleted,
+      destroyedAtRound: asset.destroyedAtRound,
+      assetType: AssetType.standard,
+      amount: amount,
+      isFrozen: isFrozen,
+    );
+
+    debugPrint('Conversion complete for asset with id: ${asset.index}');
+    return combinedAsset;
+  }
+
+  List<CombinedAsset> _filterValidAssets(List<CombinedAsset?> assets) {
+    final validAssets =
+        assets.where((asset) => asset != null).cast<CombinedAsset>().toList();
+    debugPrint(
+        'Filtered valid assets: ${validAssets.length} out of ${assets.length}');
+    return validAssets;
+  }
+
+  Future<CombinedAsset> getAssetById(int assetId,
+      {String? publicAddress}) async {
+    try {
+      final AssetResponse response =
+          await algorand.indexer().getAssetById(assetId);
+
+      int amount = 0;
+      bool isFrozen = false;
+
+      if (publicAddress != null) {
+        final accountInfo = await algorand.algodClient.client
+            .get('/v2/accounts/$publicAddress');
+        final holdings = accountInfo.data['assets'] as List<dynamic>;
+
+        final holding = holdings.firstWhere(
+            (holding) => holding['asset-id'] == assetId,
+            orElse: () => null);
+
+        if (holding != null) {
+          amount = holding['amount'];
+          isFrozen = holding['is-frozen'];
+        }
+      }
+
+      return CombinedAsset(
+        index: response.asset.index,
+        params: CombinedAssetParameters(
+          total: response.asset.params.total,
+          decimals: response.asset.params.decimals,
+          creator: response.asset.params.creator,
+          clawback: response.asset.params.clawback,
+          defaultFrozen: response.asset.params.defaultFrozen,
+          freeze: response.asset.params.freeze,
+          manager: response.asset.params.manager,
+          name: response.asset.params.name,
+          reserve: response.asset.params.reserve,
+          unitName: response.asset.params.unitName,
+          url: response.asset.params.url,
+          metadataHash: response.asset.params.metadataHash,
+        ),
+        createdAtRound: response.asset.createdAtRound,
+        deleted: response.asset.deleted,
+        destroyedAtRound: response.asset.destroyedAtRound,
+        assetType: AssetType.standard,
+        amount: amount,
+        isFrozen: isFrozen,
+      );
     } on FormatException {
+      debugPrint('Invalid asset ID format. Asset ID must be a valid integer.');
       throw Exception(
           'Invalid asset ID format. Asset ID must be a valid integer.');
     } catch (e) {
+      debugPrint('Failed to fetch asset details: $e');
       throw Exception('Failed to fetch asset details: $e');
     }
   }

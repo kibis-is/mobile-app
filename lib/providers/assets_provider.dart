@@ -39,33 +39,42 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
     try {
       final algorandService = ref.read(algorandServiceProvider);
       final arc200Service = Arc200Service();
-
-      // Fetch standard assets
+      final arc200Assets = await arc200Service.fetchArc200Assets(publicAddress);
       final standardAssets =
           await algorandService.getAccountAssets(publicAddress);
-      final standardCombinedAssets = standardAssets.map((asset) {
-        return CombinedAsset(
-          index: asset.index,
-          params: asset.params,
-          createdAtRound: asset.createdAtRound,
-          deleted: asset.deleted,
-          destroyedAtRound: asset.destroyedAtRound,
-          assetType: AssetType.standard,
-        );
-      }).toList();
+      final List<CombinedAsset> standardCombinedAssets = [];
+      for (var asset in standardAssets) {
+        try {
+          final combinedAsset = CombinedAsset(
+            index: asset.index,
+            params: asset.params,
+            createdAtRound: asset.createdAtRound,
+            deleted: asset.deleted,
+            destroyedAtRound: asset.destroyedAtRound,
+            assetType: AssetType.standard,
+            amount: asset.amount,
+            isFrozen: asset.isFrozen,
+          );
+          standardCombinedAssets.add(combinedAsset);
+        } catch (e) {
+          debugPrint(
+              'Error processing assetId: ${asset.index}, skipping. Error: $e');
+          continue;
+        }
+      }
+      _allAssets = standardCombinedAssets;
 
-      // Fetch ARC200 assets
-      final arc200Assets = await arc200Service.fetchArc200Assets(publicAddress);
-
-      // Combine both asset types
       _allAssets = [...standardCombinedAssets, ...arc200Assets];
+
       state = AsyncValue.data(_filteredAssets());
     } on AlgorandException {
       if (mounted) {
+        debugPrint('AlgorandException occurred while fetching assets.');
         state = AsyncValue.error('Failed to fetch assets', StackTrace.current);
       }
     } catch (e) {
       if (mounted) {
+        debugPrint('Exception occurred: $e');
         state = AsyncValue.error(e, StackTrace.current);
       }
     }

@@ -9,6 +9,8 @@ class CombinedAsset {
   final bool? deleted;
   final int? destroyedAtRound;
   final AssetType assetType;
+  final int amount;
+  final bool isFrozen;
 
   CombinedAsset({
     required this.index,
@@ -17,6 +19,8 @@ class CombinedAsset {
     this.deleted,
     this.destroyedAtRound,
     required this.assetType,
+    required this.amount,
+    required this.isFrozen,
   });
 }
 

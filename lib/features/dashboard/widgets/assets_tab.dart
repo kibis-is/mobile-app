@@ -34,7 +34,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   void _onRefresh() {
     ref.invalidate(assetsProvider);
-    ref.read(assetsProvider.notifier).fetchAssets();
     _refreshController.refreshCompleted();
   }
 

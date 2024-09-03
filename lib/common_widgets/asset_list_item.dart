@@ -131,9 +131,11 @@ class AssetListItem extends ConsumerWidget {
   Widget _buildAssetAmount(BuildContext context) {
     return SizedBox(
       child: (onPressed == null && mode == AssetScreenMode.add)
-          ? Text('Owned',
+          ? Text(
+              'Owned',
               style: context.textTheme.bodyMedium
-                  ?.copyWith(fontWeight: FontWeight.bold))
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            )
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -142,7 +144,7 @@ class AssetListItem extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      NumberShortener.formatAssetTotal(asset.params.total),
+                      mode == AssetScreenMode.add ? '' : _getFormattedAmount(),
                       style: context.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -165,5 +167,9 @@ class AssetListItem extends ConsumerWidget {
               ],
             ),
     );
+  }
+
+  String _getFormattedAmount() {
+    return NumberShortener.formatAssetTotal(asset.amount);
   }
 }
