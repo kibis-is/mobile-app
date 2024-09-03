@@ -1,4 +1,5 @@
 import 'package:algorand_dart/algorand_dart.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/combined_asset.dart';
 
 CombinedAsset convertToCombinedAsset(Asset asset, int amount, bool isFrozen) {

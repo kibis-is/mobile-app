@@ -1,6 +1,5 @@
 import 'package:algorand_dart/algorand_dart.dart';
-
-enum AssetType { standard, arc200 }
+import 'package:kibisis/constants/constants.dart';
 
 class CombinedAsset {
   final int index;

@@ -57,3 +57,5 @@ enum ScanMode {
   general,
   session,
 }
+
+enum AssetType { standard, arc200 }
