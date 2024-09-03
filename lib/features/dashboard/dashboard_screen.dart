@@ -35,7 +35,6 @@ class DashboardScreen extends ConsumerStatefulWidget {
 class DashboardScreenState extends ConsumerState<DashboardScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
   final _key = GlobalKey<ExpandableFabState>();
 
   @override
@@ -44,13 +43,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     _controller = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
-    );
-
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.elasticOut,
-      ),
     );
   }
 
@@ -85,8 +77,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
           ],
         ),
       ),
-      floatingActionButton: ScaleTransition(
-          scale: _animation, child: _buildFloatingActionButton()),
+      floatingActionButton: _buildFloatingActionButton(),
       floatingActionButtonLocation: ExpandableFab.location,
     );
   }
