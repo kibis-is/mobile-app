@@ -40,9 +40,11 @@ final sendTransactionScreenModeProvider =
 
 class SendTransactionScreen extends ConsumerStatefulWidget {
   final SendTransactionScreenMode mode;
+  final String? address;
 
   const SendTransactionScreen({
     this.mode = SendTransactionScreenMode.payment,
+    this.address,
     super.key,
   });
 
@@ -57,12 +59,15 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       TextEditingController();
   final TextEditingController noteController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  int _remainingBytes = 1000; // Initialize with max bytes allowed
+  int _remainingBytes = 1000;
 
   @override
   void initState() {
     super.initState();
     noteController.addListener(_updateRemainingBytes);
+    if (widget.address != null) {
+      recipientAddressController.text = widget.address!;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(sendTransactionScreenModeProvider.notifier).state = widget.mode;
       _loadAssetsAndCurrencies();

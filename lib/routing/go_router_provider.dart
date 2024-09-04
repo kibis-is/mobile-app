@@ -359,11 +359,16 @@ class RouterNotifier extends ChangeNotifier {
                 final mode = state.pathParameters['mode'] == 'payment'
                     ? SendTransactionScreenMode.payment
                     : SendTransactionScreenMode.asset;
+                final extra = state.extra as Map<String, dynamic>?;
+                final address = extra?['address'] as String?;
+
                 return defaultTransitionPage(
-                    SendTransactionScreen(
-                      mode: mode,
-                    ),
-                    state);
+                  SendTransactionScreen(
+                    mode: mode,
+                    address: address,
+                  ),
+                  state,
+                );
               },
               routes: [
                 GoRoute(

@@ -6,22 +6,13 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
 
-enum QrType {
-  privateKeyLegacy,
-  privateKey,
-  privateKeyPaginated,
-  publicKey,
-  walletConnect,
-  unknown
-}
-
 class QRCodeScannerLogic {
   final AccountFlow accountFlow;
   final ScanMode scanMode;
 
   QRCodeScannerLogic({
     this.accountFlow = AccountFlow.general,
-    this.scanMode = ScanMode.general,
+    this.scanMode = ScanMode.catchAll,
   });
   Future<dynamic> handleBarcode(BarcodeCapture capture) async {
     try {
@@ -39,9 +30,7 @@ class QRCodeScannerLogic {
             throw Exception(
                 'Expected a private key QR code but found a WalletConnect URI.');
           }
-          // Handle private key specific logic
-          return _handleImportAccountUri(
-              rawData); // Implement _handlePrivateKey method
+          return await _handleImportAccountUri(rawData);
 
         case ScanMode.publicKey:
           if (!isPublicKeyFormat(rawData)) {
@@ -57,14 +46,13 @@ class QRCodeScannerLogic {
           }
           return Uri.parse(rawData);
 
-        case ScanMode.general:
-          // General mode should handle all cases
-          if (isImportAccountUri(rawData)) {
-            return _handleImportAccountUri(rawData);
+        case ScanMode.catchAll:
+          if (isPublicKeyFormat(rawData)) {
+            return _handlePublicKey(rawData);
+          } else if (isImportAccountUri(rawData)) {
+            return await _handleImportAccountUri(rawData);
           } else if (isSupportedWalletConnectUri(rawData)) {
             return Uri.parse(rawData);
-          } else if (isPublicKeyFormat(rawData)) {
-            return _handlePublicKey(rawData);
           } else {
             throw Exception('Unknown QR Code type');
           }
@@ -75,6 +63,7 @@ class QRCodeScannerLogic {
   }
 
   bool isSupportedWalletConnectUri(String rawData) {
+    if (!rawData.startsWith('wc:')) return false;
     try {
       Uri uri = Uri.parse(rawData);
       final segments = uri.toString().split('@');
@@ -83,7 +72,7 @@ class QRCodeScannerLogic {
         if (version == 1) {
           throw UnsupportedError('WalletConnect V1 URIs are not supported.');
         } else if (version == 2) {
-          return true; // It's a supported WalletConnect V2 URI
+          return true;
         } else {
           throw UnsupportedError(
               'Unknown WalletConnect version. Unable to pair.');
@@ -97,6 +86,7 @@ class QRCodeScannerLogic {
   }
 
   bool isImportAccountUri(String uriString) {
+    if (!uriString.startsWith('avm://account/import')) return false;
     Uri? uri = Uri.tryParse(uriString);
     if (uri == null) return false;
     return uri.hasAbsolutePath && uriString.contains('import');
@@ -116,31 +106,28 @@ class QRCodeScannerLogic {
     }
   }
 
-  Future<void> _handleImportAccountUri(String uri) async {
-    // Your implementation for handling import account URIs
-    debugPrint('Handle import account URI: $uri');
+  Future<Set<Map<String, dynamic>>> _handleImportAccountUri(String uri) async {
+    Uri? parsedUri = Uri.tryParse(uri);
+    if (parsedUri == null) {
+      throw Exception('Invalid URI format');
+    }
+
+    // Extract query parameters
+    Map<String, List<String>> params = getQueryParameters(parsedUri.query);
+
+    if (params.containsKey('encoding') && params['encoding']?.first == 'hex') {
+      // If the URI contains the "encoding=hex", it's a legacy format
+      return handleLegacyUri(params);
+    } else if (params.containsKey('privatekey')) {
+      // If the URI contains "privatekey" but no encoding, it's a modern format
+      return handleModernUri(params);
+    } else {
+      throw Exception('Unknown import account URI format');
+    }
   }
 
   bool isPublicKeyFormat(String data) {
     return data.length == 58 && RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(data);
-  }
-
-  QrType getQrType(Map<String, List<String>> queryParams, String rawData) {
-    if (rawData.startsWith('wc:')) {
-      return QrType.walletConnect;
-    }
-
-    if (queryParams.containsKey('privatekey') &&
-        queryParams.containsKey('page')) {
-      return QrType.privateKeyPaginated;
-    } else if (queryParams.containsKey('privatkey') &&
-        queryParams.containsKey('encoding')) {
-      return QrType.privateKeyLegacy;
-    } else if (queryParams.containsKey('privatekey')) {
-      return QrType.privateKey;
-    }
-
-    return QrType.unknown;
   }
 
   Map<String, List<String>> getQueryParameters(String query) {

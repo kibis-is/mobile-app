@@ -176,7 +176,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         return 'Scan Address';
       case ScanMode.session:
         return 'Connect';
-      case ScanMode.general:
+      case ScanMode.catchAll:
       default:
         return QrCodeScannerScreen.title;
     }
@@ -203,7 +203,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
           var scannerLogic = QRCodeScannerLogic(
             accountFlow: (widget.accountFlow ??
-                (widget.scanMode == ScanMode.general
+                (widget.scanMode == ScanMode.catchAll
                     ? AccountFlow.general
                     : AccountFlow.setup)),
             scanMode: widget.scanMode,

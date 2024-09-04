@@ -14,6 +14,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
+import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
@@ -135,8 +136,20 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
             icon: AppIcons.scan,
             backgroundColor: context.colorScheme.primary,
             iconColor: context.colorScheme.onPrimary,
-            onPressed: () {
-              GoRouter.of(context).push('/qrScanner', extra: ScanMode.general);
+            onPressed: () async {
+              final scannedData = await GoRouter.of(context)
+                  .push('/qrScanner', extra: ScanMode.catchAll);
+              if (scannedData != null &&
+                  scannedData is String &&
+                  QRCodeScannerLogic().isPublicKeyFormat(scannedData)) {
+                if (!mounted) return;
+                GoRouter.of(context).goNamed(
+                  sendTransactionRouteName,
+                  pathParameters: {'mode': 'payment'},
+                  extra: {'address': scannedData},
+                );
+              }
+
               closeFab();
             },
           ),

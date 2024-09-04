@@ -54,7 +54,7 @@ List<SelectItem> timeoutList = [
 enum ScanMode {
   privateKey,
   publicKey,
-  general,
+  catchAll,
   session,
 }
 
