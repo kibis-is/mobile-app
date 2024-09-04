@@ -10,7 +10,6 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_selection.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AccountListScreen extends ConsumerStatefulWidget {
@@ -169,7 +168,6 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
         final accountHandler = AccountHandler(ref);
 
         accountHandler.handleAccountSelection(account['accountId']).then((_) {
-          invalidateProviders(ref);
           GoRouter.of(context).go('/');
         }).catchError((e) {
           debugPrint('Error handling account selection: ${e.toString()}');
