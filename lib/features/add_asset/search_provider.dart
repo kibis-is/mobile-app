@@ -37,7 +37,7 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
           100,
         );
         final standardAssets = algorandResponse.assets
-            .map(convertAssetToCombinedWithoutAmount)
+            .map(AssetConverter.convertAssetToCombinedWithoutAmount)
             .toList();
         combinedAssets.addAll(standardAssets);
 
