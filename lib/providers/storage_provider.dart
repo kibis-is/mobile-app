@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/models/nft.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -301,5 +302,20 @@ class StorageService {
     final sessions = await getSessions();
     sessions.removeWhere((session) => session['topic'] == topic);
     await saveSessions(sessions);
+  }
+
+  Future<void> setNFTsForAccount(String accountId, List<NFT> nfts) async {
+    final encodedNfts = jsonEncode(nfts.map((nft) => nft.toJson()).toList());
+    await _prefs?.setString('nfts_$accountId', encodedNfts);
+  }
+
+  Future<List<NFT>> getNFTsForAccount(String accountId) async {
+    final cachedNftsJson = _prefs?.getString('nfts_$accountId');
+    if (cachedNftsJson == null) {
+      return [];
+    }
+
+    final List<dynamic> cachedNfts = json.decode(cachedNftsJson);
+    return cachedNfts.map<NFT>((json) => NFT.fromJson(json)).toList();
   }
 }

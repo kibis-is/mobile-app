@@ -29,14 +29,12 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
 
   Future<void> _loadCachedNFTs() async {
     final storageService = ref.read(storageProvider);
-    final cachedNftsJson = storageService.prefs?.getString('cachedNfts');
+    _allNfts = await storageService.getNFTsForAccount(publicAddress);
 
-    if (cachedNftsJson != null) {
-      final List<dynamic> cachedNfts = json.decode(cachedNftsJson);
-      _allNfts = cachedNfts.map<NFT>((json) => NFT.fromJson(json)).toList();
+    if (_allNfts.isNotEmpty) {
       state = AsyncValue.data(_filteredNfts());
     } else {
-      fetchNFTs();
+      await fetchNFTs();
     }
   }
 
@@ -76,14 +74,12 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
           );
         }).toList();
 
-        _allNfts = nfts; // Cache the NFTs
+        _allNfts = nfts;
         state = AsyncValue.data(_filteredNfts());
 
-        // Cache the fetched NFTs in SharedPreferences
+        // Store NFTs in storage service
         final storageService = ref.read(storageProvider);
-        final String encodedNfts =
-            jsonEncode(nfts.map((nft) => nft.toJson()).toList());
-        await storageService.prefs?.setString('cachedNfts', encodedNfts);
+        await storageService.setNFTsForAccount(publicAddress, nfts);
       } else {
         throw Exception(
             'Failed to load NFTs with status code: ${response.statusCode}');
