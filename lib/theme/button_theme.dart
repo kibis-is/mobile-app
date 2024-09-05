@@ -24,7 +24,7 @@ ButtonThemeData buttonThemeLight() {
 
 ButtonThemeData buttonThemeDark() {
   return buttonTheme(
-    buttonColor: ColorPalette.darkThemeMauve,
+    buttonColor: ColorPalette.darkThemeHeiliotrope,
     hoverColor: ColorPalette.darkThemeHeliotrope,
     splashColor: ColorPalette.darkThemeHeliotrope,
   );

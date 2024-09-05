@@ -32,7 +32,7 @@ ElevatedButtonThemeData elevatedButtonThemeLight() {
 
 ElevatedButtonThemeData elevatedButtonThemeDark() {
   return elevatedButtonTheme(
-    backgroundColor: ColorPalette.darkThemeMauve,
+    backgroundColor: ColorPalette.darkThemeHeiliotrope,
     foregroundColor: ColorPalette.darkThemeAntiflashWhite,
   );
 }
