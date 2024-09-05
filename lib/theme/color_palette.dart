@@ -18,13 +18,13 @@ class ColorPalette {
   static const Color lightThemeSnow = Color(0xFFFAF8FA);
 
   // Dark Theme Colors
-  static const Color darkThemeMauve = Color(0xFFE0B0FF);
+  static const Color darkThemeHeiliotrope = Color(0xFFCC7DFF);
   static const Color darkThemeHeliotrope = Color(0xFFC875FF);
   static const Color darkThemePersianGreen = Color(0xFF009F9A);
   static const Color darkThemeFluorescentCyan = Color(0xFF00D2CB);
   static const Color darkThemeRaisinBlack = Color(0xFF1A202C);
   static const Color darkThemeGunmetal = Color(0xFF303846);
-  static const Color darkThemeAntiflashWhite = Color(0xFFEDEEEE);
+  static const Color darkThemeAntiflashWhite = Color(0xFFE6E6E7);
   static const Color darkThemeCadetGray = Color(0xFFA3A6AB);
   static const Color darkThemeGray = Color(0xFF71757C);
   static const Color darkThemeWhite = Color(0xFFFFFFFF);
@@ -33,7 +33,8 @@ class ColorPalette {
   static const Color darkThemeFrozenColor = Color(0xFFAFD9FF);
   static const Color darkThemeFrozenSurfaceColor = Color(0xFF495569);
   static const Color darkThemeAssetColor = Color(0xFFD3FFB0);
-  static const Color darkThemeRichBlack = Color(0xFF0C0F14);
+  static const Color darkThemeRichBlack = Color(0xFF131821);
+  static const Color darkThemeShadow = Color(0xFF131821);
 
   // Gradient Colors
   static const Color cardGradientPurpleA = Color(0xFF8048A5);
@@ -45,4 +46,7 @@ class ColorPalette {
   // Other Colors
   static const Color voiPurple = Color(0xFF5A21B6);
   static const Color chipVanilla = Color(0xFFeee8a9);
+  static const Color primary = Color(0xFFCC7DFF);
+  static const Color usdcAsset = Color(0xFF80BDFF);
+  static const Color secondary = Color(0xFF00C2AF);
 }
