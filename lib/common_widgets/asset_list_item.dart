@@ -2,9 +2,6 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kibisis/common_widgets/custom_chip.dart';
-import 'package:kibisis/common_widgets/flexible_listtile.dart';
-import 'package:kibisis/common_widgets/frozen_box_decoration.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
@@ -35,28 +32,29 @@ class AssetListItem extends ConsumerWidget {
           tag: asset.index.toString(),
           child: Material(
             child: Container(
-              decoration: asset.params.defaultFrozen ?? false
-                  ? frozenBoxDecoration(context)
-                  : BoxDecoration(
-                      color: context.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(kWidgetRadius),
-                    ),
-              child: FlexibleListTile(
+              decoration: BoxDecoration(
+                color: context.colorScheme.background,
+                border: const Border.symmetric(
+                  horizontal:
+                      BorderSide(width: 1, color: ColorPalette.darkThemeShadow),
+                ),
+              ),
+              child: ListTile(
                 leading: _buildAssetIcon(
                     context, ref, asset.params.defaultFrozen ?? false),
                 title: EllipsizedText(
                   asset.params.name ?? 'Unknown',
-                  style: context.textTheme.displaySmall?.copyWith(
+                  style: context.textTheme.displayMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: EllipsizedText(
-                  asset.params.unitName ?? 'Unknown',
-                  style: context.textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.onSurface),
+                  mode == AssetScreenMode.add ? '' : _getFormattedAmount(),
+                  style: context.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                trailing: _buildAssetAmount(context),
+                trailing: _buildTrailing(context),
                 onTap: (onPressed == null && mode == AssetScreenMode.add)
                     ? null
                     : () => _handleOnPressed(context, ref),
@@ -99,15 +97,12 @@ class AssetListItem extends ConsumerWidget {
 
   Widget _buildAssetIcon(
       BuildContext context, WidgetRef ref, bool isFrozenDefault) {
-    final isDarkMode = ref.watch(isDarkModeProvider);
+    ref.watch(isDarkModeProvider);
     return Container(
       decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isFrozenDefault
-              ? isDarkMode
-                  ? ColorPalette.darkThemeFrozenColor
-                  : ColorPalette.lightThemeFrozenColor
-              : context.colorScheme.primary),
+        shape: BoxShape.circle,
+        color: context.colorScheme.primary,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(kScreenPadding / 3),
         child: AppIcons.icon(
@@ -118,17 +113,7 @@ class AssetListItem extends ConsumerWidget {
     );
   }
 
-  String _getAssetTypeLabel(AssetType assetType) {
-    switch (assetType) {
-      case AssetType.arc200:
-        return 'ARC0200';
-      case AssetType.standard:
-      default:
-        return 'ASA';
-    }
-  }
-
-  Widget _buildAssetAmount(BuildContext context) {
+  Widget _buildTrailing(BuildContext context) {
     return SizedBox(
       child: (onPressed == null && mode == AssetScreenMode.add)
           ? Text(
@@ -136,36 +121,7 @@ class AssetListItem extends ConsumerWidget {
               style: context.textTheme.bodyMedium
                   ?.copyWith(fontWeight: FontWeight.bold),
             )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      mode == AssetScreenMode.add ? '' : _getFormattedAmount(),
-                      style: context.textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: kScreenPadding / 2),
-                    CustomChip(
-                      label: _getAssetTypeLabel(asset.assetType),
-                      backgroundColor: asset.assetType == AssetType.arc200
-                          ? ColorPalette.chipVanilla
-                          : ColorPalette.cardGradientMediumBlue,
-                      labelColor: asset.assetType == AssetType.arc200
-                          ? ColorPalette.darkThemeRaisinBlack
-                          : ColorPalette.darkThemeAntiflashWhite,
-                      borderRadius: const BorderRadius.all(
-                          Radius.circular(kWidgetRadius)),
-                    ),
-                  ],
-                ),
-                AppIcons.icon(icon: AppIcons.arrowRight),
-              ],
-            ),
+          : AppIcons.icon(icon: AppIcons.arrowRight),
     );
   }
 

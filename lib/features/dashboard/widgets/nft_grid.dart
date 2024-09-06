@@ -21,24 +21,22 @@ class NftGridOrCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
-          childAspectRatio: 1.0,
-        ),
-        itemCount: nfts.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          final nft = nfts[index];
-          return NftCard(
-            nft: nft,
-            viewType: viewType,
-            index: index,
-          );
-        },
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
+        childAspectRatio: 1.0,
       ),
+      itemCount: nfts.length,
+      shrinkWrap: true, // Ensure it takes only the space needed
+      physics: const ClampingScrollPhysics(), // Allow scrolling with refresh
+      itemBuilder: (context, index) {
+        final nft = nfts[index];
+        return NftCard(
+          nft: nft,
+          viewType: viewType,
+          index: index,
+        );
+      },
     );
   }
 }

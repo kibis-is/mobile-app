@@ -62,6 +62,8 @@ class AppIcons {
 
   static Color? defaultColor;
 
+  static IconData? activity;
+
   static void initializeDefaultColor(BuildContext context) {
     defaultColor = Theme.of(context).colorScheme.onSurface;
   }

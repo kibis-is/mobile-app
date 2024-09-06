@@ -2,6 +2,7 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -39,10 +40,10 @@ class CustomDropDown extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
       decoration: BoxDecoration(
         border: Border.all(
-          color: context.colorScheme.onBackground,
+          color: Colors.transparent,
         ),
-        borderRadius: BorderRadius.circular(kWidgetRadius),
-        color: context.colorScheme.background,
+        borderRadius: BorderRadius.circular(100.0),
+        color: ColorPalette.darkThemeShadow,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<SelectItem>(

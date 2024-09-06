@@ -65,16 +65,12 @@ class NftTabState extends ConsumerState<NftTab> {
           child: CustomPullToRefresh(
             refreshController: _refreshController,
             onRefresh: _onRefresh,
-            child: CustomScrollView(
-              slivers: [
-                nftState.when(
-                  data: (nfts) => nfts.isEmpty
-                      ? _buildEmptyNfts(context)
-                      : NftGridOrCard(nfts: nfts, viewType: viewType),
-                  loading: () => _buildLoadingNfts(context),
-                  error: (error, stack) => _buildEmptyNfts(context),
-                ),
-              ],
+            child: nftState.when(
+              data: (nfts) => nfts.isEmpty
+                  ? _buildEmptyNfts(context)
+                  : NftGridOrCard(nfts: nfts, viewType: viewType),
+              loading: () => _buildLoadingNfts(context),
+              error: (error, stack) => _buildEmptyNfts(context),
             ),
           ),
         ),
@@ -83,83 +79,74 @@ class NftTabState extends ConsumerState<NftTab> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          color: context.colorScheme.surface,
-          onPressed: _toggleNftView,
-          icon: Icon(
-            viewType == NftViewType.grid ? AppIcons.card : AppIcons.grid,
-            color: context.colorScheme.onBackground,
-            size: AppIcons.medium,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            color: context.colorScheme.surface,
+            onPressed: _toggleNftView,
+            icon: Icon(
+              viewType == NftViewType.grid ? AppIcons.card : AppIcons.grid,
+              color: context.colorScheme.onBackground,
+              size: AppIcons.medium,
+            ),
           ),
-        ),
-        const SizedBox(width: kScreenPadding / 2),
-        Expanded(
-          child: CustomTextField(
-            controller: filterController,
-            labelText: 'Filter',
-            onChanged: (value) {
-              ref.read(nftNotifierProvider.notifier).setFilter(value);
-            },
-            autoCorrect: false,
-            suffixIcon: AppIcons.cross,
-            leadingIcon: AppIcons.search,
-            onTrailingPressed: () => filterController.clear(),
-            isSmall: true,
+          const SizedBox(width: kScreenPadding / 2),
+          Expanded(
+            child: CustomTextField(
+              controller: filterController,
+              labelText: 'Filter',
+              onChanged: (value) {
+                ref.read(nftNotifierProvider.notifier).setFilter(value);
+              },
+              autoCorrect: false,
+              suffixIcon: AppIcons.cross,
+              leadingIcon: AppIcons.search,
+              onTrailingPressed: () => filterController.clear(),
+              isSmall: true,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildLoadingNfts(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
-          childAspectRatio: 1.0,
-          mainAxisSpacing: kScreenPadding / 2,
-          crossAxisSpacing: kScreenPadding / 2,
-        ),
-        itemCount: 12,
-        shrinkWrap: true, // Prevents unbounded height error
-        physics:
-            const NeverScrollableScrollPhysics(), // Parent handles scrolling
-        itemBuilder: (context, index) => Shimmer.fromColors(
-          baseColor: context.colorScheme.surface,
-          highlightColor: Colors.grey.shade100,
-          child: Container(
-            color: context.colorScheme.surface,
-          ),
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
+        childAspectRatio: 1.0,
+      ),
+      itemCount: 12,
+      shrinkWrap: true, // Prevents unbounded height error
+      physics: const NeverScrollableScrollPhysics(), // Parent handles scrolling
+      itemBuilder: (context, index) => Shimmer.fromColors(
+        baseColor: context.colorScheme.surface,
+        highlightColor: Colors.grey.shade100,
+        child: Container(
+          color: context.colorScheme.surface,
         ),
       ),
     );
   }
 
   Widget _buildEmptyNfts(BuildContext context) {
-    return SliverFillRemaining(
-      hasScrollBody: false, // Prevents the sliver from being scrollable
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment
-              .center, // Centers the column's children vertically
-          children: [
-            Text('No NFTs Found', style: context.textTheme.titleSmall),
-            const SizedBox(height: kScreenPadding / 2),
-            Text('You have not added any NFTs.',
-                style: context.textTheme.bodySmall,
-                textAlign: TextAlign.center),
-            const SizedBox(height: kScreenPadding),
-            TextButton(
-              onPressed: () {
-                _onRefresh(); // Ensures the refresh action is triggered
-              },
-              child: const Text('Retry'), // Button to retry the fetch action
-            ),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('No NFTs Found', style: context.textTheme.titleSmall),
+          const SizedBox(height: kScreenPadding / 2),
+          Text('You have not added any NFTs.',
+              style: context.textTheme.bodySmall, textAlign: TextAlign.center),
+          const SizedBox(height: kScreenPadding),
+          TextButton(
+            onPressed: _onRefresh,
+            child: const Text('Retry'),
+          ),
+        ],
       ),
     );
   }

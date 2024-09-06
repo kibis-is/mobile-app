@@ -436,6 +436,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       textInputAction: TextInputAction.done,
       textAlign: TextAlign.right,
       autoCorrect: false,
+      leadingIcon: AppIcons.advanced,
       controller: amountController,
       validator: _validateAmount,
       onTap: () {
@@ -458,6 +459,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
             controller: recipientAddressController,
+            leadingIcon: AppIcons.addAccount,
             suffixIcon: AppIcons.scan,
             autoCorrect: false,
             onTrailingPressed: isMobile
@@ -477,7 +479,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             ),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(kWidgetRadius),
+                borderRadius: BorderRadius.circular(100.0),
               ),
             ),
             backgroundColor: MaterialStateProperty.all<Color>(
@@ -549,6 +551,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       maxLines: 3,
       controller: noteController,
       validator: _validateNote,
+      leadingIcon: AppIcons.about,
     );
   }
 

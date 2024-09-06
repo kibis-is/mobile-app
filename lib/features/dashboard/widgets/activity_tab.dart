@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'dart:convert'; // Required for decoding notes
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,21 +57,15 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
           child: CustomPullToRefresh(
             refreshController: _refreshController,
             onRefresh: _onRefresh,
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                transactionsAsyncValue.when(
-                  data: (transactions) {
-                    if (transactions.isEmpty) {
-                      return _buildEmptyTransactions(context, ref);
-                    }
-                    return _buildTransactionsList(context, ref, transactions);
-                  },
-                  loading: () => _buildLoadingTransactions(context),
-                  error: (error, stack) =>
-                      _buildEmptyTransactions(context, ref),
-                ),
-              ],
+            child: transactionsAsyncValue.when(
+              data: (transactions) {
+                if (transactions.isEmpty) {
+                  return _buildEmptyTransactions(context, ref);
+                }
+                return _buildTransactionsList(context, ref, transactions);
+              },
+              loading: () => _buildLoadingTransactions(context),
+              error: (error, stack) => _buildEmptyTransactions(context, ref),
             ),
           ),
         ),
@@ -81,57 +74,49 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
   }
 
   Widget _buildEmptyTransactions(BuildContext context, WidgetRef ref) {
-    return SliverFillRemaining(
-      hasScrollBody: false,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('No Transactions Found', style: context.textTheme.titleSmall),
-            const SizedBox(height: kScreenPadding / 2),
-            Text('You have not made any transactions.',
-                style: context.textTheme.bodySmall,
-                textAlign: TextAlign.center),
-            const SizedBox(height: kScreenPadding),
-            TextButton(
-              onPressed: () {
-                _onRefresh();
-              },
-              child: const Text('Retry'),
-            ),
-            const SizedBox(height: kScreenPadding),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('No Transactions Found', style: context.textTheme.titleSmall),
+          const SizedBox(height: kScreenPadding / 2),
+          Text('You have not made any transactions.',
+              style: context.textTheme.bodySmall, textAlign: TextAlign.center),
+          const SizedBox(height: kScreenPadding),
+          TextButton(
+            onPressed: () {
+              _onRefresh();
+            },
+            child: const Text('Retry'),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildLoadingTransactions(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Shimmer.fromColors(
+    return ListView.separated(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) => Shimmer.fromColors(
         baseColor: context.colorScheme.background,
         highlightColor: Colors.grey.shade100,
-        period: const Duration(milliseconds: 2000),
-        child: ListView.separated(
-          itemCount: 3,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) => ListTile(
-            leading: const CircleAvatar(),
-            title: Container(
-                width: double.infinity,
-                height: kScreenPadding,
-                color: context.colorScheme.surface),
-            subtitle: Container(
-                width: double.infinity,
-                height: kScreenPadding,
-                color: context.colorScheme.surface),
-          ),
-          separatorBuilder: (BuildContext context, int index) {
-            return const SizedBox(height: kScreenPadding / 2);
-          },
+        child: ListTile(
+          leading: const CircleAvatar(),
+          title: Container(
+              width: double.infinity,
+              height: kScreenPadding,
+              color: context.colorScheme.surface),
+          subtitle: Container(
+              width: double.infinity,
+              height: kScreenPadding,
+              color: context.colorScheme.surface),
         ),
       ),
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: kScreenPadding / 2);
+      },
     );
   }
 
@@ -215,24 +200,23 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildLoadingTransactions(context);
         } else if (snapshot.hasError) {
-          return const SliverToBoxAdapter(
-              child: Center(child: Text('Failed to load transaction details')));
+          return const Center(
+              child: Text('Failed to load transaction details'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return _buildEmptyTransactions(context, ref);
         } else {
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return Column(
-                  children: [
-                    snapshot.data![index],
-                    if (index < snapshot.data!.length - 1)
-                      const SizedBox(height: 10),
-                  ],
-                );
-              },
-              childCount: snapshot.data!.length,
-            ),
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  snapshot.data![index],
+                  if (index < snapshot.data!.length - 1)
+                    const SizedBox(height: 10),
+                ],
+              );
+            },
           );
         }
       },

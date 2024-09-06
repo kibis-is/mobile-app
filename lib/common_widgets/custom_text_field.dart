@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -51,6 +52,9 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BorderRadius borderRadius = maxLines > 1
+        ? BorderRadius.circular(kScreenPadding) // Rounded by 16 for multiline
+        : BorderRadius.circular(100.0);
     return TextFormField(
       autocorrect: autoCorrect,
       textInputAction: textInputAction,
@@ -69,14 +73,19 @@ class CustomTextField extends StatelessWidget {
           color: isEnabled ? context.colorScheme.onSurface : Colors.grey),
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
+        fillColor: ColorPalette.darkThemeShadow,
+        filled: true,
         counterText: "",
         prefixIcon: leadingIcon != null
-            ? Icon(
-                leadingIcon,
-                size: isSmall ? AppIcons.small : AppIcons.medium,
-                color: isEnabled
-                    ? context.colorScheme.onSurface
-                    : Colors.grey, // Adjust color for disabled state
+            ? Padding(
+                padding: const EdgeInsets.only(left: kScreenPadding / 2),
+                child: Icon(
+                  leadingIcon,
+                  size: isSmall ? AppIcons.small : AppIcons.medium,
+                  color: isEnabled
+                      ? context.colorScheme.onSurface
+                      : Colors.grey, // Adjust color for disabled state
+                ),
               )
             : null,
         labelText: labelText,
@@ -84,9 +93,10 @@ class CustomTextField extends StatelessWidget {
           fontSize: context.textTheme.bodySmall?.fontSize,
           color: isEnabled ? context.colorScheme.onSurface : Colors.grey,
         ),
+
         contentPadding: EdgeInsets.symmetric(
-            horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding / 2,
-            vertical: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
+            horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding,
+            vertical: 16), // Increase vertical padding to create a taller field
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         errorText: errorText?.isEmpty ?? true
             ? null
@@ -114,25 +124,32 @@ class CustomTextField extends StatelessWidget {
                     },
                   )
                 : null,
+        border: OutlineInputBorder(
+          borderRadius: borderRadius, // Fully rounded corners
+        ),
         disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: context.colorScheme.onSurface.withOpacity(0.2),
+          borderRadius: borderRadius,
+          borderSide: const BorderSide(
+            color: Colors.transparent,
             width: 1.0,
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: context.colorScheme.onSurface.withOpacity(0.5),
+          borderRadius: borderRadius, // Fully rounded for enabled state
+          borderSide: const BorderSide(
+            color: Colors.transparent,
             width: 1.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: context.colorScheme.primary,
-            width: 2.0,
+          borderRadius: borderRadius, // Fully rounded for focused state
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+            width: 0.0,
           ),
         ),
       ),
+
       validator: validator,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,

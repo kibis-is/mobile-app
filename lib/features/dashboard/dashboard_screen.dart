@@ -11,9 +11,11 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_fab_child.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/widgets/activity_tab.dart';
+import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
-import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
+import 'package:kibisis/features/dashboard/widgets/nft_tab.dart';
 import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/select_item.dart';
@@ -33,25 +35,15 @@ class DashboardScreen extends ConsumerStatefulWidget {
   DashboardScreenState createState() => DashboardScreenState();
 }
 
-class DashboardScreenState extends ConsumerState<DashboardScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+class DashboardScreenState extends ConsumerState<DashboardScreen> {
+  int _currentIndex = 0; // Track the selected tab index
   final _key = GlobalKey<ExpandableFabState>();
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final List<Widget> _pages = const [
+    AssetsTab(),
+    NftTab(),
+    ActivityTab()
+  ]; // Pages for navigation
 
   @override
   Widget build(BuildContext context) {
@@ -59,27 +51,46 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     final accountState = ref.watch(accountProvider);
     final publicKey = accountState.account?.publicAddress;
 
-    List<String> tabs = ['Assets', 'NFTs', 'Activity'];
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(context, ref, networks, accountState),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: Column(
-          children: [
-            const SizedBox(height: kScreenPadding),
-            _buildDashboardInfoPanel(
-                context, ref, networks, publicKey, accountState),
-            const SizedBox(height: kScreenPadding),
-            Expanded(
-              child: DashboardTabController(tabs: tabs),
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          const SizedBox(height: kScreenPadding),
+          _buildDashboardInfoPanel(
+              context, ref, networks, publicKey, accountState),
+          const SizedBox(height: kScreenPadding),
+          Expanded(child: _pages[_currentIndex]), // Render current page
+        ],
       ),
       floatingActionButton: _buildFloatingActionButton(),
       floatingActionButtonLocation: ExpandableFab.location,
+      bottomNavigationBar: _buildNavigationBar(),
+    );
+  }
+
+  Widget _buildNavigationBar() {
+    return NavigationBar(
+      selectedIndex: _currentIndex,
+      onDestinationSelected: (int index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(AppIcons.wallet),
+          label: 'Assets',
+        ),
+        NavigationDestination(
+          icon: Icon(AppIcons.about),
+          label: 'NFTs',
+        ),
+        NavigationDestination(
+          icon: Icon(AppIcons.about),
+          label: 'Activity',
+        ),
+      ],
     );
   }
 
@@ -94,12 +105,12 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
         color: isDarkMode ? Colors.black54 : Colors.white54,
       ),
       openButtonBuilder: RotateFloatingActionButtonBuilder(
-          child: const Icon(AppIcons.menu),
-          fabSize: ExpandableFabSize.regular,
-          foregroundColor: Colors.white,
-          backgroundColor: context.colorScheme.secondary,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kWidgetRadius))),
+        child: const Icon(AppIcons.menu),
+        fabSize: ExpandableFabSize.regular,
+        foregroundColor: Colors.white,
+        backgroundColor: context.colorScheme.secondary,
+        shape: const CircleBorder(),
+      ),
       closeButtonBuilder: FloatingActionButtonBuilder(
         size: 56,
         builder: (BuildContext context, void Function()? onPressed,
@@ -251,9 +262,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
       hoverColor: context.colorScheme.surface,
       color: context.colorScheme.surface,
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(kScreenPadding / 2),
-      ),
+      shape: const CircleBorder(),
       onPressed: networks.length > 1
           ? () {
               customBottomSheet(
@@ -276,12 +285,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     );
   }
 
-  Widget _buildDashboardInfoPanel(
-      BuildContext context,
-      WidgetRef ref,
-      List<SelectItem> networks,
-      String? publicKey, // Pass the public key directly from the provider
-      AccountState accountState) {
+  Widget _buildDashboardInfoPanel(BuildContext context, WidgetRef ref,
+      List<SelectItem> networks, String? publicKey, AccountState accountState) {
     if (publicKey == null) {
       return const Center(child: CircularProgressIndicator());
     } else {

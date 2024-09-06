@@ -29,7 +29,6 @@ class AssetsTab extends ConsumerStatefulWidget {
 
 class _AssetsTabState extends ConsumerState<AssetsTab> {
   late final RefreshController _refreshController;
-  final ScrollController _scrollController = ScrollController();
   final TextEditingController filterController = TextEditingController();
 
   void _onRefresh() {
@@ -45,7 +44,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
     filterController.dispose();
     _refreshController.dispose();
     super.dispose();
@@ -55,16 +53,10 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   Widget build(BuildContext context) {
     final assetsAsync = ref.watch(assetsProvider);
 
-    return CustomScrollView(
-      controller: _scrollController,
-      slivers: [
-        SliverAppBar(
-          titleSpacing: 0,
-          floating: true,
-          snap: true,
-          title: _buildSearchBar(context),
-        ),
-        SliverFillRemaining(
+    return Column(
+      children: [
+        _buildSearchBar(context),
+        Expanded(
           child: CustomPullToRefresh(
             refreshController: _refreshController,
             onRefresh: _onRefresh,
@@ -82,43 +74,46 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          color: context.colorScheme.surface,
-          onPressed: _showFilterDialog,
-          icon: Icon(
-            AppIcons.importAccount,
-            color: context.colorScheme.onBackground,
-            size: AppIcons.medium,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            color: context.colorScheme.surface,
+            onPressed: _showFilterDialog,
+            icon: Icon(
+              AppIcons.importAccount,
+              color: context.colorScheme.onBackground,
+              size: AppIcons.medium,
+            ),
           ),
-        ),
-        const SizedBox(width: kScreenPadding / 2),
-        Expanded(
-          child: CustomTextField(
-            controller: filterController,
-            labelText: 'Filter',
-            onChanged: (value) {
-              ref.read(assetsProvider.notifier).setFilter(value);
-            },
-            autoCorrect: false,
-            suffixIcon: AppIcons.cross,
-            leadingIcon: AppIcons.search,
-            onTrailingPressed: () => filterController.clear(),
-            isSmall: true,
+          const SizedBox(width: kScreenPadding / 2),
+          Expanded(
+            child: CustomTextField(
+              controller: filterController,
+              labelText: 'Filter',
+              onChanged: (value) {
+                ref.read(assetsProvider.notifier).setFilter(value);
+              },
+              autoCorrect: false,
+              suffixIcon: AppIcons.cross,
+              leadingIcon: AppIcons.search,
+              onTrailingPressed: () => filterController.clear(),
+              isSmall: true,
+            ),
           ),
-        ),
-        const SizedBox(width: kScreenPadding / 2),
-        IconButton(
-          onPressed: () => context.goNamed(addAssetRouteName),
-          icon: Icon(
-            AppIcons.add,
-            color: context.colorScheme.primary,
-            size: AppIcons.medium,
+          const SizedBox(width: kScreenPadding / 2),
+          IconButton(
+            onPressed: () => context.goNamed(addAssetRouteName),
+            icon: Icon(
+              AppIcons.add,
+              color: context.colorScheme.primary,
+              size: AppIcons.medium,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -223,10 +218,12 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       ),
     );
   }
-}
 
-List<SelectItem> sortOptions = [
-  SelectItem(
-      name: "Sort by Index", value: "index", icon: Icons.format_list_numbered),
-  SelectItem(name: "Sort by Name", value: "name", icon: Icons.sort_by_alpha),
-];
+  List<SelectItem> sortOptions = [
+    SelectItem(
+        name: "Sort by Index",
+        value: "index",
+        icon: Icons.format_list_numbered),
+    SelectItem(name: "Sort by Name", value: "name", icon: Icons.sort_by_alpha),
+  ];
+}

@@ -42,65 +42,68 @@ class DashboardInfoPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        EllipsizedText(
-          accountState.accountName ?? 'No Account Name',
-          type: EllipsisType.end,
-          textAlign: TextAlign.start,
-          style: context.textTheme.titleLarge?.copyWith(letterSpacing: 1.3),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: EllipsizedText(
-                publicKey,
-                type: EllipsisType.middle,
-                textAlign: TextAlign.start,
-                style:
-                    context.textTheme.bodySmall?.copyWith(letterSpacing: 1.5),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          EllipsizedText(
+            accountState.accountName ?? 'No Account Name',
+            type: EllipsisType.end,
+            textAlign: TextAlign.start,
+            style: context.textTheme.titleLarge?.copyWith(letterSpacing: 1.3),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: EllipsizedText(
+                  publicKey,
+                  type: EllipsisType.middle,
+                  textAlign: TextAlign.start,
+                  style:
+                      context.textTheme.bodySmall?.copyWith(letterSpacing: 1.5),
+                ),
               ),
-            ),
-            IconButton(
-              icon: AppIcons.icon(
-                icon: AppIcons.verticalDots,
-                size: AppIcons.medium,
+              IconButton(
+                icon: AppIcons.icon(
+                  icon: AppIcons.verticalDots,
+                  size: AppIcons.medium,
+                ),
+                onPressed: () {
+                  customBottomSheet(
+                    context: context,
+                    items: items,
+                    header: "Options",
+                    onPressed: (SelectItem item) {},
+                  ).then((value) {
+                    if (value == "Copy Address") {
+                      if (!context.mounted) return;
+                      copyToClipboard(context, publicKey);
+                    } else if (value == "Edit") {
+                      GoRouter.of(context).push(
+                        '/editAccount/${accountState.accountId}',
+                        extra: {
+                          'accountName': accountState.accountName ?? '',
+                        },
+                      );
+                    } else if (value == "Share Address") {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => QrDialog(
+                          qrData: publicKey,
+                        ),
+                      );
+                    }
+                  });
+                },
+                padding: const EdgeInsets.all(kScreenPadding / 2),
+                constraints: const BoxConstraints(),
               ),
-              onPressed: () {
-                customBottomSheet(
-                  context: context,
-                  items: items,
-                  header: "Options",
-                  onPressed: (SelectItem item) {},
-                ).then((value) {
-                  if (value == "Copy Address") {
-                    if (!context.mounted) return;
-                    copyToClipboard(context, publicKey);
-                  } else if (value == "Edit") {
-                    GoRouter.of(context).push(
-                      '/editAccount/${accountState.accountId}',
-                      extra: {
-                        'accountName': accountState.accountName ?? '',
-                      },
-                    );
-                  } else if (value == "Share Address") {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => QrDialog(
-                        qrData: publicKey,
-                      ),
-                    );
-                  }
-                });
-              },
-              padding: const EdgeInsets.all(kScreenPadding / 2),
-              constraints: const BoxConstraints(),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
