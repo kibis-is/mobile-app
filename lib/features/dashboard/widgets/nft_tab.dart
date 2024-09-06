@@ -104,7 +104,10 @@ class NftTabState extends ConsumerState<NftTab> {
               autoCorrect: false,
               suffixIcon: AppIcons.cross,
               leadingIcon: AppIcons.search,
-              onTrailingPressed: () => filterController.clear(),
+              onTrailingPressed: () {
+                filterController.clear();
+                ref.read(nftNotifierProvider.notifier).setFilter('');
+              },
               isSmall: true,
             ),
           ),

@@ -12,7 +12,7 @@ class ColorPalette {
   static const Color lightThemeChineseViolet = Color(0xFF77657E);
   static const Color lightThemeFrenchGray = Color(0xFFC4BBC7);
   static const Color lightThemeError = Color(0xFFB80900);
-  static const Color lightThemeShadow = Color(0xFF000000);
+  static const Color lightThemeShadow = Color(0xFFE7E3E7);
   static const Color lightThemeFrozenColor = Color(0xFF37ABFF);
   static const Color lightThemeAssetColor = Color(0xFF029B7F);
   static const Color lightThemeSnow = Color(0xFFFAF8FA);

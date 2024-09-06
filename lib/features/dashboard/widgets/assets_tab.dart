@@ -99,7 +99,10 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               autoCorrect: false,
               suffixIcon: AppIcons.cross,
               leadingIcon: AppIcons.search,
-              onTrailingPressed: () => filterController.clear(),
+              onTrailingPressed: () {
+                filterController.clear();
+                ref.read(assetsProvider.notifier).setFilter('');
+              },
               isSmall: true,
             ),
           ),
@@ -161,7 +164,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
-    return ListView.separated(
+    return ListView.builder(
       itemCount: assets.length + 1,
       shrinkWrap: true,
       itemBuilder: (context, index) {
@@ -170,7 +173,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         }
         return AssetListItem(asset: assets[index], mode: AssetScreenMode.view);
       },
-      separatorBuilder: (_, __) => const SizedBox(height: kScreenPadding / 2),
     );
   }
 

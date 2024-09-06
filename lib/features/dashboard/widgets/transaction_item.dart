@@ -3,11 +3,11 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/common_widgets/flexible_listtile.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -34,17 +34,19 @@ class TransactionItem extends ConsumerWidget {
   Widget _getTransactionIcon(
       BuildContext context, bool isDarkMode, String network) {
     return Container(
-      padding: const EdgeInsets.all(kScreenPadding / 3),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: context.colorScheme.primary,
       ),
-      child: AppIcons.icon(
-          icon: network == 'network-voi'
-              ? AppIcons.voiCircleIcon
-              : AppIcons.algorandIcon,
-          size: AppIcons.xlarge,
-          color: context.colorScheme.onPrimary),
+      child: Padding(
+        padding: const EdgeInsets.all(kScreenPadding / 3),
+        child: AppIcons.icon(
+            icon: network == 'network-voi'
+                ? AppIcons.voiCircleIcon
+                : AppIcons.algorandIcon,
+            size: AppIcons.xlarge,
+            color: context.colorScheme.onPrimary),
+      ),
     );
   }
 
@@ -70,9 +72,12 @@ class TransactionItem extends ConsumerWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: context.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(kWidgetRadius),
+                    border: const Border.symmetric(
+                      horizontal: BorderSide(
+                          width: 1, color: ColorPalette.darkThemeShadow),
+                    ),
                   ),
-                  child: FlexibleListTile(
+                  child: ListTile(
                     onTap: () {
                       Clipboard.setData(
                           ClipboardData(text: transaction.id ?? 'No ID'));

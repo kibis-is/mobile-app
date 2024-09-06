@@ -95,7 +95,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
   }
 
   Widget _buildLoadingTransactions(BuildContext context) {
-    return ListView.separated(
+    return ListView.builder(
       itemCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -114,9 +114,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
               color: context.colorScheme.surface),
         ),
       ),
-      separatorBuilder: (BuildContext context, int index) {
-        return const SizedBox(height: kScreenPadding / 2);
-      },
     );
   }
 
@@ -212,8 +209,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
               return Column(
                 children: [
                   snapshot.data![index],
-                  if (index < snapshot.data!.length - 1)
-                    const SizedBox(height: 10),
                 ],
               );
             },

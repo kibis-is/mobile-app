@@ -26,6 +26,7 @@ class AssetListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = ref.watch(isDarkModeProvider);
     return Stack(
       children: [
         Hero(
@@ -34,9 +35,12 @@ class AssetListItem extends ConsumerWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: context.colorScheme.background,
-                border: const Border.symmetric(
-                  horizontal:
-                      BorderSide(width: 1, color: ColorPalette.darkThemeShadow),
+                border: Border.symmetric(
+                  horizontal: BorderSide(
+                      width: 1,
+                      color: isDarkMode
+                          ? ColorPalette.darkThemeShadow
+                          : ColorPalette.lightThemeShadow),
                 ),
               ),
               child: ListTile(

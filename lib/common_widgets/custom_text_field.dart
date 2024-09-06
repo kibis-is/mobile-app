@@ -105,7 +105,7 @@ class CustomTextField extends StatelessWidget {
             ? Padding(
                 padding: EdgeInsets.only(
                     right: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
-                child: (controller.text.isNotEmpty)
+                child: (controller.text.isEmpty)
                     ? null
                     : IconButton(
                         icon: AppIcons.icon(
