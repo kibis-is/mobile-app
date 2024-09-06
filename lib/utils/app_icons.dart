@@ -53,6 +53,7 @@ class AppIcons {
   static const IconData disconnect = Icons.power_off_rounded;
   static const IconData connect = Icons.power_rounded;
   static const IconData contacts = Icons.contacts_rounded;
+  static const IconData nft = Icons.image;
 
   static const String svgBasePath = 'assets/images/';
 

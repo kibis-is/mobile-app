@@ -77,18 +77,41 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           _currentIndex = index;
         });
       },
-      destinations: const [
+      indicatorColor: Colors.transparent,
+      indicatorShape: const CircleBorder(),
+      destinations: [
         NavigationDestination(
-          icon: Icon(AppIcons.wallet),
+          icon: AppIcons.icon(
+              icon: AppIcons.voiCircleIcon,
+              color: context.colorScheme.onPrimary,
+              size: AppIcons.medium),
           label: 'Assets',
+          selectedIcon: AppIcons.icon(
+              icon: AppIcons.voiCircleIcon,
+              color: context.colorScheme.primary,
+              size: AppIcons.medium),
         ),
         NavigationDestination(
-          icon: Icon(AppIcons.about),
+          icon: AppIcons.icon(
+              icon: AppIcons.nft,
+              color: context.colorScheme.onPrimary,
+              size: AppIcons.medium),
           label: 'NFTs',
+          selectedIcon: AppIcons.icon(
+              icon: AppIcons.nft,
+              color: context.colorScheme.primary,
+              size: AppIcons.medium),
         ),
         NavigationDestination(
-          icon: Icon(AppIcons.about),
+          icon: AppIcons.icon(
+              icon: AppIcons.send,
+              color: context.colorScheme.onPrimary,
+              size: AppIcons.medium),
           label: 'Activity',
+          selectedIcon: AppIcons.icon(
+              icon: AppIcons.send,
+              color: context.colorScheme.primary,
+              size: AppIcons.medium),
         ),
       ],
     );
