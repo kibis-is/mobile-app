@@ -2,7 +2,6 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/select_item.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -43,7 +42,7 @@ class CustomDropDown extends StatelessWidget {
           color: Colors.transparent,
         ),
         borderRadius: BorderRadius.circular(100.0),
-        color: ColorPalette.darkThemeShadow,
+        color: context.colorScheme.surface,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<SelectItem>(
@@ -56,16 +55,12 @@ class CustomDropDown extends StatelessWidget {
               child: Row(
                 children: [
                   AppIcons.icon(icon: item.icon),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: kScreenPadding / 2),
                   Flexible(
-                    child: EllipsizedText(
-                      item.name,
-                      ellipsis: '...',
-                      type: EllipsisType.end,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: context.colorScheme.onBackground,
-                      ),
-                    ),
+                    child: EllipsizedText(item.name,
+                        ellipsis: '...',
+                        type: EllipsisType.end,
+                        style: context.textTheme.displaySmall),
                   ),
                 ],
               ),

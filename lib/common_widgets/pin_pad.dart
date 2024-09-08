@@ -179,10 +179,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                               child: IconButton(
                                 style: IconButton.styleFrom(
                                   backgroundColor: context.colorScheme.error,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(kWidgetRadius),
-                                  ),
+                                  shape: const CircleBorder(),
                                 ),
                                 icon: AppIcons.icon(
                                     icon: AppIcons.refresh,
@@ -220,10 +217,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                             padding: const EdgeInsets.all(kScreenPadding / 4),
                             child: IconButton(
                               style: IconButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(kWidgetRadius),
-                              )),
+                                  shape: const CircleBorder()),
                               icon: AppIcons.icon(
                                   icon: AppIcons.backspace,
                                   size: AppIcons.large),
@@ -246,9 +240,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          kWidgetRadius))),
+                                  const CircleBorder()),
                               backgroundColor:
                                   MaterialStateProperty.resolveWith<Color>(
                                 (Set<MaterialState> states) {

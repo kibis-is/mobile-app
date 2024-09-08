@@ -143,9 +143,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                                   ref.read(checkboxProvider.notifier).state =
                                       value!;
                                 },
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
+                                shape: const CircleBorder(),
                               );
                             },
                           );

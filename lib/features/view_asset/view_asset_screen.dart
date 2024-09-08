@@ -91,15 +91,28 @@ class ViewAssetScreen extends ConsumerWidget {
                 isEnabled: false,
               ),
               const SizedBox(height: kScreenPadding / 2),
-              CustomTextField(
-                controller: TextEditingController(
-                  text: activeAsset?.index.toString() ?? 'Not available',
-                ),
-                labelText: 'Application ID',
-                isEnabled: false,
-                suffixIcon: AppIcons.copy,
-                onTrailingPressed: () => copyToClipboard(
-                    context, activeAsset?.index.toString() ?? ''),
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      controller: TextEditingController(
+                        text: activeAsset?.index.toString() ?? 'Not available',
+                      ),
+                      labelText: 'Application ID',
+                      isEnabled: false,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: kScreenPadding,
+                  ),
+                  IconButton(
+                    icon: const Icon(AppIcons.copy),
+                    onPressed: () {
+                      copyToClipboard(
+                          context, activeAsset?.index.toString() ?? '');
+                    },
+                  )
+                ],
               ),
               const SizedBox(height: kScreenPadding / 2),
               CustomTextField(

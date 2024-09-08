@@ -25,14 +25,14 @@ ElevatedButtonThemeData elevatedButtonTheme({
 
 ElevatedButtonThemeData elevatedButtonThemeLight() {
   return elevatedButtonTheme(
-    backgroundColor: ColorPalette.lightThemeMauveine,
-    foregroundColor: ColorPalette.lightThemeAntiFlashWhite,
+    backgroundColor: ColorPalette.lightThemeSecondary,
+    foregroundColor: Colors.white,
   );
 }
 
 ElevatedButtonThemeData elevatedButtonThemeDark() {
   return elevatedButtonTheme(
-    backgroundColor: ColorPalette.darkThemeHeiliotrope,
-    foregroundColor: ColorPalette.darkThemeAntiflashWhite,
+    backgroundColor: ColorPalette.darkThemeSecondary,
+    foregroundColor: Colors.white,
   );
 }

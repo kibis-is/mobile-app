@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/theme/color_palette.dart';
+import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends ConsumerWidget {
   const CustomTextField({
     super.key,
     required this.controller,
@@ -51,9 +52,10 @@ class CustomTextField extends StatelessWidget {
   final bool isSmall;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(isDarkModeProvider);
     final BorderRadius borderRadius = maxLines > 1
-        ? BorderRadius.circular(kScreenPadding) // Rounded by 16 for multiline
+        ? BorderRadius.circular(kScreenPadding)
         : BorderRadius.circular(100.0);
     return TextFormField(
       autocorrect: autoCorrect,
@@ -61,19 +63,15 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       maxLength: maxLength,
       maxLines: maxLines,
-      enabled: isEnabled, // Disable the field
+      enabled: isEnabled,
       textAlign: textAlign,
       controller: controller,
       focusNode: focusNode,
       obscureText: isObscureText,
-      style: TextStyle(
-          fontSize: isSmall
-              ? context.textTheme.bodySmall?.fontSize
-              : context.textTheme.bodyMedium?.fontSize,
-          color: isEnabled ? context.colorScheme.onSurface : Colors.grey),
+      style: context.textTheme.displaySmall,
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
-        fillColor: ColorPalette.darkThemeShadow,
+        fillColor: context.colorScheme.surface,
         filled: true,
         counterText: "",
         prefixIcon: leadingIcon != null
@@ -82,21 +80,18 @@ class CustomTextField extends StatelessWidget {
                 child: Icon(
                   leadingIcon,
                   size: isSmall ? AppIcons.small : AppIcons.medium,
-                  color: isEnabled
-                      ? context.colorScheme.onSurface
-                      : Colors.grey, // Adjust color for disabled state
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
               )
             : null,
         labelText: labelText,
         labelStyle: TextStyle(
           fontSize: context.textTheme.bodySmall?.fontSize,
-          color: isEnabled ? context.colorScheme.onSurface : Colors.grey,
+          color: context.colorScheme.onSurfaceVariant,
         ),
-
         contentPadding: EdgeInsets.symmetric(
             horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding,
-            vertical: 16), // Increase vertical padding to create a taller field
+            vertical: kScreenPadding / 4),
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         errorText: errorText?.isEmpty ?? true
             ? null
@@ -125,31 +120,30 @@ class CustomTextField extends StatelessWidget {
                   )
                 : null,
         border: OutlineInputBorder(
-          borderRadius: borderRadius, // Fully rounded corners
+          borderRadius: borderRadius,
         ),
         disabledBorder: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+            width: 0.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
           borderRadius: borderRadius,
           borderSide: const BorderSide(
             color: Colors.transparent,
             width: 1.0,
           ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: borderRadius, // Fully rounded for enabled state
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            width: 1.0,
-          ),
-        ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: borderRadius, // Fully rounded for focused state
+          borderRadius: borderRadius,
           borderSide: const BorderSide(
             color: Colors.transparent,
             width: 0.0,
           ),
         ),
       ),
-
       validator: validator,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,

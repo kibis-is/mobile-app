@@ -7,7 +7,6 @@ import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -71,10 +70,10 @@ class TransactionItem extends ConsumerWidget {
               Material(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: context.colorScheme.surface,
-                    border: const Border.symmetric(
+                    color: context.colorScheme.background,
+                    border: Border.symmetric(
                       horizontal: BorderSide(
-                          width: 1, color: ColorPalette.darkThemeShadow),
+                          width: 1, color: context.colorScheme.surface),
                     ),
                   ),
                   child: ListTile(
@@ -97,7 +96,7 @@ class TransactionItem extends ConsumerWidget {
                           type == 'pay'
                               ? 'Payment'
                               : assetName ?? 'Asset Transfer',
-                          style: context.textTheme.titleSmall?.copyWith(
+                          style: context.textTheme.displaySmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),

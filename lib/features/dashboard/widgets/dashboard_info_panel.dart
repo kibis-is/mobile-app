@@ -51,7 +51,10 @@ class DashboardInfoPanel extends StatelessWidget {
             accountState.accountName ?? 'No Account Name',
             type: EllipsisType.end,
             textAlign: TextAlign.start,
-            style: context.textTheme.titleLarge?.copyWith(letterSpacing: 1.3),
+            style: context.textTheme.titleLarge?.copyWith(
+              letterSpacing: 1.3,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,8 +64,8 @@ class DashboardInfoPanel extends StatelessWidget {
                   publicKey,
                   type: EllipsisType.middle,
                   textAlign: TextAlign.start,
-                  style:
-                      context.textTheme.bodySmall?.copyWith(letterSpacing: 1.5),
+                  style: context.textTheme.bodySmall?.copyWith(
+                      letterSpacing: 1.5, fontWeight: FontWeight.bold),
                 ),
               ),
               IconButton(

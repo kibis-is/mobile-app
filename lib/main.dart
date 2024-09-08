@@ -11,7 +11,6 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -23,7 +22,10 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: Kibisis()));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const ProviderScope(child: Kibisis()));
+  });
 }
 
 class Kibisis extends ConsumerStatefulWidget {
@@ -98,9 +100,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
                       percent: progress,
                     ),
                     isLoading: isLoading,
-                    color: isDarkTheme
-                        ? ColorPalette.darkThemeRichBlack
-                        : ColorPalette.lightThemeSnow,
+                    color: context.colorScheme.surface,
                     opacity: 1.0,
                     child: Stack(
                       children: [

@@ -7,7 +7,6 @@ import 'package:kibisis/features/settings/appearance/providers/dark_mode_provide
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -26,7 +25,7 @@ class AssetListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkMode = ref.watch(isDarkModeProvider);
+    ref.watch(isDarkModeProvider);
     return Stack(
       children: [
         Hero(
@@ -36,11 +35,8 @@ class AssetListItem extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: context.colorScheme.background,
                 border: Border.symmetric(
-                  horizontal: BorderSide(
-                      width: 1,
-                      color: isDarkMode
-                          ? ColorPalette.darkThemeShadow
-                          : ColorPalette.lightThemeShadow),
+                  horizontal:
+                      BorderSide(width: 1, color: context.colorScheme.surface),
                 ),
               ),
               child: ListTile(
@@ -48,7 +44,7 @@ class AssetListItem extends ConsumerWidget {
                     context, ref, asset.params.defaultFrozen ?? false),
                 title: EllipsizedText(
                   asset.params.name ?? 'Unknown',
-                  style: context.textTheme.displayMedium?.copyWith(
+                  style: context.textTheme.displaySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),

@@ -70,7 +70,9 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildNavigationBar() {
+    ref.watch(isDarkModeProvider);
     return NavigationBar(
+      backgroundColor: context.colorScheme.surface,
       selectedIndex: _currentIndex,
       onDestinationSelected: (int index) {
         setState(() {
@@ -82,19 +84,19 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       destinations: [
         NavigationDestination(
           icon: AppIcons.icon(
-              icon: AppIcons.voiCircleIcon,
-              color: context.colorScheme.onPrimary,
+              icon: AppIcons.voiIcon,
+              color: context.colorScheme.onSurfaceVariant,
               size: AppIcons.medium),
           label: 'Assets',
           selectedIcon: AppIcons.icon(
-              icon: AppIcons.voiCircleIcon,
+              icon: AppIcons.voiIcon,
               color: context.colorScheme.primary,
               size: AppIcons.medium),
         ),
         NavigationDestination(
           icon: AppIcons.icon(
               icon: AppIcons.nft,
-              color: context.colorScheme.onPrimary,
+              color: context.colorScheme.onSurfaceVariant,
               size: AppIcons.medium),
           label: 'NFTs',
           selectedIcon: AppIcons.icon(
@@ -105,7 +107,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
         NavigationDestination(
           icon: AppIcons.icon(
               icon: AppIcons.send,
-              color: context.colorScheme.onPrimary,
+              color: context.colorScheme.onSurfaceVariant,
               size: AppIcons.medium),
           label: 'Activity',
           selectedIcon: AppIcons.icon(
@@ -157,6 +159,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           icon: AppIcons.send,
           backgroundColor: context.colorScheme.secondary,
           iconColor: Colors.white,
+          borderRadius: 100,
           onPressed: () {
             context.goNamed(
               sendTransactionRouteName,
@@ -167,6 +170,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         if (Platform.isAndroid || Platform.isIOS)
           CustomFabChild(
+            borderRadius: 100,
             icon: AppIcons.scan,
             backgroundColor: context.colorScheme.primary,
             iconColor: context.colorScheme.onPrimary,
@@ -188,6 +192,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
             },
           ),
         CustomFabChild(
+          borderRadius: 100,
           icon: AppIcons.wallet,
           backgroundColor: context.colorScheme.primary,
           iconColor: context.colorScheme.onPrimary,
@@ -197,6 +202,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           },
         ),
         CustomFabChild(
+          borderRadius: 100,
           icon: AppIcons.settings,
           backgroundColor: context.colorScheme.primary,
           iconColor: context.colorScheme.onPrimary,

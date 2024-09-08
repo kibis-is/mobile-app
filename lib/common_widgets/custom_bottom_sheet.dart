@@ -57,10 +57,7 @@ Future<dynamic> customBottomSheet({
 Widget _buildHeader(BuildContext context, String header) {
   return Padding(
     padding: const EdgeInsets.all(kSizedBoxSpacing),
-    child: Text(header,
-        style: context.textTheme.titleMedium?.copyWith(
-          color: context.colorScheme.onSurface,
-        )),
+    child: Text(header, style: context.textTheme.titleMedium),
   );
 }
 

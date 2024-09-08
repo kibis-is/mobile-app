@@ -63,6 +63,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
       floatingActionButton: ScaleTransition(
         scale: _animation,
         child: FloatingActionButton(
+          shape: const CircleBorder(),
           onPressed: _navigateToAddAccount,
           backgroundColor: context.colorScheme.secondary,
           foregroundColor: Colors.white,
@@ -185,9 +186,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
       alignment: Alignment.centerRight,
       child: IconButton(
         icon: AppIcons.icon(
-            icon: AppIcons.edit,
-            size: AppIcons.medium,
-            color: ColorPalette.darkThemeAntiflashWhite),
+            icon: AppIcons.edit, size: AppIcons.medium, color: Colors.white),
         onPressed: () {
           _navigateToEditAccount(accountId, accountName);
         },
@@ -229,7 +228,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
         style: context.textTheme.titleLarge
             ?.copyWith(fontWeight: FontWeight.bold)
             .copyWith(
-              color: ColorPalette.darkThemeAntiflashWhite,
+              color: Colors.white,
             ));
   }
 
@@ -240,7 +239,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
       publicKey,
       style: context.textTheme.titleSmall?.copyWith(
         fontWeight: FontWeight.bold,
-        color: ColorPalette.darkThemeAntiflashWhite,
+        color: Colors.white,
       ),
     );
   }

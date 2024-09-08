@@ -1,7 +1,7 @@
 name: kibisis
 description: "Kibisis Mobile App"
 publish_to: 'none'
-version: 0.3.0+4
+version: 0.4.0+5
 environment:
   sdk: '>=3.3.1 <4.0.0'
 
@@ -93,8 +93,6 @@ flutter:
   #         weight: 700
 
   fonts:
-    - family: SF Pro
+    - family: Nunito
       fonts:
-        - asset: assets/fonts/SFPRODISPLAYREGULAR.OTF
-        - asset: assets/fonts/SFPRODISPLAYBOLD.OTF
-          weight: 700
+        - asset: assets/fonts/Nunito-VariableFont_wght.TTF

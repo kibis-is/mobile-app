@@ -15,7 +15,6 @@ import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
@@ -144,11 +143,10 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       elevation: 0,
       title: Text(
         _getAppBarTitle(),
-        style: const TextStyle(color: ColorPalette.lightThemeAntiFlashWhite),
+        style: const TextStyle(color: Colors.white),
       ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back,
-            color: ColorPalette.lightThemeAntiFlashWhite),
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () {
           Navigator.of(context).pop();
         },
@@ -157,7 +155,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         IconButton(
           icon: Icon(
             isTorchEnabled ? Icons.flash_on : Icons.flash_off,
-            color: ColorPalette.lightThemeAntiFlashWhite,
+            color: Colors.white,
           ),
           onPressed: () {
             scanController.toggleTorch();

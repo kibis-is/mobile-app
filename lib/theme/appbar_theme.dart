@@ -16,14 +16,14 @@ AppBarTheme appBarTheme({
 
 AppBarTheme appBarThemeDark() {
   return appBarTheme(
-    backgroundColor: ColorPalette.darkThemeRaisinBlack,
-    foregroundColor: ColorPalette.darkThemeAntiflashWhite,
+    backgroundColor: ColorPalette.darkThemeBackground,
+    foregroundColor: ColorPalette.darkThemeHeader,
   );
 }
 
 AppBarTheme appBarThemeLight() {
   return appBarTheme(
-    backgroundColor: ColorPalette.lightThemeAntiFlashWhite,
-    foregroundColor: ColorPalette.lightThemeShadow,
+    backgroundColor: ColorPalette.lightThemeBackground,
+    foregroundColor: ColorPalette.lightThemeHeader,
   );
 }

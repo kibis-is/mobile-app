@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/models/nft.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/routing/named_routes.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 enum NftViewType { grid, card }
@@ -67,9 +66,7 @@ class NftCard extends StatelessWidget {
             ? const EdgeInsets.all(0)
             : const EdgeInsets.only(bottom: kScreenPadding / 2),
         shape: RoundedRectangleBorder(
-          borderRadius: viewType == NftViewType.grid
-              ? BorderRadius.circular(0)
-              : BorderRadius.circular(kWidgetRadius),
+          borderRadius: BorderRadius.circular(0),
         ),
         clipBehavior: Clip.antiAlias,
         child: Stack(
@@ -147,7 +144,7 @@ class NftDetails extends StatelessWidget {
             name,
             style: context.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: ColorPalette.darkThemeWhite,
+              color: Colors.white,
               shadows: const [
                 Shadow(
                   offset: Offset(1.0, 1.0),
