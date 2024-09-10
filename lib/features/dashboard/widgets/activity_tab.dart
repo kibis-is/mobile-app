@@ -1,6 +1,7 @@
-import 'dart:convert'; // Required for decoding notes
+import 'dart:convert';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -29,7 +30,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
 
-    // Add listener to ScrollController for pagination
+    // Listen for when the user scrolls to the bottom to load more transactions
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter == 0 && !isLoadingMore) {
         _loadMoreTransactions();
@@ -38,8 +39,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
   }
 
   Future<void> _onRefresh() async {
-    ref.invalidate(
-        transactionsProvider); // Invalidate the provider to force refresh
+    ref.invalidate(transactionsProvider); // Invalidate the provider to refresh
     final publicAddress =
         ref.read(accountProvider).account?.publicAddress ?? '';
     await ref
@@ -51,7 +51,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
   Future<void> _loadMoreTransactions() async {
     final transactionsNotifier = ref.read(transactionsProvider.notifier);
 
-    // Check if there's more data to load
     if (transactionsNotifier.nextToken != null && !isLoadingMore) {
       setState(() {
         isLoadingMore = true;
@@ -84,13 +83,19 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
         Expanded(
           child: NotificationListener<ScrollNotification>(
             onNotification: (scrollNotification) {
-              if (scrollNotification is ScrollEndNotification &&
-                  _scrollController.position.extentAfter == 0 &&
+              if (_scrollController.hasClients &&
+                  scrollNotification.metrics.pixels >=
+                      scrollNotification.metrics.maxScrollExtent -
+                          100 && // Near bottom of the list
+                  scrollNotification.metrics.axisDirection ==
+                      AxisDirection.down && // Ensure scrolling down
                   !isLoadingMore) {
-                // Trigger load more when reaching the end of the list
-                _loadMoreTransactions();
+                // Ensure _loadMoreTransactions() is called after the current frame
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  _loadMoreTransactions();
+                });
               }
-              return false; // Allow notification to bubble up
+              return false; // Allow other listeners to handle the event
             },
             child: CustomPullToRefresh(
               refreshController: _refreshController,
@@ -100,54 +105,11 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
                   if (transactions.isEmpty) {
                     return _buildEmptyTransactions(context, ref);
                   }
-                  return ListView.builder(
-                    controller:
-                        _scrollController, // Attach the ScrollController
-                    itemCount: transactions.length,
-                    itemBuilder: (context, index) {
-                      // Ensure index is valid
-                      if (index < 0 || index >= transactions.length) {
-                        return const SizedBox.shrink();
-                      }
-
-                      final transaction = transactions[index];
-
-                      // Determine if the transaction is outgoing
-                      final isOutgoing = transaction.sender ==
-                          ref.read(accountProvider).account?.publicAddress;
-
-                      // Get other required parameters
-                      final otherPartyAddress = isOutgoing
-                          ? transaction.paymentTransaction?.receiver
-                                  .toString() ??
-                              ''
-                          : transaction.sender;
-
-                      final amount = transaction.paymentTransaction != null
-                          ? Algo.fromMicroAlgos(
-                              transaction.paymentTransaction!.amount)
-                          : 0.0;
-
-                      final note =
-                          utf8.decode(base64.decode(transaction.note ?? ''));
-
-                      // Assuming you also need to pass the type of the transaction
-                      final type = transaction.type;
-
-                      // Return the TransactionItem with all required parameters
-                      return TransactionItem(
-                        transaction: transaction,
-                        isOutgoing: isOutgoing,
-                        otherPartyAddress: otherPartyAddress,
-                        amount: amount.toString(),
-                        note: note,
-                        type: type,
-                      );
-                    },
-                  );
+                  return _buildTransactionsList(
+                      context, ref, transactions); // Display the list
                 },
                 loading: () =>
-                    _buildLoadingShimmer(context), // Shimmer effect here
+                    _buildLoadingShimmer(context), // Shimmer for initial load
                 error: (error, stack) => _buildEmptyTransactions(context, ref),
               ),
             ),
@@ -157,14 +119,71 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: CircularProgressIndicator(),
-          ), // Show loading indicator when loading more data
+          ),
       ],
+    );
+  }
+
+  Widget _buildTransactionsList(
+      BuildContext context, WidgetRef ref, List<Transaction> transactions) {
+    final publicAddress =
+        ref.read(accountProvider).account?.publicAddress ?? '';
+
+    return FutureBuilder<List<TransactionItem>>(
+      future: _buildTransactionItems(transactions, publicAddress, ref),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            transactions.isEmpty) {
+          // Show shimmer only if no items have been loaded yet
+          return _buildLoadingShimmer(context);
+        } else if (snapshot.hasError) {
+          return const Center(
+              child: Text('Failed to load transaction details'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return _buildEmptyTransactions(context, ref);
+        } else {
+          return ListView.builder(
+            controller: _scrollController,
+            shrinkWrap: true,
+            itemCount: snapshot.data!.length +
+                (isLoadingMore ? 3 : 0), // Add 3 for shimmer items
+            itemBuilder: (context, index) {
+              if (index < snapshot.data!.length) {
+                return Column(
+                  children: [
+                    snapshot.data![index],
+                  ],
+                );
+              } else {
+                // Show shimmer for the newly loading items
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: ListTile(
+                    leading: const CircleAvatar(),
+                    title: Container(
+                      width: double.infinity,
+                      height: 16.0,
+                      color: Colors.white,
+                    ),
+                    subtitle: Container(
+                      width: double.infinity,
+                      height: 16.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }
+            },
+          );
+        }
+      },
     );
   }
 
   Widget _buildLoadingShimmer(BuildContext context) {
     return ListView.builder(
-      itemCount: 3, // Number of placeholder items to display
+      itemCount: 3, // Number of shimmer placeholders
       itemBuilder: (context, index) {
         return Shimmer.fromColors(
           baseColor: Colors.grey.shade300,
@@ -204,29 +223,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
             child: const Text('Retry'),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildLoadingTransactions(BuildContext context) {
-    return ListView.builder(
-      itemCount: 3,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => Shimmer.fromColors(
-        baseColor: context.colorScheme.background,
-        highlightColor: Colors.grey.shade100,
-        child: ListTile(
-          leading: const CircleAvatar(),
-          title: Container(
-              width: double.infinity,
-              height: kScreenPadding,
-              color: context.colorScheme.surface),
-          subtitle: Container(
-              width: double.infinity,
-              height: kScreenPadding,
-              color: context.colorScheme.surface),
-        ),
       ),
     );
   }
@@ -298,37 +294,5 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
     }
 
     return transactionItems;
-  }
-
-  Widget _buildTransactionsList(
-      BuildContext context, WidgetRef ref, List<Transaction> transactions) {
-    final publicAddress =
-        ref.read(accountProvider).account?.publicAddress ?? '';
-
-    return FutureBuilder<List<TransactionItem>>(
-      future: _buildTransactionItems(transactions, publicAddress, ref),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildLoadingTransactions(context);
-        } else if (snapshot.hasError) {
-          return const Center(
-              child: Text('Failed to load transaction details'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return _buildEmptyTransactions(context, ref);
-        } else {
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  snapshot.data![index],
-                ],
-              );
-            },
-          );
-        }
-      },
-    );
   }
 }
