@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_loading_overlay.dart';
 import 'package:kibisis/common_widgets/loading_overlay.dart';
@@ -21,7 +22,8 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(const ProviderScope(child: Kibisis()));
@@ -42,9 +44,18 @@ class _KibisisState extends ConsumerState<Kibisis> {
   @override
   void initState() {
     super.initState();
+    initApp().then((_) {
+      FlutterNativeSplash.remove();
+    }).catchError((error) {
+      debugPrint("Initialization error: $error");
+      FlutterNativeSplash.remove();
+    });
+  }
+
+  Future<void> initApp() async {
     final storageService = ref.read(storageProvider);
     walletConnectManager = WalletConnectManager(storageService);
-    walletConnectManager.reconnectSessions();
+    await walletConnectManager.reconnectSessions();
     _lifecycleHandler = AppLifecycleHandler(
       ref: ref,
       onResumed: (seconds) {
