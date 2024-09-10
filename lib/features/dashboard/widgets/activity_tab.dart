@@ -22,21 +22,49 @@ class ActivityTab extends ConsumerStatefulWidget {
 class _ActivityTabState extends ConsumerState<ActivityTab> {
   late final RefreshController _refreshController;
   final ScrollController _scrollController = ScrollController();
+  bool isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
+
+    // Add listener to ScrollController for pagination
+    _scrollController.addListener(() {
+      if (_scrollController.position.extentAfter == 0 && !isLoadingMore) {
+        _loadMoreTransactions();
+      }
+    });
   }
 
-  void _onRefresh() async {
-    ref.invalidate(transactionsProvider);
+  Future<void> _onRefresh() async {
+    ref.invalidate(
+        transactionsProvider); // Invalidate the provider to force refresh
     final publicAddress =
         ref.read(accountProvider).account?.publicAddress ?? '';
     await ref
         .read(transactionsProvider.notifier)
-        .getTransactions(publicAddress);
+        .getTransactions(publicAddress, isInitial: true);
     _refreshController.refreshCompleted();
+  }
+
+  Future<void> _loadMoreTransactions() async {
+    final transactionsNotifier = ref.read(transactionsProvider.notifier);
+
+    // Check if there's more data to load
+    if (transactionsNotifier.nextToken != null && !isLoadingMore) {
+      setState(() {
+        isLoadingMore = true;
+      });
+
+      final publicAddress =
+          ref.read(accountProvider).account?.publicAddress ?? '';
+      await transactionsNotifier.getTransactions(publicAddress);
+
+      setState(() {
+        isLoadingMore = false;
+      });
+    }
   }
 
   @override
@@ -54,22 +82,108 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
       children: [
         const SizedBox(height: kScreenPadding / 4),
         Expanded(
-          child: CustomPullToRefresh(
-            refreshController: _refreshController,
-            onRefresh: _onRefresh,
-            child: transactionsAsyncValue.when(
-              data: (transactions) {
-                if (transactions.isEmpty) {
-                  return _buildEmptyTransactions(context, ref);
-                }
-                return _buildTransactionsList(context, ref, transactions);
-              },
-              loading: () => _buildLoadingTransactions(context),
-              error: (error, stack) => _buildEmptyTransactions(context, ref),
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification is ScrollEndNotification &&
+                  _scrollController.position.extentAfter == 0 &&
+                  !isLoadingMore) {
+                // Trigger load more when reaching the end of the list
+                _loadMoreTransactions();
+              }
+              return false; // Allow notification to bubble up
+            },
+            child: CustomPullToRefresh(
+              refreshController: _refreshController,
+              onRefresh: _onRefresh,
+              child: transactionsAsyncValue.when(
+                data: (transactions) {
+                  if (transactions.isEmpty) {
+                    return _buildEmptyTransactions(context, ref);
+                  }
+                  return ListView.builder(
+                    controller:
+                        _scrollController, // Attach the ScrollController
+                    itemCount: transactions.length,
+                    itemBuilder: (context, index) {
+                      // Ensure index is valid
+                      if (index < 0 || index >= transactions.length) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final transaction = transactions[index];
+
+                      // Determine if the transaction is outgoing
+                      final isOutgoing = transaction.sender ==
+                          ref.read(accountProvider).account?.publicAddress;
+
+                      // Get other required parameters
+                      final otherPartyAddress = isOutgoing
+                          ? transaction.paymentTransaction?.receiver
+                                  .toString() ??
+                              ''
+                          : transaction.sender;
+
+                      final amount = transaction.paymentTransaction != null
+                          ? Algo.fromMicroAlgos(
+                              transaction.paymentTransaction!.amount)
+                          : 0.0;
+
+                      final note =
+                          utf8.decode(base64.decode(transaction.note ?? ''));
+
+                      // Assuming you also need to pass the type of the transaction
+                      final type = transaction.type;
+
+                      // Return the TransactionItem with all required parameters
+                      return TransactionItem(
+                        transaction: transaction,
+                        isOutgoing: isOutgoing,
+                        otherPartyAddress: otherPartyAddress,
+                        amount: amount.toString(),
+                        note: note,
+                        type: type,
+                      );
+                    },
+                  );
+                },
+                loading: () =>
+                    _buildLoadingShimmer(context), // Shimmer effect here
+                error: (error, stack) => _buildEmptyTransactions(context, ref),
+              ),
             ),
           ),
         ),
+        if (isLoadingMore)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: CircularProgressIndicator(),
+          ), // Show loading indicator when loading more data
       ],
+    );
+  }
+
+  Widget _buildLoadingShimmer(BuildContext context) {
+    return ListView.builder(
+      itemCount: 3, // Number of placeholder items to display
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: ListTile(
+            leading: const CircleAvatar(),
+            title: Container(
+              width: double.infinity,
+              height: 16.0,
+              color: Colors.white,
+            ),
+            subtitle: Container(
+              width: double.infinity,
+              height: 16.0,
+              color: Colors.white,
+            ),
+          ),
+        );
+      },
     );
   }
 

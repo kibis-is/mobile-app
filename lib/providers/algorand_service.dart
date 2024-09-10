@@ -484,7 +484,7 @@ class AlgorandService {
     }
   }
 
-  Future<List<Transaction>> getTransactions(
+  Future<SearchTransactionsResponse> getTransactions(
     String publicAddress, {
     int? limit,
     double? minAmount,
@@ -494,11 +494,13 @@ class AlgorandService {
     TransactionType? transactionType,
   }) async {
     try {
+      // Start the transaction query
       var query = algorand
           .indexer()
           .transactions()
           .whereAddress(Address.fromAlgorandAddress(address: publicAddress));
 
+      // Apply filters if provided
       if (minAmount != null) {
         query = query.whereCurrencyIsGreaterThan(Algo.toMicroAlgos(minAmount));
       }
@@ -506,7 +508,7 @@ class AlgorandService {
         query = query.whereCurrencyIsLessThan(Algo.toMicroAlgos(maxAmount));
       }
       if (assetId != null) {
-        query = query.whereAssetId(assetId);
+        query = query.forAsset(assetId);
       }
       if (notePrefix != null) {
         query = query.whereNotePrefix(notePrefix);
@@ -515,11 +517,22 @@ class AlgorandService {
         query = query.whereTransactionType(transactionType);
       }
 
+      // Execute the search query
       final transactions = await query.search(limit: limit ?? 10);
-      return transactions.transactions;
+
+      // Return the SearchTransactionsResponse containing transactions and the nextToken
+      return SearchTransactionsResponse(
+        currentRound: transactions.currentRound,
+        nextToken: transactions.nextToken,
+        transactions: transactions.transactions,
+      );
     } catch (e) {
       debugPrint('Failed to fetch transactions: $e');
-      return [];
+      return SearchTransactionsResponse(
+        currentRound: 0,
+        nextToken: null,
+        transactions: [],
+      );
     }
   }
 

@@ -15,7 +15,8 @@ final transactionsProvider =
 class TransactionsNotifier
     extends StateNotifier<AsyncValue<List<Transaction>>> {
   final Ref ref;
-  final String publicAddress; // This needs to be passed to the constructor
+  final String publicAddress;
+  String? nextToken; // To store the nextToken for pagination
 
   TransactionsNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
@@ -23,20 +24,37 @@ class TransactionsNotifier
   }
 
   Future<void> _init() async {
-    await getTransactions(publicAddress);
+    await getTransactions(publicAddress, isInitial: true);
   }
 
-  Future<void> getTransactions(String publicAddress) async {
+  Future<void> getTransactions(String publicAddress,
+      {bool isInitial = false}) async {
     if (publicAddress.isEmpty) {
       state = const AsyncValue.data([]);
       return;
     }
     try {
-      final transactions = await ref
+      if (isInitial) {
+        // Reset state and token for initial load
+        state = const AsyncValue.loading();
+        nextToken = null;
+      }
+
+      final response = await ref
           .read(algorandServiceProvider)
-          .getTransactions(publicAddress);
+          .getTransactions(publicAddress, limit: 5);
+
+      final transactions = response.transactions;
+
       if (mounted) {
-        state = AsyncValue.data(transactions);
+        if (isInitial) {
+          state = AsyncValue.data(transactions);
+        } else {
+          final currentState = state.value ?? [];
+          // Append the new transactions to the current state
+          state = AsyncValue.data([...currentState, ...transactions]);
+        }
+        nextToken = response.nextToken; // Update the nextToken for pagination
       }
     } catch (e) {
       if (mounted) {
@@ -47,5 +65,6 @@ class TransactionsNotifier
 
   void reset() {
     state = const AsyncValue.data([]);
+    nextToken = null; // Reset pagination when resetting
   }
 }
