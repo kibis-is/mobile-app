@@ -52,7 +52,7 @@ android {
     defaultConfig {
         applicationId "is.kibis.kibisis"
         minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion localProperties.getProperty('flutter.targetSdkVersion').toInteger()
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
