@@ -25,6 +25,7 @@ import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -243,7 +244,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               EllipsizedText(
                 type: EllipsisType.end,
                 ellipsis: '...',
-                balance.toStringAsFixed(2),
+                NumberShortener.shortenNumber(balance),
                 style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: balance > 0

@@ -126,6 +126,6 @@ class AssetListItem extends ConsumerWidget {
   }
 
   String _getFormattedAmount() {
-    return NumberShortener.formatAssetTotal(asset.amount);
+    return NumberShortener.shortenNumber(asset.amount.toDouble());
   }
 }

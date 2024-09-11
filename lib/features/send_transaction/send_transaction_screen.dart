@@ -311,7 +311,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       final int maxAssetAmount =
           ref.read(activeAssetProvider)?.params.total ?? 0;
       final String formattedAmount =
-          NumberShortener.formatBalance(maxAssetAmount.toDouble());
+          NumberShortener.shortenNumber(maxAssetAmount.toDouble());
       return Text('Max: $formattedAmount');
     }
   }

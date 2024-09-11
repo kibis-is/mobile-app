@@ -63,7 +63,7 @@ class ViewAssetScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: kScreenPadding),
                     EllipsizedText(
-                      NumberShortener.formatBalance(userBalance.toDouble()),
+                      NumberShortener.shortenNumber(userBalance.toDouble()),
                       style: context.textTheme.displayMedium?.copyWith(
                           color: context.colorScheme.secondary,
                           fontWeight: FontWeight.bold),
@@ -135,7 +135,7 @@ class ViewAssetScreen extends ConsumerWidget {
               const SizedBox(height: kScreenPadding / 2),
               CustomTextField(
                 controller: TextEditingController(
-                  text: NumberShortener.formatBalance(totalSupply),
+                  text: NumberShortener.shortenNumber(totalSupply),
                 ),
                 labelText: 'Total Supply',
                 isEnabled: false,
