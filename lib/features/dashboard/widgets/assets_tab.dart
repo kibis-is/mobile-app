@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
+import 'package:kibisis/features/dashboard/providers/asset_filter_provider.dart';
 import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
@@ -29,12 +30,6 @@ class AssetsTab extends ConsumerStatefulWidget {
 
 class _AssetsTabState extends ConsumerState<AssetsTab> {
   late final RefreshController _refreshController;
-  final TextEditingController filterController = TextEditingController();
-
-  void _onRefresh() {
-    ref.invalidate(assetsProvider);
-    _refreshController.refreshCompleted();
-  }
 
   @override
   void initState() {
@@ -44,7 +39,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   @override
   void dispose() {
-    filterController.dispose();
     _refreshController.dispose();
     super.dispose();
   }
@@ -52,10 +46,12 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   @override
   Widget build(BuildContext context) {
     final assetsAsync = ref.watch(assetsProvider);
+    final filterController = ref.watch(assetsFilterControllerProvider);
+    final filterNotifier = ref.watch(assetsFilterControllerProvider.notifier);
 
     return Column(
       children: [
-        _buildSearchBar(context),
+        _buildSearchBar(context, filterController, filterNotifier),
         Expanded(
           child: CustomPullToRefresh(
             refreshController: _refreshController,
@@ -73,7 +69,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     );
   }
 
-  Widget _buildSearchBar(BuildContext context) {
+  Widget _buildSearchBar(BuildContext context, TextEditingController controller,
+      AssetsFilterController notifier) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
       child: Row(
@@ -91,7 +88,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           const SizedBox(width: kScreenPadding / 2),
           Expanded(
             child: CustomTextField(
-              controller: filterController,
+              controller: controller,
               labelText: 'Filter',
               onChanged: (value) {
                 ref.read(assetsProvider.notifier).setFilter(value);
@@ -100,7 +97,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               suffixIcon: AppIcons.cross,
               leadingIcon: AppIcons.search,
               onTrailingPressed: () {
-                filterController.clear();
+                notifier.reset(); // Reset the text field
                 ref.read(assetsProvider.notifier).setFilter('');
               },
               isSmall: true,
@@ -118,6 +115,11 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         ],
       ),
     );
+  }
+
+  void _onRefresh() {
+    ref.invalidate(assetsProvider);
+    _refreshController.refreshCompleted();
   }
 
   void _showFilterDialog() {
