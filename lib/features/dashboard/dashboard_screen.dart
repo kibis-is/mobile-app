@@ -162,11 +162,11 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           iconColor: Colors.white,
           borderRadius: 100,
           onPressed: () {
+            closeFab();
             context.goNamed(
               sendTransactionRouteName,
               pathParameters: {'mode': 'payment'},
             );
-            closeFab();
           },
         ),
         if (Platform.isAndroid || Platform.isIOS)
@@ -176,6 +176,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
             backgroundColor: context.colorScheme.primary,
             iconColor: context.colorScheme.onPrimary,
             onPressed: () async {
+              closeFab();
               final scannedData = await GoRouter.of(context)
                   .push('/qrScanner', extra: ScanMode.catchAll);
               if (scannedData != null &&
@@ -188,8 +189,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                   extra: {'address': scannedData},
                 );
               }
-
-              closeFab();
             },
           ),
         CustomFabChild(
@@ -198,8 +197,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           backgroundColor: context.colorScheme.primary,
           iconColor: context.colorScheme.onPrimary,
           onPressed: () {
-            GoRouter.of(context).push('/$accountListRouteName');
             closeFab();
+            GoRouter.of(context).push('/$accountListRouteName');
           },
         ),
         CustomFabChild(
