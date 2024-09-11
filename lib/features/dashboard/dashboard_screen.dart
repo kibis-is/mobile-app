@@ -37,14 +37,16 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class DashboardScreenState extends ConsumerState<DashboardScreen> {
-  int _currentIndex = 0; // Track the selected tab index
+  int _currentIndex = 0;
   final _key = GlobalKey<ExpandableFabState>();
+  final PageController _pageController = PageController();
+  final List<Widget> _pages = const [AssetsTab(), NftTab(), ActivityTab()];
 
-  final List<Widget> _pages = const [
-    AssetsTab(),
-    NftTab(),
-    ActivityTab()
-  ]; // Pages for navigation
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,17 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           _buildDashboardInfoPanel(
               context, ref, networks, publicKey, accountState),
           const SizedBox(height: kScreenPadding),
-          Expanded(child: _pages[_currentIndex]), // Render current page
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (int index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              children: _pages,
+            ),
+          ),
         ],
       ),
       floatingActionButton: _buildFloatingActionButton(),
@@ -72,51 +84,74 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildNavigationBar() {
     ref.watch(isDarkModeProvider);
-    return NavigationBar(
-      backgroundColor: context.colorScheme.surface,
-      selectedIndex: _currentIndex,
-      onDestinationSelected: (int index) {
-        setState(() {
-          _currentIndex = index;
-        });
-      },
-      indicatorColor: Colors.transparent,
-      indicatorShape: const CircleBorder(),
-      destinations: [
-        NavigationDestination(
-          icon: AppIcons.icon(
-              icon: AppIcons.voiIcon,
-              color: context.colorScheme.onSurfaceVariant,
-              size: AppIcons.medium),
-          label: 'Assets',
-          selectedIcon: AppIcons.icon(
-              icon: AppIcons.voiIcon,
-              color: context.colorScheme.primary,
-              size: AppIcons.medium),
-        ),
-        NavigationDestination(
-          icon: AppIcons.icon(
-              icon: AppIcons.nft,
-              color: context.colorScheme.onSurfaceVariant,
-              size: AppIcons.medium),
-          label: 'NFTs',
-          selectedIcon: AppIcons.icon(
-              icon: AppIcons.nft,
-              color: context.colorScheme.primary,
-              size: AppIcons.medium),
-        ),
-        NavigationDestination(
-          icon: AppIcons.icon(
-              icon: AppIcons.send,
-              color: context.colorScheme.onSurfaceVariant,
-              size: AppIcons.medium),
-          label: 'Activity',
-          selectedIcon: AppIcons.icon(
-              icon: AppIcons.send,
-              color: context.colorScheme.primary,
-              size: AppIcons.medium),
-        ),
-      ],
+
+    return NavigationBarTheme(
+      data: NavigationBarThemeData(
+        labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>((states) {
+          if (states.contains(MaterialState.selected)) {
+            return context.textTheme.labelMedium?.copyWith(
+                    color: context.colorScheme.primary,
+                    fontWeight: FontWeight.bold) ??
+                const TextStyle();
+          }
+          return context.textTheme.labelMedium?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.bold) ??
+              const TextStyle();
+        }),
+      ),
+      child: NavigationBar(
+        backgroundColor: context.colorScheme.surface,
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (int index) {
+          setState(() {
+            _currentIndex = index;
+          });
+          _pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        },
+        indicatorColor: Colors.transparent,
+        indicatorShape: const CircleBorder(),
+        height: 72,
+        destinations: [
+          NavigationDestination(
+            icon: AppIcons.icon(
+                icon: AppIcons.voiIcon,
+                color: context.colorScheme.onSurfaceVariant,
+                size: AppIcons.small),
+            label: 'Assets',
+            selectedIcon: AppIcons.icon(
+                icon: AppIcons.voiIcon,
+                color: context.colorScheme.primary,
+                size: AppIcons.small),
+          ),
+          NavigationDestination(
+            icon: AppIcons.icon(
+                icon: AppIcons.nft,
+                color: context.colorScheme.onSurfaceVariant,
+                size: AppIcons.small),
+            label: 'NFTs',
+            selectedIcon: AppIcons.icon(
+                icon: AppIcons.nft,
+                color: context.colorScheme.primary,
+                size: AppIcons.small),
+          ),
+          NavigationDestination(
+            icon: AppIcons.icon(
+                icon: AppIcons.send,
+                color: context.colorScheme.onSurfaceVariant,
+                size: AppIcons.small),
+            label: 'Activity',
+            selectedIcon: AppIcons.icon(
+                icon: AppIcons.send,
+                color: context.colorScheme.primary,
+                size: AppIcons.small),
+          ),
+        ],
+      ),
     );
   }
 
@@ -241,8 +276,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           data: (balance) => Row(
             children: [
               EllipsizedText(
-                type: EllipsisType.end,
-                ellipsis: '...',
                 NumberShortener.shortenNumber(balance),
                 style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
