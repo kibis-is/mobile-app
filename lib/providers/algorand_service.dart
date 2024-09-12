@@ -492,6 +492,7 @@ class AlgorandService {
     int? assetId,
     String? notePrefix,
     TransactionType? transactionType,
+    String? nextToken, // Add nextToken here
   }) async {
     try {
       // Start the transaction query
@@ -515,6 +516,11 @@ class AlgorandService {
       }
       if (transactionType != null) {
         query = query.whereTransactionType(transactionType);
+      }
+
+      // Apply pagination if nextToken is provided
+      if (nextToken != null) {
+        query = query.next(nextToken);
       }
 
       // Execute the search query
