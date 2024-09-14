@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -8,9 +9,10 @@ import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class DashboardInfoPanel extends StatelessWidget {
+class DashboardInfoPanel extends ConsumerWidget {
   const DashboardInfoPanel({
     super.key,
     required this.networks,
@@ -38,10 +40,15 @@ class DashboardInfoPanel extends StatelessWidget {
           value: 'edit',
           icon: AppIcons.edit,
         ),
+        SelectItem(
+          name: "Refresh",
+          value: 'refresh',
+          icon: AppIcons.refresh,
+        ),
       ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
       child: Column(
@@ -97,6 +104,8 @@ class DashboardInfoPanel extends StatelessWidget {
                           qrData: publicKey,
                         ),
                       );
+                    } else if (value == "Refresh") {
+                      invalidateProviders(ref);
                     }
                   });
                 },
