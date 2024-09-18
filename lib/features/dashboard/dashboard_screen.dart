@@ -167,14 +167,14 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildFloatingActionButton() {
-    final isDarkMode = ref.watch(isDarkModeProvider);
+    ref.watch(isDarkModeProvider);
     return ExpandableFab(
       key: _key,
       type: ExpandableFabType.up,
       distance: 70,
       pos: ExpandableFabPos.right,
-      overlayStyle: ExpandableFabOverlayStyle(
-        color: isDarkMode ? Colors.black54 : Colors.white54,
+      overlayStyle: const ExpandableFabOverlayStyle(
+        color: Colors.black54,
       ),
       openButtonBuilder: RotateFloatingActionButtonBuilder(
         child: const Icon(AppIcons.menu),
@@ -195,6 +195,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               onPressed: onPressed,
               icon: const Icon(
                 AppIcons.cross,
+                color: Colors.white,
               ),
             ),
           );
