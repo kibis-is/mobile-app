@@ -1,7 +1,7 @@
 class NumberShortener {
   static String shortenNumber(double number) {
     if (number < 1000000) {
-      return number % 1 == 0 ? number.toStringAsFixed(0) : number.toString();
+      return number % 1 == 0 ? number.toStringAsFixed(0) : number.toStringAsFixed(2);
     }
 
     const suffixes = ['M', 'B', 'T'];
@@ -12,12 +12,7 @@ class NumberShortener {
       suffixIndex++;
     }
 
-    return suffixIndex == 0
-        ? (number % 1 == 0
-            ? '${number.toStringAsFixed(0)}${suffixes[suffixIndex]}'
-            : '${number.toStringAsFixed(2)}${suffixes[suffixIndex]}')
-        : (number % 1 == 0
-            ? '${number.toStringAsFixed(0)}${suffixes[suffixIndex]}'
-            : '${number.toStringAsFixed(1)}${suffixes[suffixIndex]}');
+    // Ensure only 2 decimal places max
+    return '${number.toStringAsFixed(number % 1 == 0 ? 0 : 2)}${suffixes[suffixIndex]}';
   }
 }
