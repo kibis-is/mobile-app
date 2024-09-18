@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class ScannerOverlay extends StatelessWidget {
