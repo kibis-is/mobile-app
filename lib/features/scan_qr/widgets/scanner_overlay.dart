@@ -13,15 +13,13 @@ class ScannerOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Blur effect
         Positioned.fill(
           child: ClipPath(
             clipper: _ScanWindowClipper(scanWindowRect),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
               child: Container(
-                color: Colors.black
-                    .withOpacity(0.5), // optional to darken the blurred area
+                color: Colors.black54,
               ),
             ),
           ),
@@ -31,9 +29,9 @@ class ScannerOverlay extends StatelessWidget {
           rect: scanWindowRect,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(kWidgetRadius),
+
               border:
-                  Border.all(color: context.colorScheme.secondary, width: 4),
+                  Border.all(color: context.colorScheme.primary, width: 4),
             ),
           ),
         ),
