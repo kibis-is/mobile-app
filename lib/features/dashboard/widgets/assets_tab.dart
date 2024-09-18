@@ -52,6 +52,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     return Column(
       children: [
         _buildSearchBar(context, filterController, filterNotifier),
+        const SizedBox(height: kScreenPadding / 4),
         Expanded(
           child: CustomPullToRefresh(
             refreshController: _refreshController,
@@ -106,9 +107,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           const SizedBox(width: kScreenPadding / 2),
           IconButton(
             onPressed: () => context.goNamed(addAssetRouteName),
-            icon: Icon(
+            icon: const Icon(
               AppIcons.add,
-              color: context.colorScheme.primary,
               size: AppIcons.medium,
             ),
           ),
