@@ -51,6 +51,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
     return Column(
       children: [
+        const SizedBox(height: kScreenPadding / 2),
         _buildSearchBar(context, filterController, filterNotifier),
          Container(height: kScreenPadding / 4,
             decoration: BoxDecoration(

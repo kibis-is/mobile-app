@@ -77,7 +77,6 @@ class CustomDropDown extends StatelessWidget {
       top: -10,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 3),
-        color: Theme.of(context).colorScheme.background,
         child: Text(
           label,
           style: context.textTheme.labelSmall?.copyWith(

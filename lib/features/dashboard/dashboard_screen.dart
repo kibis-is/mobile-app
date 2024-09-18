@@ -62,7 +62,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           const SizedBox(height: kScreenPadding),
           _buildDashboardInfoPanel(
               context, ref, networks, publicKey, accountState),
-          const SizedBox(height: kScreenPadding),
+          const SizedBox(height: kScreenPadding / 2),
           Expanded(
             child: PageView(
               controller: _pageController,
@@ -306,8 +306,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                     BlendMode.srcATop),
               ),
               IconButton(
-                icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small),
-                color: context.colorScheme.onBackground,
+                icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small, color: context.colorScheme.onBackground),
+                
                 iconSize: kScreenPadding,
                 onPressed: () {
                   customBottomSheet(
@@ -333,8 +333,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildNetworkSelectButton(
       BuildContext context, List<SelectItem> networks, WidgetRef ref) {
     return MaterialButton(
-      hoverColor: context.colorScheme.surface,
-      color: context.colorScheme.surface,
       padding: EdgeInsets.zero,
       elevation: 0,
       shape: const CircleBorder(),

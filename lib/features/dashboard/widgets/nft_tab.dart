@@ -74,6 +74,7 @@ class NftTabState extends ConsumerState<NftTab> {
 
     return Column(
       children: [
+        const SizedBox(height: kScreenPadding / 2),
         _buildSearchBar(context, filterController),
         const SizedBox(height: kScreenPadding / 4),
         Expanded(

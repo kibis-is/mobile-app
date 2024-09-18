@@ -57,8 +57,8 @@ class ViewAssetScreen extends ConsumerWidget {
                         width: 80,
                         height: 80,
                         semanticsLabel: 'Asset Icon',
-                        colorFilter: ColorFilter.mode(
-                            context.colorScheme.background, BlendMode.srcATop),
+                        colorFilter: const ColorFilter.mode(
+                            Colors.white, BlendMode.srcATop),
                       ),
                     ),
                     const SizedBox(height: kScreenPadding),
@@ -101,9 +101,6 @@ class ViewAssetScreen extends ConsumerWidget {
                       labelText: 'Application ID',
                       isEnabled: false,
                     ),
-                  ),
-                  const SizedBox(
-                    width: kScreenPadding,
                   ),
                   IconButton(
                     icon: const Icon(AppIcons.copy),

@@ -35,16 +35,16 @@ class _NetworkDisplayRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        AppIcons.icon(icon: currentNetwork?.icon, size: AppIcons.small),
+        AppIcons.icon(icon: currentNetwork?.icon, size: AppIcons.small, color: context.colorScheme.onBackground),
         const SizedBox(width: kScreenPadding / 2),
         Text(
           currentNetwork?.name ?? 'No Network',
           style: context.textTheme.bodySmall?.copyWith(
-              color: context.colorScheme.onSurface,
+              color: context.colorScheme.onBackground,
               fontWeight: FontWeight.bold),
         ),
         if (networkCount > 1)
-          AppIcons.icon(icon: AppIcons.arrowDropdown, size: AppIcons.small),
+          AppIcons.icon(icon: AppIcons.arrowDropdown, size: AppIcons.small, color: context.colorScheme.onBackground),
       ],
     );
   }

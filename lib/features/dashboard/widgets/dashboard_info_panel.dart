@@ -72,6 +72,7 @@ class DashboardInfoPanel extends StatelessWidget {
                 icon: AppIcons.icon(
                   icon: AppIcons.verticalDots,
                   size: AppIcons.medium,
+                  color: context.colorScheme.onBackground
                 ),
                 onPressed: () {
                   customBottomSheet(
