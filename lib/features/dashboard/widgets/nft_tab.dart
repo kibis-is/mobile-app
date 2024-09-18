@@ -100,7 +100,7 @@ class NftTabState extends ConsumerState<NftTab> {
   Widget _buildSearchBar(
       BuildContext context, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+padding: const EdgeInsets.only(left: kScreenPadding / 4, right: kScreenPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -113,7 +113,6 @@ class NftTabState extends ConsumerState<NftTab> {
               size: AppIcons.medium,
             ),
           ),
-          const SizedBox(width: kScreenPadding / 2),
           Expanded(
             child: CustomTextField(
               controller: controller,

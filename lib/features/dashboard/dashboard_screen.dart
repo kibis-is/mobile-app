@@ -100,57 +100,68 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               const TextStyle();
         }),
       ),
-      child: NavigationBar(
-        backgroundColor: context.colorScheme.surface,
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          _pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
-        indicatorColor: Colors.transparent,
-        indicatorShape: const CircleBorder(),
-        height: 72,
-        destinations: [
-          NavigationDestination(
-            icon: AppIcons.icon(
-                icon: AppIcons.voiIcon,
-                color: context.colorScheme.onSurfaceVariant,
-                size: AppIcons.small),
-            label: 'Assets',
-            selectedIcon: AppIcons.icon(
-                icon: AppIcons.voiIcon,
-                color: context.colorScheme.primary,
-                size: AppIcons.small),
+      child: Container(
+          decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: context.colorScheme.surface,
+              width: 2,
+            ),
           ),
-          NavigationDestination(
-            icon: AppIcons.icon(
-                icon: AppIcons.nft,
-                color: context.colorScheme.onSurfaceVariant,
-                size: AppIcons.small),
-            label: 'NFTs',
-            selectedIcon: AppIcons.icon(
-                icon: AppIcons.nft,
-                color: context.colorScheme.primary,
-                size: AppIcons.small),
-          ),
-          NavigationDestination(
-            icon: AppIcons.icon(
-                icon: AppIcons.send,
-                color: context.colorScheme.onSurfaceVariant,
-                size: AppIcons.small),
-            label: 'Activity',
-            selectedIcon: AppIcons.icon(
-                icon: AppIcons.send,
-                color: context.colorScheme.primary,
-                size: AppIcons.small),
-          ),
-        ],
+        ),
+        child: NavigationBar(
+          elevation: 0,
+          backgroundColor: context.colorScheme.background,
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          },
+          indicatorColor: Colors.transparent,
+          indicatorShape: const CircleBorder(),
+          height: 72,
+          destinations: [
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.voiIcon,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'Assets',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.voiIcon,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
+            ),
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.nft,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'NFTs',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.nft,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
+            ),
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.send,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'Activity',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.send,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -323,6 +334,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     return MaterialButton(
       hoverColor: context.colorScheme.surface,
       color: context.colorScheme.surface,
+      padding: EdgeInsets.zero,
       elevation: 0,
       shape: const CircleBorder(),
       onPressed: networks.length > 1

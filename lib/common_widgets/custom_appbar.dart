@@ -22,14 +22,16 @@ class SplitAppBar extends StatelessWidget implements PreferredSizeWidget {
       flexibleSpace: Container(
         color: context.colorScheme.background,
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+
+        padding: const EdgeInsets.only(left: kScreenPadding, right: 0, top: kScreenPadding),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
               child: leadingWidget,
             ),
             const SizedBox(
-                width: kScreenPadding), // Spacer between the two sections
+                width: kScreenPadding),
             actionWidget,
           ],
         ),

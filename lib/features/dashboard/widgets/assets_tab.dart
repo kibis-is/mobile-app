@@ -52,7 +52,16 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     return Column(
       children: [
         _buildSearchBar(context, filterController, filterNotifier),
-        const SizedBox(height: kScreenPadding / 4),
+         Container(height: kScreenPadding / 4,
+            decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: context.colorScheme.surface,
+                width: 1,
+              ),
+            ),
+          ),
+        ),
         Expanded(
           child: CustomPullToRefresh(
             refreshController: _refreshController,
@@ -73,7 +82,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   Widget _buildSearchBar(BuildContext context, TextEditingController controller,
       AssetsFilterController notifier) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -86,7 +95,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               size: AppIcons.medium,
             ),
           ),
-          const SizedBox(width: kScreenPadding / 2),
           Expanded(
             child: CustomTextField(
               controller: controller,
@@ -104,7 +112,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               isSmall: true,
             ),
           ),
-          const SizedBox(width: kScreenPadding / 2),
+
           IconButton(
             onPressed: () => context.goNamed(addAssetRouteName),
             icon: const Icon(
@@ -139,6 +147,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           final showFrozen = ref.watch(showFrozenAssetsProvider);
           return CheckboxListTile(
             tileColor: Colors.transparent,
+            checkboxShape: const CircleBorder(),
             selectedTileColor: Colors.transparent,
             title: const Text("Show Frozen Assets"),
             value: showFrozen,
@@ -165,18 +174,16 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     ref.read(assetsProvider.notifier).setShowFrozen(showFrozen);
   }
 
-  Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
-    return ListView.builder(
-      itemCount: assets.length + 1,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        if (index == assets.length) {
-          return const SizedBox(height: 100);
-        }
-        return AssetListItem(asset: assets[index], mode: AssetScreenMode.view);
-      },
-    );
-  }
+Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
+  return ListView.builder(
+    itemCount: assets.length, // Adjust itemCount to match the list length
+    shrinkWrap: true,
+    itemBuilder: (context, index) {
+      // No need for the extra check here since itemCount matches the list length
+      return AssetListItem(asset: assets[index], mode: AssetScreenMode.view);
+    },
+  );
+}
 
   Widget _buildEmptyAssets(BuildContext context, WidgetRef ref) {
     return Center(
