@@ -54,6 +54,7 @@ class AppIcons {
   static const IconData connect = Icons.power_rounded;
   static const IconData contacts = Icons.contacts_rounded;
   static const IconData nft = Icons.image;
+  static const IconData key = Icons.key_rounded;
 
   static const String svgBasePath = 'assets/images/';
 

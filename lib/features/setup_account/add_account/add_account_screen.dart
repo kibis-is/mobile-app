@@ -103,7 +103,7 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                   CustomListTile(
                     title: "Import via Private Key",
                     subtitle: 'Import accounts from a private key.',
-                    leadingIcon: AppIcons.importAccount,
+                    leadingIcon: AppIcons.key,
                     trailingIcon: AppIcons.arrowRight,
                     onTap: _importViaPrivateKey,
                   ),
