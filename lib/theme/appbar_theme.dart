@@ -11,6 +11,9 @@ AppBarTheme appBarTheme({
     backgroundColor: backgroundColor,
     centerTitle: true,
     foregroundColor: foregroundColor,
+    titleTextStyle: const TextStyle(
+      fontWeight: FontWeight.bold,
+    )
   );
 }
 

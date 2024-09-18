@@ -470,7 +470,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             validator: _validateAlgorandAddress,
           ),
         ),
-        const SizedBox(width: kScreenPadding / 2),
         IconButton(
           style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
@@ -481,9 +480,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100.0),
               ),
-            ),
-            backgroundColor: MaterialStateProperty.all<Color>(
-              context.colorScheme.surface,
             ),
             foregroundColor: MaterialStateProperty.all<Color>(
               context.colorScheme.onSurface,
