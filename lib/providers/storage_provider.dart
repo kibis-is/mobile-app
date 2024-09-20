@@ -319,4 +319,8 @@ class StorageService {
     final List<dynamic> cachedNfts = json.decode(cachedNftsJson);
     return cachedNfts.map<NFT>((json) => NFT.fromJson(json)).toList();
   }
+
+  Future<void> clearNFTsForAccount(String accountId) async {
+    await _prefs?.remove('nfts_$accountId');
+  }
 }
