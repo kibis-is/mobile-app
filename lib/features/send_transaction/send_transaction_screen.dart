@@ -26,6 +26,7 @@ import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
@@ -187,10 +188,25 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                 : 'Sending Asset',
             withProgressBar: true,
           );
-      final account = ref.read(accountProvider).account;
-      if (account == null) {
-        throw Exception("Account not available for the transaction.");
+
+      // Fetch the active account ID
+      final accountId = ref.read(accountProvider).accountId;
+      if (accountId == null) {
+        throw Exception("No active account ID found");
       }
+
+      // Fetch the private key from storage
+      final privateKey = await ref
+          .read(storageProvider)
+          .getAccountData(accountId, 'privateKey');
+      if (privateKey == null || privateKey.isEmpty) {
+        throw Exception("Private key not found in storage");
+      }
+
+      // Create the Account object using the private key
+      final algorand = ref.read(algorandProvider);
+      final account = await algorand.loadAccountFromPrivateKey(privateKey);
+
       double amountInAlgos = double.parse(amountController.text);
       final selectedItem = ref.read(selectedAssetProvider);
       if (selectedItem == null) {
@@ -220,13 +236,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     } on AlgorandException catch (e) {
       String errorMessage =
           ref.read(algorandServiceProvider).parseAlgorandException(e);
-      debugPrint('Error: $errorMessage');
+      debugPrint('AlgorandException: $errorMessage');
       _showErrorSnackbar(errorMessage);
     } catch (e) {
-      String errorMessage = 'An error occurred';
+      String errorMessage = e.toString();
       debugPrint('Error: $errorMessage');
       _showErrorSnackbar(errorMessage);
     } finally {
+      ref.read(loadingProvider.notifier).stopLoading();
       goBack();
     }
   }
