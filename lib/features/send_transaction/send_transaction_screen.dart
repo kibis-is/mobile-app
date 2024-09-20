@@ -17,6 +17,7 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
@@ -110,7 +111,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       );
     }).toList();
 
-    // Insert the network (voi or algorand) item at the beginning of the list
     combinedList.insert(
       0,
       network ??
@@ -335,6 +335,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final activeAccount = ref.watch(accountProvider).account;
+    final isWatchAccount = activeAccount is WatchAccount;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Send"),
@@ -368,14 +371,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
-        child: CustomButton(
-          isFullWidth: true,
-          text: "Send",
-          onPressed: () => _showPinPadDialog(ref),
-        ),
-      ),
+      bottomNavigationBar: isWatchAccount
+          ? const SizedBox.shrink()
+          : CustomButton(
+              isBottomNavigationPosition: true,
+              isFullWidth: true,
+              text: "Send",
+              onPressed: () => _showPinPadDialog(ref),
+            ),
     );
   }
 

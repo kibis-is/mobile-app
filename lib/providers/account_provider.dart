@@ -2,6 +2,7 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:convert/convert.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
@@ -17,7 +18,7 @@ final accountProvider =
 });
 
 class AccountState {
-  final Account? account;
+  final dynamic account;
   final String? accountName;
   final String? accountId;
   final String? applicationId;
@@ -32,7 +33,7 @@ class AccountState {
   });
 
   AccountState copyWith({
-    Account? account,
+    dynamic account,
     String? accountName,
     String? accountId,
     String? applicationId,
@@ -42,7 +43,7 @@ class AccountState {
       account: account ?? this.account,
       accountName: accountName ?? this.accountName,
       accountId: accountId ?? this.accountId,
-      applicationId: applicationId ?? this.applicationId, // Copy applicationId
+      applicationId: applicationId ?? this.applicationId,
       error: error ?? this.error,
     );
   }
@@ -278,30 +279,45 @@ class AccountNotifier extends StateNotifier<AccountState> {
     try {
       final tempAccountState = ref.read(temporaryAccountProvider);
 
-      if (tempAccountState.account == null ||
-          tempAccountState.privateKey == null ||
-          tempAccountState.seedPhrase == null) {
-        throw Exception('Incomplete temporary account data');
+      if (tempAccountState.account == null) {
+        throw Exception('Account is missing in temporary account data');
       }
 
-      ref.read(isAuthenticatedProvider.notifier).state = true;
-
       final accountId = await storageService.generateNextAccountId();
-      await storageService.setAccountData(
-          accountId, 'accountName', accountName);
-      await storageService.setAccountData(
-          accountId, 'privateKey', tempAccountState.privateKey!);
-      await storageService.setAccountData(
-          accountId, 'seedPhrase', tempAccountState.seedPhrase!);
 
-      final publicKey = tempAccountState.account!.publicAddress.toString();
-      await storageService.setAccountData(accountId, 'publicKey', publicKey);
+      if (tempAccountState.account is Account) {
+        if (tempAccountState.privateKey == null ||
+            tempAccountState.seedPhrase == null) {
+          throw Exception(
+              'Incomplete temporary account data for regular account');
+        }
 
-      // Initialize applicationId as null for a newly created account
+        ref.read(isAuthenticatedProvider.notifier).state = true;
+
+        await storageService.setAccountData(
+            accountId, 'accountName', accountName);
+        await storageService.setAccountData(
+            accountId, 'privateKey', tempAccountState.privateKey!);
+        await storageService.setAccountData(
+            accountId, 'seedPhrase', tempAccountState.seedPhrase!);
+
+        final publicKey =
+            (tempAccountState.account as Account).publicAddress.toString();
+        await storageService.setAccountData(accountId, 'publicKey', publicKey);
+      } else if (tempAccountState.account is WatchAccount) {
+        await storageService.setAccountData(
+            accountId, 'accountName', accountName);
+
+        final publicKey = (tempAccountState.account as WatchAccount).publicKey;
+        await storageService.setAccountData(accountId, 'publicKey', publicKey);
+      } else {
+        throw Exception('Unsupported account type');
+      }
+
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
-        applicationId: null, // No applicationId yet
+        applicationId: null,
         error: null,
       );
 

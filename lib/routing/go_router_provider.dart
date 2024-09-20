@@ -6,6 +6,7 @@ import 'package:kibisis/features/add_asset/add_asset_screen.dart';
 import 'package:kibisis/features/dashboard/dashboard_screen.dart';
 import 'package:kibisis/features/dashboard/account_list_screen.dart';
 import 'package:kibisis/features/error/error_screen.dart';
+import 'package:kibisis/features/setup_account/add_watch/add_watch_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_private_key/import_via_private_key.dart';
 import 'package:kibisis/features/view_nft/view_nft_screen.dart';
 import 'package:kibisis/features/pin_pad/pin_pad_screen.dart';
@@ -212,6 +213,17 @@ class RouterNotifier extends ChangeNotifier {
                     state);
               },
             ),
+            GoRoute(
+              name: setupAddWatchAccountRouteName,
+              path: setupAddWatchAccountRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const AddWatchScreen(
+                      accountFlow: AccountFlow.setup,
+                    ),
+                    state);
+              },
+            ),
           ],
         ),
         GoRoute(
@@ -273,6 +285,17 @@ class RouterNotifier extends ChangeNotifier {
               pageBuilder: (context, state) {
                 return defaultTransitionPage(
                     const ImportPrivateKeyScreen(
+                      accountFlow: AccountFlow.addNew,
+                    ),
+                    state);
+              },
+            ),
+            GoRoute(
+              name: mainAddWatchAccountRouteName,
+              path: mainAddWatchAccountRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const AddWatchScreen(
                       accountFlow: AccountFlow.addNew,
                     ),
                     state);
