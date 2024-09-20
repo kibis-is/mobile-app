@@ -84,6 +84,7 @@ class ViewAssetScreen extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding),
               CustomTextField(
+                leadingIcon: AppIcons.unitName,
                 controller: TextEditingController(
                   text: activeAsset?.params.unitName ?? 'Not available',
                 ),
@@ -95,6 +96,7 @@ class ViewAssetScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: CustomTextField(
+                      leadingIcon: AppIcons.applicationId,
                       controller: TextEditingController(
                         text: activeAsset?.index.toString() ?? 'Not available',
                       ),
@@ -113,6 +115,7 @@ class ViewAssetScreen extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding / 2),
               CustomTextField(
+                leadingIcon: AppIcons.assetType,
                 controller: TextEditingController(
                   text: activeAsset?.assetType == AssetType.arc200
                       ? 'ARC-0200'
@@ -123,6 +126,7 @@ class ViewAssetScreen extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding / 2),
               CustomTextField(
+                leadingIcon: AppIcons.decimals,
                 controller: TextEditingController(
                   text: activeAsset?.params.decimals.toString() ?? '0',
                 ),
@@ -131,6 +135,7 @@ class ViewAssetScreen extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding / 2),
               CustomTextField(
+                leadingIcon: AppIcons.totalSupply,
                 controller: TextEditingController(
                   text: NumberShortener.shortenNumber(totalSupply),
                 ),
@@ -141,14 +146,13 @@ class ViewAssetScreen extends ConsumerWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
-        child: CustomButton(
-          text: mode == AssetScreenMode.view ? 'Send Asset' : 'Add Asset',
-          isFullWidth: true,
-          buttonType: ButtonType.secondary,
-          onPressed: () => _handleButtonPress(context, ref),
-        ),
+      extendBody: true,
+      bottomNavigationBar: CustomButton(
+        isBottomNavigationPosition: true,
+        text: mode == AssetScreenMode.view ? 'Send Asset' : 'Add Asset',
+        isFullWidth: true,
+        buttonType: ButtonType.secondary,
+        onPressed: () => _handleButtonPress(context, ref),
       ),
     );
   }
