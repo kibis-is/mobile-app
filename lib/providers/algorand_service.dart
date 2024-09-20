@@ -41,6 +41,9 @@ class AlgorandService {
         }
       }
       return txId;
+    } on AlgorandException catch (e) {
+      debugPrint(e.message);
+      return 'error';
     } catch (e) {
       debugPrint("Failed to send payment: $e");
       return 'error';
