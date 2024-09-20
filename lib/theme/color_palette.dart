@@ -13,7 +13,7 @@ class ColorPalette {
   static const Color usdcAsset = Color(0xFF80BDFF);
 
   static const Color lightThemePrimary = Color(0xFFCC7DFF);
-  static const Color lightThemeSecondary = Color(0xFF00C2AF);
+  static const Color lightThemeSecondary = Color(0xFF00c2b0);
   static const Color lightThemeError = Color(0xFFF57D56);
   static const Color lightThemeHeader = Color(0xFF514356);
   static const Color lightThemeBody = Color(0xFF77657E);
@@ -22,7 +22,7 @@ class ColorPalette {
   static const Color lightThemeSurface = Color(0xFFE9E1EA);
 
   static const Color darkThemePrimary = Color(0xFFCC7DFF);
-  static const Color darkThemeSecondary = Color(0xFF00C2AF);
+  static const Color darkThemeSecondary = Color(0xFF00c2b0);
   static const Color darkThemeError = Color(0xFFF57D56);
   static const Color darkThemeHeader = Color(0xFFE1E2E4);
   static const Color darkThemeBody = Color(0xFFA3A6AB);
