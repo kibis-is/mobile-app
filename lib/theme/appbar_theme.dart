@@ -6,15 +6,15 @@ AppBarTheme appBarTheme({
   required Color foregroundColor,
 }) {
   return AppBarTheme(
-    elevation: 0.0,
-    shadowColor: Colors.transparent,
-    backgroundColor: backgroundColor,
-    centerTitle: true,
-    foregroundColor: foregroundColor,
-    titleTextStyle: const TextStyle(
-      fontWeight: FontWeight.bold,
-    )
-  );
+      elevation: 0.0,
+      shadowColor: Colors.transparent,
+      backgroundColor: backgroundColor,
+      centerTitle: true,
+      foregroundColor: foregroundColor,
+      titleTextStyle: TextStyle(
+        color: foregroundColor,
+        fontWeight: FontWeight.bold,
+      ));
 }
 
 AppBarTheme appBarThemeDark() {

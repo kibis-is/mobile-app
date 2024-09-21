@@ -53,8 +53,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       children: [
         const SizedBox(height: kScreenPadding / 2),
         _buildSearchBar(context, filterController, filterNotifier),
-         Container(height: kScreenPadding / 4,
-            decoration: BoxDecoration(
+        Container(
+          height: kScreenPadding / 4,
+          decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
                 color: context.colorScheme.surface,
@@ -113,7 +114,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               isSmall: true,
             ),
           ),
-
           IconButton(
             onPressed: () => context.goNamed(addAssetRouteName),
             icon: const Icon(
@@ -175,16 +175,16 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     ref.read(assetsProvider.notifier).setShowFrozen(showFrozen);
   }
 
-Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
-  return ListView.builder(
-    itemCount: assets.length, // Adjust itemCount to match the list length
-    shrinkWrap: true,
-    itemBuilder: (context, index) {
-      // No need for the extra check here since itemCount matches the list length
-      return AssetListItem(asset: assets[index], mode: AssetScreenMode.view);
-    },
-  );
-}
+  Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
+    return ListView.builder(
+      itemCount: assets.length, // Adjust itemCount to match the list length
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        // No need for the extra check here since itemCount matches the list length
+        return AssetListItem(asset: assets[index], mode: AssetScreenMode.view);
+      },
+    );
+  }
 
   Widget _buildEmptyAssets(BuildContext context, WidgetRef ref) {
     return Center(
@@ -210,7 +210,7 @@ Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
   Widget _buildLoadingAssets(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: context.colorScheme.background,
-      highlightColor: Colors.grey.shade100,
+      highlightColor: context.colorScheme.onSurfaceVariant,
       period: const Duration(milliseconds: 2000),
       child: ListView.separated(
         itemCount: 3,

@@ -229,7 +229,6 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                                               .notifier)
                                           .removeLastKey();
                                     },
-                              
                               iconSize: kScreenPadding * 2,
                             ),
                           );
@@ -248,7 +247,8 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                             shape: const CircleBorder(),
                             child: Text(
                               key,
-                              style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                              style: context.textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ),
                         );
@@ -313,8 +313,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-                color: context.colorScheme.onSurface, width: 2),
+            border: Border.all(color: context.colorScheme.onSurface, width: 2),
           ),
         ),
       ),

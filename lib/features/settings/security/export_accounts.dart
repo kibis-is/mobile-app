@@ -255,7 +255,10 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          icon: const Icon(Icons.copy),
+          icon: AppIcons.icon(
+            icon: AppIcons.copy,
+            size: AppIcons.xlarge,
+          ),
           onPressed: qrKeys.isNotEmpty
               ? () => copyToClipboard(
                   context,
@@ -269,7 +272,10 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
         ),
         if (Platform.isAndroid || Platform.isIOS)
           IconButton(
-            icon: const Icon(Icons.download),
+            icon: AppIcons.icon(
+              icon: AppIcons.download,
+              size: AppIcons.xlarge,
+            ),
             onPressed: qrKeys.isNotEmpty
                 ? () => QRCodeUtils.saveQrImage(qrKeys[0])
                 : null,

@@ -101,7 +101,8 @@ class NftTabState extends ConsumerState<NftTab> {
   Widget _buildSearchBar(
       BuildContext context, TextEditingController controller) {
     return Padding(
-padding: const EdgeInsets.only(left: kScreenPadding / 4, right: kScreenPadding),
+      padding: const EdgeInsets.only(
+          left: kScreenPadding / 4, right: kScreenPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -146,7 +147,7 @@ padding: const EdgeInsets.only(left: kScreenPadding / 4, right: kScreenPadding),
       physics: const NeverScrollableScrollPhysics(), // Parent handles scrolling
       itemBuilder: (context, index) => Shimmer.fromColors(
         baseColor: context.colorScheme.surface,
-        highlightColor: Colors.grey.shade100,
+        highlightColor: context.colorScheme.onSurfaceVariant,
         child: Container(
           color: context.colorScheme.surface,
         ),
