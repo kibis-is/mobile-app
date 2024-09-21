@@ -6,16 +6,15 @@ import 'package:kibisis/utils/app_icons.dart';
 // Network options
 final List<SelectItem> networkOptions = [
   SelectItem(
-    name: 'VOI',
-    value: "network-voi",
+    name: 'VOI MainNet',
+    value: "network-voi-mainnet",
     icon: AppIcons.voiIcon,
   ),
-  //TODO: Get settings for Algorand
-  // SelectItem(
-  //   name: 'Algorand',
-  //   value: "network-algorand",
-  //   icon: AppIcons.algorandIcon,
-  // ),
+  SelectItem(
+    name: 'VOI TestNet',
+    value: "network-voi-testnet",
+    icon: AppIcons.voiIcon,
+  ),
 ];
 
 final networkProvider =

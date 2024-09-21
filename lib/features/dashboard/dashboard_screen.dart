@@ -62,7 +62,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           const SizedBox(height: kScreenPadding),
           _buildDashboardInfoPanel(
               context, ref, networks, publicKey, accountState),
-          const SizedBox(height: kScreenPadding),
+          const SizedBox(height: kScreenPadding / 2),
           Expanded(
             child: PageView(
               controller: _pageController,
@@ -100,70 +100,81 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               const TextStyle();
         }),
       ),
-      child: NavigationBar(
-        backgroundColor: context.colorScheme.surface,
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          _pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
-        indicatorColor: Colors.transparent,
-        indicatorShape: const CircleBorder(),
-        height: 72,
-        destinations: [
-          NavigationDestination(
-            icon: AppIcons.icon(
-                icon: AppIcons.voiIcon,
-                color: context.colorScheme.onSurfaceVariant,
-                size: AppIcons.small),
-            label: 'Assets',
-            selectedIcon: AppIcons.icon(
-                icon: AppIcons.voiIcon,
-                color: context.colorScheme.primary,
-                size: AppIcons.small),
+      child: Container(
+          decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: context.colorScheme.surface,
+              width: 2,
+            ),
           ),
-          NavigationDestination(
-            icon: AppIcons.icon(
-                icon: AppIcons.nft,
-                color: context.colorScheme.onSurfaceVariant,
-                size: AppIcons.small),
-            label: 'NFTs',
-            selectedIcon: AppIcons.icon(
-                icon: AppIcons.nft,
-                color: context.colorScheme.primary,
-                size: AppIcons.small),
-          ),
-          NavigationDestination(
-            icon: AppIcons.icon(
-                icon: AppIcons.send,
-                color: context.colorScheme.onSurfaceVariant,
-                size: AppIcons.small),
-            label: 'Activity',
-            selectedIcon: AppIcons.icon(
-                icon: AppIcons.send,
-                color: context.colorScheme.primary,
-                size: AppIcons.small),
-          ),
-        ],
+        ),
+        child: NavigationBar(
+          elevation: 0,
+          backgroundColor: context.colorScheme.background,
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          },
+          indicatorColor: Colors.transparent,
+          indicatorShape: const CircleBorder(),
+          height: 72,
+          destinations: [
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.voiIcon,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'Assets',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.voiIcon,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
+            ),
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.nft,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'NFTs',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.nft,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
+            ),
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.send,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'Activity',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.send,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildFloatingActionButton() {
-    final isDarkMode = ref.watch(isDarkModeProvider);
+    ref.watch(isDarkModeProvider);
     return ExpandableFab(
       key: _key,
       type: ExpandableFabType.up,
       distance: 70,
       pos: ExpandableFabPos.right,
-      overlayStyle: ExpandableFabOverlayStyle(
-        color: isDarkMode ? Colors.black54 : Colors.white54,
+      overlayStyle: const ExpandableFabOverlayStyle(
+        color: Colors.black54,
       ),
       openButtonBuilder: RotateFloatingActionButtonBuilder(
         child: const Icon(AppIcons.menu),
@@ -184,6 +195,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               onPressed: onPressed,
               icon: const Icon(
                 AppIcons.cross,
+                color: Colors.white,
               ),
             ),
           );
@@ -294,8 +306,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                     BlendMode.srcATop),
               ),
               IconButton(
-                icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small),
-                color: context.colorScheme.onBackground,
+                icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small, color: context.colorScheme.onBackground),
+                
                 iconSize: kScreenPadding,
                 onPressed: () {
                   customBottomSheet(
@@ -321,8 +333,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildNetworkSelectButton(
       BuildContext context, List<SelectItem> networks, WidgetRef ref) {
     return MaterialButton(
-      hoverColor: context.colorScheme.surface,
-      color: context.colorScheme.surface,
+      padding: EdgeInsets.zero,
       elevation: 0,
       shape: const CircleBorder(),
       onPressed: networks.length > 1

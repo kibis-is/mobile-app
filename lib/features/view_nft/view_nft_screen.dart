@@ -192,8 +192,8 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
         ),
         body: Center(
           child: Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
+            baseColor: context.colorScheme.background,
+            highlightColor: context.colorScheme.onSurfaceVariant,
             child: Container(
               width: MediaQuery.of(context).size.width - (kScreenPadding * 2),
               height: MediaQuery.of(context).size.width - (kScreenPadding * 2),

@@ -17,6 +17,7 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
@@ -26,6 +27,7 @@ import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
@@ -109,7 +111,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       );
     }).toList();
 
-    // Insert the network (voi or algorand) item at the beginning of the list
     combinedList.insert(
       0,
       network ??
@@ -187,10 +188,25 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                 : 'Sending Asset',
             withProgressBar: true,
           );
-      final account = ref.read(accountProvider).account;
-      if (account == null) {
-        throw Exception("Account not available for the transaction.");
+
+      // Fetch the active account ID
+      final accountId = ref.read(accountProvider).accountId;
+      if (accountId == null) {
+        throw Exception("No active account ID found");
       }
+
+      // Fetch the private key from storage
+      final privateKey = await ref
+          .read(storageProvider)
+          .getAccountData(accountId, 'privateKey');
+      if (privateKey == null || privateKey.isEmpty) {
+        throw Exception("Private key not found in storage");
+      }
+
+      // Create the Account object using the private key
+      final algorand = ref.read(algorandProvider);
+      final account = await algorand.loadAccountFromPrivateKey(privateKey);
+
       double amountInAlgos = double.parse(amountController.text);
       final selectedItem = ref.read(selectedAssetProvider);
       if (selectedItem == null) {
@@ -220,13 +236,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     } on AlgorandException catch (e) {
       String errorMessage =
           ref.read(algorandServiceProvider).parseAlgorandException(e);
-      debugPrint('Error: $errorMessage');
+      debugPrint('AlgorandException: $errorMessage');
       _showErrorSnackbar(errorMessage);
     } catch (e) {
-      String errorMessage = 'An error occurred';
+      String errorMessage = e.toString();
       debugPrint('Error: $errorMessage');
       _showErrorSnackbar(errorMessage);
     } finally {
+      ref.read(loadingProvider.notifier).stopLoading();
       goBack();
     }
   }
@@ -318,6 +335,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final activeAccount = ref.watch(accountProvider).account;
+    final isWatchAccount = activeAccount is WatchAccount;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Send"),
@@ -351,14 +371,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
-        child: CustomButton(
-          isFullWidth: true,
-          text: "Send",
-          onPressed: () => _showPinPadDialog(ref),
-        ),
-      ),
+      bottomNavigationBar: isWatchAccount
+          ? const SizedBox.shrink()
+          : CustomButton(
+              isBottomNavigationPosition: true,
+              isFullWidth: true,
+              text: "Send",
+              onPressed: () => _showPinPadDialog(ref),
+            ),
     );
   }
 
@@ -470,7 +490,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             validator: _validateAlgorandAddress,
           ),
         ),
-        const SizedBox(width: kScreenPadding / 2),
         IconButton(
           style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
@@ -481,9 +500,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100.0),
               ),
-            ),
-            backgroundColor: MaterialStateProperty.all<Color>(
-              context.colorScheme.surface,
             ),
             foregroundColor: MaterialStateProperty.all<Color>(
               context.colorScheme.onSurface,

@@ -74,6 +74,7 @@ class NftTabState extends ConsumerState<NftTab> {
 
     return Column(
       children: [
+        const SizedBox(height: kScreenPadding / 2),
         _buildSearchBar(context, filterController),
         const SizedBox(height: kScreenPadding / 4),
         Expanded(
@@ -100,7 +101,8 @@ class NftTabState extends ConsumerState<NftTab> {
   Widget _buildSearchBar(
       BuildContext context, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+      padding: const EdgeInsets.only(
+          left: kScreenPadding / 4, right: kScreenPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -113,7 +115,6 @@ class NftTabState extends ConsumerState<NftTab> {
               size: AppIcons.medium,
             ),
           ),
-          const SizedBox(width: kScreenPadding / 2),
           Expanded(
             child: CustomTextField(
               controller: controller,
@@ -146,7 +147,7 @@ class NftTabState extends ConsumerState<NftTab> {
       physics: const NeverScrollableScrollPhysics(), // Parent handles scrolling
       itemBuilder: (context, index) => Shimmer.fromColors(
         baseColor: context.colorScheme.surface,
-        highlightColor: Colors.grey.shade100,
+        highlightColor: context.colorScheme.onSurfaceVariant,
         child: Container(
           color: context.colorScheme.surface,
         ),

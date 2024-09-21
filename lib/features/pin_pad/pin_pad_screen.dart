@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/pin_pad.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/pin_pad/providers/pin_title_provider.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class PinPadScreen extends ConsumerWidget {
   final PinPadMode mode;
@@ -15,9 +16,11 @@ class PinPadScreen extends ConsumerWidget {
     final title = ref.watch(pinTitleProvider);
 
     return Scaffold(
+      backgroundColor: context.colorScheme.surface,
       appBar: AppBar(
         title: Text(title),
         automaticallyImplyLeading: true,
+        backgroundColor: Colors.transparent,
       ),
       body: Column(
         children: [

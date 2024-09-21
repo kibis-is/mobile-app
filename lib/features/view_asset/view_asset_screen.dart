@@ -57,8 +57,8 @@ class ViewAssetScreen extends ConsumerWidget {
                         width: 80,
                         height: 80,
                         semanticsLabel: 'Asset Icon',
-                        colorFilter: ColorFilter.mode(
-                            context.colorScheme.background, BlendMode.srcATop),
+                        colorFilter: const ColorFilter.mode(
+                            Colors.white, BlendMode.srcATop),
                       ),
                     ),
                     const SizedBox(height: kScreenPadding),
@@ -84,6 +84,7 @@ class ViewAssetScreen extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding),
               CustomTextField(
+                leadingIcon: AppIcons.unitName,
                 controller: TextEditingController(
                   text: activeAsset?.params.unitName ?? 'Not available',
                 ),
@@ -95,15 +96,13 @@ class ViewAssetScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: CustomTextField(
+                      leadingIcon: AppIcons.applicationId,
                       controller: TextEditingController(
                         text: activeAsset?.index.toString() ?? 'Not available',
                       ),
                       labelText: 'Application ID',
                       isEnabled: false,
                     ),
-                  ),
-                  const SizedBox(
-                    width: kScreenPadding,
                   ),
                   IconButton(
                     icon: const Icon(AppIcons.copy),
@@ -116,6 +115,7 @@ class ViewAssetScreen extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding / 2),
               CustomTextField(
+                leadingIcon: AppIcons.assetType,
                 controller: TextEditingController(
                   text: activeAsset?.assetType == AssetType.arc200
                       ? 'ARC-0200'
@@ -126,6 +126,7 @@ class ViewAssetScreen extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding / 2),
               CustomTextField(
+                leadingIcon: AppIcons.decimals,
                 controller: TextEditingController(
                   text: activeAsset?.params.decimals.toString() ?? '0',
                 ),
@@ -134,6 +135,7 @@ class ViewAssetScreen extends ConsumerWidget {
               ),
               const SizedBox(height: kScreenPadding / 2),
               CustomTextField(
+                leadingIcon: AppIcons.totalSupply,
                 controller: TextEditingController(
                   text: NumberShortener.shortenNumber(totalSupply),
                 ),
@@ -144,14 +146,13 @@ class ViewAssetScreen extends ConsumerWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
-        child: CustomButton(
-          text: mode == AssetScreenMode.view ? 'Send Asset' : 'Add Asset',
-          isFullWidth: true,
-          buttonType: ButtonType.secondary,
-          onPressed: () => _handleButtonPress(context, ref),
-        ),
+      extendBody: true,
+      bottomNavigationBar: CustomButton(
+        isBottomNavigationPosition: true,
+        text: mode == AssetScreenMode.view ? 'Send Asset' : 'Add Asset',
+        isFullWidth: true,
+        buttonType: ButtonType.secondary,
+        onPressed: () => _handleButtonPress(context, ref),
       ),
     );
   }

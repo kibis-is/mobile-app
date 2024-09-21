@@ -5,6 +5,7 @@ import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/add_asset/search_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AddAssetScreen extends ConsumerWidget {
@@ -32,6 +33,7 @@ class AddAssetScreen extends ConsumerWidget {
             const SizedBox(height: kScreenPadding),
             CustomTextField(
               controller: accountController,
+              leadingIcon: AppIcons.search,
               labelText: 'Search Query',
               onChanged: (value) {
                 searchNotifier.searchAssets(value);

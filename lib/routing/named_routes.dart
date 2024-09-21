@@ -5,6 +5,7 @@ const String setupImportSeedRouteName = 'setupImportSeed';
 const String setupNameAccountRouteName = 'setupNameAccount';
 const String setupImportQrRouteName = 'setupImportQr';
 const String setupPrivateKeyRouteName = 'setupPrivateKey';
+const String setupAddWatchAccountRouteName = 'setupAddWatchAccount';
 
 const String rootRouteName = 'root';
 const String mainAddAccountRouteName = 'addAccount';
@@ -13,6 +14,7 @@ const String mainImportSeedRouteName = 'addAccountImportSeed';
 const String mainNameAccountRouteName = 'addAccountNameAccount';
 const String mainImportQrRouteName = 'addAccountImportQr';
 const String mainPrivateKeyRouteName = 'addAccountPrivateKey';
+const String mainAddWatchAccountRouteName = 'addAccountAddWatchAccount';
 
 const String editNameAccountRouteName = 'editAccount';
 const String accountListRouteName = 'accountList';

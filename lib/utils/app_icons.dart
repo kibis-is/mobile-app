@@ -54,6 +54,14 @@ class AppIcons {
   static const IconData connect = Icons.power_rounded;
   static const IconData contacts = Icons.contacts_rounded;
   static const IconData nft = Icons.image;
+  static const IconData key = Icons.key_rounded;
+  static const IconData watch = Icons.remove_red_eye_rounded;
+  static const IconData unitName = Icons.label_rounded;
+  static const IconData applicationId = Icons.fingerprint_rounded;
+  static const IconData assetType = Icons.category_rounded;
+  static const IconData decimals = Icons.looks_one_rounded;
+  static const IconData totalSupply = Icons.pie_chart_rounded;
+  static const IconData download = Icons.download_rounded;
 
   static const String svgBasePath = 'assets/images/';
 

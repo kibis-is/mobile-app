@@ -79,22 +79,6 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                     ),
                   ],
                 ),
-              // if (kDebugMode)
-              //   Column(
-              //     children: [
-              //       const SizedBox(
-              //         height: kScreenPadding,
-              //       ),
-              //       CustomListTile(
-              //         title: "Import Hardcoded URI",
-              //         subtitle:
-              //             'Import accounts from a hardcoded URI for testing.',
-              //         leadingIcon: AppIcons.importAccount,
-              //         trailingIcon: AppIcons.arrowRight,
-              //         onTap: _importFromHardcodedUri,
-              //       ),
-              //     ],
-              //   ),
               Column(
                 children: [
                   const SizedBox(
@@ -103,11 +87,18 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                   CustomListTile(
                     title: "Import via Private Key",
                     subtitle: 'Import accounts from a private key.',
-                    leadingIcon: AppIcons.importAccount,
+                    leadingIcon: AppIcons.key,
                     trailingIcon: AppIcons.arrowRight,
                     onTap: _importViaPrivateKey,
                   ),
                 ],
+              ),
+              CustomListTile(
+                title: "Add Watch",
+                subtitle: "Add watch account to watch via public address.",
+                leadingIcon: AppIcons.watch,
+                trailingIcon: AppIcons.arrowRight,
+                onTap: _addWatchAccount,
               ),
             ],
           ),
@@ -139,39 +130,9 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
         : '/addAccount/$mainPrivateKeyRouteName');
   }
 
-  // void _importFromHardcodedUri() async {
-  //   try {
-  //     ref
-  //         .read(loadingProvider.notifier)
-  //         .startLoading(message: 'Importing Mock Accounts');
-
-  //     final scannerLogic = QRCodeScannerLogic(
-  //       scanMode: ScanMode.privateKey,
-  //       accountFlow: widget.accountFlow ?? AccountFlow.setup,
-  //     );
-
-  //     // Simulate handling a hardcoded URI
-  //     dynamic scanResult = await scannerLogic.handleBarcode(
-  //       const BarcodeCapture(
-  //         barcodes: [
-  //           Barcode(
-  //             rawValue:
-  //                 'avm://account/import?name=Personal&privatekey=tup_v36uHxIi1_N1acL-9FtO44FCbyPpsDj-EhS4GEA=&name=Test%20Account%201&privatekey=P0sSlStDoAFlEM1MJYkGkKvw9gsn42nDKrs0n5h029o=&name=Test%20Account%202&privatekey=IF6oOAuJWbq__Ak8-hVZb9TSm5JfCUXBq9dq4yKPGbk=',
-  //           )
-  //         ],
-  //       ),
-  //     );
-
-  //     // Process the scan result
-  //     await _handleScanResult(scanResult);
-  //   } catch (e) {
-  //     showCustomSnackBar(
-  //       context: context,
-  //       snackType: SnackType.error,
-  //       message: e.toString(),
-  //     );
-  //   } finally {
-  //     ref.read(loadingProvider.notifier).stopLoading();
-  //   }
-  // }
+  void _addWatchAccount() {
+    GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
+        ? '/setup/$setupAddWatchAccountRouteName'
+        : '/addAccount/$mainAddWatchAccountRouteName');
+  }
 }

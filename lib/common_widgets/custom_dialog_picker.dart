@@ -54,14 +54,14 @@ class CustomAlertDialog extends StatelessWidget {
                   children: [
                     Icon(icon,
                         size: AppIcons.xlarge,
-                        color: context.colorScheme.onTertiary),
+                        color: context.colorScheme.onBackground),
                     const SizedBox(height: kScreenPadding / 2),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: kScreenPadding, vertical: 0),
                       child: Text(
                         title,
-                        style: Theme.of(context).textTheme.displaySmall,
+                        style: context.textTheme.titleSmall?.copyWith(color: context.colorScheme.onSurface, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -75,7 +75,7 @@ class CustomAlertDialog extends StatelessWidget {
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium
-                              ?.copyWith(color: context.colorScheme.secondary),
+                              ?.copyWith(color: context.colorScheme.secondary, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -92,13 +92,13 @@ class CustomAlertDialog extends StatelessWidget {
                                     item['accountName']!,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .displayMedium,
+                                        .displayMedium?.copyWith(color: context.colorScheme.onBackground, fontWeight: FontWeight.bold),
                                   ),
                                   subtitle: EllipsizedText(
                                     item['publicKey']!,
                                     type: EllipsisType.middle,
                                     style:
-                                        Theme.of(context).textTheme.bodySmall,
+                                        Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colorScheme.onBackground, fontWeight: FontWeight.bold),
                                   ),
                                   leading: Container(
                                       padding: const EdgeInsets.all(

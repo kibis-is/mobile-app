@@ -50,7 +50,7 @@ class DashboardInfoPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+      padding: const EdgeInsets.only(left: kScreenPadding, right: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -79,6 +79,7 @@ class DashboardInfoPanel extends ConsumerWidget {
                 icon: AppIcons.icon(
                   icon: AppIcons.verticalDots,
                   size: AppIcons.medium,
+                  color: context.colorScheme.onBackground
                 ),
                 onPressed: () {
                   customBottomSheet(

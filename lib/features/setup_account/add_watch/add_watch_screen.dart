@@ -1,3 +1,4 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,23 +7,19 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/features/setup_account/import_via_private_key/providers/private_key_error_provider.dart';
-import 'package:kibisis/features/setup_account/import_via_private_key/providers/private_key_provider.dart';
-import 'package:kibisis/features/setup_account/import_via_private_key/providers/suxxif_icon_visibility_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
-class ImportPrivateKeyScreen extends ConsumerWidget {
-  static String title = 'Import Private Key';
+class AddWatchScreen extends ConsumerWidget {
+  static String title = 'Import Public Address';
   final AccountFlow accountFlow;
 
-  const ImportPrivateKeyScreen({super.key, required this.accountFlow});
+  const AddWatchScreen({super.key, required this.accountFlow});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final privateKeyController = ref.watch(privateKeyProvider);
-    final showError = ref.watch(privateKeyErrorProvider);
-    final isSuffixIconVisible = ref.watch(suffixIconVisibilityProvider);
+    final publicAddressController = TextEditingController();
+    final isSuffixIconVisible = publicAddressController.text.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -33,9 +30,7 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
             onPressed: () async {
               ClipboardData? clipData = await Clipboard.getData('text/plain');
               if (clipData != null) {
-                privateKeyController.text = clipData.text ?? '';
-                ref.read(privateKeyErrorProvider.notifier).hideError();
-                ref.read(suffixIconVisibilityProvider.notifier).showIcon();
+                publicAddressController.text = clipData.text ?? '';
               }
             },
           ),
@@ -46,32 +41,21 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: kScreenPadding,
-            ),
+            const SizedBox(height: kScreenPadding),
             CustomTextField(
-              controller: privateKeyController,
-              labelText: 'Private Key',
-              errorText: showError ? 'Invalid Private Key' : null,
+              controller: publicAddressController,
+              labelText: 'Public Address',
               suffixIcon: isSuffixIconVisible ? AppIcons.cross : null,
               leadingIcon: AppIcons.importAccount,
               autoCorrect: false,
               onTrailingPressed: () {
-                privateKeyController.clear();
-                ref.read(suffixIconVisibilityProvider.notifier).hideIcon();
+                publicAddressController.clear();
               },
               onChanged: (text) {
-                if (text.isNotEmpty) {
-                  ref.read(privateKeyErrorProvider.notifier).hideError();
-                  ref.read(suffixIconVisibilityProvider.notifier).showIcon();
-                } else {
-                  ref.read(suffixIconVisibilityProvider.notifier).hideIcon();
-                }
+                // Handle text change if needed
               },
             ),
-            const SizedBox(
-              height: kScreenPadding,
-            ),
+            const SizedBox(height: kScreenPadding),
           ],
         ),
       ),
@@ -80,23 +64,41 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
         text: 'Import',
         isFullWidth: true,
         onPressed: () {
-          if (privateKeyController.text.isEmpty) {
-            ref.read(privateKeyErrorProvider.notifier).showError();
+          if (publicAddressController.text.isEmpty) {
+            showCustomSnackBar(
+              context: context,
+              snackType: SnackType.error,
+              message: 'Please enter a public address.',
+            );
           } else {
-            _importAccount(context, ref);
+            _addWatchAccount(
+              context,
+              ref,
+              publicAddressController.text.trim(),
+            );
           }
         },
       ),
     );
   }
 
-  Future<void> _importAccount(BuildContext context, WidgetRef ref) async {
+  Future<void> _addWatchAccount(
+      BuildContext context, WidgetRef ref, String publicAddress) async {
     try {
-      final privateKeyInput = ref.read(privateKeyProvider).text.trim();
+      // Validate the public address
+      final isValid = _isValidAlgorandAddress(publicAddress);
+      if (!isValid) {
+        showCustomSnackBar(
+          context: context,
+          snackType: SnackType.error,
+          message: 'Invalid Algorand address.',
+        );
+        return;
+      }
 
       await ref
           .read(temporaryAccountProvider.notifier)
-          .restoreAccountFromPrivateKey(privateKeyInput);
+          .createWatchAccount(publicAddress);
 
       if (!context.mounted) return;
 
@@ -109,6 +111,15 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
         snackType: SnackType.error,
         message: e.toString(),
       );
+    }
+  }
+
+  bool _isValidAlgorandAddress(String address) {
+    try {
+      Address.fromAlgorandAddress(address: address);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }

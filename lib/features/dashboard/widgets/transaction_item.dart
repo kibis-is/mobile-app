@@ -40,7 +40,7 @@ class TransactionItem extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.all(kScreenPadding / 3),
         child: AppIcons.icon(
-            icon: network == 'network-voi'
+            icon: network.startsWith('network-voi')
                 ? AppIcons.voiCircleIcon
                 : AppIcons.algorandIcon,
             size: AppIcons.xlarge,
