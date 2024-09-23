@@ -43,10 +43,10 @@ class Arc200Service {
         ));
       }
 
-      debugPrint('Fetched ARC200 assets: $assets'); // Print the resulting list
+      debugPrint('Fetched ARC200 assets: $assets');
       return assets;
     } catch (e) {
-      debugPrint('Exception in fetchArc200Assets: $e'); // Log any exception
+      debugPrint('Exception in fetchArc200Assets: $e');
       return [];
     }
   }
