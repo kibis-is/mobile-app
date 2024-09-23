@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
@@ -22,8 +23,8 @@ class ActiveAccountNotifier extends StateNotifier<String?> {
     try {
       state = getActiveAccountId();
     } catch (e) {
+      debugPrint("_loadActiveAccount error: $e");
       state = null;
-      // Handle error if needed
     }
   }
 
@@ -32,7 +33,8 @@ class ActiveAccountNotifier extends StateNotifier<String?> {
       await storageService.setActiveAccount(accountId);
       state = accountId;
     } catch (e) {
-      // Handle error if needed
+      debugPrint("setActiveAccount error: $e");
+      state = null;
     }
   }
 
@@ -41,7 +43,8 @@ class ActiveAccountNotifier extends StateNotifier<String?> {
       await storageService.setActiveAccount('');
       state = null;
     } catch (e) {
-      // Handle error if needed
+      debugPrint("reset error: $e");
+      state = null;
     }
   }
 }

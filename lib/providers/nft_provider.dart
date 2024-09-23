@@ -36,7 +36,6 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
 
     _isLoadingMore = true;
     try {
-      // Add limit parameter to control how many NFTs are fetched at a time
       final String url = isInitialLoad
           ? 'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicAddress&limit=$limit'
           : 'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicAddress&next=$_nextToken&limit=$limit';
@@ -45,7 +44,7 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
         final List<dynamic> tokens = body['tokens'];
-        _nextToken = body['next']; // Use the pagination token
+        _nextToken = body['next'];
 
         if (tokens.isEmpty) {
           _isLoadingMore = false;
@@ -71,9 +70,9 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
         }).toList();
 
         if (isInitialLoad) {
-          _allNfts = nfts; // Replace the current list with the new data
+          _allNfts = nfts;
         } else {
-          _allNfts.addAll(nfts); // Add new NFTs to the existing list
+          _allNfts.addAll(nfts);
         }
 
         state = AsyncValue.data(_filteredNfts());
