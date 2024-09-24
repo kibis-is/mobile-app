@@ -206,7 +206,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
 
   Future<void> _updateAccountName() async {
     final accountName = accountNameController.text;
-    final accountId = ref.read(activeAccountProvider);
+    final accountId = ref.watch(activeAccountProvider);
     if (accountId == null) {
       throw Exception('No active account ID found');
     }
