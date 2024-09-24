@@ -7,6 +7,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
@@ -49,38 +50,46 @@ class DashboardInfoPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final accountId =
+        ref.watch(activeAccountProvider.notifier).getActiveAccountId();
     return Padding(
-      padding: const EdgeInsets.only(left: kScreenPadding, right: 0),
+      padding:
+          const EdgeInsets.only(left: kScreenPadding, right: kScreenPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EllipsizedText(
-            accountState.accountName ?? 'No Account Name',
-            type: EllipsisType.end,
-            textAlign: TextAlign.start,
-            style: context.textTheme.titleLarge?.copyWith(
-              letterSpacing: 1.3,
-              fontWeight: FontWeight.bold,
+          Hero(
+            tag: 'account-name-$accountId',
+            child: EllipsizedText(
+              accountState.accountName ?? 'No Account Name',
+              type: EllipsisType.end,
+              textAlign: TextAlign.start,
+              style: context.textTheme.titleLarge?.copyWith(
+                letterSpacing: 1.3,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: EllipsizedText(
-                  publicKey,
-                  type: EllipsisType.middle,
-                  textAlign: TextAlign.start,
-                  style: context.textTheme.bodySmall?.copyWith(
-                      letterSpacing: 1.5, fontWeight: FontWeight.bold),
+                child: Hero(
+                  tag: publicKey,
+                  child: EllipsizedText(
+                    publicKey,
+                    type: EllipsisType.middle,
+                    textAlign: TextAlign.start,
+                    style: context.textTheme.bodySmall?.copyWith(
+                        letterSpacing: 1.5, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               IconButton(
                 icon: AppIcons.icon(
-                  icon: AppIcons.verticalDots,
-                  size: AppIcons.medium,
-                  color: context.colorScheme.onBackground
-                ),
+                    icon: AppIcons.verticalDots,
+                    size: AppIcons.medium,
+                    color: context.colorScheme.onBackground),
                 onPressed: () {
                   customBottomSheet(
                     context: context,

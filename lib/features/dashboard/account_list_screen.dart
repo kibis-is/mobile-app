@@ -152,7 +152,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
               const SizedBox(height: kScreenPadding / 2),
               _buildLogo(),
               const SizedBox(height: kScreenPadding / 2),
-              _buildAccountName(context, accountName),
+              _buildAccountName(context, accountName, account['accountId']!),
               const SizedBox(height: kScreenPadding / 2),
               _buildPublicKey(context, publicKey),
               const SizedBox(
@@ -223,23 +223,30 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
     );
   }
 
-  Widget _buildAccountName(BuildContext context, String accountName) {
-    return EllipsizedText(accountName,
-        style: context.textTheme.titleLarge
-            ?.copyWith(fontWeight: FontWeight.bold)
-            .copyWith(
-              color: Colors.white,
-            ));
+  Widget _buildAccountName(
+      BuildContext context, String accountName, String accountId) {
+    return Hero(
+      tag: 'account-name-$accountId',
+      child: EllipsizedText(accountName,
+          style: context.textTheme.titleLarge
+              ?.copyWith(fontWeight: FontWeight.bold)
+              .copyWith(
+                color: Colors.white,
+              )),
+    );
   }
 
   Widget _buildPublicKey(BuildContext context, String publicKey) {
-    return EllipsizedText(
-      type: EllipsisType.middle,
-      ellipsis: '...',
-      publicKey,
-      style: context.textTheme.titleSmall?.copyWith(
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
+    return Hero(
+      tag: publicKey,
+      child: EllipsizedText(
+        type: EllipsisType.middle,
+        ellipsis: '...',
+        publicKey,
+        style: context.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
       ),
     );
   }

@@ -28,37 +28,40 @@ class AssetListItem extends ConsumerWidget {
     ref.watch(isDarkModeProvider);
     return Stack(
       children: [
-        Hero(
-          tag: asset.index.toString(),
-          child: Material(
-            child: Container(
-              decoration: BoxDecoration(
-                color: context.colorScheme.background,
-                border: Border.symmetric(
-                  horizontal:
-                      BorderSide(width: 1, color: context.colorScheme.surface),
-                ),
+        Material(
+          child: Container(
+            decoration: BoxDecoration(
+              color: context.colorScheme.background,
+              border: Border.symmetric(
+                horizontal:
+                    BorderSide(width: 1, color: context.colorScheme.surface),
               ),
-              child: ListTile(
-                leading: _buildAssetIcon(
-                    context, ref, asset.params.defaultFrozen ?? false),
-                title: EllipsizedText(
+            ),
+            child: ListTile(
+              leading: _buildAssetIcon(
+                  context, ref, asset.params.defaultFrozen ?? false),
+              title: Hero(
+                tag: '${asset.index}-name',
+                child: EllipsizedText(
                   asset.params.name ?? 'Unknown',
                   style: context.textTheme.displaySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                subtitle: EllipsizedText(
+              ),
+              subtitle: Hero(
+                tag: '${asset.index}-amount',
+                child: EllipsizedText(
                   mode == AssetScreenMode.add ? '' : _getFormattedAmount(),
                   style: context.textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                trailing: _buildTrailing(context),
-                onTap: (onPressed == null && mode == AssetScreenMode.add)
-                    ? null
-                    : () => _handleOnPressed(context, ref),
               ),
+              trailing: _buildTrailing(context),
+              onTap: (onPressed == null && mode == AssetScreenMode.add)
+                  ? null
+                  : () => _handleOnPressed(context, ref),
             ),
           ),
         ),
@@ -98,23 +101,27 @@ class AssetListItem extends ConsumerWidget {
   Widget _buildAssetIcon(
       BuildContext context, WidgetRef ref, bool isFrozenDefault) {
     ref.watch(isDarkModeProvider);
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: context.colorScheme.primary,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(kScreenPadding / 3),
-        child: AppIcons.icon(
-            icon: AppIcons.voiCircleIcon,
-            color: context.colorScheme.onPrimary,
-            size: AppIcons.xlarge),
+    return Hero(
+      tag: '${asset.index}-icon',
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: context.colorScheme.primary,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(kScreenPadding / 3),
+          child: AppIcons.icon(
+              icon: AppIcons.voiCircleIcon,
+              color: context.colorScheme.onPrimary,
+              size: AppIcons.xlarge),
+        ),
       ),
     );
   }
 
   Widget _buildTrailing(BuildContext context) {
-    return SizedBox(
+    return Container(
+      padding: const EdgeInsets.all(kScreenPadding / 3),
       child: (onPressed == null && mode == AssetScreenMode.add)
           ? Text(
               'Owned',
