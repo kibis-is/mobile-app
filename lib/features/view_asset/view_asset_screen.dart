@@ -20,7 +20,7 @@ import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:go_router/go_router.dart';
 
-class ViewAssetScreen extends ConsumerWidget {
+class ViewAssetScreen extends ConsumerStatefulWidget {
   final AssetScreenMode mode;
   const ViewAssetScreen({
     super.key,
@@ -28,16 +28,76 @@ class ViewAssetScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ViewAssetScreenState createState() => ViewAssetScreenState();
+}
+
+class ViewAssetScreenState extends ConsumerState<ViewAssetScreen>
+    with TickerProviderStateMixin {
+  late final List<AnimationController> _controllers;
+  late final List<Animation<Offset>> _offsetAnimations;
+  late final List<Animation<double>> _opacityAnimations;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controllers = List.generate(6, (index) {
+      return AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 150),
+      );
+    });
+
+    _offsetAnimations = _controllers.map((controller) {
+      return Tween<Offset>(
+        begin: const Offset(0, 4),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(parent: controller, curve: Curves.easeOut),
+      );
+    }).toList();
+
+    _opacityAnimations = _controllers.map((controller) {
+      return Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(
+        CurvedAnimation(parent: controller, curve: Curves.easeIn),
+      );
+    }).toList();
+
+    _triggerAnimations();
+  }
+
+  Future<void> _triggerAnimations() async {
+    await Future.delayed(const Duration(milliseconds: 75));
+    for (var i = 0; i < _controllers.length; i++) {
+      await Future.delayed(const Duration(milliseconds: 75), () {
+        _controllers[i].forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final activeAsset = ref.watch(activeAssetProvider);
     final userBalance = activeAsset?.amount ?? 0;
     final totalSupply =
         double.parse(activeAsset?.params.total.toString() ?? '1');
     final publicKey = ref.watch(accountProvider).account?.publicAddress;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          mode == AssetScreenMode.view ? 'View Asset' : 'Add Asset',
+          widget.mode == AssetScreenMode.view ? 'View Asset' : 'Add Asset',
         ),
       ),
       body: SingleChildScrollView(
@@ -45,11 +105,11 @@ class ViewAssetScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(kScreenPadding),
           child: Column(
             children: [
-              Container(
-                padding: const EdgeInsets.all(kScreenPadding),
-                child: Column(
-                  children: [
-                    CircleAvatar(
+              Column(
+                children: [
+                  Hero(
+                    tag: '${activeAsset?.index}-icon',
+                    child: CircleAvatar(
                       radius: 50.0,
                       backgroundColor: context.colorScheme.primary,
                       child: SvgPicture.asset(
@@ -61,98 +121,126 @@ class ViewAssetScreen extends ConsumerWidget {
                             Colors.white, BlendMode.srcATop),
                       ),
                     ),
-                    const SizedBox(height: kScreenPadding),
-                    EllipsizedText(
+                  ),
+                  const SizedBox(height: kScreenPadding),
+                  Hero(
+                    tag: '${activeAsset?.index}-name',
+                    child: EllipsizedText(
+                      activeAsset?.params.name ?? 'Unnamed Asset',
+                      style: context.textTheme.displayMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: kScreenPadding / 2),
+                  Hero(
+                    tag: '${activeAsset?.index}-amount',
+                    child: EllipsizedText(
                       NumberShortener.shortenNumber(userBalance.toDouble()),
                       style: context.textTheme.displayMedium?.copyWith(
                           color: context.colorScheme.secondary,
                           fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: kScreenPadding / 2),
-                    EllipsizedText(
-                      activeAsset?.params.name ?? 'Unnamed Asset',
-                      style: context.textTheme.displayMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: kScreenPadding),
-              EllipsizedText(
-                publicKey ?? 'Not available',
-                type: EllipsisType.middle,
-              ),
-              const SizedBox(height: kScreenPadding),
-              CustomTextField(
-                leadingIcon: AppIcons.unitName,
-                controller: TextEditingController(
-                  text: activeAsset?.params.unitName ?? 'Not available',
-                ),
-                labelText: 'UnitName',
-                isEnabled: false,
-              ),
-              const SizedBox(height: kScreenPadding / 2),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomTextField(
-                      leadingIcon: AppIcons.applicationId,
-                      controller: TextEditingController(
-                        text: activeAsset?.index.toString() ?? 'Not available',
-                      ),
-                      labelText: 'Application ID',
-                      isEnabled: false,
-                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(AppIcons.copy),
-                    onPressed: () {
-                      copyToClipboard(
-                          context, activeAsset?.index.toString() ?? '');
-                    },
-                  )
                 ],
               ),
+              const SizedBox(height: kScreenPadding),
+              _buildAnimatedItem(
+                  0,
+                  EllipsizedText(
+                    publicKey ?? 'Not available',
+                    type: EllipsisType.middle,
+                  )),
+              const SizedBox(height: kScreenPadding),
+              _buildAnimatedItem(
+                  1,
+                  CustomTextField(
+                    leadingIcon: AppIcons.unitName,
+                    controller: TextEditingController(
+                      text: activeAsset?.params.unitName ?? 'Not available',
+                    ),
+                    labelText: 'UnitName',
+                    isEnabled: false,
+                  )),
               const SizedBox(height: kScreenPadding / 2),
-              CustomTextField(
-                leadingIcon: AppIcons.assetType,
-                controller: TextEditingController(
-                  text: activeAsset?.assetType == AssetType.arc200
-                      ? 'ARC-0200'
-                      : 'Algorand Standard Asset',
-                ),
-                labelText: 'Type',
-                isEnabled: false,
-              ),
+              _buildAnimatedItem(
+                  2,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextField(
+                          leadingIcon: AppIcons.applicationId,
+                          controller: TextEditingController(
+                            text: activeAsset?.index.toString() ??
+                                'Not available',
+                          ),
+                          labelText: 'Application ID',
+                          isEnabled: false,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(AppIcons.copy),
+                        onPressed: () {
+                          copyToClipboard(
+                              context, activeAsset?.index.toString() ?? '');
+                        },
+                      )
+                    ],
+                  )),
               const SizedBox(height: kScreenPadding / 2),
-              CustomTextField(
-                leadingIcon: AppIcons.decimals,
-                controller: TextEditingController(
-                  text: activeAsset?.params.decimals.toString() ?? '0',
-                ),
-                labelText: 'Decimals',
-                isEnabled: false,
-              ),
+              _buildAnimatedItem(
+                  3,
+                  CustomTextField(
+                    leadingIcon: AppIcons.assetType,
+                    controller: TextEditingController(
+                      text: activeAsset?.assetType == AssetType.arc200
+                          ? 'ARC-0200'
+                          : 'Algorand Standard Asset',
+                    ),
+                    labelText: 'Type',
+                    isEnabled: false,
+                  )),
               const SizedBox(height: kScreenPadding / 2),
-              CustomTextField(
-                leadingIcon: AppIcons.totalSupply,
-                controller: TextEditingController(
-                  text: NumberShortener.shortenNumber(totalSupply),
-                ),
-                labelText: 'Total Supply',
-                isEnabled: false,
-              ),
+              _buildAnimatedItem(
+                  4,
+                  CustomTextField(
+                    leadingIcon: AppIcons.decimals,
+                    controller: TextEditingController(
+                      text: activeAsset?.params.decimals.toString() ?? '0',
+                    ),
+                    labelText: 'Decimals',
+                    isEnabled: false,
+                  )),
+              const SizedBox(height: kScreenPadding / 2),
+              _buildAnimatedItem(
+                  5,
+                  CustomTextField(
+                    leadingIcon: AppIcons.totalSupply,
+                    controller: TextEditingController(
+                      text: NumberShortener.shortenNumber(totalSupply),
+                    ),
+                    labelText: 'Total Supply',
+                    isEnabled: false,
+                  )),
             ],
           ),
         ),
       ),
-      extendBody: true,
       bottomNavigationBar: CustomButton(
         isBottomNavigationPosition: true,
-        text: mode == AssetScreenMode.view ? 'Send Asset' : 'Add Asset',
+        text: widget.mode == AssetScreenMode.view ? 'Send Asset' : 'Add Asset',
         isFullWidth: true,
         buttonType: ButtonType.secondary,
         onPressed: () => _handleButtonPress(context, ref),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedItem(int index, Widget child) {
+    return FadeTransition(
+      opacity: _opacityAnimations[index],
+      child: SlideTransition(
+        position: _offsetAnimations[index],
+        child: child,
       ),
     );
   }
@@ -164,7 +252,7 @@ class ViewAssetScreen extends ConsumerWidget {
           "ARC200 assets not yet supported", StackTrace.current, context);
       return;
     }
-    if (mode == AssetScreenMode.view) {
+    if (widget.mode == AssetScreenMode.view) {
       context.pushNamed(sendTransactionRouteName,
           pathParameters: {'mode': 'asset'});
       return;
