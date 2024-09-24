@@ -32,7 +32,6 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
-import 'package:kibisis/utils/theme_extensions.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final router = RouterNotifier(ref);
