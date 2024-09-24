@@ -32,6 +32,7 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final router = RouterNotifier(ref);
@@ -59,14 +60,14 @@ class CustomNavigatorObserver extends NavigatorObserver {
 
   CustomNavigatorObserver(this.ref);
 
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    super.didPop(route, previousRoute);
-    Future.delayed(Duration.zero, () {
-      ref.read(loadingProvider.notifier).stopLoading();
-      debugPrint('Screen popped, stopped loading!');
-    });
-  }
+  // @override
+  // void didPop(Route route, Route? previousRoute) {
+  //   super.didPop(route, previousRoute);
+  //   Future.delayed(Duration.zero, () {
+  //     ref.read(loadingProvider.notifier).stopLoading();
+  //     debugPrint('Screen popped, stopped loading!');
+  //   });
+  // }
 }
 
 class RouterNotifier extends ChangeNotifier {
@@ -496,44 +497,43 @@ class RouterNotifier extends ChangeNotifier {
         ),
       ];
 
-  CustomTransitionPage defaultTransitionPage(
-      Widget child, GoRouterState state) {
-    return CustomTransitionPage(
-      key: state.pageKey,
-      child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-          child,
-    );
-  }
-
-  CustomTransitionPage<void> fadeTransitionPage(
+  // CustomTransitionPage defaultTransitionPage(
+  //     Widget child, GoRouterState state) {
+  //   return CustomTransitionPage(
+  //     key: state.pageKey,
+  //     child: child,
+  //     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+  //         child,
+  //   );
+  // }
+  CustomTransitionPage<void> defaultTransitionPage(
     Widget child,
     GoRouterState state, {
-    Duration duration = const Duration(milliseconds: 300),
+    Duration duration = const Duration(milliseconds: 200),
   }) {
     return CustomTransitionPage<void>(
       key: state.pageKey,
       child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: Stack(
-            children: [
-              // Slight white overlay to give the effect
-              FadeTransition(
-                opacity: animation.drive(
-                  Tween<double>(begin: 0.3, end: 0.0).chain(
-                    CurveTween(curve: Curves.easeOut),
-                  ),
-                ),
+      transitionsBuilder:
+          (context, animation, secondaryAnimation, Widget child) {
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            if (secondaryAnimation.value > 0) {
+              return Opacity(
+                opacity: 1 - secondaryAnimation.value,
                 child: Container(
                   color: Colors.white,
+                  child: child,
                 ),
-              ),
-              // The actual child content fading in
-              child,
-            ],
-          ),
+              );
+            }
+            return Opacity(
+              opacity: animation.value,
+              child: child,
+            );
+          },
+          child: child,
         );
       },
       transitionDuration: duration,
