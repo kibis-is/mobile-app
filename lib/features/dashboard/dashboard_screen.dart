@@ -101,7 +101,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
         }),
       ),
       child: Container(
-          decoration: BoxDecoration(
+        decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
               color: context.colorScheme.surface,
@@ -306,8 +306,10 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                     BlendMode.srcATop),
               ),
               IconButton(
-                icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small, color: context.colorScheme.onBackground),
-                
+                icon: AppIcons.icon(
+                    icon: AppIcons.info,
+                    size: AppIcons.small,
+                    color: context.colorScheme.onBackground),
                 iconSize: kScreenPadding,
                 onPressed: () {
                   customBottomSheet(
