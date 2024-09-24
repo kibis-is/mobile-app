@@ -91,7 +91,7 @@ class CustomTextField extends ConsumerWidget {
         ),
         contentPadding: EdgeInsets.symmetric(
             horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding,
-            vertical: kScreenPadding / 4),
+            vertical: kScreenPadding),
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         errorText: errorText?.isEmpty ?? true
             ? null

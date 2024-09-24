@@ -53,8 +53,8 @@ class DashboardInfoPanel extends ConsumerWidget {
     final accountId =
         ref.watch(activeAccountProvider.notifier).getActiveAccountId();
     return Padding(
-      padding:
-          const EdgeInsets.only(left: kScreenPadding, right: kScreenPadding),
+      padding: const EdgeInsets.only(
+          left: kScreenPadding, right: kScreenPadding / 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

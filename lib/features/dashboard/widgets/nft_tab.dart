@@ -101,8 +101,7 @@ class NftTabState extends ConsumerState<NftTab> {
   Widget _buildSearchBar(
       BuildContext context, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.only(
-          left: kScreenPadding / 4, right: kScreenPadding),
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

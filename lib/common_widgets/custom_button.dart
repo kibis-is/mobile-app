@@ -50,7 +50,13 @@ class CustomButton extends StatelessWidget {
 
     return Container(
       width: isFullWidth ? double.infinity : null,
-      padding: EdgeInsets.all(isBottomNavigationPosition ? kScreenPadding : 0),
+      padding: isBottomNavigationPosition
+          ? const EdgeInsets.only(
+              top: 0,
+              bottom: kScreenPadding,
+              left: kScreenPadding,
+              right: kScreenPadding)
+          : const EdgeInsets.all(0),
       child: ElevatedButton.icon(
         icon: prefixIcon ?? const SizedBox.shrink(),
         label: Text(

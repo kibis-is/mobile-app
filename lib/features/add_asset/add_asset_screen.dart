@@ -21,17 +21,20 @@ class AddAssetScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: Column(
-          children: [
-            const SizedBox(height: kScreenPadding),
-            Text(
+      body: Column(
+        children: [
+          const SizedBox(height: kScreenPadding),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+            child: Text(
               "Enter an assetID, name, asset, or symbol ID (for ARC-200).",
               style: context.textTheme.bodyMedium,
             ),
-            const SizedBox(height: kScreenPadding),
-            CustomTextField(
+          ),
+          const SizedBox(height: kScreenPadding),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+            child: CustomTextField(
               controller: accountController,
               leadingIcon: AppIcons.search,
               labelText: 'Search Query',
@@ -39,11 +42,11 @@ class AddAssetScreen extends ConsumerWidget {
                 searchNotifier.searchAssets(value);
               },
             ),
-            const SizedBox(height: kScreenPadding),
-            const AssetList(),
-            const SizedBox(height: kScreenPadding),
-          ],
-        ),
+          ),
+          const SizedBox(height: kScreenPadding),
+          const AssetList(),
+          const SizedBox(height: kScreenPadding),
+        ],
       ),
     );
   }
@@ -85,7 +88,8 @@ class AssetList extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, stack) => Center(child: Text('Error: $e')),
+        error: (e, stack) =>
+            const Center(child: Text('Sorry, there was an error.')),
       ),
     );
   }

@@ -121,7 +121,6 @@ class AssetListItem extends ConsumerWidget {
 
   Widget _buildTrailing(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(kScreenPadding / 3),
       child: (onPressed == null && mode == AssetScreenMode.add)
           ? Text(
               'Owned',

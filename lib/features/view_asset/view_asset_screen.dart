@@ -102,7 +102,8 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen>
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(kScreenPadding),
+          padding: const EdgeInsets.symmetric(
+              horizontal: kScreenPadding / 2, vertical: kScreenPadding),
           child: Column(
             children: [
               Column(

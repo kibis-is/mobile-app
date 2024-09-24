@@ -117,24 +117,27 @@ class TransactionItem extends ConsumerWidget {
                           ),
                       ],
                     ),
-                    trailing: Text(
-                      type == 'appl'
-                          ? '$amount'
-                          : (amount != null &&
-                                  amount != '0' &&
-                                  !(amount?.startsWith('0') ?? false))
-                              ? '${isOutgoing ? '-' : '+'}$amount'
-                              : '$amount',
-                      style: context.textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: (amount == null ||
-                                amount == '0' ||
-                                amount?.startsWith('0') == true ||
-                                type == 'appl')
-                            ? context.colorScheme.onSurface
-                            : isOutgoing
-                                ? context.colorScheme.error
-                                : context.colorScheme.secondary,
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(right: kScreenPadding / 2),
+                      child: Text(
+                        type == 'appl'
+                            ? '$amount'
+                            : (amount != null &&
+                                    amount != '0' &&
+                                    !(amount?.startsWith('0') ?? false))
+                                ? '${isOutgoing ? '-' : '+'}$amount'
+                                : '$amount',
+                        style: context.textTheme.labelMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: (amount == null ||
+                                  amount == '0' ||
+                                  amount?.startsWith('0') == true ||
+                                  type == 'appl')
+                              ? context.colorScheme.onSurface
+                              : isOutgoing
+                                  ? context.colorScheme.error
+                                  : context.colorScheme.secondary,
+                        ),
                       ),
                     ),
                   ),

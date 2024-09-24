@@ -84,7 +84,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   Widget _buildSearchBar(BuildContext context, TextEditingController controller,
       AssetsFilterController notifier) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 4),
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
