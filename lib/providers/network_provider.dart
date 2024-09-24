@@ -3,18 +3,17 @@ import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
-// Network options
 final List<SelectItem> networkOptions = [
   SelectItem(
-    name: 'VOI MainNet',
-    value: "network-voi-mainnet",
+    name: 'VOI',
+    value: "network-voi",
     icon: AppIcons.voiIcon,
   ),
-  SelectItem(
-    name: 'VOI TestNet',
-    value: "network-voi-testnet",
-    icon: AppIcons.voiIcon,
-  ),
+  // SelectItem(
+  //   name: 'VOI TestNet',
+  //   value: "network-voi-testnet",
+  //   icon: AppIcons.voiIcon,
+  // ),
 ];
 
 final networkProvider =
