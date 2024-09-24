@@ -98,7 +98,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final network = ref.read(networkProvider);
 
     if (assetsAsync is! AsyncData<List<CombinedAsset>>) {
-      // If assets are not loaded yet, return empty list
       return [];
     }
 
@@ -182,20 +181,11 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<void> _executeTransaction(WidgetRef ref) async {
     try {
-      ref.read(loadingProvider.notifier).startLoading(
-            message: widget.mode == SendTransactionScreenMode.payment
-                ? 'Sending Payment'
-                : 'Sending Asset',
-            withProgressBar: true,
-          );
-
-      // Fetch the active account ID
       final accountId = ref.read(accountProvider).accountId;
       if (accountId == null) {
         throw Exception("No active account ID found");
       }
 
-      // Fetch the private key from storage
       final privateKey = await ref
           .read(storageProvider)
           .getAccountData(accountId, 'privateKey');
@@ -203,7 +193,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         throw Exception("Private key not found in storage");
       }
 
-      // Create the Account object using the private key
       final algorand = ref.read(algorandProvider);
       final account = await algorand.loadAccountFromPrivateKey(privateKey);
 
@@ -243,7 +232,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       debugPrint('Error: $errorMessage');
       _showErrorSnackbar(errorMessage);
     } finally {
-      ref.read(loadingProvider.notifier).stopLoading();
       goBack();
     }
   }
@@ -276,8 +264,21 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           builder: (context) => PinPadDialog(
             title: 'Verify PIN',
             onPinVerified: () async {
-              if (await _validateForm(ref)) {
-                await _executeTransaction(ref);
+              ref.read(loadingProvider.notifier).startLoading(
+                    message: widget.mode == SendTransactionScreenMode.payment
+                        ? 'Sending Payment'
+                        : 'Sending Asset',
+                    withProgressBar: true,
+                  );
+
+              try {
+                if (await _validateForm(ref)) {
+                  await _executeTransaction(ref);
+                  goBack();
+                }
+              } catch (e) {
+                debugPrint("Error during transaction: $e");
+                ref.read(loadingProvider.notifier).stopLoading();
               }
             },
           ),
@@ -287,7 +288,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   void goBack() {
-    Navigator.of(context).pop();
+    ref.invalidate(transactionsProvider);
+    ref.invalidate(balanceProvider);
+    GoRouter.of(context).goNamed(rootRouteName);
   }
 
   Future<double> getMaxAmount(WidgetRef ref) async {
@@ -309,7 +312,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     bool isNetworkSelected = selectedItem?.value.startsWith("network") ?? false;
 
     if (isNetworkSelected) {
-      // Asynchronous fetching of maximum payment amount
       return FutureBuilder<double>(
         future: getMaxAmount(ref),
         builder: (context, snapshot) {
@@ -324,7 +326,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         },
       );
     } else {
-      // Direct synchronous access for asset mode
       final int maxAssetAmount =
           ref.read(activeAssetProvider)?.params.total ?? 0;
       final String formattedAmount =
