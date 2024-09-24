@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
@@ -22,9 +23,11 @@ import 'package:go_router/go_router.dart';
 
 class ViewAssetScreen extends ConsumerStatefulWidget {
   final AssetScreenMode mode;
+  final CombinedAsset? asset;
   const ViewAssetScreen({
     super.key,
     this.mode = AssetScreenMode.view,
+    this.asset,
   });
 
   @override

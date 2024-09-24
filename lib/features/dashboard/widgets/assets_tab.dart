@@ -4,17 +4,19 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/asset_filter_provider.dart';
 import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
+import 'package:kibisis/features/view_asset/view_asset_screen.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
-import 'package:kibisis/routing/named_routes.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:kibisis/common_widgets/asset_list_item.dart';
-import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:shimmer/shimmer.dart';
 
 final sortingProvider = StateProvider<Sorting>((ref) => Sorting.assetId);
@@ -30,6 +32,7 @@ class AssetsTab extends ConsumerStatefulWidget {
 
 class _AssetsTabState extends ConsumerState<AssetsTab> {
   late final RefreshController _refreshController;
+  CombinedAsset? _selectedAsset;
 
   @override
   void initState() {
@@ -45,40 +48,42 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   @override
   Widget build(BuildContext context) {
+    // Detect if it's a wide screen (landscape-like) or narrow screen (portrait)
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWideScreen = screenWidth > 600; // Adjust threshold for your layout
     final assetsAsync = ref.watch(assetsProvider);
-    final filterController = ref.watch(assetsFilterControllerProvider);
-    final filterNotifier = ref.watch(assetsFilterControllerProvider.notifier);
 
-    return Column(
-      children: [
-        const SizedBox(height: kScreenPadding / 2),
-        _buildSearchBar(context, filterController, filterNotifier),
-        Container(
-          height: kScreenPadding / 4,
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: context.colorScheme.surface,
-                width: 1,
+    // Render differently for wide screen (split view) and narrow screen (portrait mode)
+    return isWideScreen
+        ? Row(
+            children: [
+              // Asset List on the left
+              Expanded(
+                flex: 2,
+                child: assetsAsync.when(
+                  data: (assets) => _buildAssetsList(context, assets),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) =>
+                      const Center(child: Text('Error loading assets')),
+                ),
               ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: CustomPullToRefresh(
-            refreshController: _refreshController,
-            onRefresh: _onRefresh,
-            child: assetsAsync.when(
-              data: (assets) => assets.isEmpty
-                  ? _buildEmptyAssets(context, ref)
-                  : _buildAssetsList(context, assets),
-              loading: () => _buildLoadingAssets(context),
-              error: (error, stack) => _buildEmptyAssets(context, ref),
-            ),
-          ),
-        ),
-      ],
-    );
+              // Asset details on the right
+              Expanded(
+                flex: 3,
+                child: _selectedAsset != null
+                    ? ViewAssetScreen(asset: _selectedAsset!)
+                    : const Center(
+                        child: Text('Select an asset to view details')),
+              ),
+            ],
+          )
+        : assetsAsync.when(
+            data: (assets) => _buildAssetsList(context, assets),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) =>
+                const Center(child: Text('Error loading assets')),
+          );
   }
 
   Widget _buildSearchBar(BuildContext context, TextEditingController controller,
@@ -177,11 +182,31 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
     return ListView.builder(
-      itemCount: assets.length, // Adjust itemCount to match the list length
-      shrinkWrap: true,
+      itemCount: assets.length,
       itemBuilder: (context, index) {
-        // No need for the extra check here since itemCount matches the list length
-        return AssetListItem(asset: assets[index], mode: AssetScreenMode.view);
+        final asset = assets[index];
+        final isWideScreen = MediaQuery.of(context).size.width > 600;
+
+        return AssetListItem(
+          asset: asset,
+          onPressed: () {
+            final isWideScreen = MediaQuery.of(context).size.width > 600;
+            debugPrint(isWideScreen ? 'Landscape mode' : 'Portrait mode');
+
+            if (isWideScreen) {
+              setState(() {
+                _selectedAsset = asset;
+              });
+            } else {
+              ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
+              context.goNamed(
+                viewAssetRouteName,
+                pathParameters: {'mode': 'view'},
+                extra: asset,
+              );
+            }
+          },
+        );
       },
     );
   }

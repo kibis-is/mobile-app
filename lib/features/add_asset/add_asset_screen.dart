@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/add_asset/search_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -81,7 +83,16 @@ class AssetList extends ConsumerWidget {
               return AssetListItem(
                   asset: asset,
                   mode: AssetScreenMode.add,
-                  onPressed: isOwned ? null : () {});
+                  onPressed: isOwned
+                      ? null
+                      : () {
+                          context.pushNamed(
+                            viewAssetRouteName,
+                            pathParameters: {
+                              'mode': 'add',
+                            },
+                          );
+                        });
             },
             separatorBuilder: (BuildContext context, int index) =>
                 const SizedBox(height: kScreenPadding / 2),

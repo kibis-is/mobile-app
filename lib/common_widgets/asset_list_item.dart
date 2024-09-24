@@ -26,6 +26,8 @@ class AssetListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(isDarkModeProvider);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWideScreen = screenWidth > 600;
     return Stack(
       children: [
         Material(
@@ -38,31 +40,35 @@ class AssetListItem extends ConsumerWidget {
               ),
             ),
             child: ListTile(
-              leading: _buildAssetIcon(
-                  context, ref, asset.params.defaultFrozen ?? false),
-              title: Hero(
-                tag: '${asset.index}-name',
-                child: EllipsizedText(
-                  asset.params.name ?? 'Unknown',
-                  style: context.textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              subtitle: Hero(
-                tag: '${asset.index}-amount',
-                child: EllipsizedText(
-                  mode == AssetScreenMode.add ? '' : _getFormattedAmount(),
-                  style: context.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              trailing: _buildTrailing(context),
-              onTap: (onPressed == null && mode == AssetScreenMode.add)
-                  ? null
-                  : () => _handleOnPressed(context, ref),
-            ),
+                leading: _buildAssetIcon(
+                    context, ref, asset.params.defaultFrozen ?? false),
+                title: isWideScreen
+                    ? Text(asset.params.name ??
+                        'Unknown') // No Hero in landscape mode
+                    : Hero(
+                        // Use Hero in portrait mode for navigation
+                        tag: '${asset.index}-name',
+                        child: EllipsizedText(
+                          asset.params.name ?? 'Unknown',
+                          style: context.textTheme.displaySmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                subtitle: isWideScreen
+                    ? Text(_getFormattedAmount()) // No Hero in landscape mode
+                    : Hero(
+                        tag: '${asset.index}-amount',
+                        child: EllipsizedText(
+                          _getFormattedAmount(),
+                          style: context.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                trailing: _buildTrailing(context),
+                onTap:
+                    (onPressed == null) ? () => debugPrint('true') : onPressed),
           ),
         ),
         if (asset.params.defaultFrozen ?? false)
@@ -79,30 +85,13 @@ class AssetListItem extends ConsumerWidget {
     );
   }
 
-  void _handleOnPressed(BuildContext context, WidgetRef ref) {
-    ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
-    if (mode == AssetScreenMode.view) {
-      context.goNamed(
-        viewAssetRouteName,
-        pathParameters: {
-          'mode': 'view',
-        },
-      );
-    } else if (mode == AssetScreenMode.add) {
-      context.pushNamed(
-        viewAssetRouteName,
-        pathParameters: {
-          'mode': 'add',
-        },
-      );
-    }
-  }
-
   Widget _buildAssetIcon(
       BuildContext context, WidgetRef ref, bool isFrozenDefault) {
     ref.watch(isDarkModeProvider);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWideScreen = screenWidth > 600;
     return Hero(
-      tag: '${asset.index}-icon',
+      tag: isWideScreen ? '' : '${asset.index}-icon',
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
