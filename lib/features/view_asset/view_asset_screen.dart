@@ -41,10 +41,10 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen>
   void initState() {
     super.initState();
 
-    _controllers = List.generate(6, (index) {
+    _controllers = List.generate(7, (index) {
       return AnimationController(
         vsync: this,
-        duration: const Duration(milliseconds: 150),
+        duration: const Duration(milliseconds: 120),
       );
     });
 
@@ -70,9 +70,9 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen>
   }
 
   Future<void> _triggerAnimations() async {
-    await Future.delayed(const Duration(milliseconds: 75));
+    await Future.delayed(const Duration(milliseconds: 60));
     for (var i = 0; i < _controllers.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 75), () {
+      await Future.delayed(const Duration(milliseconds: 60), () {
         _controllers[i].forward();
       });
     }
@@ -225,12 +225,16 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen>
           ),
         ),
       ),
-      bottomNavigationBar: CustomButton(
-        isBottomNavigationPosition: true,
-        text: widget.mode == AssetScreenMode.view ? 'Send Asset' : 'Add Asset',
-        isFullWidth: true,
-        buttonType: ButtonType.secondary,
-        onPressed: () => _handleButtonPress(context, ref),
+      bottomNavigationBar: _buildAnimatedItem(
+        6,
+        CustomButton(
+          isBottomNavigationPosition: true,
+          text:
+              widget.mode == AssetScreenMode.view ? 'Send Asset' : 'Add Asset',
+          isFullWidth: true,
+          buttonType: ButtonType.secondary,
+          onPressed: () => _handleButtonPress(context, ref),
+        ),
       ),
     );
   }
