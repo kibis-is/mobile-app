@@ -34,65 +34,22 @@ class BaseContract {
 
   /// public static functions
 
-  static Uint8List convertAddressToAppArg(String address) {
-    return Address.fromAlgorandAddress(address: address).toBytes();
-  }
-
-  static Uint8List convertStringToAppArg(String value) {
-    return Uint8List.fromList(utf8.encode(value));
-  }
-
-  static Uint8List convertUintToAppArg(BigInt value) {
-    return BigIntEncoder.encodeUint64(value);
-  }
-
-  /// Parses a Base64 encoded address application argument and parses it into
-  /// an address string.
+  /// Parses a method signature to be used when creating an application transaction.
   ///
-  /// Returns the parsed address string.
+  /// If the address is not valid or a "zero" address, 0 is returned.
   ///
-  /// Example:
+  /// **Parameters:**
+  /// - [address]: The address to check.
+  ///
+  /// **Returns:**
+  /// A Future<BigInt> of the balance of the address.
+  ///
+  /// **Example:**
   /// ```dart
-  /// final result = BaseContract.parseBase64EncodedAddressArg('Q1m4i0CnN5wlq6OSXbWWqrvhDXvyawo/Ru/2Tb8cfT4=');
-  /// print(result); // Output: I7F3LRWCPSKURPRQZ3RFEEI2KFJ4TYC7EKSL75YIWH7LJ4FD5DUMIIPRAU
+  /// final contract = ARC0200Contract(...)
+  /// Future<BigInt> balance = await contract.balanceOf('INM3RC2AU43ZYJNLUOJF3NMWVK56CDL36JVQUP2G573E3PY4PU7KGHELJA');
+  /// print(balance.toString()); // Output: 1000
   /// ```
-  static String parseBase64EncodedAddressArg(String arg)  {
-    final decodedArg = base64.decode(arg);
-
-    return Address.encodeAddress(decodedArg);
-  }
-
-  /// Parses a Base64 encoded string application argument and parses it into a
-  /// string.
-  ///
-  /// Returns the parsed string.
-  ///
-  /// Example:
-  /// ```dart
-  /// final result = BaseContract.parseBase64EncodedStringArg('2nAluQ==');
-  /// print(result); // Output: arc200_transfer
-  /// ```
-  static String parseBase64EncodedStringArg(String arg)  {
-    final decodedArg = base64.decode(arg);
-
-    return utf8.decode(decodedArg);
-  }
-
-  /// Parses a Base64 encoded application uint argument and parse it to a BigInt.
-  ///
-  /// Returns the parsed BigInt value.
-  ///
-  /// Example:
-  /// ```dart
-  /// final result = BaseContract.parseBase64EncodedUintArg('AAAAAAAAA+g=');
-  /// print(result); // Output: 1000
-  /// ```
-  static BigInt parseBase64EncodedUintArg(String arg)  {
-    final decodedArg = base64.decode(arg);
-
-    return BigIntEncoder.decodeUint64(decodedArg);
-  }
-
   static Uint8List parseMethodSignature(String method) {
     final digest = sha512256.convert(utf8.encode(method));
     final hashBytes = Uint8List.fromList(digest.bytes);
@@ -171,7 +128,11 @@ class BaseContract {
   /// Simulates app call transactions, reads the logs and parses the responses.
   /// This is used to read data from an application.
   ///
-  /// Returns the result from a simulate transactions request.
+  /// **Parameters:**
+  /// - [simulateTransactions]: The List<SimulateTransactionParam> is a list of transactions and an optional auth address.
+  ///
+  /// **Returns:**
+  /// A Future<Map<String, dynamic>> of the simulate transactions result.
   ///
   Future<Map<String, dynamic>> _simulateTransactions(List<SimulateTransactionParam> simulateTransactions) async {
     final transactions = simulateTransactions.map((value) => value.transactionMessagePack).toList();
@@ -215,12 +176,13 @@ class BaseContract {
 
   /// Gets the application's address.
   ///
-  /// Returns the application's address.
+  /// **Returns:**
+  /// A String of the application's address.
   ///
-  /// Example:
+  /// **Example:**
   /// ```dart
-  /// final contract = BaseContract(...)
-  /// final address = contract.applicationAddress();
+  /// final contract = BaseContract({ appID: 6779767, algodURL: 'https://some.where.over.the.rainbow' })
+  /// final address = contract.address();
   /// print(address); // Output: I7F3LRWCPSKURPRQZ3RFEEI2KFJ4TYC7EKSL75YIWH7LJ4FD5DUMIIPRAU
   /// ```
   String address() {
@@ -236,11 +198,13 @@ class BaseContract {
 
   /// Gets the application's account information.
   ///
+  /// **Returns:**
+  /// A String of applications's account information.
   /// Returns the application's account information.
   ///
-  /// Example:
+  /// **Example:**
   /// ```dart
-  /// final contract = BaseContract(...)
+  /// final contract = BaseContract({ appID: 6779767, algodURL: 'https://some.where.over.the.rainbow' })
   /// final accountInformation = await contract.accountInformation();
   /// print(accountInformation.address); // Output: I7F3LRWCPSKURPRQZ3RFEEI2KFJ4TYC7EKSL75YIWH7LJ4FD5DUMIIPRAU
   /// ```
@@ -253,9 +217,10 @@ class BaseContract {
 
   /// Calls a read function on the contract using the simulate transactions.
   ///
-  /// Returns the raw response or null if the response was not found.
+  /// **Returns:**
+  /// A Future<Uint8List?> of the raw response from the read operation or null if the response was not found.
   ///
-  /// Example:
+  /// **Example:**
   /// ```dart
   /// final contract = BaseContract(...)
   /// final result = await contract.readByMethodSignature(methodSignature: 'arc200_balanceOf(address)uint256', appArgs: []);

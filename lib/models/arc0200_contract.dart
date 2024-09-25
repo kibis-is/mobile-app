@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:algorand_dart/algorand_dart.dart';
+import 'package:kibisis/models/abi_address_type.dart';
 import 'package:kibisis/models/abi_string_type.dart';
 import 'package:kibisis/models/abi_uint_type.dart';
 import 'package:kibisis/models/base_contract.dart';
@@ -36,7 +37,7 @@ class ARC0200Contract extends BaseContract {
     }
 
     result = await readByMethodSignature(methodSignature: 'arc200_balanceOf(address)uint256', appArgs: [
-      BaseContract.convertAddressToAppArg(address),
+      ABIAddressType().encode(address),
     ]);
 
     if (result == null) {

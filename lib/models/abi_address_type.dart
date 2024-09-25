@@ -14,8 +14,6 @@ class ABIAddressType {
   }
 
   String decode(Uint8List value) {
-    String address;
-
     if (value.buffer.lengthInBytes != ADDRESS_BYTE_SIZE) {
       throw ABIValueException('byte string must be $ADDRESS_BYTE_SIZE bytes long for a valid address, found "${value.buffer.lengthInBytes}" length');
     }
