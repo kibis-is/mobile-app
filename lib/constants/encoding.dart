@@ -1,0 +1,1 @@
+const int LENGTH_ENCODE_BYTE_SIZE = 2;

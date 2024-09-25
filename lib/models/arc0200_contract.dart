@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:algorand_dart/algorand_dart.dart';
+import 'package:kibisis/models/abi_string_type.dart';
 import 'package:kibisis/models/abi_uint_type.dart';
 import 'package:kibisis/models/base_contract.dart';
 
@@ -45,7 +46,6 @@ class ARC0200Contract extends BaseContract {
     return ABIUintType(256).decode(result);
   }
 
-
   /// Gets the decimals of the token.
   ///
   /// **Returns:**
@@ -65,5 +65,68 @@ class ARC0200Contract extends BaseContract {
     }
 
     return ABIUintType(8).decode(result).toInt();
+  }
+
+  /// Gets the name of the token.
+  ///
+  /// **Returns:**
+  /// A Future<String> of the name of the token.
+  ///
+  /// **Example:**
+  /// ```dart
+  /// final contract = ARC0200Contract(...)
+  /// Future<String> name = await contract.name();
+  /// print(name); // Output: Voi Incentive Token
+  /// ```
+  Future<String> name() async {
+    final result = await readByMethodSignature(methodSignature: 'arc200_name()byte[32]', appArgs: []);
+
+    if (result == null) {
+      return '';
+    }
+
+    return ABIStringType().decode(result);
+  }
+
+  /// Gets the symbol of the token.
+  ///
+  /// **Returns:**
+  /// A Future<String> of the symbol of the token.
+  ///
+  /// **Example:**
+  /// ```dart
+  /// final contract = ARC0200Contract(...)
+  /// Future<String> symbol = await contract.symbol();
+  /// print(symbol); // Output: $VIA
+  /// ```
+  Future<String> symbol() async {
+    final result = await readByMethodSignature(methodSignature: 'arc200_symbol()byte[8]', appArgs: []);
+
+    if (result == null) {
+      return '';
+    }
+
+    return ABIStringType().decode(result);
+  }
+
+  /// Gets the total supply of the token.
+  ///
+  /// **Returns:**
+  /// A Future<BigInt> of the total supply of the token.
+  ///
+  /// **Example:**
+  /// ```dart
+  /// final contract = ARC0200Contract(...)
+  /// Future<BigInt> totalSupply = await contract.totalSupply();
+  /// print(totalSupply.toString()); // Output: 1000
+  /// ```
+  Future<BigInt> totalSupply() async {
+    final result = await readByMethodSignature(methodSignature: 'arc200_totalSupply()uint256', appArgs: []);
+
+    if (result == null) {
+      return BigInt.zero;
+    }
+
+    return ABIUintType(256).decode(result);
   }
 }
