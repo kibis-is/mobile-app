@@ -93,7 +93,7 @@ void main() {
   group('address', () {
     test("should return the application's address", () async {
       // arrange
-      final contract = await BaseContract.create(appID: BigInt.from(6779767), algodURL: 'https://somewhre');
+      final contract = BaseContract(appID: BigInt.from(6779767), algodURL: 'https://somewhre');
       // act
       final result = contract.address();
 
