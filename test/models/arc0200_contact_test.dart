@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/models/base_contract.dart';
+import 'package:kibisis/models/box_reference.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -91,9 +92,13 @@ void main() {
   });
 
   group('address', () {
-    test("should return the application's address", () async {
+    test("should return the application's address", () {
       // arrange
-      final contract = await BaseContract.create(appID: BigInt.from(6779767), algodURL: 'https://somewhre');
+      final contract = BaseContract(
+        BigInt.from(6779767),
+        Algorand(),
+        'FEES3ZW52HQ7U7LB3OGLUFQX2DCCWPJ2LIMXAH75KYROBZBQRN3Q5OR3GI',
+      );
       // act
       final result = contract.address();
 
