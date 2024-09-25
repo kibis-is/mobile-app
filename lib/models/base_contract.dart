@@ -156,16 +156,14 @@ class BaseContract {
 
   Future<String> _getFeeSinkAddress() async {
     Response<dynamic> response;
-    Map<String, dynamic> genesisMap;
 
     if (_feeSinkAddress != null) {
       return _feeSinkAddress!;
     }
 
-    response = await _client.get('/v2/genesis');
-    genesisMap = json.decode(response.data.toString());
+    response = await _client.get('/genesis');
 
-    _feeSinkAddress = genesisMap['fees'];
+    _feeSinkAddress = response.data['fees'];
 
     return _feeSinkAddress!;
   }
@@ -268,7 +266,7 @@ class BaseContract {
     required List<Uint8List> appArgs,
     TransactionParams? suggestedParams
   }) async {
-    Uint8List? log;
+    String? log;
     Map<String, dynamic> response;
     Map<String, dynamic> transactionMessagePack;
 
@@ -281,11 +279,11 @@ class BaseContract {
       rethrow;
     }
 
-    if (response['txn-groups']['failure-message']) {
-      throw AVMApplicationReadException(appID, response['txn-groups']['failure-message']);
+    if (response['txn-groups'][0].containsKey('failure-message')) {
+      throw AVMApplicationReadException(appID, response['txn-groups'][0]['failure-message']);
     }
 
-    log = response['txn-groups'][0]?['txn-results']['txn-result']['logs']?.removeLast();
+    log = response['txn-groups'][0]['txn-results'][0]['txn-result']['logs']?.removeLast(); // the last log will be the value
 
     if (log == null) {
       debugPrint('no log found for application "$appID"');
@@ -293,6 +291,7 @@ class BaseContract {
       return null;
     }
 
-    return log;
+    return base64.decode(log) // the log will be encoded in base64
+        .sublist(4); // remove the log prefix (first 4 bytes)
   }
 }
