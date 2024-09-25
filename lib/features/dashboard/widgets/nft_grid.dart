@@ -11,26 +11,30 @@ enum NftViewType { grid, card }
 class NftGridOrCard extends StatelessWidget {
   final List<NFT> nfts;
   final NftViewType viewType;
-  final ScrollController controller; // Add the ScrollController property
+  final ScrollController controller;
 
   const NftGridOrCard({
     super.key,
     required this.nfts,
     required this.viewType,
-    required this.controller, // Required parameter for the controller
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isWideScreen = MediaQuery.of(context).size.width > 600;
+
+    final crossAxisCount =
+        viewType == NftViewType.grid ? (isWideScreen ? 5 : 3) : 1;
     return GridView.builder(
-      controller: controller, // Attach the ScrollController
+      controller: controller,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
+        crossAxisCount: crossAxisCount,
         childAspectRatio: 1.0,
       ),
       itemCount: nfts.length,
-      shrinkWrap: true, // Ensure it takes only the space needed
-      physics: const ClampingScrollPhysics(), // Allow scrolling with refresh
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
         final nft = nfts[index];
         return NftCard(
