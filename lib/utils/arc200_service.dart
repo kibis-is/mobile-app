@@ -13,7 +13,7 @@ class Arc200Service {
   final String baseUrl;
 
   Arc200Service(
-      {this.baseUrl = 'https://arc72-idx.nautilus.sh/nft-indexer/v1/arc200'});
+      {this.baseUrl = 'https://mainnet-idx.nautilus.sh/nft-indexer/v1/arc200'});
   Future<List<CombinedAsset>> fetchArc200Assets(String publicAddress) async {
     try {
       final balancesUrl = '$baseUrl/balances?accountId=$publicAddress';
