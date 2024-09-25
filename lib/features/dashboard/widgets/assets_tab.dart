@@ -5,7 +5,6 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/features/dashboard/providers/asset_filter_provider.dart';
 import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
 import 'package:kibisis/features/view_asset/view_asset_screen.dart';
 import 'package:kibisis/models/combined_asset.dart';
@@ -48,46 +47,55 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   @override
   Widget build(BuildContext context) {
-    // Detect if it's a wide screen (landscape-like) or narrow screen (portrait)
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWideScreen = screenWidth > 600; // Adjust threshold for your layout
     final assetsAsync = ref.watch(assetsProvider);
+    final isWideScreen = MediaQuery.of(context).size.width > 600;
 
-    // Render differently for wide screen (split view) and narrow screen (portrait mode)
     return isWideScreen
         ? Row(
             children: [
-              // Asset List on the left
               Expanded(
                 flex: 2,
-                child: assetsAsync.when(
-                  data: (assets) => _buildAssetsList(context, assets),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stack) =>
-                      const Center(child: Text('Error loading assets')),
+                child: Column(
+                  children: [
+                    _buildSearchBar(context),
+                    Expanded(
+                      child: CustomPullToRefresh(
+                        refreshController: _refreshController,
+                        onRefresh: _onRefresh,
+                        child: assetsAsync.when(
+                          data: (assets) => _buildAssetsList(context, assets),
+                          loading: () => _buildLoadingAssets(context),
+                          error: (error, stack) =>
+                              _buildEmptyAssets(context, ref),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              // Asset details on the right
               Expanded(
                 flex: 3,
                 child: _selectedAsset != null
-                    ? ViewAssetScreen(asset: _selectedAsset!)
+                    ? ViewAssetScreen(
+                        asset: _selectedAsset!,
+                        isPanelMode: true,
+                      )
                     : const Center(
-                        child: Text('Select an asset to view details')),
+                        child: Text('Select an asset to view details'),
+                      ),
               ),
             ],
           )
         : assetsAsync.when(
             data: (assets) => _buildAssetsList(context, assets),
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => _buildLoadingAssets(context),
             error: (error, stack) =>
                 const Center(child: Text('Error loading assets')),
           );
   }
 
-  Widget _buildSearchBar(BuildContext context, TextEditingController controller,
-      AssetsFilterController notifier) {
+  Widget _buildSearchBar(BuildContext context) {
+    final filterController = TextEditingController();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
       child: Row(
@@ -104,26 +112,13 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           ),
           Expanded(
             child: CustomTextField(
-              controller: controller,
+              controller: filterController,
               labelText: 'Filter',
               onChanged: (value) {
                 ref.read(assetsProvider.notifier).setFilter(value);
               },
-              autoCorrect: false,
               suffixIcon: AppIcons.cross,
               leadingIcon: AppIcons.search,
-              onTrailingPressed: () {
-                notifier.reset(); // Reset the text field
-                ref.read(assetsProvider.notifier).setFilter('');
-              },
-              isSmall: true,
-            ),
-          ),
-          IconButton(
-            onPressed: () => context.goNamed(addAssetRouteName),
-            icon: const Icon(
-              AppIcons.add,
-              size: AppIcons.medium,
             ),
           ),
         ],
@@ -190,7 +185,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         return AssetListItem(
           asset: asset,
           onPressed: () {
-            final isWideScreen = MediaQuery.of(context).size.width > 600;
             debugPrint(isWideScreen ? 'Landscape mode' : 'Portrait mode');
 
             if (isWideScreen) {
@@ -222,9 +216,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               style: context.textTheme.bodySmall, textAlign: TextAlign.center),
           const SizedBox(height: kScreenPadding),
           TextButton(
-            onPressed: () {
-              _onRefresh();
-            },
+            onPressed: _onRefresh,
             child: const Text('Retry'),
           ),
         ],

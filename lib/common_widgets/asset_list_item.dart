@@ -1,12 +1,9 @@
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
-import 'package:kibisis/providers/active_asset_provider.dart';
-import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
