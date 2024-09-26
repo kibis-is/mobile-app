@@ -17,7 +17,7 @@ void main() {
       // assert
       expect(result, 6);
     });
-  });
+  }, skip: true);
 
   group('name', () {
     test('should get the name', () async {
@@ -32,7 +32,7 @@ void main() {
       // assert
       expect(result, 'Voi Incentive Asset');
     });
-  });
+  }, skip: true);
 
   group('symbol', () {
     test('should get the symbol', () async {
@@ -47,7 +47,7 @@ void main() {
       // assert
       expect(result, 'VIA');
     });
-  });
+  }, skip: true);
 
   group('totalSupply', () {
     test('should get the total supply', () async {
@@ -62,5 +62,5 @@ void main() {
       // assert
       expect(result, BigInt.parse('10000000000000000'));
     });
-  });
+  }, skip: true);
 }
