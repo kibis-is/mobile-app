@@ -197,4 +197,4 @@ key.jks
 android/secure.properties
 
 # Google Play
-/play_store_credential.json
+/play_store_credentials.json
