@@ -60,7 +60,7 @@ class NftTabState extends ConsumerState<NftTab> {
   void _toggleNftView() {
     setState(() {
       viewType =
-          viewType == NftViewType.grid ? NftViewType.card : NftViewType.card;
+          viewType == NftViewType.grid ? NftViewType.card : NftViewType.grid;
     });
   }
 
