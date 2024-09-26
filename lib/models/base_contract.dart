@@ -5,9 +5,11 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:kibisis/constants/avm.dart';
 import 'package:kibisis/exceptions/avm_application_read_exception.dart';
 import 'package:kibisis/models/box_reference.dart';
+import 'package:kibisis/models/simulate_transaction_box_reference_result.dart';
 import 'package:kibisis/models/simulate_transaction_param.dart';
 
 class BaseContract {
@@ -34,24 +36,21 @@ class BaseContract {
 
   /// public static functions
 
-  /// Parses a method signature to be used when creating an application transaction.
+  /// Creates a method selector be used when creating a call in an application
+  /// transaction.
   ///
-  /// If the address is not valid or a "zero" address, 0 is returned.
+  /// The method signature is in the form of "arc200_balance_of(address)uint256"
+  /// and the returned method selector is a the first 4 bytes of the SHA-512
+  /// hash of the method signature.
   ///
   /// **Parameters:**
-  /// - [address]: The address to check.
+  /// - [String] [methodSignature]: The method signature to convert.
   ///
   /// **Returns:**
-  /// A Future<BigInt> of the balance of the address.
+  /// [Uint8List] The method selector.
   ///
-  /// **Example:**
-  /// ```dart
-  /// final contract = ARC0200Contract(...)
-  /// Future<BigInt> balance = await contract.balanceOf('INM3RC2AU43ZYJNLUOJF3NMWVK56CDL36JVQUP2G573E3PY4PU7KGHELJA');
-  /// print(balance.toString()); // Output: 1000
-  /// ```
-  static Uint8List parseMethodSignature(String method) {
-    final digest = sha512256.convert(utf8.encode(method));
+  static Uint8List createMethodSelectorFromMethodSignature(String methodSignature) {
+    final digest = sha512256.convert(utf8.encode(methodSignature));
     final hashBytes = Uint8List.fromList(digest.bytes);
 
     // get the first 4 bytes of the hashed method signature
@@ -66,7 +65,7 @@ class BaseContract {
     TransactionParams? suggestedParams
   }) async {
     final _appArgs = [
-      parseMethodSignature(methodSignature),
+      createMethodSelectorFromMethodSignature(methodSignature),
       ...appArgs,
     ];
     final transaction = await (ApplicationCallTransactionBuilder()
@@ -77,38 +76,6 @@ class BaseContract {
       .build();
 
     return transaction.toMessagePack();
-  }
-
-  Future<Map<String, dynamic>> _createWriteApplicationTransactionMessagePack({
-    required String methodSignature,
-    required String sender,
-    required List<Uint8List> appArgs,
-    TransactionParams? suggestedParams,
-    String? note,
-    List<BoxReference>? boxNames
-  }) async {
-    final _appArgs = [
-      parseMethodSignature(methodSignature),
-      ...appArgs,
-    ];
-    final transaction = await (ApplicationCallTransactionBuilder()
-        ..sender = Address.fromAlgorandAddress(address: sender)
-        ..applicationId = appID.toInt()
-        ..arguments = _appArgs
-        ..suggestedParams = suggestedParams ?? await _transactionParams()
-        ..noteText = note)
-      .build();
-    final transactionAsMessagePack = transaction.toMessagePack();
-
-    // if we have box references, add them as they are not supported in algorand dart
-    if (boxNames != null) {
-      transactionAsMessagePack['apbx'] = boxNames.map((value) => {
-        'i': value.id,
-        'n': value.name,
-      });
-    }
-
-    return transactionAsMessagePack;
   }
 
   Future<String> _getFeeSinkAddress() async {
@@ -129,10 +96,12 @@ class BaseContract {
   /// This is used to read data from an application.
   ///
   /// **Parameters:**
-  /// - [simulateTransactions]: The List<SimulateTransactionParam> is a list of transactions and an optional auth address.
+  /// - [List<SimulateTransactionParam>] [simulateTransactions]: A list of
+  /// transactions and an optional auth address.
   ///
   /// **Returns:**
-  /// A Future<Map<String, dynamic>> of the simulate transactions result.
+  /// [Future<Map<String, dynamic>>] A list of the simulate transactions result
+  /// encoded in message pack.
   ///
   Future<Map<String, dynamic>> _simulateTransactions(List<SimulateTransactionParam> simulateTransactions) async {
     final transactions = simulateTransactions.map((value) => value.transactionMessagePack).toList();
@@ -177,7 +146,7 @@ class BaseContract {
   /// Gets the application's address.
   ///
   /// **Returns:**
-  /// A String of the application's address.
+  /// [String] The application's address.
   ///
   /// **Example:**
   /// ```dart
@@ -199,8 +168,7 @@ class BaseContract {
   /// Gets the application's account information.
   ///
   /// **Returns:**
-  /// A String of applications's account information.
-  /// Returns the application's account information.
+  /// [String] The application's account information.
   ///
   /// **Example:**
   /// ```dart
@@ -215,10 +183,84 @@ class BaseContract {
     return AccountInformation.fromJson(result.data!);
   }
 
+  Future<Map<String, dynamic>> createWriteApplicationTransactionMessagePack({
+    required String methodSignature,
+    required String sender,
+    required List<Uint8List> appArgs,
+    TransactionParams? suggestedParams,
+    String? note,
+    List<BoxReference>? boxNames
+  }) async {
+    final _appArgs = [
+      createMethodSelectorFromMethodSignature(methodSignature),
+      ...appArgs,
+    ];
+    final transaction = await (ApplicationCallTransactionBuilder()
+      ..sender = Address.fromAlgorandAddress(address: sender)
+      ..applicationId = appID.toInt()
+      ..arguments = _appArgs
+      ..suggestedParams = suggestedParams ?? await _transactionParams()
+      ..noteText = note)
+        .build();
+    final transactionAsMessagePack = transaction.toMessagePack();
+
+    // if we have box references, add them as they are not supported in algorand dart
+    if (boxNames != null) {
+      transactionAsMessagePack['apbx'] = boxNames.map((value) => {
+        'i': value.id,
+        'n': value.name,
+      });
+    }
+
+    return transactionAsMessagePack;
+  }
+
+  Future<List<BoxReference>> determineBoxReferences({
+    required String methodSignature,
+    required String sender,
+    required List<Uint8List> appArgs,
+    String? authAddress,
+    TransactionParams? suggestedParams,
+  }) async {
+    List<SimulateTransactionBoxReferenceResult>? boxes;
+    Map<String, dynamic> response;
+    Map<String, dynamic> transactionMessagePack;
+
+    try {
+      transactionMessagePack = await createWriteApplicationTransactionMessagePack(
+        methodSignature: methodSignature,
+        sender: sender,
+        appArgs: appArgs,
+        suggestedParams: suggestedParams,
+      );
+      response = await _simulateTransactions([SimulateTransactionParam(transactionMessagePack, authAddress: authAddress)]);
+    } catch (error) {
+      debugPrint('failed to simulate transaction: $error');
+
+      throw AVMApplicationReadException(appID, error.toString());
+    }
+
+    if (response['txn-groups'][0].containsKey('failure-message')) {
+      throw AVMApplicationReadException(appID, response['txn-groups'][0]['failure-message']);
+    }
+
+    boxes = response['txn-groups'][0]['unnamed-resources-accessed']['boxes'];
+
+    if (boxes == null || boxes.isEmpty) {
+      return [];
+    }
+
+    return boxes.map((value) => BoxReference(
+        value.app,
+        base64.decode(value.name)
+    )).toList();
+  }
+
   /// Calls a read function on the contract using the simulate transactions.
   ///
   /// **Returns:**
-  /// A Future<Uint8List?> of the raw response from the read operation or null if the response was not found.
+  /// [Future<Uint8List?>] The raw response from the read operation or null if
+  /// the response was not found.
   ///
   /// **Example:**
   /// ```dart
@@ -241,7 +283,7 @@ class BaseContract {
     } catch (error) {
       debugPrint('failed to simulate transaction: $error');
 
-      rethrow;
+      throw AVMApplicationReadException(appID, error.toString());
     }
 
     if (response['txn-groups'][0].containsKey('failure-message')) {

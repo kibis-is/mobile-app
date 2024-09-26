@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:kibisis/exceptions/abi_value_exception.dart';
-import 'package:kibisis/utils/bigint_to_bytes.dart';
-import 'package:kibisis/utils/bytes_to_bigint.dart';
+import 'package:kibisis/utils/encoding/bigint_to_bytes.dart';
+import 'package:kibisis/utils/encoding/bytes_to_bigint.dart';
 
 class ABIUintType {
   final int size;
@@ -23,7 +23,7 @@ class ABIUintType {
 
   BigInt decode(Uint8List bytes) {
     if (bytes.length != size / 8) {
-      throw ABIValueException('byte length must correspond to "$toString()"');
+      throw ABIValueException('byte length must correspond to "${toString()}"');
     }
 
     return bytesToBigInt(bytes);

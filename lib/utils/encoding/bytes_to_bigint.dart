@@ -6,10 +6,10 @@ import 'dart:typed_data';
 /// by reading each byte and combining them into a larger integer value.
 ///
 /// **Parameters:**
-/// - [bytes]: The Uint8List representing the byte array to be converted.
+/// - [Uint8List] [bytes]: The bytes to be converted to a BigInt.
 ///
 /// **Returns:**
-/// A BigInt representing the value of the byte array.
+/// [BigInt] The bytes converted to a BigInt.
 ///
 /// **Example:**
 /// ```dart
