@@ -2,13 +2,100 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
+import 'package:kibisis/models/arc0200_contract.dart';
 import 'package:kibisis/models/combined_asset.dart';
+import 'package:kibisis/utils/avm/sign_transaction.dart';
 import 'package:kibisis/utils/conver_to_combined_asset.dart';
 
 class AlgorandService {
   final Algorand algorand;
 
   AlgorandService(this.algorand);
+
+  /// Convenience function that transfers an ARC-0200 asset.
+  ///
+  /// The signature is the signed transaction bytes prefixed with the bytes of
+  /// string: "TX".
+  ///
+  /// **Parameters:**
+  /// - [BigInt] [amount]: The amount to transfer.
+  /// - [BigInt] [appID]: The ID of the application/smart contract.
+  /// - [Account?] [authAccount]: (optional) The account if the sender account
+  /// has been re-keyed.
+  /// - [String?] [note]: (optional) A note to send in the transaction.
+  /// - [String] [receiverAddress]: The address of the sender.
+  /// - [Account] [senderAccount]: The account of the sender.
+  ///
+  /// **Returns:**
+  /// [Future<String>] The transaction ID.
+  ///
+  /// **Throws:**
+  /// [AlgorandException] If there is a HTTP error when broadcasting the
+  /// transaction to the network.
+  ///
+  /// **Example:**
+  /// ```
+  /// final transactionID = await algorand.sendARC0200Asset({
+  ///   amount: BigInt.from(1000),
+  ///   appID: BigInt.from(6779767),
+  ///   receiverAddress: 'WWC4A63RYSV6QP6M7YYQSBKA7H7NZRLTJ76QSFR63R3426L5Q5KC2OQF74',
+  ///   senderAccount: Account.fromSeedPhrase('meadow expect grief...'),
+  /// });
+  /// print(transactionID); // Output: 5LOOJQRVMZJKQVWIHGILMJOTQS4KBJPDAQ22LOIB74GRW5S3CWIQ
+  /// ```
+  Future<String> sendARC0200Asset({
+    required BigInt amount,
+    required BigInt appID,
+    Account? authAccount,
+    String? note,
+    required String receiverAddress,
+    required Account senderAccount,
+  }) async {
+    final contract = ARC0200Contract(
+      appID: appID,
+      algodURL: algorand.algodClient.client.options.baseUrl,
+    );
+    List<Uint8List> signedTransactions = [];
+    Account signer = senderAccount;
+    TransactionParams suggestedParams;
+    List<Uint8List> unsignedTransactions;
+
+    try {
+      suggestedParams = await algorand.getSuggestedTransactionParams();
+      unsignedTransactions = await contract.buildUnsignedTransferTransactions(
+        amount: amount,
+        authAddress: authAccount?.publicAddress,
+        note: note,
+        receiver: receiverAddress,
+        sender: senderAccount.publicAddress,
+        suggestedParams: suggestedParams,
+      );
+    } catch (error) {
+      debugPrint( 'Failed to create unsigned transfer transactions: $error');
+
+      return 'error';
+    }
+
+    // if the account has been re-keyed, use the auth account to perform signing
+    if (authAccount != null) {
+      signer = authAccount;
+    }
+
+    // sign each transaction
+    for (Uint8List unsignedTransaction in unsignedTransactions) {
+      final signedTransaction = await signTransaction(
+        keyPair: signer.keyPair,
+        transaction: unsignedTransaction,
+      );
+
+      signedTransactions.add(Uint8List.fromList(Encoder.encodeMessagePack(signedTransaction)));
+    }
+
+    return await algorand.sendRawTransactions(
+      signedTransactions,
+      waitForConfirmation: true,
+    );
+  }
 
   Future<String> sendPayment(
       Account senderAccount, String recipientAddress, double amountInAlgos,

@@ -63,3 +63,16 @@ jobs:
 #        uses: ./.github/actions/use-flutter-dependencies
 #      - name: "🏗️ Build ios"
 #        run: flutter build ios --release --no-codesign
+
+  tests:
+    name: "Tests"
+    needs: [validate_pr_title]
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: "🛎 Checkout"
+        uses: actions/checkout@v4
+      - name: "🔧 Setup"
+        uses: ./.github/actions/use-flutter-dependencies
+      - name: "🧪 Test"
+        run: flutter test
