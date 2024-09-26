@@ -5,6 +5,7 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/providers/asset_filter_provider.dart';
 import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
 import 'package:kibisis/features/view_asset/view_asset_screen.dart';
 import 'package:kibisis/models/combined_asset.dart';
@@ -13,6 +14,7 @@ import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
@@ -48,16 +50,19 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   @override
   Widget build(BuildContext context) {
     final assetsAsync = ref.watch(assetsProvider);
-    final isWideScreen = MediaQuery.of(context).size.width > 600;
+    final mediaQueryHelper = MediaQueryHelper(context);
+    final flex = mediaQueryHelper.getDynamicFlex();
+    final assetsFilterController =
+        ref.watch(assetsFilterControllerProvider.notifier);
 
-    return isWideScreen
+    return mediaQueryHelper.isWideScreen()
         ? Row(
             children: [
               Expanded(
-                flex: 2,
+                flex: flex[0],
                 child: Column(
                   children: [
-                    _buildSearchBar(context),
+                    _buildSearchBar(assetsFilterController),
                     Expanded(
                       child: CustomPullToRefresh(
                         refreshController: _refreshController,
@@ -74,7 +79,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
                 ),
               ),
               Expanded(
-                flex: 3,
+                flex: flex[1],
                 child: _selectedAsset != null
                     ? ViewAssetScreen(
                         asset: _selectedAsset!,
@@ -94,10 +99,13 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           );
   }
 
-  Widget _buildSearchBar(BuildContext context) {
+  Widget _buildSearchBar(AssetsFilterController assetsFilterController) {
     final filterController = TextEditingController();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
+      padding: const EdgeInsets.only(
+          left: kScreenPadding / 2,
+          right: kScreenPadding / 2,
+          top: kScreenPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -117,8 +125,22 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               onChanged: (value) {
                 ref.read(assetsProvider.notifier).setFilter(value);
               },
+              autoCorrect: false,
               suffixIcon: AppIcons.cross,
               leadingIcon: AppIcons.search,
+              onTrailingPressed: () {
+                filterController.clear();
+                assetsFilterController.reset();
+                ref.read(assetsProvider.notifier).setFilter('');
+              },
+              isSmall: true,
+            ),
+          ),
+          IconButton(
+            onPressed: () => context.goNamed(addAssetRouteName),
+            icon: const Icon(
+              AppIcons.add,
+              size: AppIcons.medium,
             ),
           ),
         ],

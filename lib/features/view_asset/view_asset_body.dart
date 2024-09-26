@@ -8,10 +8,10 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
-import 'package:kibisis/providers/orientation_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
+import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -86,19 +86,12 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    Future.microtask(
-        () => ref.read(orientationProvider.notifier).update(context));
-  }
-
   @override
   Widget build(BuildContext context) {
     final userBalance = widget.asset.amount;
     final totalSupply = double.parse(widget.asset.params.total.toString());
     final String publicKey = ref.watch(accountProvider).account?.publicAddress;
-    final orientationState = ref.watch(orientationProvider);
-    debugPrint('Is WideScreen: ${orientationState.isWideScreen}');
+    final mediaQueryHelper = MediaQueryHelper(context);
 
     return SingleChildScrollView(
       child: Padding(
@@ -233,7 +226,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                   text: widget.mode == AssetScreenMode.view
                       ? 'Send Asset'
                       : 'Add Asset',
-                  isFullWidth: !orientationState.isWideScreen,
+                  isFullWidth: !mediaQueryHelper.isWideScreen(),
                   buttonType: ButtonType.secondary,
                   onPressed: () async {
                     if (widget.mode == AssetScreenMode.view) {
