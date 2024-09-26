@@ -60,6 +60,7 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
           ),
           body: Stack(
             children: [
+              // Background Image with Blur
               Positioned.fill(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 500),
@@ -110,68 +111,50 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
                         onTap: () =>
                             ref.read(showNftInfoProvider.notifier).toggle(),
                         child: AspectRatio(
-                          aspectRatio: 1, // Maintain 1:1 aspect ratio
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width -
-                                (kScreenPadding * 2),
-                            height: MediaQuery.of(context).size.width -
-                                (kScreenPadding * 2),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              alignment: Alignment.center,
-                              children: [
-                                Image.network(
-                                  nfts[index].imageUrl,
-                                  fit: BoxFit
-                                      .contain, // Contain the image without stretching
-                                ),
-                                Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 0,
-                                  top: MediaQuery.of(context).size.width / 2,
-                                  child: AnimatedOpacity(
-                                    opacity: showNftInfo ? 1.0 : 0.0,
-                                    duration: const Duration(milliseconds: 300),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.bottomCenter,
-                                          end: Alignment.topCenter,
-                                          colors: [
-                                            Colors.black87,
-                                            Colors.transparent
-                                          ],
-                                        ),
-                                      ),
-                                      padding:
-                                          const EdgeInsets.all(kScreenPadding),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          EllipsizedText(
-                                            nfts[index].name,
-                                            style: context
-                                                .textTheme.displayLarge
-                                                ?.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          ),
-                                          EllipsizedText(
-                                            nfts[index].description,
-                                            style:
-                                                context.textTheme.displaySmall,
-                                          ),
-                                        ],
-                                      ),
+                          aspectRatio: 1, // Ensure 1:1 aspect ratio
+                          child: Stack(
+                            fit: StackFit
+                                .expand, // Fit overlay and image to the same bounds
+                            children: [
+                              // NFT Image
+                              Image.network(
+                                nfts[index].imageUrl,
+                                fit: BoxFit
+                                    .contain, // Shrink image to fit the area
+                              ),
+                              // Overlay with information
+                              if (showNftInfo)
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        Colors.black87,
+                                        Colors.transparent
+                                      ],
                                     ),
                                   ),
+                                  padding: const EdgeInsets.all(kScreenPadding),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      EllipsizedText(
+                                        nfts[index].name,
+                                        style: context.textTheme.displayLarge
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      EllipsizedText(
+                                        nfts[index].description,
+                                        style: context.textTheme.displaySmall,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
+                            ],
                           ),
                         ),
                       ),
@@ -179,6 +162,7 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
                   },
                   itemCount: nfts.length,
                   loop: nfts.length > 1 ? true : false,
+                  // Let Swiper handle size as before
                   itemWidth:
                       MediaQuery.of(context).size.width - (kScreenPadding * 2),
                   itemHeight:
