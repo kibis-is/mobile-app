@@ -109,61 +109,69 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
                       child: GestureDetector(
                         onTap: () =>
                             ref.read(showNftInfoProvider.notifier).toggle(),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width -
-                              (kScreenPadding * 2),
-                          height: MediaQuery.of(context).size.width -
-                              (kScreenPadding * 2),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            alignment: Alignment.center,
-                            children: [
-                              Image.network(
-                                nfts[index].imageUrl,
-                                fit: BoxFit.fill,
-                              ),
-                              Positioned(
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                top: MediaQuery.of(context).size.width / 2,
-                                child: AnimatedOpacity(
-                                  opacity: showNftInfo ? 1.0 : 0.0,
-                                  duration: const Duration(milliseconds: 300),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.bottomCenter,
-                                        end: Alignment.topCenter,
-                                        colors: [
-                                          Colors.black87,
-                                          Colors.transparent
+                        child: AspectRatio(
+                          aspectRatio: 1, // Maintain 1:1 aspect ratio
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width -
+                                (kScreenPadding * 2),
+                            height: MediaQuery.of(context).size.width -
+                                (kScreenPadding * 2),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              alignment: Alignment.center,
+                              children: [
+                                Image.network(
+                                  nfts[index].imageUrl,
+                                  fit: BoxFit
+                                      .contain, // Contain the image without stretching
+                                ),
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  top: MediaQuery.of(context).size.width / 2,
+                                  child: AnimatedOpacity(
+                                    opacity: showNftInfo ? 1.0 : 0.0,
+                                    duration: const Duration(milliseconds: 300),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                          colors: [
+                                            Colors.black87,
+                                            Colors.transparent
+                                          ],
+                                        ),
+                                      ),
+                                      padding:
+                                          const EdgeInsets.all(kScreenPadding),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          EllipsizedText(
+                                            nfts[index].name,
+                                            style: context
+                                                .textTheme.displayLarge
+                                                ?.copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                          EllipsizedText(
+                                            nfts[index].description,
+                                            style:
+                                                context.textTheme.displaySmall,
+                                          ),
                                         ],
                                       ),
                                     ),
-                                    padding:
-                                        const EdgeInsets.all(kScreenPadding),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        EllipsizedText(
-                                          nfts[index].name,
-                                          style: context.textTheme.displayLarge
-                                              ?.copyWith(
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                        EllipsizedText(
-                                          nfts[index].description,
-                                          style: context.textTheme.displaySmall,
-                                        ),
-                                      ],
-                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
