@@ -68,14 +68,10 @@ class NftCard extends StatelessWidget {
           pathParameters: {'index': index.toString()},
         );
       },
-      child: Card(
+      child: Container(
         margin: viewType == NftViewType.grid
             ? const EdgeInsets.all(0)
             : const EdgeInsets.only(bottom: kScreenPadding / 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0),
-        ),
-        clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
             NftImage(imageUrl: nft.imageUrl),
