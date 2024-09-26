@@ -5,7 +5,6 @@
 ///
 /// **Returns:**
 /// [bool] True, if the address is a zero address.
-///
 bool isZeroAddress(String value) {
   return value == 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ';
 }

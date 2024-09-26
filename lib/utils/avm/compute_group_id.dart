@@ -30,7 +30,6 @@ import 'package:kibisis/exceptions/avm_max_transaction_size_exception.dart';
 ///
 /// **Throws:**
 /// [AVMMaxTransactionSizeException] If the list of transactions exceeds the transaction group limit of 16.
-///
 Uint8List? computeGroupID(List<Map<String, dynamic>> transactions) {
   List<Uint8List> transactionIDBytes;
 
