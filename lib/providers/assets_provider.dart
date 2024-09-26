@@ -31,6 +31,8 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
     fetchAssets();
   }
 
+  String get filterText => _filter;
+
   Future<void> fetchAssets() async {
     if (publicAddress.isEmpty) {
       debugPrint('publicAddress is empty');

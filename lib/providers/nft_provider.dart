@@ -29,6 +29,8 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
     _loadCachedNFTs();
   }
 
+  String get filterText => _filter;
+
   Future<void> fetchNFTs({bool isInitialLoad = false, int limit = 20}) async {
     if (publicAddress.isEmpty || _isLoadingMore) {
       return;

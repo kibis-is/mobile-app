@@ -40,7 +40,11 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
-    filterController = TextEditingController();
+    filterController = TextEditingController(
+      text: ref
+          .read(assetsProvider.notifier)
+          .filterText, // Set the text from the current filter state
+    );
   }
 
   @override
@@ -128,7 +132,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
                 ref.read(assetsProvider.notifier).setFilter(value);
               },
               autoCorrect: false,
-              suffixIcon: AppIcons.cross,
+              suffixIcon:
+                  filterController.text.isNotEmpty ? AppIcons.cross : null,
               leadingIcon: AppIcons.search,
               onTrailingPressed: () {
                 filterController.clear();

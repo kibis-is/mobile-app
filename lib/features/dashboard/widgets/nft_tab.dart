@@ -31,7 +31,9 @@ class NftTabState extends ConsumerState<NftTab> {
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
-    filterController = TextEditingController();
+    filterController = TextEditingController(
+      text: ref.read(nftNotifierProvider.notifier).filterText,
+    );
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 100 &&
@@ -124,7 +126,8 @@ class NftTabState extends ConsumerState<NftTab> {
                 ref.read(nftNotifierProvider.notifier).setFilter(value);
               },
               autoCorrect: false,
-              suffixIcon: AppIcons.cross,
+              suffixIcon:
+                  filterController.text.isNotEmpty ? AppIcons.cross : null,
               leadingIcon: AppIcons.search,
               onTrailingPressed: () {
                 filterController.clear();
