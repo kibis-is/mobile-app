@@ -22,6 +22,7 @@ class NftTab extends ConsumerStatefulWidget {
 
 class NftTabState extends ConsumerState<NftTab> {
   late final RefreshController _refreshController;
+  late TextEditingController filterController;
   NftViewType viewType = NftViewType.grid;
   final ScrollController _scrollController = ScrollController();
   bool isLoadingMore = false;
@@ -30,6 +31,7 @@ class NftTabState extends ConsumerState<NftTab> {
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
+    filterController = TextEditingController();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 100 &&
@@ -63,6 +65,7 @@ class NftTabState extends ConsumerState<NftTab> {
   @override
   void dispose() {
     _refreshController.dispose();
+    filterController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -70,12 +73,12 @@ class NftTabState extends ConsumerState<NftTab> {
   @override
   Widget build(BuildContext context) {
     final nftState = ref.watch(nftNotifierProvider);
-    final filterController = ref.watch(nftFilterControllerProvider);
+    ref.watch(nftFilterControllerProvider);
 
     return Column(
       children: [
         const SizedBox(height: kScreenPadding / 2),
-        _buildSearchBar(context, filterController),
+        _buildSearchBar(),
         const SizedBox(height: kScreenPadding / 4),
         Expanded(
           child: CustomPullToRefresh(
@@ -98,8 +101,7 @@ class NftTabState extends ConsumerState<NftTab> {
     );
   }
 
-  Widget _buildSearchBar(
-      BuildContext context, TextEditingController controller) {
+  Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
       child: Row(
@@ -116,7 +118,7 @@ class NftTabState extends ConsumerState<NftTab> {
           ),
           Expanded(
             child: CustomTextField(
-              controller: controller,
+              controller: filterController, // Use the member variable
               labelText: 'Filter',
               onChanged: (value) {
                 ref.read(nftNotifierProvider.notifier).setFilter(value);
@@ -125,6 +127,7 @@ class NftTabState extends ConsumerState<NftTab> {
               suffixIcon: AppIcons.cross,
               leadingIcon: AppIcons.search,
               onTrailingPressed: () {
+                filterController.clear();
                 ref.read(nftNotifierProvider.notifier).setFilter('');
               },
               isSmall: true,
