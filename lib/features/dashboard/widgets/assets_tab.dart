@@ -64,6 +64,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
     return mediaQueryHelper.isWideScreen()
         ? Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 flex: flex[0],
@@ -75,10 +76,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
                         refreshController: _refreshController,
                         onRefresh: _onRefresh,
                         child: assetsAsync.when(
-                          data: (assets) => _buildAssetsList(context, assets),
-                          loading: () => _buildLoadingAssets(context),
-                          error: (error, stack) =>
-                              _buildEmptyAssets(context, ref),
+                          data: (assets) => _buildAssetsList(assets),
+                          loading: () => _buildLoadingAssets(),
+                          error: (error, stack) => _buildEmptyAssets(),
                         ),
                       ),
                     ),
@@ -99,8 +99,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             ],
           )
         : assetsAsync.when(
-            data: (assets) => _buildAssetsList(context, assets),
-            loading: () => _buildLoadingAssets(context),
+            data: (assets) => _buildAssetsList(assets),
+            loading: () => _buildLoadingAssets(),
             error: (error, stack) =>
                 const Center(child: Text('Error loading assets')),
           );
@@ -203,7 +203,11 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     ref.read(assetsProvider.notifier).setShowFrozen(showFrozen);
   }
 
-  Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
+  Widget _buildAssetsList(List<CombinedAsset> assets) {
+    if (assets.isEmpty) {
+      return _buildEmptyAssets();
+    }
+
     return ListView.builder(
       itemCount: assets.length,
       itemBuilder: (context, index) {
@@ -233,26 +237,44 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     );
   }
 
-  Widget _buildEmptyAssets(BuildContext context, WidgetRef ref) {
+  Widget _buildEmptyAssets() {
+    final isFilterActive =
+        ref.read(assetsProvider.notifier).filterText.isNotEmpty;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('No Assets Found', style: context.textTheme.titleSmall),
+          Text(
+            isFilterActive
+                ? 'No Assets Found for the Filter'
+                : 'No Assets Found',
+            style: context.textTheme.titleSmall,
+          ),
           const SizedBox(height: kScreenPadding / 2),
-          Text('You have not added any assets.',
-              style: context.textTheme.bodySmall, textAlign: TextAlign.center),
+          Text(
+            isFilterActive
+                ? 'Try clearing the filter to see all assets.'
+                : 'You have not added any assets.',
+            style: context.textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: kScreenPadding),
           TextButton(
-            onPressed: _onRefresh,
-            child: const Text('Retry'),
+            onPressed: isFilterActive
+                ? () {
+                    ref.read(assetsProvider.notifier).setFilter('');
+                    filterController.clear(); // Also clear the text field
+                  }
+                : _onRefresh,
+            child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildLoadingAssets(BuildContext context) {
+  Widget _buildLoadingAssets() {
     return Shimmer.fromColors(
       baseColor: context.colorScheme.background,
       highlightColor: context.colorScheme.onSurfaceVariant,

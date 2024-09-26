@@ -88,14 +88,14 @@ class NftTabState extends ConsumerState<NftTab> {
             onRefresh: _onRefresh,
             child: nftState.when(
               data: (nfts) => nfts.isEmpty
-                  ? _buildEmptyNfts(context)
+                  ? _buildEmptyNfts()
                   : NftGridOrCard(
                       nfts: nfts,
                       viewType: viewType,
                       controller: _scrollController,
                     ),
-              loading: () => _buildLoadingNfts(context),
-              error: (error, stack) => _buildEmptyNfts(context),
+              loading: () => _buildLoadingNfts(),
+              error: (error, stack) => _buildEmptyNfts(),
             ),
           ),
         ),
@@ -141,7 +141,7 @@ class NftTabState extends ConsumerState<NftTab> {
     );
   }
 
-  Widget _buildLoadingNfts(BuildContext context) {
+  Widget _buildLoadingNfts() {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
@@ -160,19 +160,36 @@ class NftTabState extends ConsumerState<NftTab> {
     );
   }
 
-  Widget _buildEmptyNfts(BuildContext context) {
+  Widget _buildEmptyNfts() {
+    final isFilterActive =
+        ref.read(nftNotifierProvider.notifier).filterText.isNotEmpty;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('No NFTs Found', style: context.textTheme.titleSmall),
+          Text(
+            isFilterActive ? 'No NFTs Found for the Filter' : 'No NFTs Found',
+            style: context.textTheme.titleSmall,
+          ),
           const SizedBox(height: kScreenPadding / 2),
-          Text('You have not added any NFTs.',
-              style: context.textTheme.bodySmall, textAlign: TextAlign.center),
+          Text(
+            isFilterActive
+                ? 'Try clearing the filter to see all NFTs.'
+                : 'You have not added any NFTs.',
+            style: context.textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: kScreenPadding),
           TextButton(
-            onPressed: _onRefresh,
-            child: const Text('Retry'),
+            onPressed: isFilterActive
+                ? () {
+                    // Clear the filter when the button is pressed
+                    ref.read(nftNotifierProvider.notifier).setFilter('');
+                    filterController.clear(); // Also clear the text field
+                  }
+                : _onRefresh, // Retry the API call if there's no filter
+            child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
           ),
         ],
       ),
