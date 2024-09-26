@@ -34,16 +34,19 @@ class AssetsTab extends ConsumerStatefulWidget {
 class _AssetsTabState extends ConsumerState<AssetsTab> {
   late final RefreshController _refreshController;
   CombinedAsset? _selectedAsset;
+  late TextEditingController filterController;
 
   @override
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
+    filterController = TextEditingController();
   }
 
   @override
   void dispose() {
     _refreshController.dispose();
+    filterController.dispose();
     super.dispose();
   }
 
@@ -100,7 +103,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   Widget _buildSearchBar(AssetsFilterController assetsFilterController) {
-    final filterController = TextEditingController();
     return Padding(
       padding: const EdgeInsets.only(
           left: kScreenPadding / 2,
@@ -130,7 +132,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               leadingIcon: AppIcons.search,
               onTrailingPressed: () {
                 filterController.clear();
-                assetsFilterController.reset();
                 ref.read(assetsProvider.notifier).setFilter('');
               },
               isSmall: true,
