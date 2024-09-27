@@ -151,29 +151,26 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-### Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
-
 # IntelliJ related
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+### Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+upload_keystore.jks
+android/secure.properties
 
-# Flutter/Dart/Pub related
+### Fastlane
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+### Flutter/Dart/Pub
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -189,12 +186,18 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-key.jks
-android/secure.properties
+### Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
 
-# Google Play
-/play_store_credentials.json
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
