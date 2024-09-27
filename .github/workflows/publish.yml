@@ -44,4 +44,6 @@ jobs:
       - name: "🏗️ Build AppBundle"
         run: flutter build aab --release
       - name: "🚀 Publish Via Fastlane"
-        run: bundle exec fastlane ${{ inputs.environment }}
+        run: |
+          cd ./android
+          bundle exec fastlane ${{ inputs.environment }}
