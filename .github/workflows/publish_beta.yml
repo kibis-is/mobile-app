@@ -10,7 +10,6 @@ jobs:
     uses: ./.github/workflows/publish.yml
     with:
       environment: "beta"
-      track: "internal"
     secrets:
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
