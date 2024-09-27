@@ -203,4 +203,4 @@ migrate_working_dir/
 #.vscode/
 
 # Google PLay Store
-./play_store_credentials.json
+play_store_credentials.json
