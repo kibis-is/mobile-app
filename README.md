@@ -223,8 +223,9 @@ flutter build aab --release
 
 > ⚠️ **NOTE:** The following script will require the `$GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY` to be set with the credentials.
 
-4. Use Fastlane to upload the release to the Google Play Store:
+4. Use Fastlane to upload the release to the Google Play Store using the follwing commands:
 ```shell
+cd ./android
 bundle exec fastlane <lane>
 ```
 
