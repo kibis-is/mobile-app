@@ -4,17 +4,11 @@ plugins {
     id 'dev.flutter.flutter-gradle-plugin'
 }
 
+def _applicationId = 'is.kibis.kibisis'
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
-
-def _applicationId = 'is.kibis.kibisis'
-def _compileSdkVersion = localProperties.getProperty('flutter.compileSdkVersion', '34').toInteger()
-def _minSdkVersion = localProperties.getProperty('flutter.minSdkVersion', '21').toInteger()
-def _targetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion', '34').toInteger()
-def _versionCode = localProperties.getProperty('flutter.versionCode', '1').toInteger()
-def _versionName = localProperties.getProperty('flutter.versionName', '1.0')
 
 // load local.properties
 if (localPropertiesFile.exists()) {
@@ -25,6 +19,16 @@ if (localPropertiesFile.exists()) {
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+
+def _compileSdkVersion = localProperties.getProperty('flutter.compileSdkVersion', '34').toInteger()
+def _minSdkVersion = localProperties.getProperty('flutter.minSdkVersion', '21').toInteger()
+def _targetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion', '34').toInteger()
+def _versionCode = localProperties.getProperty('flutter.versionCode', '1').toInteger()
+def _versionName = localProperties.getProperty('flutter.versionName', '1.0')
+
+// Log the versionCode and versionName to the console
+println "Building with versionCode: ${_versionCode} and versionName: ${_versionName}"
+
 
 android {
     namespace _applicationId

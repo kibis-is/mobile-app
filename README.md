@@ -248,6 +248,7 @@ Coming soon...
 | `flutter pub add <package_name>`     | Installs a new package and saves it to the `pubspec.yaml` file.                                                                                                                                           |
 | `flutter run`                        | Runs the app locally.                                                                                                                                                                                     |
 | `flutter build <apk\|aab> --release` | Builds an Android APK/AAB to `build/app/outputs/bundle/release/app-release.<apk\|aab>`. NOTE: You will need a signing key, this can be acquired by following the steps in [4.4.1. Android](#441-android). |
+| `bundle exec fastlane <lane>`        | Uploads a mobile artifact to the Play Store/AppStore based on the lane, where `lane` is either `beta` or `production`.                                                                                    |
 
 See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-commands) reference for a full list of available commands.
 

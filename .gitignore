@@ -202,5 +202,5 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
-# Google PLay Store
+# Google Play Store
 play_store_credentials.json
