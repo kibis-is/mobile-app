@@ -101,7 +101,8 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
           children: [
             Column(
               children: [
-                Hero(
+                _buildHeroOrChild(
+                  condition: !mediaQueryHelper.isWideScreen(),
                   tag: '${widget.asset.index}-icon',
                   child: CircleAvatar(
                     radius: 50.0,
@@ -117,7 +118,8 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                   ),
                 ),
                 const SizedBox(height: kScreenPadding),
-                Hero(
+                _buildHeroOrChild(
+                  condition: !mediaQueryHelper.isWideScreen(),
                   tag: '${widget.asset.index}-name',
                   child: Text(
                     widget.asset.params.name ?? 'Unnamed Asset',
@@ -126,13 +128,15 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                   ),
                 ),
                 const SizedBox(height: kScreenPadding / 2),
-                Hero(
+                _buildHeroOrChild(
+                  condition: !mediaQueryHelper.isWideScreen(),
                   tag: '${widget.asset.index}-amount',
                   child: Text(
                     NumberShortener.shortenNumber(userBalance.toDouble()),
                     style: context.textTheme.displayMedium?.copyWith(
-                        color: context.colorScheme.secondary,
-                        fontWeight: FontWeight.bold),
+                      color: context.colorScheme.secondary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -264,6 +268,18 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     } catch (e) {
       ref.read(loadingProvider.notifier).stopLoading();
       debugPrint('Failed to opt-in: $e');
+    }
+  }
+
+  Widget _buildHeroOrChild(
+      {required bool condition, required String tag, required Widget child}) {
+    if (condition) {
+      return Hero(
+        tag: tag,
+        child: child,
+      );
+    } else {
+      return child;
     }
   }
 
