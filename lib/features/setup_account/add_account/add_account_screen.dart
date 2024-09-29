@@ -36,7 +36,8 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
               child: AddAccountBody(accountFlow: AccountFlow.addNew),
             ),
           ),
-          if (mediaQueryHelper.isWideScreen())
+          if (mediaQueryHelper.isWideScreen() &&
+              widget.accountFlow == AccountFlow.addNew)
             Expanded(
               flex: 3,
               child: Padding(
