@@ -7,6 +7,7 @@ import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -234,6 +235,10 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                   buttonType: ButtonType.secondary,
                   onPressed: () async {
                     if (widget.mode == AssetScreenMode.view) {
+                      // Set the active asset before navigating
+                      ref
+                          .read(activeAssetProvider.notifier)
+                          .setActiveAsset(widget.asset);
                       context
                           .pushNamed(sendTransactionRouteName, pathParameters: {
                         'mode': 'asset',
