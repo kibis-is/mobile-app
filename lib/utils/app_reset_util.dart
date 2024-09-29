@@ -87,7 +87,7 @@ class AppResetUtil {
         () => ref.read(activeAccountProvider.notifier).reset(),
         () => ref.read(transactionsProvider.notifier).reset(),
         () => ref.read(balanceProvider.notifier).reset(),
-        () => ref.read(assetsProvider.notifier).reset(),
+        () => ref.read(assetsProvider('').notifier).reset(),
         () =>
             ref.read(accountDataFetchStatusProvider.notifier).setFetched(false),
       ];

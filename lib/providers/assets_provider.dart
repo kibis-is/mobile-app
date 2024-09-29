@@ -3,20 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
-import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/utils/arc200_service.dart';
 import '../models/combined_asset.dart';
 
-final assetsProvider =
-    StateNotifierProvider<AssetsNotifier, AsyncValue<List<CombinedAsset>>>(
-        (ref) {
-  final publicAddress = ref.watch(accountProvider).account?.publicAddress;
-  if (publicAddress != null) {
-    return AssetsNotifier(ref, publicAddress);
-  }
-  return AssetsNotifier(ref, '');
-});
+final assetsProvider = StateNotifierProvider.family<AssetsNotifier,
+    AsyncValue<List<CombinedAsset>>, String>(
+  (ref, publicAddress) => AssetsNotifier(ref, publicAddress),
+);
 
 class AssetsNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
   final Ref ref;

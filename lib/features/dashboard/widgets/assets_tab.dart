@@ -10,6 +10,7 @@ import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
 import 'package:kibisis/features/view_asset/view_asset_screen.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -40,11 +41,16 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
-    filterController = TextEditingController(
-      text: ref
-          .read(assetsProvider.notifier)
-          .filterText, // Set the text from the current filter state
-    );
+
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      filterController = TextEditingController(
+        text: ref.read(assetsProvider(publicAddress).notifier).filterText,
+      );
+    } else {
+      filterController = TextEditingController(text: '');
+    }
   }
 
   @override
@@ -56,7 +62,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   @override
   Widget build(BuildContext context) {
-    final assetsAsync = ref.watch(assetsProvider);
+    final publicAddress = ref.watch(accountProvider).account?.publicAddress;
+    final assetsAsync = ref.watch(assetsProvider(publicAddress));
+
     final mediaQueryHelper = MediaQueryHelper(context);
     final flex = mediaQueryHelper.getDynamicFlex();
     final assetsFilterController =
@@ -129,7 +137,16 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               controller: filterController,
               labelText: 'Filter',
               onChanged: (value) {
-                ref.read(assetsProvider.notifier).setFilter(value);
+                final publicAddress =
+                    ref.read(accountProvider).account?.publicAddress;
+
+                if (publicAddress != null && publicAddress.isNotEmpty) {
+                  ref
+                      .read(assetsProvider(publicAddress).notifier)
+                      .setFilter(value);
+                } else {
+                  debugPrint('Public address is not available');
+                }
               },
               autoCorrect: false,
               suffixIcon:
@@ -137,7 +154,16 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               leadingIcon: AppIcons.search,
               onTrailingPressed: () {
                 filterController.clear();
-                ref.read(assetsProvider.notifier).setFilter('');
+                final publicAddress =
+                    ref.read(accountProvider).account?.publicAddress;
+
+                if (publicAddress != null && publicAddress.isNotEmpty) {
+                  ref
+                      .read(assetsProvider(publicAddress).notifier)
+                      .setFilter('');
+                } else {
+                  debugPrint('Public address is not available');
+                }
               },
               isSmall: true,
             ),
@@ -195,12 +221,28 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   void _sortAssets(Sorting sorting) {
-    final assetsNotifier = ref.read(assetsProvider.notifier);
-    assetsNotifier.sortAssets(sorting);
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      final assetsNotifier = ref.read(assetsProvider(publicAddress).notifier);
+      assetsNotifier.sortAssets(sorting);
+    } else {
+      // Handle the case where publicAddress is null or empty
+      debugPrint('Public address is not available');
+    }
   }
 
   void _filterAssets(bool showFrozen) {
-    ref.read(assetsProvider.notifier).setShowFrozen(showFrozen);
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      ref
+          .read(assetsProvider(publicAddress).notifier)
+          .setShowFrozen(showFrozen);
+    } else {
+      // Handle the case where publicAddress is null or empty
+      debugPrint('Public address is not available');
+    }
   }
 
   Widget _buildAssetsList(List<CombinedAsset> assets) {
@@ -238,8 +280,17 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   Widget _buildEmptyAssets() {
-    final isFilterActive =
-        ref.read(assetsProvider.notifier).filterText.isNotEmpty;
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    bool isFilterActive = false;
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      isFilterActive = ref
+          .read(assetsProvider(publicAddress).notifier)
+          .filterText
+          .isNotEmpty;
+    } else {
+      debugPrint('Public address is not available');
+    }
 
     return Center(
       child: Column(
@@ -263,8 +314,19 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           TextButton(
             onPressed: isFilterActive
                 ? () {
-                    ref.read(assetsProvider.notifier).setFilter('');
-                    filterController.clear(); // Also clear the text field
+                    final publicAddress =
+                        ref.read(accountProvider).account?.publicAddress;
+                    ref
+                        .read(assetsProvider(publicAddress).notifier)
+                        .setFilter('');
+                    if (publicAddress != null && publicAddress.isNotEmpty) {
+                      ref
+                          .read(assetsProvider(publicAddress).notifier)
+                          .setFilter('');
+                      filterController.clear();
+                    } else {
+                      debugPrint('Public address is not available');
+                    }
                   }
                 : _onRefresh,
             child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),

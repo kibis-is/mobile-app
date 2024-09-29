@@ -5,6 +5,7 @@ import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/add_asset/search_provider.dart';
+import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -60,7 +61,8 @@ class AssetList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchState = ref.watch(searchProvider);
-    final ownedAssets = ref.watch(assetsProvider);
+    final publicAddress = ref.watch(accountProvider).account?.publicAddress;
+    final ownedAssets = ref.watch(assetsProvider(publicAddress));
 
     return Expanded(
       child: searchState.when(

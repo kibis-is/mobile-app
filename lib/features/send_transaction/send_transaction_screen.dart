@@ -94,7 +94,16 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Future<List<SelectItem>> _getAssetsAndCurrenciesAsList(WidgetRef ref) async {
-    final assetsAsync = ref.read(assetsProvider);
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    AsyncValue<List<CombinedAsset>> assetsAsync = const AsyncValue.loading();
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      assetsAsync = ref.read(assetsProvider(publicAddress));
+    } else {
+      debugPrint('Public address is not available');
+      assetsAsync = const AsyncValue.data([]);
+    }
+
     final network = ref.read(networkProvider);
 
     if (assetsAsync is! AsyncData<List<CombinedAsset>>) {
