@@ -21,41 +21,36 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
   List<NFT> _allNfts = [];
   String _filter = '';
   Sorting? _sorting;
+  bool _isLoadingMore = false;
+  String? _nextToken;
 
   NFTNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
     _loadCachedNFTs();
   }
 
-  Future<void> _loadCachedNFTs() async {
-    final storageService = ref.read(storageProvider);
-    final cachedNftsJson = storageService.prefs?.getString('cachedNfts');
+  String get filterText => _filter;
 
-    if (cachedNftsJson != null) {
-      final List<dynamic> cachedNfts = json.decode(cachedNftsJson);
-      _allNfts = cachedNfts.map<NFT>((json) => NFT.fromJson(json)).toList();
-      state = AsyncValue.data(_filteredNfts());
-    } else {
-      fetchNFTs();
-    }
-  }
-
-  Future<void> fetchNFTs() async {
-    if (publicAddress.isEmpty) {
-      state = const AsyncValue.data([]);
+  Future<void> fetchNFTs({bool isInitialLoad = false, int limit = 20}) async {
+    if (publicAddress.isEmpty || _isLoadingMore) {
       return;
     }
 
+    _isLoadingMore = true;
     try {
-      final String url =
-          'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicAddress';
+      final String url = isInitialLoad
+          ? 'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicAddress&limit=$limit'
+          : 'https://arc72-idx.nftnavigator.xyz/nft-indexer/v1/tokens?owner=$publicAddress&next=$_nextToken&limit=$limit';
+
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
         final List<dynamic> tokens = body['tokens'];
+        _nextToken = body['next'];
 
         if (tokens.isEmpty) {
-          throw Exception('No tokens found in response');
+          _isLoadingMore = false;
+          return;
         }
 
         final List<NFT> nfts = tokens.map<NFT>((json) {
@@ -76,20 +71,44 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
           );
         }).toList();
 
-        _allNfts = nfts; // Cache the NFTs
+        if (isInitialLoad) {
+          _allNfts = nfts;
+        } else {
+          _allNfts.addAll(nfts);
+        }
+
         state = AsyncValue.data(_filteredNfts());
 
-        // Cache the fetched NFTs in SharedPreferences
+        // Cache the NFTs locally
         final storageService = ref.read(storageProvider);
-        final String encodedNfts =
-            jsonEncode(nfts.map((nft) => nft.toJson()).toList());
-        await storageService.prefs?.setString('cachedNfts', encodedNfts);
+        await storageService.setNFTsForAccount(publicAddress, _allNfts);
       } else {
         throw Exception(
             'Failed to load NFTs with status code: ${response.statusCode}');
       }
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
+    } finally {
+      _isLoadingMore = false;
+    }
+  }
+
+  bool get isLoadingMore => _isLoadingMore;
+
+  void loadMoreNFTs({int limit = 20}) async {
+    if (_nextToken != null && !_isLoadingMore) {
+      await fetchNFTs(limit: limit); // Fetch more NFTs with limit
+    }
+  }
+
+  Future<void> _loadCachedNFTs() async {
+    final storageService = ref.read(storageProvider);
+    _allNfts = await storageService.getNFTsForAccount(publicAddress);
+
+    if (_allNfts.isNotEmpty) {
+      state = AsyncValue.data(_filteredNfts());
+    } else {
+      await fetchNFTs(isInitialLoad: true);
     }
   }
 

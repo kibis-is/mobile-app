@@ -2,6 +2,7 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:convert/convert.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
@@ -17,40 +18,32 @@ final accountProvider =
 });
 
 class AccountState {
-  final Account? account;
+  final dynamic account;
   final String? accountName;
   final String? accountId;
-  final String? privateKey;
-  final String? seedPhrase;
-  final String? applicationId; // New property to store applicationId
+  final String? applicationId;
   final String? error;
 
   AccountState({
     this.account,
     this.accountName,
     this.accountId,
-    this.privateKey,
-    this.seedPhrase,
-    this.applicationId, // Initialize applicationId
+    this.applicationId,
     this.error,
   });
 
   AccountState copyWith({
-    Account? account,
+    dynamic account,
     String? accountName,
     String? accountId,
-    String? privateKey,
-    String? seedPhrase,
-    String? applicationId, // Add applicationId to copyWith
+    String? applicationId,
     String? error,
   }) {
     return AccountState(
       account: account ?? this.account,
       accountName: accountName ?? this.accountName,
       accountId: accountId ?? this.accountId,
-      privateKey: privateKey ?? this.privateKey,
-      seedPhrase: seedPhrase ?? this.seedPhrase,
-      applicationId: applicationId ?? this.applicationId, // Copy applicationId
+      applicationId: applicationId ?? this.applicationId,
       error: error ?? this.error,
     );
   }
@@ -77,15 +70,12 @@ class AccountNotifier extends StateNotifier<AccountState> {
       final accountName =
           await storageService.getAccountData(activeAccountId, 'accountName') ??
               '';
-      final privateKey =
-          await storageService.getAccountData(activeAccountId, 'privateKey') ??
-              '';
-      final applicationId = await storageService
-          .getApplicationId(activeAccountId); // Retrieve applicationId
 
-      await initialiseFromPrivateKey(accountName, privateKey, activeAccountId);
+      final applicationId =
+          await storageService.getApplicationId(activeAccountId);
 
-      // Update state with applicationId
+      await initialiseFromPrivateKey(accountName, activeAccountId);
+
       state = state.copyWith(applicationId: applicationId);
     } catch (e) {
       state = state.copyWith(error: 'Failed to initialize account: $e');
@@ -93,18 +83,22 @@ class AccountNotifier extends StateNotifier<AccountState> {
   }
 
   Future<void> initialiseFromPrivateKey(
-      String accountName, String privateKey, String activeAccountId) async {
-    if (privateKey.isNotEmpty) {
+      String accountName, String activeAccountId) async {
+    final privateKey =
+        await storageService.getAccountData(activeAccountId, 'privateKey');
+    if (privateKey != null && privateKey.isNotEmpty) {
       final account = await algorand.loadAccountFromPrivateKey(privateKey);
-      final applicationId = await storageService
-          .getApplicationId(activeAccountId); // Retrieve applicationId
+      final applicationId =
+          await storageService.getApplicationId(activeAccountId);
 
       state = state.copyWith(
         accountId: activeAccountId,
         accountName: accountName,
         account: account,
-        applicationId: applicationId, // Update state with applicationId
+        applicationId: applicationId,
       );
+    } else {
+      state = state.copyWith(error: 'Private key not found in storage');
     }
   }
 
@@ -194,8 +188,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
-        privateKey: encodedPrivateKey,
-        seedPhrase: seedPhraseString,
         applicationId: null, // No applicationId yet
         error: null,
       );
@@ -216,23 +208,20 @@ class AccountNotifier extends StateNotifier<AccountState> {
           await storageService.getAccountData(activeAccountId, 'privateKey');
       final accountName =
           await storageService.getAccountData(activeAccountId, 'accountName');
-      final applicationId = await storageService
-          .getApplicationId(activeAccountId); // Retrieve applicationId
+      final applicationId =
+          await storageService.getApplicationId(activeAccountId);
 
       if (privateKey == null || accountName == null) {
         throw Exception('Missing account data for the active account');
       }
 
       final account = await algorand.loadAccountFromPrivateKey(privateKey);
-      final seedPhrase = await account.seedPhrase;
 
       state = state.copyWith(
         accountId: activeAccountId,
         accountName: accountName,
         account: account,
-        privateKey: privateKey,
-        seedPhrase: seedPhrase.join(' '),
-        applicationId: applicationId, // Update state with applicationId
+        applicationId: applicationId,
         error: null,
       );
     } catch (e) {
@@ -242,16 +231,19 @@ class AccountNotifier extends StateNotifier<AccountState> {
   }
 
   Future<String> getPrivateKey() async {
-    if (state.account?.keyPair == null) {
-      Future.microtask(() => ref.read(errorProvider.notifier).state =
-          'Private key is not available.');
+    final accountId = state.accountId;
+    if (accountId == null) {
+      ref.read(errorProvider.notifier).state = 'No active account';
       return '';
     }
-
-    final privateKeyBytes =
-        await state.account!.keyPair.extractPrivateKeyBytes();
-    final encodedPrivateKey = hex.encode(privateKeyBytes);
-    return encodedPrivateKey;
+    final privateKey =
+        await storageService.getAccountData(accountId, 'privateKey');
+    if (privateKey == null) {
+      ref.read(errorProvider.notifier).state =
+          'Private key not found in storage';
+      return '';
+    }
+    return privateKey;
   }
 
   Future<String> getPublicAddress() async {
@@ -264,13 +256,19 @@ class AccountNotifier extends StateNotifier<AccountState> {
   }
 
   Future<String> getSeedPhraseAsString() async {
-    if (state.account?.seedPhrase == null) {
-      Future.microtask(() => ref.read(errorProvider.notifier).state =
-          'Seed phrase is not available.');
+    final accountId = state.accountId;
+    if (accountId == null) {
+      ref.read(errorProvider.notifier).state = 'No active account';
       return '';
     }
-    List<String> seedPhrase = await state.account!.seedPhrase;
-    return seedPhrase.join(' ');
+    final seedPhrase =
+        await storageService.getAccountData(accountId, 'seedPhrase');
+    if (seedPhrase == null) {
+      ref.read(errorProvider.notifier).state =
+          'Seed phrase not found in storage';
+      return '';
+    }
+    return seedPhrase;
   }
 
   Future<String?> getAccountId() async {
@@ -281,32 +279,45 @@ class AccountNotifier extends StateNotifier<AccountState> {
     try {
       final tempAccountState = ref.read(temporaryAccountProvider);
 
-      if (tempAccountState.account == null ||
-          tempAccountState.privateKey == null ||
-          tempAccountState.seedPhrase == null) {
-        throw Exception('Incomplete temporary account data');
+      if (tempAccountState.account == null) {
+        throw Exception('Account is missing in temporary account data');
       }
 
-      ref.read(isAuthenticatedProvider.notifier).state = true;
-
       final accountId = await storageService.generateNextAccountId();
-      await storageService.setAccountData(
-          accountId, 'accountName', accountName);
-      await storageService.setAccountData(
-          accountId, 'privateKey', tempAccountState.privateKey!);
-      await storageService.setAccountData(
-          accountId, 'seedPhrase', tempAccountState.seedPhrase!);
 
-      final publicKey = tempAccountState.account!.publicAddress.toString();
-      await storageService.setAccountData(accountId, 'publicKey', publicKey);
+      if (tempAccountState.account is Account) {
+        if (tempAccountState.privateKey == null ||
+            tempAccountState.seedPhrase == null) {
+          throw Exception(
+              'Incomplete temporary account data for regular account');
+        }
 
-      // Initialize applicationId as null for a newly created account
+        ref.read(isAuthenticatedProvider.notifier).state = true;
+
+        await storageService.setAccountData(
+            accountId, 'accountName', accountName);
+        await storageService.setAccountData(
+            accountId, 'privateKey', tempAccountState.privateKey!);
+        await storageService.setAccountData(
+            accountId, 'seedPhrase', tempAccountState.seedPhrase!);
+
+        final publicKey =
+            (tempAccountState.account as Account).publicAddress.toString();
+        await storageService.setAccountData(accountId, 'publicKey', publicKey);
+      } else if (tempAccountState.account is WatchAccount) {
+        await storageService.setAccountData(
+            accountId, 'accountName', accountName);
+
+        final publicKey = (tempAccountState.account as WatchAccount).publicKey;
+        await storageService.setAccountData(accountId, 'publicKey', publicKey);
+      } else {
+        throw Exception('Unsupported account type');
+      }
+
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
-        privateKey: tempAccountState.privateKey,
-        seedPhrase: tempAccountState.seedPhrase,
-        applicationId: null, // No applicationId yet
+        applicationId: null,
         error: null,
       );
 

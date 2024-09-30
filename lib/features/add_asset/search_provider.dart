@@ -36,8 +36,9 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
           1e15,
           100,
         );
-        final standardAssets =
-            algorandResponse.assets.map(convertToCombinedAsset).toList();
+        final standardAssets = algorandResponse.assets
+            .map(AssetConverter.convertAssetToCombinedWithoutAmount)
+            .toList();
         combinedAssets.addAll(standardAssets);
 
         final arc200AssetsByIdOrName = await arc200Service

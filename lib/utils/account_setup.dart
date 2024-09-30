@@ -68,6 +68,7 @@ class AccountSetupUtility {
     return null;
   }
 
+  // ignore: unused_element
   static Future<void> _deploySmartContract(WidgetRef ref) async {
     try {
       final account = await _getActiveAccount(ref);

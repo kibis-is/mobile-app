@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/combined_asset.dart';
 
 final activeAssetProvider =
@@ -25,6 +26,8 @@ class ActiveAssetNotifier extends StateNotifier<CombinedAsset?> {
         deleted: state!.deleted,
         destroyedAtRound: state!.destroyedAtRound,
         assetType: state?.assetType ?? AssetType.standard,
+        amount: state?.amount ?? 0,
+        isFrozen: state?.isFrozen ?? false,
         params: CombinedAssetParameters(
           defaultFrozen: !(state!.params.defaultFrozen ?? false),
           decimals: state!.params.decimals,

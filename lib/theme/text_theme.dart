@@ -38,16 +38,16 @@ TextTheme textTheme({
 
 TextTheme textThemeLight() {
   return textTheme(
-    displayColor: ColorPalette.lightThemeLicorice,
-    bodyColor: ColorPalette.lightThemeChineseViolet,
-    labelColor: ColorPalette.lightThemeChineseViolet,
+    displayColor: ColorPalette.lightThemeHeader,
+    bodyColor: ColorPalette.lightThemeBody,
+    labelColor: ColorPalette.lightThemeBody,
   );
 }
 
 TextTheme textThemeDark() {
   return textTheme(
-    displayColor: ColorPalette.darkThemeAntiflashWhite,
-    bodyColor: ColorPalette.darkThemeCadetGray,
-    labelColor: ColorPalette.darkThemeCadetGray,
+    displayColor: ColorPalette.darkThemeHeader,
+    bodyColor: ColorPalette.darkThemeBody,
+    labelColor: ColorPalette.darkThemeBody,
   );
 }

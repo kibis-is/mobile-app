@@ -39,10 +39,10 @@ class CustomDropDown extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
       decoration: BoxDecoration(
         border: Border.all(
-          color: context.colorScheme.onBackground,
+          color: Colors.transparent,
         ),
-        borderRadius: BorderRadius.circular(kWidgetRadius),
-        color: context.colorScheme.background,
+        borderRadius: BorderRadius.circular(100.0),
+        color: context.colorScheme.surface,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<SelectItem>(
@@ -54,17 +54,13 @@ class CustomDropDown extends StatelessWidget {
               value: item,
               child: Row(
                 children: [
-                  AppIcons.icon(icon: item.icon),
-                  const SizedBox(width: 8),
+                  AppIcons.icon(icon: item.icon, color: context.colorScheme.onBackground),
+                  const SizedBox(width: kScreenPadding / 2),
                   Flexible(
-                    child: EllipsizedText(
-                      item.name,
-                      ellipsis: '...',
-                      type: EllipsisType.end,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: context.colorScheme.onBackground,
-                      ),
-                    ),
+                    child: EllipsizedText(item.name,
+                        ellipsis: '...',
+                        type: EllipsisType.end,
+                        style: context.textTheme.displaySmall),
                   ),
                 ],
               ),
@@ -81,11 +77,10 @@ class CustomDropDown extends StatelessWidget {
       top: -10,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 3),
-        color: Theme.of(context).colorScheme.background,
         child: Text(
           label,
-          style: context.textTheme.bodySmall?.copyWith(
-            color: context.colorScheme.onSurface,
+          style: context.textTheme.labelSmall?.copyWith(
+            color: context.colorScheme.onBackground,
           ),
         ),
       ),

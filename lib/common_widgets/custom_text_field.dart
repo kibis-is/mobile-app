@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends ConsumerWidget {
   const CustomTextField({
     super.key,
     required this.controller,
@@ -50,7 +52,11 @@ class CustomTextField extends StatelessWidget {
   final bool isSmall;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(isDarkModeProvider);
+    final BorderRadius borderRadius = maxLines > 1
+        ? BorderRadius.circular(kScreenPadding)
+        : BorderRadius.circular(100.0);
     return TextFormField(
       autocorrect: autoCorrect,
       textInputAction: textInputAction,
@@ -62,26 +68,30 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       obscureText: isObscureText,
-      style: TextStyle(
-          fontSize: isSmall
-              ? context.textTheme.bodySmall?.fontSize
-              : context.textTheme.bodyMedium?.fontSize),
+      style: context.textTheme.displaySmall,
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
+        fillColor: context.colorScheme.surface,
+        filled: true,
         counterText: "",
         prefixIcon: leadingIcon != null
-            ? Icon(
-                leadingIcon,
-                size: isSmall ? AppIcons.small : AppIcons.medium,
-                color: context.colorScheme.onSurface,
+            ? Padding(
+                padding: const EdgeInsets.only(left: kScreenPadding / 2),
+                child: Icon(
+                  leadingIcon,
+                  size: isSmall ? AppIcons.small : AppIcons.medium,
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
               )
             : null,
         labelText: labelText,
-        labelStyle: TextStyle(fontSize: context.textTheme.bodySmall?.fontSize)
-            .copyWith(color: context.colorScheme.onSurface),
+        labelStyle: TextStyle(
+          fontSize: context.textTheme.bodySmall?.fontSize,
+          color: context.colorScheme.onSurfaceVariant,
+        ),
         contentPadding: EdgeInsets.symmetric(
-            horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding / 2,
-            vertical: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
+            horizontal: isSmall ? kScreenPadding / 4 : kScreenPadding,
+            vertical: kScreenPadding),
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         errorText: errorText?.isEmpty ?? true
             ? null
@@ -90,7 +100,7 @@ class CustomTextField extends StatelessWidget {
             ? Padding(
                 padding: EdgeInsets.only(
                     right: isSmall ? kScreenPadding / 4 : kScreenPadding / 2),
-                child: (controller.text.isNotEmpty)
+                child: (controller.text.isEmpty)
                     ? null
                     : IconButton(
                         icon: AppIcons.icon(
@@ -109,6 +119,30 @@ class CustomTextField extends StatelessWidget {
                     },
                   )
                 : null,
+        border: OutlineInputBorder(
+          borderRadius: borderRadius,
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+            width: 0.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+            width: 1.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+            width: 0.0,
+          ),
+        ),
       ),
       validator: validator,
       onChanged: onChanged,

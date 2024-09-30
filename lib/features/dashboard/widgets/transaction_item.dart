@@ -3,7 +3,6 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/common_widgets/flexible_listtile.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
@@ -34,17 +33,19 @@ class TransactionItem extends ConsumerWidget {
   Widget _getTransactionIcon(
       BuildContext context, bool isDarkMode, String network) {
     return Container(
-      padding: const EdgeInsets.all(kScreenPadding / 3),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: context.colorScheme.primary,
       ),
-      child: AppIcons.icon(
-          icon: network == 'network-voi'
-              ? AppIcons.voiCircleIcon
-              : AppIcons.algorandIcon,
-          size: AppIcons.xlarge,
-          color: context.colorScheme.onPrimary),
+      child: Padding(
+        padding: const EdgeInsets.all(kScreenPadding / 3),
+        child: AppIcons.icon(
+            icon: network.startsWith('network-voi')
+                ? AppIcons.voiCircleIcon
+                : AppIcons.algorandIcon,
+            size: AppIcons.xlarge,
+            color: context.colorScheme.onPrimary),
+      ),
     );
   }
 
@@ -69,10 +70,13 @@ class TransactionItem extends ConsumerWidget {
               Material(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: context.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(kWidgetRadius),
+                    color: context.colorScheme.background,
+                    border: Border.symmetric(
+                      horizontal: BorderSide(
+                          width: 1, color: context.colorScheme.surface),
+                    ),
                   ),
-                  child: FlexibleListTile(
+                  child: ListTile(
                     onTap: () {
                       Clipboard.setData(
                           ClipboardData(text: transaction.id ?? 'No ID'));
@@ -92,7 +96,7 @@ class TransactionItem extends ConsumerWidget {
                           type == 'pay'
                               ? 'Payment'
                               : assetName ?? 'Asset Transfer',
-                          style: context.textTheme.titleSmall?.copyWith(
+                          style: context.textTheme.displaySmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -113,24 +117,27 @@ class TransactionItem extends ConsumerWidget {
                           ),
                       ],
                     ),
-                    trailing: Text(
-                      type == 'appl'
-                          ? '$amount'
-                          : (amount != null &&
-                                  amount != '0' &&
-                                  !(amount?.startsWith('0') ?? false))
-                              ? '${isOutgoing ? '-' : '+'}$amount'
-                              : '$amount',
-                      style: context.textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: (amount == null ||
-                                amount == '0' ||
-                                amount?.startsWith('0') == true ||
-                                type == 'appl')
-                            ? context.colorScheme.onSurface
-                            : isOutgoing
-                                ? context.colorScheme.error
-                                : context.colorScheme.secondary,
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(right: kScreenPadding / 2),
+                      child: Text(
+                        type == 'appl'
+                            ? '$amount'
+                            : (amount != null &&
+                                    amount != '0' &&
+                                    !(amount?.startsWith('0') ?? false))
+                                ? '${isOutgoing ? '-' : '+'}$amount'
+                                : '$amount',
+                        style: context.textTheme.labelMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: (amount == null ||
+                                  amount == '0' ||
+                                  amount?.startsWith('0') == true ||
+                                  type == 'appl')
+                              ? context.colorScheme.onSurface
+                              : isOutgoing
+                                  ? context.colorScheme.error
+                                  : context.colorScheme.secondary,
+                        ),
                       ),
                     ),
                   ),

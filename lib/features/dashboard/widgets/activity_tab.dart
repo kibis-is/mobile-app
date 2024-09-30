@@ -1,204 +1,75 @@
-import 'dart:convert';
-
-import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
-import 'package:kibisis/constants/constants.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
-import 'package:kibisis/providers/algorand_provider.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
-import 'package:kibisis/utils/theme_extensions.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shimmer/shimmer.dart';
 
-class ActivityTab extends ConsumerWidget {
+class ActivityTab extends ConsumerStatefulWidget {
   const ActivityTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final RefreshController refreshController =
-        RefreshController(initialRefresh: false);
+  ConsumerState<ActivityTab> createState() => _ActivityTabState();
+}
 
-    final publicAddress = ref.watch(accountProvider
-        .select((account) => account.account?.publicAddress ?? ''));
-    final transactionsAsyncValue = ref.watch(transactionsProvider);
+class _ActivityTabState extends ConsumerState<ActivityTab> {
+  static const _pageSize = 5; // Set page size as an integer
+  final PagingController<int, TransactionItem> _pagingController =
+      PagingController(firstPageKey: 0); // pageKey is an integer
 
-    return CustomPullToRefresh(
-      refreshController: refreshController,
-      onRefresh: () async {
-        await ref
-            .read(transactionsProvider.notifier)
-            .getTransactions(publicAddress);
-        refreshController.refreshCompleted();
-      },
-      child: transactionsAsyncValue.when(
-        data: (transactions) {
-          if (transactions.isEmpty) {
-            return _buildEmptyTransactions(context, ref);
-          }
-          return _buildTransactionsList(
-              context, ref, transactions, publicAddress);
-        },
-        loading: () => _buildLoadingTransactions(context),
-        error: (error, stack) => _buildEmptyTransactions(context, ref),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey); // Fetch the next page when needed
+    });
   }
 
-  Widget _buildEmptyTransactions(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 72,
-            height: 72,
-            child: SvgPicture.asset('assets/images/empty.svg',
-                semanticsLabel: 'No Assets Found'),
-          ),
-          const SizedBox(height: kScreenPadding / 2),
-          Text('No Transactions Found', style: context.textTheme.titleMedium),
-          const SizedBox(height: kScreenPadding / 2),
-          Text(
-            'You have not made any transactions.',
-            style: context.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: kScreenPadding),
-          TextButton(
-            onPressed: () {
-              invalidateProviders(ref);
-            },
-            child: const Text('Retry'),
-          ),
-          const SizedBox(height: kScreenPadding),
-        ],
-      ),
-    );
-  }
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final publicAddress =
+          ref.read(accountProvider).account?.publicAddress ?? '';
 
-  Widget _buildLoadingTransactions(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: context.colorScheme.background,
-      highlightColor: Colors.grey.shade100,
-      period: const Duration(milliseconds: 2000),
-      child: ListView.separated(
-        itemCount: 3,
-        itemBuilder: (context, index) => ListTile(
-          leading: const CircleAvatar(),
-          title: Container(
-              width: double.infinity,
-              height: kScreenPadding,
-              color: context.colorScheme.surface),
-          subtitle: Container(
-              width: double.infinity,
-              height: kScreenPadding,
-              color: context.colorScheme.surface),
-        ),
-        separatorBuilder: (BuildContext context, int index) {
-          return const SizedBox(height: kScreenPadding / 2);
-        },
-      ),
-    );
-  }
+      // Fetch the paginated transactions from the provider
+      final newItems = await ref
+          .read(transactionsProvider.notifier)
+          .getPaginatedTransactions(publicAddress, pageKey,
+              _pageSize); // Ensure the limit is an integer
 
-  Future<List<TransactionItem>> _buildTransactionItems(
-      List<Transaction> transactions,
-      String publicAddress,
-      WidgetRef ref) async {
-    final transactionItems = <TransactionItem>[];
-
-    for (final transaction in transactions) {
-      final isOutgoing = transaction.sender == publicAddress;
-      final otherPartyAddress = isOutgoing
-          ? transaction.paymentTransaction?.receiver.toString() ?? ''
-          : transaction.sender;
-      final amountInAlgos = transaction.paymentTransaction != null
-          ? Algo.fromMicroAlgos(transaction.paymentTransaction!.amount)
-          : 0.0;
-      final note = utf8.decode(base64.decode(transaction.note ?? ''));
-      final type = transaction.type;
-      final assetId = transaction.assetTransferTransaction?.assetId;
-      final assetAmount = transaction.assetTransferTransaction?.amount ?? 0;
-      final otherPartyAddressAsset =
-          transaction.assetTransferTransaction?.receiver ?? 'Unknown';
-
-      switch (type) {
-        case 'axfer':
-          final asset = await ref
-              .read(algorandServiceProvider)
-              .getAssetById(assetId ?? -1);
-          transactionItems.add(TransactionItem(
-            transaction: transaction,
-            isOutgoing: isOutgoing,
-            otherPartyAddress: otherPartyAddressAsset,
-            note: note,
-            amount: assetAmount.toString(),
-            type: type,
-            assetName: asset.params.name ?? '',
-          ));
-          break;
-
-        case 'pay':
-          transactionItems.add(TransactionItem(
-            transaction: transaction,
-            isOutgoing: isOutgoing,
-            otherPartyAddress: otherPartyAddress,
-            amount: amountInAlgos.toString(),
-            note: note,
-            type: type,
-          ));
-          break;
-
-        case 'appl':
-          transactionItems.add(TransactionItem(
-            transaction: transaction,
-            isOutgoing: isOutgoing,
-            otherPartyAddress: otherPartyAddress,
-            amount: isOutgoing ? 'Outgoing' : 'Incoming',
-            note: note,
-            type: type,
-            assetName: 'App Interaction',
-          ));
-          break;
-
-        default:
-          debugPrint('Unknown transaction type: $type');
-          break;
+      final isLastPage = newItems.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + newItems.length; // pageKey is an int
+        _pagingController.appendPage(newItems, nextPageKey);
       }
+    } catch (error) {
+      _pagingController.error = error;
     }
-
-    return transactionItems;
   }
 
-  Widget _buildTransactionsList(BuildContext context, WidgetRef ref,
-      List<Transaction> transactions, String publicAddress) {
-    return FutureBuilder<List<TransactionItem>>(
-      future: _buildTransactionItems(transactions, publicAddress, ref),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildLoadingTransactions(context);
-        } else if (snapshot.hasError) {
-          return const Center(
-              child: Text('Failed to load transaction details'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return _buildEmptyTransactions(context, ref);
-        } else {
-          return ListView.separated(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              return snapshot.data![index];
-            },
-            separatorBuilder: (context, index) => const SizedBox(
-              height: kScreenPadding / 2,
-            ),
-          );
-        }
-      },
+  @override
+  void dispose() {
+    _pagingController.dispose(); // Dispose the paging controller
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PagedListView<int, TransactionItem>(
+      pagingController: _pagingController,
+      builderDelegate: PagedChildBuilderDelegate<TransactionItem>(
+        itemBuilder: (context, item, index) => item,
+        firstPageErrorIndicatorBuilder: (context) => const Center(
+          child: Text('Failed to load transactions. Please try again.'),
+        ),
+        newPageErrorIndicatorBuilder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+        firstPageProgressIndicatorBuilder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:algorand_dart/algorand_dart.dart';
-
-enum AssetType { standard, arc200 }
+import 'package:kibisis/constants/constants.dart';
 
 class CombinedAsset {
   final int index;
@@ -9,6 +8,8 @@ class CombinedAsset {
   final bool? deleted;
   final int? destroyedAtRound;
   final AssetType assetType;
+  final int amount;
+  final bool isFrozen;
 
   CombinedAsset({
     required this.index,
@@ -17,6 +18,8 @@ class CombinedAsset {
     this.deleted,
     this.destroyedAtRound,
     required this.assetType,
+    required this.amount,
+    required this.isFrozen,
   });
 }
 

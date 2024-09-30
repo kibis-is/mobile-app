@@ -5,12 +5,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/setup_account/add_account/add_account_body.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_selection.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
+import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AccountListScreen extends ConsumerStatefulWidget {
@@ -21,55 +22,50 @@ class AccountListScreen extends ConsumerStatefulWidget {
   AccountListScreenState createState() => AccountListScreenState();
 }
 
-class AccountListScreenState extends ConsumerState<AccountListScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    );
-
-    _controller.forward(); // Start the animation when the widget appears
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class AccountListScreenState extends ConsumerState<AccountListScreen> {
+  Map<String, dynamic>? selectedAccount;
 
   @override
   Widget build(BuildContext context) {
+    final mediaQueryHelper = MediaQueryHelper(context);
     final accountsListState = ref.watch(accountsListProvider);
+    final flex = mediaQueryHelper.getDynamicFlex();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Account'),
         automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: _buildBody(context, accountsListState),
-      ),
-      floatingActionButton: ScaleTransition(
-        scale: _animation,
-        child: FloatingActionButton(
-          onPressed: _navigateToAddAccount,
-          backgroundColor: context.colorScheme.secondary,
-          foregroundColor: Colors.white,
-          child: const Icon(AppIcons.add),
-        ),
-      ),
+      body: mediaQueryHelper.isWideScreen()
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: flex[0],
+                  child: Padding(
+                    padding: const EdgeInsets.all(kScreenPadding),
+                    child: _buildBody(context, accountsListState),
+                  ),
+                ),
+                Expanded(
+                  flex: flex[1],
+                  child: const AddAccountBody(
+                    accountFlow: AccountFlow.addNew,
+                  ),
+                ),
+              ],
+            )
+          : Padding(
+              padding: const EdgeInsets.all(kScreenPadding),
+              child: _buildBody(context, accountsListState),
+            ),
+      floatingActionButton: mediaQueryHelper.isWideScreen()
+          ? null
+          : FloatingActionButton(
+              onPressed: _navigateToAddAccount,
+              backgroundColor: context.colorScheme.secondary,
+              child: const Icon(AppIcons.add),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
@@ -88,32 +84,22 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
 
   Widget _buildAccountsList(
       BuildContext context, List<Map<String, dynamic>> accounts) {
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.only(
-                bottom: kBottomNavigationBarHeight), // Add padding here
-            itemCount: accounts.length,
-            itemBuilder: (context, index) {
-              final account = accounts[index];
-              final accountName = account['accountName'] ?? 'Unnamed Account';
-              final publicKey = account['publicKey'] ?? 'No Public Key';
-
-              return _buildAccountItem(
-                  context, account, accountName, publicKey);
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const SizedBox(height: kScreenPadding);
-            },
-          ),
-        ),
-      ],
+    return ListView.separated(
+      padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+      itemCount: accounts.length,
+      itemBuilder: (context, index) {
+        final account = accounts[index];
+        return _buildAccountItem(context, account);
+      },
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: kScreenPadding),
     );
   }
 
-  Widget _buildAccountItem(BuildContext context, Map<String, dynamic> account,
-      String accountName, String publicKey) {
+  Widget _buildAccountItem(BuildContext context, Map<String, dynamic> account) {
+    final accountName = account['accountName'] ?? 'Unnamed Account';
+    final publicKey = account['publicKey'] ?? 'No Public Key';
+
     return InkWell(
       child: Material(
         elevation: 6.0,
@@ -152,12 +138,10 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
               const SizedBox(height: kScreenPadding / 2),
               _buildLogo(),
               const SizedBox(height: kScreenPadding / 2),
-              _buildAccountName(context, accountName),
+              _buildAccountName(context, accountName, account['accountId']!),
               const SizedBox(height: kScreenPadding / 2),
               _buildPublicKey(context, publicKey),
-              const SizedBox(
-                height: kScreenPadding,
-              ),
+              const SizedBox(height: kScreenPadding),
             ],
           ),
         ),
@@ -169,7 +153,6 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
         final accountHandler = AccountHandler(ref);
 
         accountHandler.handleAccountSelection(account['accountId']).then((_) {
-          invalidateProviders(ref);
           GoRouter.of(context).go('/');
         }).catchError((e) {
           debugPrint('Error handling account selection: ${e.toString()}');
@@ -187,12 +170,9 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
       alignment: Alignment.centerRight,
       child: IconButton(
         icon: AppIcons.icon(
-            icon: AppIcons.edit,
-            size: AppIcons.medium,
-            color: ColorPalette.darkThemeAntiflashWhite),
-        onPressed: () {
-          _navigateToEditAccount(accountId, accountName);
-        },
+            icon: AppIcons.edit, size: AppIcons.medium, color: Colors.white),
+        onPressed: () =>
+            _navigateToEditAccount(context, accountId, accountName),
       ),
     );
   }
@@ -226,28 +206,32 @@ class AccountListScreenState extends ConsumerState<AccountListScreen>
     );
   }
 
-  Widget _buildAccountName(BuildContext context, String accountName) {
-    return EllipsizedText(accountName,
-        style: context.textTheme.titleLarge
-            ?.copyWith(fontWeight: FontWeight.bold)
-            .copyWith(
-              color: ColorPalette.darkThemeAntiflashWhite,
-            ));
+  Widget _buildAccountName(
+      BuildContext context, String accountName, String accountId) {
+    return Hero(
+      tag: 'account-name-$accountId',
+      child: EllipsizedText(accountName,
+          style: context.textTheme.titleLarge
+              ?.copyWith(fontWeight: FontWeight.bold)
+              .copyWith(color: Colors.white)),
+    );
   }
 
   Widget _buildPublicKey(BuildContext context, String publicKey) {
-    return EllipsizedText(
-      type: EllipsisType.middle,
-      ellipsis: '...',
-      publicKey,
-      style: context.textTheme.titleSmall?.copyWith(
-        fontWeight: FontWeight.bold,
-        color: ColorPalette.darkThemeAntiflashWhite,
+    return Hero(
+      tag: publicKey,
+      child: EllipsizedText(
+        type: EllipsisType.middle,
+        ellipsis: '...',
+        publicKey,
+        style: context.textTheme.titleSmall
+            ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
 
-  void _navigateToEditAccount(String accountId, String accountName) {
+  void _navigateToEditAccount(
+      BuildContext context, String accountId, String accountName) {
     GoRouter.of(context)
         .push('/editAccount/$accountId', extra: {'accountName': accountName});
   }

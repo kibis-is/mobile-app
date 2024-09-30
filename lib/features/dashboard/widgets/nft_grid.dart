@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/models/nft.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/routing/named_routes.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 enum NftViewType { grid, card }
@@ -12,33 +11,38 @@ enum NftViewType { grid, card }
 class NftGridOrCard extends StatelessWidget {
   final List<NFT> nfts;
   final NftViewType viewType;
+  final ScrollController controller;
 
   const NftGridOrCard({
     super.key,
     required this.nfts,
     required this.viewType,
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
-          childAspectRatio: 1.0,
-        ),
-        itemCount: nfts.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          final nft = nfts[index];
-          return NftCard(
-            nft: nft,
-            viewType: viewType,
-            index: index,
-          );
-        },
+    final isWideScreen = MediaQuery.of(context).size.width > 600;
+
+    final crossAxisCount =
+        viewType == NftViewType.grid ? (isWideScreen ? 5 : 3) : 1;
+    return GridView.builder(
+      controller: controller,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        childAspectRatio: 1.0,
       ),
+      itemCount: nfts.length,
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      itemBuilder: (context, index) {
+        final nft = nfts[index];
+        return NftCard(
+          nft: nft,
+          viewType: NftViewType.card,
+          index: index,
+        );
+      },
     );
   }
 }
@@ -64,16 +68,10 @@ class NftCard extends StatelessWidget {
           pathParameters: {'index': index.toString()},
         );
       },
-      child: Card(
+      child: Container(
         margin: viewType == NftViewType.grid
             ? const EdgeInsets.all(0)
             : const EdgeInsets.only(bottom: kScreenPadding / 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: viewType == NftViewType.grid
-              ? BorderRadius.circular(0)
-              : BorderRadius.circular(kWidgetRadius),
-        ),
-        clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
             NftImage(imageUrl: nft.imageUrl),
@@ -149,7 +147,7 @@ class NftDetails extends StatelessWidget {
             name,
             style: context.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: ColorPalette.darkThemeWhite,
+              color: Colors.white,
               shadows: const [
                 Shadow(
                   offset: Offset(1.0, 1.0),

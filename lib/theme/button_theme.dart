@@ -16,16 +16,16 @@ ButtonThemeData buttonTheme({
 
 ButtonThemeData buttonThemeLight() {
   return buttonTheme(
-    buttonColor: ColorPalette.lightThemeMauveine,
-    hoverColor: ColorPalette.lightThemePurple,
-    splashColor: ColorPalette.lightThemePurple,
+    buttonColor: ColorPalette.lightThemePrimary,
+    hoverColor: ColorPalette.lightThemePrimary,
+    splashColor: ColorPalette.lightThemePrimary,
   );
 }
 
 ButtonThemeData buttonThemeDark() {
   return buttonTheme(
-    buttonColor: ColorPalette.darkThemeMauve,
-    hoverColor: ColorPalette.darkThemeHeliotrope,
-    splashColor: ColorPalette.darkThemeHeliotrope,
+    buttonColor: ColorPalette.darkThemePrimary,
+    hoverColor: ColorPalette.darkThemePrimary,
+    splashColor: ColorPalette.darkThemePrimary,
   );
 }

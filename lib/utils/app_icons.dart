@@ -50,6 +50,18 @@ class AppIcons {
   static const IconData arrowBackAndroid = Icons.arrow_back_rounded;
   static const IconData menu = Icons.menu_rounded;
   static const IconData arc200 = Icons.summarize_rounded;
+  static const IconData disconnect = Icons.power_off_rounded;
+  static const IconData connect = Icons.power_rounded;
+  static const IconData contacts = Icons.contacts_rounded;
+  static const IconData nft = Icons.image;
+  static const IconData key = Icons.key_rounded;
+  static const IconData watch = Icons.remove_red_eye_rounded;
+  static const IconData unitName = Icons.label_rounded;
+  static const IconData applicationId = Icons.fingerprint_rounded;
+  static const IconData assetType = Icons.category_rounded;
+  static const IconData decimals = Icons.looks_one_rounded;
+  static const IconData totalSupply = Icons.pie_chart_rounded;
+  static const IconData download = Icons.download_rounded;
 
   static const String svgBasePath = 'assets/images/';
 
@@ -58,6 +70,8 @@ class AppIcons {
   static const String algorandIcon = 'algorand-logo';
 
   static Color? defaultColor;
+
+  static IconData? activity;
 
   static void initializeDefaultColor(BuildContext context) {
     defaultColor = Theme.of(context).colorScheme.onSurface;

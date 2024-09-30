@@ -1,42 +1,18 @@
 class NumberShortener {
-  static String formatBalance(double number) {
-    String formattedNumber;
-
-    if (number >= 1e12) {
-      formattedNumber = '${(number / 1e12).toStringAsFixed(2)}T';
-    } else if (number >= 1e9) {
-      formattedNumber = '${(number / 1e9).toStringAsFixed(2)}B';
-    } else if (number >= 1e6) {
-      formattedNumber = '${(number / 1e6).toStringAsFixed(2)}M';
-    } else if (number >= 1e3) {
-      formattedNumber = '${(number / 1e3).toStringAsFixed(2)}K';
-    } else {
-      formattedNumber = number.toStringAsFixed(2);
+  static String shortenNumber(double number) {
+    if (number < 1000000) {
+      return number % 1 == 0 ? number.toStringAsFixed(0) : number.toStringAsFixed(2);
     }
 
-    if (formattedNumber.endsWith('.00')) {
-      formattedNumber =
-          formattedNumber.substring(0, formattedNumber.length - 3);
+    const suffixes = ['M', 'B', 'T'];
+    int suffixIndex = -1;
+
+    while (number >= 1000000 && suffixIndex < suffixes.length - 1) {
+      number /= 1000;
+      suffixIndex++;
     }
 
-    return formattedNumber;
-  }
-
-  static String formatAssetTotal(int number) {
-    String formattedNumber;
-
-    if (number >= 1e12) {
-      formattedNumber = '${number ~/ 1e12}T';
-    } else if (number >= 1e9) {
-      formattedNumber = '${number ~/ 1e9}B';
-    } else if (number >= 1e6) {
-      formattedNumber = '${number ~/ 1e6}M';
-    } else if (number >= 1e3) {
-      formattedNumber = '${number ~/ 1e3}K';
-    } else {
-      formattedNumber = number.toString();
-    }
-
-    return formattedNumber;
+    // Ensure only 2 decimal places max
+    return '${number.toStringAsFixed(number % 1 == 0 ? 0 : 2)}${suffixes[suffixIndex]}';
   }
 }

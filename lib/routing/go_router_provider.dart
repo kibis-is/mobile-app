@@ -6,6 +6,7 @@ import 'package:kibisis/features/add_asset/add_asset_screen.dart';
 import 'package:kibisis/features/dashboard/dashboard_screen.dart';
 import 'package:kibisis/features/dashboard/account_list_screen.dart';
 import 'package:kibisis/features/error/error_screen.dart';
+import 'package:kibisis/features/setup_account/add_watch/add_watch_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_private_key/import_via_private_key.dart';
 import 'package:kibisis/features/view_nft/view_nft_screen.dart';
 import 'package:kibisis/features/pin_pad/pin_pad_screen.dart';
@@ -58,14 +59,14 @@ class CustomNavigatorObserver extends NavigatorObserver {
 
   CustomNavigatorObserver(this.ref);
 
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    super.didPop(route, previousRoute);
-    Future.delayed(Duration.zero, () {
-      ref.read(loadingProvider.notifier).stopLoading();
-      debugPrint('Screen popped, stopped loading!');
-    });
-  }
+  // @override
+  // void didPop(Route route, Route? previousRoute) {
+  //   super.didPop(route, previousRoute);
+  //   Future.delayed(Duration.zero, () {
+  //     ref.read(loadingProvider.notifier).stopLoading();
+  //     debugPrint('Screen popped, stopped loading!');
+  //   });
+  // }
 }
 
 class RouterNotifier extends ChangeNotifier {
@@ -122,10 +123,7 @@ class RouterNotifier extends ChangeNotifier {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        ref.read(loadingProvider.notifier).stopLoading();
-        debugPrint('Navigation logic completed, stopped loading!');
-      });
+      ref.read(loadingProvider.notifier).stopLoading();
     });
 
     return redirectPath;
@@ -215,6 +213,17 @@ class RouterNotifier extends ChangeNotifier {
                     state);
               },
             ),
+            GoRoute(
+              name: setupAddWatchAccountRouteName,
+              path: setupAddWatchAccountRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const AddWatchScreen(
+                      accountFlow: AccountFlow.setup,
+                    ),
+                    state);
+              },
+            ),
           ],
         ),
         GoRoute(
@@ -276,6 +285,17 @@ class RouterNotifier extends ChangeNotifier {
               pageBuilder: (context, state) {
                 return defaultTransitionPage(
                     const ImportPrivateKeyScreen(
+                      accountFlow: AccountFlow.addNew,
+                    ),
+                    state);
+              },
+            ),
+            GoRoute(
+              name: mainAddWatchAccountRouteName,
+              path: mainAddWatchAccountRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const AddWatchScreen(
                       accountFlow: AccountFlow.addNew,
                     ),
                     state);
@@ -362,11 +382,16 @@ class RouterNotifier extends ChangeNotifier {
                 final mode = state.pathParameters['mode'] == 'payment'
                     ? SendTransactionScreenMode.payment
                     : SendTransactionScreenMode.asset;
+                final extra = state.extra as Map<String, dynamic>?;
+                final address = extra?['address'] as String?;
+
                 return defaultTransitionPage(
-                    SendTransactionScreen(
-                      mode: mode,
-                    ),
-                    state);
+                  SendTransactionScreen(
+                    mode: mode,
+                    address: address,
+                  ),
+                  state,
+                );
               },
               routes: [
                 GoRoute(
@@ -471,44 +496,43 @@ class RouterNotifier extends ChangeNotifier {
         ),
       ];
 
-  CustomTransitionPage defaultTransitionPage(
-      Widget child, GoRouterState state) {
-    return CustomTransitionPage(
-      key: state.pageKey,
-      child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-          child,
-    );
-  }
-
-  CustomTransitionPage<void> fadeTransitionPage(
+  // CustomTransitionPage defaultTransitionPage(
+  //     Widget child, GoRouterState state) {
+  //   return CustomTransitionPage(
+  //     key: state.pageKey,
+  //     child: child,
+  //     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+  //         child,
+  //   );
+  // }
+  CustomTransitionPage<void> defaultTransitionPage(
     Widget child,
     GoRouterState state, {
-    Duration duration = const Duration(milliseconds: 300),
+    Duration duration = const Duration(milliseconds: 200),
   }) {
     return CustomTransitionPage<void>(
       key: state.pageKey,
       child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: Stack(
-            children: [
-              // Slight white overlay to give the effect
-              FadeTransition(
-                opacity: animation.drive(
-                  Tween<double>(begin: 0.3, end: 0.0).chain(
-                    CurveTween(curve: Curves.easeOut),
-                  ),
-                ),
+      transitionsBuilder:
+          (context, animation, secondaryAnimation, Widget child) {
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            if (secondaryAnimation.value > 0) {
+              return Opacity(
+                opacity: 1 - secondaryAnimation.value,
                 child: Container(
                   color: Colors.white,
+                  child: child,
                 ),
-              ),
-              // The actual child content fading in
-              child,
-            ],
-          ),
+              );
+            }
+            return Opacity(
+              opacity: animation.value,
+              child: child,
+            );
+          },
+          child: child,
         );
       },
       transitionDuration: duration,

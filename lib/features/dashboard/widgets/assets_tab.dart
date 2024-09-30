@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
+import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/providers/asset_filter_provider.dart';
 import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
+import 'package:kibisis/features/view_asset/view_asset_screen.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/active_asset_provider.dart';
+import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/media_query_helper.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
-import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/providers/assets_provider.dart';
-import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
-import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 final sortingProvider = StateProvider<Sorting>((ref) => Sorting.assetId);
@@ -31,98 +34,155 @@ class AssetsTab extends ConsumerStatefulWidget {
 
 class _AssetsTabState extends ConsumerState<AssetsTab> {
   late final RefreshController _refreshController;
-  final ScrollController _scrollController = ScrollController();
-  final TextEditingController filterController = TextEditingController();
-
-  void _onRefresh() {
-    invalidateProviders(ref);
-    ref.read(assetsProvider.notifier).fetchAssets();
-    _refreshController.refreshCompleted();
-  }
+  CombinedAsset? _selectedAsset;
+  late TextEditingController filterController;
 
   @override
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
+
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      filterController = TextEditingController(
+        text: ref.read(assetsProvider(publicAddress).notifier).filterText,
+      );
+    } else {
+      filterController = TextEditingController(text: '');
+    }
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
-    filterController.dispose();
     _refreshController.dispose();
+    filterController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final assetsAsync = ref.watch(assetsProvider);
+    final publicAddress = ref.watch(accountProvider).account?.publicAddress;
+    final assetsAsync = ref.watch(assetsProvider(publicAddress));
 
-    return CustomScrollView(
-      controller: _scrollController,
-      slivers: [
-        SliverAppBar(
-          titleSpacing: 0,
-          floating: true,
-          snap: true,
-          title: _buildSearchBar(context),
-        ),
-        SliverFillRemaining(
-          child: CustomPullToRefresh(
-            refreshController: _refreshController,
-            onRefresh: _onRefresh,
-            child: assetsAsync.when(
-              data: (assets) => assets.isEmpty
-                  ? _buildEmptyAssets(context, ref)
-                  : _buildAssetsList(context, assets),
-              loading: () => _buildLoadingAssets(context),
-              error: (error, stack) => _buildEmptyAssets(context, ref),
+    final mediaQueryHelper = MediaQueryHelper(context);
+    final flex = mediaQueryHelper.getDynamicFlex();
+    final assetsFilterController =
+        ref.watch(assetsFilterControllerProvider.notifier);
+
+    return mediaQueryHelper.isWideScreen()
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: flex[0],
+                child: Column(
+                  children: [
+                    _buildSearchBar(assetsFilterController),
+                    Expanded(
+                      child: CustomPullToRefresh(
+                        refreshController: _refreshController,
+                        onRefresh: _onRefresh,
+                        child: assetsAsync.when(
+                          data: (assets) => _buildAssetsList(assets),
+                          loading: () => _buildLoadingAssets(),
+                          error: (error, stack) => _buildEmptyAssets(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: flex[1],
+                child: _selectedAsset != null
+                    ? ViewAssetScreen(
+                        asset: _selectedAsset!,
+                        isPanelMode: true,
+                      )
+                    : const Center(
+                        child: Text('Select an asset to view details'),
+                      ),
+              ),
+            ],
+          )
+        : assetsAsync.when(
+            data: (assets) => _buildAssetsList(assets),
+            loading: () => _buildLoadingAssets(),
+            error: (error, stack) =>
+                const Center(child: Text('Error loading assets')),
+          );
+  }
+
+  Widget _buildSearchBar(AssetsFilterController assetsFilterController) {
+    return Padding(
+      padding: const EdgeInsets.only(
+          left: kScreenPadding / 2,
+          right: kScreenPadding / 2,
+          top: kScreenPadding / 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            color: context.colorScheme.surface,
+            onPressed: _showFilterDialog,
+            icon: Icon(
+              AppIcons.importAccount,
+              color: context.colorScheme.onBackground,
+              size: AppIcons.medium,
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: CustomTextField(
+              controller: filterController,
+              labelText: 'Filter',
+              onChanged: (value) {
+                final publicAddress =
+                    ref.read(accountProvider).account?.publicAddress;
+
+                if (publicAddress != null && publicAddress.isNotEmpty) {
+                  ref
+                      .read(assetsProvider(publicAddress).notifier)
+                      .setFilter(value);
+                } else {
+                  debugPrint('Public address is not available');
+                }
+              },
+              autoCorrect: false,
+              suffixIcon:
+                  filterController.text.isNotEmpty ? AppIcons.cross : null,
+              leadingIcon: AppIcons.search,
+              onTrailingPressed: () {
+                filterController.clear();
+                final publicAddress =
+                    ref.read(accountProvider).account?.publicAddress;
+
+                if (publicAddress != null && publicAddress.isNotEmpty) {
+                  ref
+                      .read(assetsProvider(publicAddress).notifier)
+                      .setFilter('');
+                } else {
+                  debugPrint('Public address is not available');
+                }
+              },
+              isSmall: true,
+            ),
+          ),
+          IconButton(
+            onPressed: () => context.goNamed(addAssetRouteName),
+            icon: const Icon(
+              AppIcons.add,
+              size: AppIcons.medium,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildSearchBar(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          color: context.colorScheme.surface,
-          onPressed: _showFilterDialog,
-          icon: Icon(
-            AppIcons.importAccount,
-            color: context.colorScheme.onBackground,
-            size: AppIcons.medium,
-          ),
-        ),
-        const SizedBox(width: kScreenPadding / 2),
-        Expanded(
-          child: CustomTextField(
-            controller: filterController,
-            labelText: 'Filter',
-            onChanged: (value) {
-              ref.read(assetsProvider.notifier).setFilter(value);
-            },
-            autoCorrect: false,
-            suffixIcon: AppIcons.cross,
-            leadingIcon: AppIcons.search,
-            onTrailingPressed: () => filterController.clear(),
-            isSmall: true,
-          ),
-        ),
-        const SizedBox(width: kScreenPadding / 2),
-        IconButton(
-          onPressed: () => context.goNamed(addAssetRouteName),
-          icon: Icon(
-            AppIcons.add,
-            color: context.colorScheme.primary,
-            size: AppIcons.medium,
-          ),
-        ),
-      ],
-    );
+  void _onRefresh() {
+    ref.invalidate(assetsProvider);
+    _refreshController.refreshCompleted();
   }
 
   void _showFilterDialog() {
@@ -142,6 +202,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           final showFrozen = ref.watch(showFrozenAssetsProvider);
           return CheckboxListTile(
             tileColor: Colors.transparent,
+            checkboxShape: const CircleBorder(),
             selectedTileColor: Colors.transparent,
             title: const Text("Show Frozen Assets"),
             value: showFrozen,
@@ -160,61 +221,125 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   void _sortAssets(Sorting sorting) {
-    final assetsNotifier = ref.read(assetsProvider.notifier);
-    assetsNotifier.sortAssets(sorting);
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      final assetsNotifier = ref.read(assetsProvider(publicAddress).notifier);
+      assetsNotifier.sortAssets(sorting);
+    } else {
+      // Handle the case where publicAddress is null or empty
+      debugPrint('Public address is not available');
+    }
   }
 
   void _filterAssets(bool showFrozen) {
-    ref.read(assetsProvider.notifier).setShowFrozen(showFrozen);
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      ref
+          .read(assetsProvider(publicAddress).notifier)
+          .setShowFrozen(showFrozen);
+    } else {
+      // Handle the case where publicAddress is null or empty
+      debugPrint('Public address is not available');
+    }
   }
 
-  Widget _buildAssetsList(BuildContext context, List<CombinedAsset> assets) {
-    return ListView.separated(
-      itemCount: assets.length + 1,
-      shrinkWrap: true,
+  Widget _buildAssetsList(List<CombinedAsset> assets) {
+    if (assets.isEmpty) {
+      return _buildEmptyAssets();
+    }
+
+    return ListView.builder(
+      itemCount: assets.length,
       itemBuilder: (context, index) {
-        if (index == assets.length) {
-          return const SizedBox(height: 100);
-        }
-        return AssetListItem(asset: assets[index], mode: AssetScreenMode.view);
+        final asset = assets[index];
+        final isWideScreen = MediaQuery.of(context).size.width > 600;
+
+        return AssetListItem(
+          asset: asset,
+          onPressed: () {
+            debugPrint(isWideScreen ? 'Landscape mode' : 'Portrait mode');
+
+            if (isWideScreen) {
+              setState(() {
+                _selectedAsset = asset;
+              });
+            } else {
+              ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
+              context.goNamed(
+                viewAssetRouteName,
+                pathParameters: {'mode': 'view'},
+                extra: asset,
+              );
+            }
+          },
+        );
       },
-      separatorBuilder: (_, __) => const SizedBox(height: kScreenPadding / 2),
     );
   }
 
-  Widget _buildEmptyAssets(BuildContext context, WidgetRef ref) {
+  Widget _buildEmptyAssets() {
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    bool isFilterActive = false;
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      isFilterActive = ref
+          .read(assetsProvider(publicAddress).notifier)
+          .filterText
+          .isNotEmpty;
+    } else {
+      debugPrint('Public address is not available');
+    }
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 72,
-            height: 72,
-            child: SvgPicture.asset('assets/images/empty.svg',
-                semanticsLabel: 'No Assets Found'),
+          Text(
+            isFilterActive
+                ? 'No Assets Found for the Filter'
+                : 'No Assets Found',
+            style: context.textTheme.titleSmall,
           ),
           const SizedBox(height: kScreenPadding / 2),
-          Text('No Assets Found', style: context.textTheme.titleMedium),
-          const SizedBox(height: kScreenPadding / 2),
-          Text('You have not added any assets.',
-              style: context.textTheme.bodyMedium, textAlign: TextAlign.center),
+          Text(
+            isFilterActive
+                ? 'Try clearing the filter to see all assets.'
+                : 'You have not added any assets.',
+            style: context.textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: kScreenPadding),
           TextButton(
-            onPressed: () {
-              invalidateProviders(ref);
-            },
-            child: const Text('Retry'),
+            onPressed: isFilterActive
+                ? () {
+                    final publicAddress =
+                        ref.read(accountProvider).account?.publicAddress;
+                    ref
+                        .read(assetsProvider(publicAddress).notifier)
+                        .setFilter('');
+                    if (publicAddress != null && publicAddress.isNotEmpty) {
+                      ref
+                          .read(assetsProvider(publicAddress).notifier)
+                          .setFilter('');
+                      filterController.clear();
+                    } else {
+                      debugPrint('Public address is not available');
+                    }
+                  }
+                : _onRefresh,
+            child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
           ),
-          const SizedBox(height: kScreenPadding),
         ],
       ),
     );
   }
 
-  Widget _buildLoadingAssets(BuildContext context) {
+  Widget _buildLoadingAssets() {
     return Shimmer.fromColors(
       baseColor: context.colorScheme.background,
-      highlightColor: Colors.grey.shade100,
+      highlightColor: context.colorScheme.onSurfaceVariant,
       period: const Duration(milliseconds: 2000),
       child: ListView.separated(
         itemCount: 3,
@@ -234,10 +359,12 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       ),
     );
   }
-}
 
-List<SelectItem> sortOptions = [
-  SelectItem(
-      name: "Sort by Index", value: "index", icon: Icons.format_list_numbered),
-  SelectItem(name: "Sort by Name", value: "name", icon: Icons.sort_by_alpha),
-];
+  List<SelectItem> sortOptions = [
+    SelectItem(
+        name: "Sort by Index",
+        value: "index",
+        icon: Icons.format_list_numbered),
+    SelectItem(name: "Sort by Name", value: "name", icon: Icons.sort_by_alpha),
+  ];
+}

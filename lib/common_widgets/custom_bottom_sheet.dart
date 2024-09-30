@@ -1,3 +1,4 @@
+import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -57,10 +58,7 @@ Future<dynamic> customBottomSheet({
 Widget _buildHeader(BuildContext context, String header) {
   return Padding(
     padding: const EdgeInsets.all(kSizedBoxSpacing),
-    child: Text(header,
-        style: context.textTheme.titleMedium?.copyWith(
-          color: context.colorScheme.onSurface,
-        )),
+    child: EllipsizedText(header, style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
   );
 }
 
@@ -98,7 +96,7 @@ Widget _buildListItem(
           AppIcons.icon(
             icon: item.icon,
             size: kSizedBoxSpacing * 2,
-            color: context.colorScheme.onBackground,
+            color: context.colorScheme.primary,
           ),
           const SizedBox(width: kSizedBoxSpacing),
           Text(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/dashboard/providers/nft_filter_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/nft_grid.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/nft_provider.dart';
@@ -21,13 +22,27 @@ class NftTab extends ConsumerStatefulWidget {
 
 class NftTabState extends ConsumerState<NftTab> {
   late final RefreshController _refreshController;
-  final TextEditingController filterController = TextEditingController();
+  late TextEditingController filterController;
   NftViewType viewType = NftViewType.grid;
+  final ScrollController _scrollController = ScrollController();
+  bool isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
+    filterController = TextEditingController(
+      text: ref.read(nftNotifierProvider.notifier).filterText,
+    );
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 100 &&
+          !isLoadingMore) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          ref.read(nftNotifierProvider.notifier).loadMoreNFTs(limit: 2);
+        });
+      }
+    });
   }
 
   void _onRefresh() async {
@@ -35,7 +50,9 @@ class NftTabState extends ConsumerState<NftTab> {
     final publicAddress = ref.read(
         accountProvider.select((state) => state.account?.publicAddress ?? ''));
     if (publicAddress.isNotEmpty) {
-      await ref.read(nftNotifierProvider.notifier).fetchNFTs();
+      await ref
+          .read(nftNotifierProvider.notifier)
+          .fetchNFTs(isInitialLoad: true, limit: 2);
     }
     _refreshController.refreshCompleted();
   }
@@ -51,31 +68,34 @@ class NftTabState extends ConsumerState<NftTab> {
   void dispose() {
     _refreshController.dispose();
     filterController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final nftState = ref.watch(nftNotifierProvider);
+    ref.watch(nftFilterControllerProvider);
 
     return Column(
       children: [
-        _buildSearchBar(context),
+        const SizedBox(height: kScreenPadding / 2),
+        _buildSearchBar(),
         const SizedBox(height: kScreenPadding / 4),
         Expanded(
           child: CustomPullToRefresh(
             refreshController: _refreshController,
             onRefresh: _onRefresh,
-            child: CustomScrollView(
-              slivers: [
-                nftState.when(
-                  data: (nfts) => nfts.isEmpty
-                      ? _buildEmptyNfts(context)
-                      : NftGridOrCard(nfts: nfts, viewType: viewType),
-                  loading: () => _buildLoadingNfts(context),
-                  error: (error, stack) => _buildEmptyNfts(context),
-                ),
-              ],
+            child: nftState.when(
+              data: (nfts) => nfts.isEmpty
+                  ? _buildEmptyNfts()
+                  : NftGridOrCard(
+                      nfts: nfts,
+                      viewType: viewType,
+                      controller: _scrollController,
+                    ),
+              loading: () => _buildLoadingNfts(),
+              error: (error, stack) => _buildEmptyNfts(),
             ),
           ),
         ),
@@ -83,82 +103,95 @@ class NftTabState extends ConsumerState<NftTab> {
     );
   }
 
-  Widget _buildSearchBar(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          color: context.colorScheme.surface,
-          onPressed: _toggleNftView,
-          icon: Icon(
-            viewType == NftViewType.grid ? AppIcons.card : AppIcons.grid,
-            color: context.colorScheme.onBackground,
-            size: AppIcons.medium,
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            color: context.colorScheme.surface,
+            onPressed: _toggleNftView,
+            icon: Icon(
+              viewType == NftViewType.grid ? AppIcons.card : AppIcons.grid,
+              color: context.colorScheme.onBackground,
+              size: AppIcons.medium,
+            ),
           ),
-        ),
-        const SizedBox(width: kScreenPadding / 2),
-        Expanded(
-          child: CustomTextField(
-            controller: filterController,
-            labelText: 'Filter',
-            onChanged: (value) {
-              ref.read(nftNotifierProvider.notifier).setFilter(value);
-            },
-            autoCorrect: false,
-            suffixIcon: AppIcons.cross,
-            leadingIcon: AppIcons.search,
-            onTrailingPressed: () => filterController.clear(),
-            isSmall: true,
+          Expanded(
+            child: CustomTextField(
+              controller: filterController, // Use the member variable
+              labelText: 'Filter',
+              onChanged: (value) {
+                ref.read(nftNotifierProvider.notifier).setFilter(value);
+              },
+              autoCorrect: false,
+              suffixIcon:
+                  filterController.text.isNotEmpty ? AppIcons.cross : null,
+              leadingIcon: AppIcons.search,
+              onTrailingPressed: () {
+                filterController.clear();
+                ref.read(nftNotifierProvider.notifier).setFilter('');
+              },
+              isSmall: true,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildLoadingNfts(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
-          childAspectRatio: 1.0,
-          mainAxisSpacing: kScreenPadding / 2,
-          crossAxisSpacing: kScreenPadding / 2,
-        ),
-        itemCount: 12,
-        shrinkWrap: true, // Prevents unbounded height error
-        physics:
-            const NeverScrollableScrollPhysics(), // Parent handles scrolling
-        itemBuilder: (context, index) => Shimmer.fromColors(
-          baseColor: context.colorScheme.surface,
-          highlightColor: Colors.grey.shade100,
-          child: Container(
-            color: context.colorScheme.surface,
-          ),
+  Widget _buildLoadingNfts() {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: viewType == NftViewType.grid ? 3 : 1,
+        childAspectRatio: 1.0,
+      ),
+      itemCount: 12,
+      shrinkWrap: true, // Prevents unbounded height error
+      physics: const NeverScrollableScrollPhysics(), // Parent handles scrolling
+      itemBuilder: (context, index) => Shimmer.fromColors(
+        baseColor: context.colorScheme.surface,
+        highlightColor: context.colorScheme.onSurfaceVariant,
+        child: Container(
+          color: context.colorScheme.surface,
         ),
       ),
     );
   }
 
-  Widget _buildEmptyNfts(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width / 4,
-                maxHeight: MediaQuery.of(context).size.height / 4,
-              ),
-              child: SvgPicture.asset(
-                'assets/images/empty.svg',
-                semanticsLabel: 'No NFTs Found',
-              ),
-            ),
-            const SizedBox(height: kScreenPadding / 2),
-            Text('No NFTs Found', style: context.textTheme.titleMedium),
-          ],
-        ),
+  Widget _buildEmptyNfts() {
+    final isFilterActive =
+        ref.read(nftNotifierProvider.notifier).filterText.isNotEmpty;
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            isFilterActive ? 'No NFTs Found for the Filter' : 'No NFTs Found',
+            style: context.textTheme.titleSmall,
+          ),
+          const SizedBox(height: kScreenPadding / 2),
+          Text(
+            isFilterActive
+                ? 'Try clearing the filter to see all NFTs.'
+                : 'You have not added any NFTs.',
+            style: context.textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: kScreenPadding),
+          TextButton(
+            onPressed: isFilterActive
+                ? () {
+                    // Clear the filter when the button is pressed
+                    ref.read(nftNotifierProvider.notifier).setFilter('');
+                    filterController.clear(); // Also clear the text field
+                  }
+                : _onRefresh, // Retry the API call if there's no filter
+            child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
+          ),
+        ],
       ),
     );
   }

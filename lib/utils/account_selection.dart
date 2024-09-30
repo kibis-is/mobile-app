@@ -10,6 +10,8 @@ class AccountHandler {
 
   Future<void> handleAccountSelection(String accountId) async {
     try {
+      final activeAccountId = ref.watch(activeAccountProvider);
+      if (accountId == activeAccountId) return;
       await ref
           .read(activeAccountProvider.notifier)
           .setActiveAccount(accountId);

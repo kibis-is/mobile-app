@@ -2,6 +2,7 @@ import 'package:convert/convert.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/hex_coverter.dart';
@@ -14,7 +15,7 @@ final temporaryAccountProvider =
 });
 
 class TemporaryAccountState {
-  final Account? account;
+  final dynamic account;
   final String? privateKey;
   final String? seedPhrase;
   final String? accountName;
@@ -27,7 +28,7 @@ class TemporaryAccountState {
   });
 
   TemporaryAccountState copyWith({
-    Account? account,
+    dynamic account,
     String? privateKey,
     String? seedPhrase,
     String? accountName,
@@ -62,34 +63,23 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
         seedPhrase: seedPhraseString,
       );
     } catch (e) {
-      state = state.copyWith(
-        account: null,
-        privateKey: null,
-        seedPhrase: null,
-      );
+      state = state.copyWith(account: null, privateKey: null, seedPhrase: null);
       rethrow;
     }
   }
 
   Future<void> restoreAccountFromPrivateKey(String privateKeyInput) async {
     try {
-      // Use the HexConverter to convert the input to hexadecimal
       final hexPrivateKey = HexConverter.convertToHex(privateKeyInput);
-
-      // Check if the account already exists
       final accountExists = await accountAlreadyExists(hexPrivateKey);
       if (accountExists) {
         throw Exception('Account already added.');
       }
 
-      // Load the account using the hexadecimal private key
       final account = await algorand.loadAccountFromPrivateKey(hexPrivateKey);
-
-      // Extract the seed phrase from the account
       final seedPhrase = await account.seedPhrase;
       final seedPhraseString = seedPhrase.join(' ');
 
-      // Update the state with the account details
       state = state.copyWith(
         account: account,
         privateKey: hexPrivateKey,
@@ -98,11 +88,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     } on AlgorandException catch (e) {
       throw Exception(e.message);
     } catch (e) {
-      state = state.copyWith(
-        account: null,
-        privateKey: null,
-        seedPhrase: null,
-      );
+      state = state.copyWith(account: null);
       throw Exception('Failed to restore account: ${e.toString()}');
     }
   }
@@ -197,5 +183,11 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
 
   void reset() {
     state = TemporaryAccountState();
+  }
+
+  Future<void> createWatchAccount(String publicKey) async {
+    state = state.copyWith(
+      account: WatchAccount(publicKey: publicKey),
+    );
   }
 }

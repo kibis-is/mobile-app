@@ -6,24 +6,27 @@ AppBarTheme appBarTheme({
   required Color foregroundColor,
 }) {
   return AppBarTheme(
-    elevation: 0.0,
-    shadowColor: Colors.transparent,
-    backgroundColor: backgroundColor,
-    centerTitle: true,
-    foregroundColor: foregroundColor,
-  );
+      elevation: 0.0,
+      shadowColor: Colors.transparent,
+      backgroundColor: backgroundColor,
+      centerTitle: true,
+      foregroundColor: foregroundColor,
+      titleTextStyle: TextStyle(
+        color: foregroundColor,
+        fontWeight: FontWeight.bold,
+      ));
 }
 
 AppBarTheme appBarThemeDark() {
   return appBarTheme(
-    backgroundColor: ColorPalette.darkThemeRaisinBlack,
-    foregroundColor: ColorPalette.darkThemeAntiflashWhite,
+    backgroundColor: ColorPalette.darkThemeBackground,
+    foregroundColor: ColorPalette.darkThemeHeader,
   );
 }
 
 AppBarTheme appBarThemeLight() {
   return appBarTheme(
-    backgroundColor: ColorPalette.lightThemeAntiFlashWhite,
-    foregroundColor: ColorPalette.lightThemeShadow,
+    backgroundColor: ColorPalette.lightThemeBackground,
+    foregroundColor: ColorPalette.lightThemeHeader,
   );
 }

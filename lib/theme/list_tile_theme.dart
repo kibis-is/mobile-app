@@ -6,8 +6,5 @@ ListTileThemeData listTileTheme(Color tileColor) {
   return ListTileThemeData(
     tileColor: tileColor,
     contentPadding: const EdgeInsets.all(kSizedBoxSpacing),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(kWidgetRadius),
-    ),
   );
 }

@@ -45,9 +45,7 @@ class ConfirmationDialog extends StatelessWidget {
         },
         child: Text(
           yesText,
-          style: context.textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: context.textTheme.bodyMedium?.copyWith(),
         ),
       ),
       TextButton(
@@ -56,7 +54,7 @@ class ConfirmationDialog extends StatelessWidget {
         },
         child: Text(
           noText,
-          style: context.textTheme.titleMedium?.copyWith(
+          style: context.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: context.colorScheme.secondary),
         ),

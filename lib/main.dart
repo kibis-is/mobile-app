@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_loading_overlay.dart';
 import 'package:kibisis/common_widgets/loading_overlay.dart';
@@ -11,18 +12,22 @@ import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
-import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:kibisis/utils/app_lifecycle_handler.dart';
+import 'package:kibisis/utils/wallet_connect_manageer.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: Kibisis()));
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const ProviderScope(child: Kibisis()));
+  });
 }
 
 class Kibisis extends ConsumerStatefulWidget {
@@ -34,10 +39,23 @@ class Kibisis extends ConsumerStatefulWidget {
 
 class _KibisisState extends ConsumerState<Kibisis> {
   late AppLifecycleHandler _lifecycleHandler;
+  late WalletConnectManager walletConnectManager;
 
   @override
   void initState() {
     super.initState();
+    initApp().then((_) {
+      FlutterNativeSplash.remove();
+    }).catchError((error) {
+      debugPrint("Initialization error: $error");
+      FlutterNativeSplash.remove();
+    });
+  }
+
+  Future<void> initApp() async {
+    final storageService = ref.read(storageProvider);
+    walletConnectManager = WalletConnectManager(storageService);
+    await walletConnectManager.reconnectSessions();
     _lifecycleHandler = AppLifecycleHandler(
       ref: ref,
       onResumed: (seconds) {
@@ -93,9 +111,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
                       percent: progress,
                     ),
                     isLoading: isLoading,
-                    color: isDarkTheme
-                        ? ColorPalette.darkThemeRichBlack
-                        : ColorPalette.lightThemeSnow,
+                    color: context.colorScheme.surface,
                     opacity: 1.0,
                     child: Stack(
                       children: [

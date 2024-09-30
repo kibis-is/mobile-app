@@ -179,10 +179,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                               child: IconButton(
                                 style: IconButton.styleFrom(
                                   backgroundColor: context.colorScheme.error,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(kWidgetRadius),
-                                  ),
+                                  shape: const CircleBorder(),
                                 ),
                                 icon: AppIcons.icon(
                                     icon: AppIcons.refresh,
@@ -220,10 +217,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                             padding: const EdgeInsets.all(kScreenPadding / 4),
                             child: IconButton(
                               style: IconButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(kWidgetRadius),
-                              )),
+                                  shape: const CircleBorder()),
                               icon: AppIcons.icon(
                                   icon: AppIcons.backspace,
                                   size: AppIcons.large),
@@ -235,7 +229,6 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                                               .notifier)
                                           .removeLastKey();
                                     },
-                              color: context.colorScheme.onSurface,
                               iconSize: kScreenPadding * 2,
                             ),
                           );
@@ -243,50 +236,19 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                         String key = index == 10 ? '0' : (index + 1).toString();
                         return Padding(
                           padding: const EdgeInsets.all(kScreenPadding / 4),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          kWidgetRadius))),
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.disabled)) {
-                                    return context.colorScheme.surface
-                                        .withOpacity(0.12);
-                                  }
-                                  return context.colorScheme.surface;
-                                },
-                              ),
-                              foregroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.disabled)) {
-                                    return context.colorScheme.onSurface
-                                        .withOpacity(0.38);
-                                  }
-                                  return context.colorScheme.onSurface;
-                                },
-                              ),
-                              shadowColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.disabled)) {
-                                    return Colors.transparent;
-                                  }
-                                  return context.colorScheme.shadow;
-                                },
-                              ),
-                            ),
+                          child: MaterialButton(
                             onPressed: isPinCompleted
                                 ? null
                                 : () {
                                     _handlePinKeyPressed(key);
                                   },
+                            textColor: context.colorScheme.secondary,
+                            elevation: 0,
+                            shape: const CircleBorder(),
                             child: Text(
                               key,
-                              style: context.textTheme.titleMedium,
+                              style: context.textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ),
                         );
@@ -326,7 +288,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
       child: CircleAvatar(
         radius: 10,
         backgroundColor: index < pinEntryProvider.pin.length
-            ? context.colorScheme.onSurfaceVariant
+            ? context.colorScheme.onSurface
             : Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
@@ -346,13 +308,12 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
       child: CircleAvatar(
         radius: 10,
         backgroundColor: index < pinEntryProvider.pin.length
-            ? context.colorScheme.onSurfaceVariant
+            ? context.colorScheme.onSurface
             : Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-                color: context.colorScheme.onSurfaceVariant, width: 2),
+            border: Border.all(color: context.colorScheme.onSurface, width: 2),
           ),
         ),
       ),

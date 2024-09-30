@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/models/nft.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -37,6 +38,8 @@ class StorageService {
   static const Duration _retryDelay = Duration(milliseconds: 400);
 
   StorageService(this._prefs, this._secureStorage);
+
+  static const String _sessionsKey = 'walletconnect_sessions';
 
   StorageService.initPending(this._secureStorage) : _prefs = null;
 
@@ -108,7 +111,8 @@ class StorageService {
 
   Future<void> deleteAccount(String accountId) async {
     final accounts = await getAccounts() ?? {};
-    accounts.remove(accountId);
+    accounts.remove(accountId); // Remove the NFT cache for this account
+    await _prefs?.remove('nfts_$accountId');
     await setAccounts(accounts);
   }
 
@@ -133,7 +137,6 @@ class StorageService {
     _prefs?.setString('defaultNetwork', network);
   }
 
-//TODO:Decide if this is to be removed, no longer used
   Future<void> clearAll() async {
     await _retryOnException(() async {
       if (_prefs == null) {
@@ -264,5 +267,60 @@ class StorageService {
 
   Future<String?> getApplicationId(String accountId) async {
     return await getAccountData(accountId, 'applicationId');
+  }
+
+  Future<void> saveSessions(List<Map<String, dynamic>> sessions) async {
+    final sessionsJson =
+        sessions.map((session) => jsonEncode(session)).toList();
+    await _retryOnException(
+      () async => _prefs?.setStringList(_sessionsKey, sessionsJson),
+      'Failed to save sessions',
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getSessions() async {
+    final sessionsJson = await _retryOnException(
+      () async => _prefs?.getStringList(_sessionsKey),
+      'Failed to retrieve sessions',
+    );
+    if (sessionsJson == null) {
+      return [];
+    }
+    return sessionsJson
+        .map((sessionString) =>
+            jsonDecode(sessionString) as Map<String, dynamic>)
+        .toList();
+  }
+
+  Future<void> removeSessions() async {
+    await _retryOnException(
+      () async => _prefs?.remove(_sessionsKey),
+      'Failed to remove sessions',
+    );
+  }
+
+  Future<void> removeSessionByTopic(String topic) async {
+    final sessions = await getSessions();
+    sessions.removeWhere((session) => session['topic'] == topic);
+    await saveSessions(sessions);
+  }
+
+  Future<void> setNFTsForAccount(String accountId, List<NFT> nfts) async {
+    final encodedNfts = jsonEncode(nfts.map((nft) => nft.toJson()).toList());
+    await _prefs?.setString('nfts_$accountId', encodedNfts);
+  }
+
+  Future<List<NFT>> getNFTsForAccount(String accountId) async {
+    final cachedNftsJson = _prefs?.getString('nfts_$accountId');
+    if (cachedNftsJson == null) {
+      return [];
+    }
+
+    final List<dynamic> cachedNfts = json.decode(cachedNftsJson);
+    return cachedNfts.map<NFT>((json) => NFT.fromJson(json)).toList();
+  }
+
+  Future<void> clearNFTsForAccount(String accountId) async {
+    await _prefs?.remove('nfts_$accountId');
   }
 }

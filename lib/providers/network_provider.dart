@@ -3,18 +3,16 @@ import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
-// Network options
 final List<SelectItem> networkOptions = [
   SelectItem(
     name: 'VOI',
     value: "network-voi",
     icon: AppIcons.voiIcon,
   ),
-  //TODO: Get settings for Algorand
   // SelectItem(
-  //   name: 'Algorand',
-  //   value: "network-algorand",
-  //   icon: AppIcons.algorandIcon,
+  //   name: 'VOI TestNet',
+  //   value: "network-voi-testnet",
+  //   icon: AppIcons.voiIcon,
   // ),
 ];
 

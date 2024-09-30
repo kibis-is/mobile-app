@@ -143,9 +143,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                                   ref.read(checkboxProvider.notifier).state =
                                       value!;
                                 },
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
+                                shape: const CircleBorder(),
                               );
                             },
                           );
@@ -178,8 +176,6 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                       onPressed: checkboxValue
                           ? () {
                               if (formKey.currentState?.validate() ?? false) {
-                                ref.read(checkboxProvider.notifier).state =
-                                    false;
                                 GoRouter.of(context).push(
                                     widget.accountFlow == AccountFlow.setup
                                         ? '/setup/setupNameAccount'

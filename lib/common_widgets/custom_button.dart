@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 enum ButtonType { primary, secondary, warning, disabled }
@@ -10,6 +11,7 @@ class CustomButton extends StatelessWidget {
   final bool isFullWidth;
   final bool isOutline;
   final ButtonType buttonType;
+  final bool isBottomNavigationPosition;
 
   const CustomButton({
     super.key,
@@ -18,8 +20,8 @@ class CustomButton extends StatelessWidget {
     this.prefixIcon,
     this.isFullWidth = false,
     this.isOutline = false,
-    this.buttonType =
-        ButtonType.secondary, // Default to primary if not specified
+    this.buttonType = ButtonType.secondary,
+    this.isBottomNavigationPosition = false,
   });
 
   @override
@@ -46,8 +48,15 @@ class CustomButton extends StatelessWidget {
         break;
     }
 
-    return SizedBox(
+    return Container(
       width: isFullWidth ? double.infinity : null,
+      padding: isBottomNavigationPosition
+          ? const EdgeInsets.only(
+              top: 0,
+              bottom: kScreenPadding,
+              left: kScreenPadding,
+              right: kScreenPadding)
+          : const EdgeInsets.all(0),
       child: ElevatedButton.icon(
         icon: prefixIcon ?? const SizedBox.shrink(),
         label: Text(
@@ -58,6 +67,9 @@ class CustomButton extends StatelessWidget {
         ),
         onPressed: onPressed,
         style: ButtonStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100.0),
+          )),
           backgroundColor: isOutline
               ? MaterialStateProperty.all(Colors.transparent)
               : MaterialStateProperty.all(backgroundColor),

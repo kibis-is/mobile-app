@@ -75,21 +75,17 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: const EdgeInsets.all(kScreenPadding),
-          child: CustomButton(
-            text: 'Import',
-            isFullWidth: true,
-            onPressed: () {
-              if (privateKeyController.text.isEmpty) {
-                ref.read(privateKeyErrorProvider.notifier).showError();
-              } else {
-                _importAccount(context, ref);
-              }
-            },
-          ),
-        ),
+      bottomNavigationBar: CustomButton(
+        isBottomNavigationPosition: true,
+        text: 'Import',
+        isFullWidth: true,
+        onPressed: () {
+          if (privateKeyController.text.isEmpty) {
+            ref.read(privateKeyErrorProvider.notifier).showError();
+          } else {
+            _importAccount(context, ref);
+          }
+        },
       ),
     );
   }

@@ -1,6 +1,7 @@
 // custom_app_bar.dart
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 
 class SplitAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget leadingWidget;
@@ -19,15 +20,18 @@ class SplitAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
+        color: context.colorScheme.background,
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+
+        padding: const EdgeInsets.only(left: kScreenPadding, right: 0, top: kScreenPadding),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
               child: leadingWidget,
             ),
             const SizedBox(
-                width: kScreenPadding), // Spacer between the two sections
+                width: kScreenPadding),
             actionWidget,
           ],
         ),

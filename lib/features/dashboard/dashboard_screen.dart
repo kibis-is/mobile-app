@@ -11,10 +11,12 @@ import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_fab_child.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/features/dashboard/providers/fab_visibility_provider.dart';
+import 'package:kibisis/features/dashboard/widgets/activity_tab.dart';
+import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
 import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
-import 'package:kibisis/features/dashboard/widgets/dashboard_tab_controller.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
+import 'package:kibisis/features/dashboard/widgets/nft_tab.dart';
+import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
@@ -23,6 +25,7 @@ import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -33,31 +36,15 @@ class DashboardScreen extends ConsumerStatefulWidget {
   DashboardScreenState createState() => DashboardScreenState();
 }
 
-class DashboardScreenState extends ConsumerState<DashboardScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+class DashboardScreenState extends ConsumerState<DashboardScreen> {
+  int _currentIndex = 0;
   final _key = GlobalKey<ExpandableFabState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.elasticOut,
-      ),
-    );
-  }
+  final PageController _pageController = PageController();
+  final List<Widget> _pages = const [AssetsTab(), NftTab(), ActivityTab()];
 
   @override
   void dispose() {
-    _controller.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -65,58 +52,137 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
   Widget build(BuildContext context) {
     final networks = networkOptions;
     final accountState = ref.watch(accountProvider);
-    final showFAB = ref.watch(fabVisibilityProvider);
     final publicKey = accountState.account?.publicAddress;
-
-    if (showFAB) {
-      _controller.forward();
-    } else {
-      _controller.reverse();
-    }
-
-    List<String> tabs = ['Assets', 'NFTs', 'Activity'];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(context, ref, networks, accountState),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: Column(
-          children: [
-            const SizedBox(height: kScreenPadding),
-            _buildDashboardInfoPanel(
-                context, ref, networks, publicKey, accountState),
-            const SizedBox(height: kScreenPadding),
-            Expanded(
-              child: DashboardTabController(tabs: tabs),
+      body: Column(
+        children: [
+          const SizedBox(height: kScreenPadding),
+          _buildDashboardInfoPanel(
+              context, ref, networks, publicKey, accountState),
+          const SizedBox(height: kScreenPadding / 2),
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (int index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              children: _pages,
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: _buildFloatingActionButton(),
+      floatingActionButtonLocation: ExpandableFab.location,
+      bottomNavigationBar: _buildNavigationBar(),
+    );
+  }
+
+  Widget _buildNavigationBar() {
+    ref.watch(isDarkModeProvider);
+
+    return NavigationBarTheme(
+      data: NavigationBarThemeData(
+        labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>((states) {
+          if (states.contains(MaterialState.selected)) {
+            return context.textTheme.labelMedium?.copyWith(
+                    color: context.colorScheme.primary,
+                    fontWeight: FontWeight.bold) ??
+                const TextStyle();
+          }
+          return context.textTheme.labelMedium?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.bold) ??
+              const TextStyle();
+        }),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: context.colorScheme.surface,
+              width: 2,
+            ),
+          ),
+        ),
+        child: NavigationBar(
+          elevation: 0,
+          backgroundColor: context.colorScheme.background,
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          },
+          indicatorColor: Colors.transparent,
+          indicatorShape: const CircleBorder(),
+          height: 72,
+          destinations: [
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.voiIcon,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'Assets',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.voiIcon,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
+            ),
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.nft,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'NFTs',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.nft,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
+            ),
+            NavigationDestination(
+              icon: AppIcons.icon(
+                  icon: AppIcons.send,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: AppIcons.small),
+              label: 'Activity',
+              selectedIcon: AppIcons.icon(
+                  icon: AppIcons.send,
+                  color: context.colorScheme.primary,
+                  size: AppIcons.small),
             ),
           ],
         ),
       ),
-      floatingActionButton: ScaleTransition(
-          scale: _animation,
-          child: showFAB ? _buildFloatingActionButton() : Container()),
-      floatingActionButtonLocation: ExpandableFab.location,
     );
   }
 
   Widget _buildFloatingActionButton() {
-    final isDarkMode = ref.watch(isDarkModeProvider);
+    ref.watch(isDarkModeProvider);
     return ExpandableFab(
       key: _key,
       type: ExpandableFabType.up,
       distance: 70,
       pos: ExpandableFabPos.right,
-      overlayStyle: ExpandableFabOverlayStyle(
-        color: isDarkMode ? Colors.black54 : Colors.white54,
+      overlayStyle: const ExpandableFabOverlayStyle(
+        color: Colors.black54,
       ),
       openButtonBuilder: RotateFloatingActionButtonBuilder(
-          child: const Icon(AppIcons.menu),
-          fabSize: ExpandableFabSize.regular,
-          foregroundColor: Colors.white,
-          backgroundColor: context.colorScheme.secondary,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kWidgetRadius))),
+        child: const Icon(AppIcons.menu),
+        fabSize: ExpandableFabSize.regular,
+        foregroundColor: Colors.white,
+        backgroundColor: context.colorScheme.secondary,
+        shape: const CircleBorder(),
+      ),
       closeButtonBuilder: FloatingActionButtonBuilder(
         size: 56,
         builder: (BuildContext context, void Function()? onPressed,
@@ -129,6 +195,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
               onPressed: onPressed,
               icon: const Icon(
                 AppIcons.cross,
+                color: Colors.white,
               ),
             ),
           );
@@ -140,34 +207,49 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
           icon: AppIcons.send,
           backgroundColor: context.colorScheme.secondary,
           iconColor: Colors.white,
+          borderRadius: 100,
           onPressed: () {
+            closeFab();
             context.goNamed(
               sendTransactionRouteName,
               pathParameters: {'mode': 'payment'},
             );
-            closeFab();
           },
         ),
-        // if (Platform.isAndroid || Platform.isIOS)
-        //   CustomFabChild(
-        //     icon: AppIcons.scan,
-        //     backgroundColor: context.colorScheme.primary,
-        //     iconColor: context.colorScheme.onPrimary,
-        //     onPressed: () {
-        //       GoRouter.of(context).push('/qrScanner', extra: ScanMode.general);
-        //       closeFab();
-        //     },
-        //   ),
+        if (Platform.isAndroid || Platform.isIOS)
+          CustomFabChild(
+            borderRadius: 100,
+            icon: AppIcons.scan,
+            backgroundColor: context.colorScheme.primary,
+            iconColor: context.colorScheme.onPrimary,
+            onPressed: () async {
+              closeFab();
+              final scannedData = await GoRouter.of(context)
+                  .push('/qrScanner', extra: ScanMode.catchAll);
+              if (scannedData != null &&
+                  scannedData is String &&
+                  QRCodeScannerLogic().isPublicKeyFormat(scannedData)) {
+                if (!mounted) return;
+                GoRouter.of(context).goNamed(
+                  sendTransactionRouteName,
+                  pathParameters: {'mode': 'payment'},
+                  extra: {'address': scannedData},
+                );
+              }
+            },
+          ),
         CustomFabChild(
+          borderRadius: 100,
           icon: AppIcons.wallet,
           backgroundColor: context.colorScheme.primary,
           iconColor: context.colorScheme.onPrimary,
           onPressed: () {
-            GoRouter.of(context).push('/$accountListRouteName');
             closeFab();
+            GoRouter.of(context).push('/$accountListRouteName');
           },
         ),
         CustomFabChild(
+          borderRadius: 100,
           icon: AppIcons.settings,
           backgroundColor: context.colorScheme.primary,
           iconColor: context.colorScheme.onPrimary,
@@ -206,23 +288,28 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
           data: (balance) => Row(
             children: [
               EllipsizedText(
-                type: EllipsisType.end,
-                ellipsis: '...',
-                balance.toStringAsFixed(2),
+                NumberShortener.shortenNumber(balance),
                 style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.secondary),
+                    color: balance > 0
+                        ? context.colorScheme.secondary
+                        : context.colorScheme.onBackground),
               ),
               SvgPicture.asset(
                 'assets/images/${networks[0].icon}.svg',
                 semanticsLabel: networks[0].name,
                 height: 12,
                 colorFilter: ColorFilter.mode(
-                    context.colorScheme.secondary, BlendMode.srcATop),
+                    balance > 0
+                        ? context.colorScheme.secondary
+                        : context.colorScheme.onBackground,
+                    BlendMode.srcATop),
               ),
               IconButton(
-                icon: AppIcons.icon(icon: AppIcons.info, size: AppIcons.small),
-                color: context.colorScheme.onBackground,
+                icon: AppIcons.icon(
+                    icon: AppIcons.info,
+                    size: AppIcons.small,
+                    color: context.colorScheme.onBackground),
                 iconSize: kScreenPadding,
                 onPressed: () {
                   customBottomSheet(
@@ -248,12 +335,9 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
   Widget _buildNetworkSelectButton(
       BuildContext context, List<SelectItem> networks, WidgetRef ref) {
     return MaterialButton(
-      hoverColor: context.colorScheme.surface,
-      color: context.colorScheme.surface,
+      padding: EdgeInsets.zero,
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(kScreenPadding / 2),
-      ),
+      shape: const CircleBorder(),
       onPressed: networks.length > 1
           ? () {
               customBottomSheet(
@@ -276,12 +360,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen>
     );
   }
 
-  Widget _buildDashboardInfoPanel(
-      BuildContext context,
-      WidgetRef ref,
-      List<SelectItem> networks,
-      String? publicKey, // Pass the public key directly from the provider
-      AccountState accountState) {
+  Widget _buildDashboardInfoPanel(BuildContext context, WidgetRef ref,
+      List<SelectItem> networks, String? publicKey, AccountState accountState) {
     if (publicKey == null) {
       return const Center(child: CircularProgressIndicator());
     } else {

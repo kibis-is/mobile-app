@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
+import 'package:kibisis/common_widgets/custom_dialog_picker.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
@@ -16,6 +17,7 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
@@ -25,6 +27,7 @@ import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
@@ -39,9 +42,11 @@ final sendTransactionScreenModeProvider =
 
 class SendTransactionScreen extends ConsumerStatefulWidget {
   final SendTransactionScreenMode mode;
+  final String? address;
 
   const SendTransactionScreen({
     this.mode = SendTransactionScreenMode.payment,
+    this.address,
     super.key,
   });
 
@@ -56,12 +61,15 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       TextEditingController();
   final TextEditingController noteController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  int _remainingBytes = 1000; // Initialize with max bytes allowed
+  int _remainingBytes = 1000;
 
   @override
   void initState() {
     super.initState();
     noteController.addListener(_updateRemainingBytes);
+    if (widget.address != null) {
+      recipientAddressController.text = widget.address!;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(sendTransactionScreenModeProvider.notifier).state = widget.mode;
       _loadAssetsAndCurrencies();
@@ -86,11 +94,19 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Future<List<SelectItem>> _getAssetsAndCurrenciesAsList(WidgetRef ref) async {
-    final assetsAsync = ref.read(assetsProvider);
+    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    AsyncValue<List<CombinedAsset>> assetsAsync = const AsyncValue.loading();
+
+    if (publicAddress != null && publicAddress.isNotEmpty) {
+      assetsAsync = ref.read(assetsProvider(publicAddress));
+    } else {
+      debugPrint('Public address is not available');
+      assetsAsync = const AsyncValue.data([]);
+    }
+
     final network = ref.read(networkProvider);
 
     if (assetsAsync is! AsyncData<List<CombinedAsset>>) {
-      // If assets are not loaded yet, return empty list
       return [];
     }
 
@@ -103,7 +119,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       );
     }).toList();
 
-    // Insert the network (voi or algorand) item at the beginning of the list
     combinedList.insert(
       0,
       network ??
@@ -175,16 +190,21 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<void> _executeTransaction(WidgetRef ref) async {
     try {
-      ref.read(loadingProvider.notifier).startLoading(
-            message: widget.mode == SendTransactionScreenMode.payment
-                ? 'Sending Payment'
-                : 'Sending Asset',
-            withProgressBar: true,
-          );
-      final account = ref.read(accountProvider).account;
-      if (account == null) {
-        throw Exception("Account not available for the transaction.");
+      final accountId = ref.read(accountProvider).accountId;
+      if (accountId == null) {
+        throw Exception("No active account ID found");
       }
+
+      final privateKey = await ref
+          .read(storageProvider)
+          .getAccountData(accountId, 'privateKey');
+      if (privateKey == null || privateKey.isEmpty) {
+        throw Exception("Private key not found in storage");
+      }
+
+      final algorand = ref.read(algorandProvider);
+      final account = await algorand.loadAccountFromPrivateKey(privateKey);
+
       double amountInAlgos = double.parse(amountController.text);
       final selectedItem = ref.read(selectedAssetProvider);
       if (selectedItem == null) {
@@ -214,10 +234,10 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     } on AlgorandException catch (e) {
       String errorMessage =
           ref.read(algorandServiceProvider).parseAlgorandException(e);
-      debugPrint('Error: $errorMessage');
+      debugPrint('AlgorandException: $errorMessage');
       _showErrorSnackbar(errorMessage);
     } catch (e) {
-      String errorMessage = 'An error occurred';
+      String errorMessage = e.toString();
       debugPrint('Error: $errorMessage');
       _showErrorSnackbar(errorMessage);
     } finally {
@@ -253,8 +273,21 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           builder: (context) => PinPadDialog(
             title: 'Verify PIN',
             onPinVerified: () async {
-              if (await _validateForm(ref)) {
-                await _executeTransaction(ref);
+              ref.read(loadingProvider.notifier).startLoading(
+                    message: widget.mode == SendTransactionScreenMode.payment
+                        ? 'Sending Payment'
+                        : 'Sending Asset',
+                    withProgressBar: true,
+                  );
+
+              try {
+                if (await _validateForm(ref)) {
+                  await _executeTransaction(ref);
+                  goBack();
+                }
+              } catch (e) {
+                debugPrint("Error during transaction: $e");
+                ref.read(loadingProvider.notifier).stopLoading();
               }
             },
           ),
@@ -264,7 +297,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   void goBack() {
-    Navigator.of(context).pop();
+    ref.invalidate(transactionsProvider);
+    ref.invalidate(balanceProvider);
+    GoRouter.of(context).goNamed(rootRouteName);
   }
 
   Future<double> getMaxAmount(WidgetRef ref) async {
@@ -286,7 +321,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     bool isNetworkSelected = selectedItem?.value.startsWith("network") ?? false;
 
     if (isNetworkSelected) {
-      // Asynchronous fetching of maximum payment amount
       return FutureBuilder<double>(
         future: getMaxAmount(ref),
         builder: (context, snapshot) {
@@ -301,17 +335,19 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         },
       );
     } else {
-      // Direct synchronous access for asset mode
       final int maxAssetAmount =
           ref.read(activeAssetProvider)?.params.total ?? 0;
       final String formattedAmount =
-          NumberShortener.formatBalance(maxAssetAmount.toDouble());
+          NumberShortener.shortenNumber(maxAssetAmount.toDouble());
       return Text('Max: $formattedAmount');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final activeAccount = ref.watch(accountProvider).account;
+    final isWatchAccount = activeAccount is WatchAccount;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Send"),
@@ -345,14 +381,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
-        child: CustomButton(
-          isFullWidth: true,
-          text: "Send",
-          onPressed: () => _showPinPadDialog(ref),
-        ),
-      ),
+      bottomNavigationBar: isWatchAccount
+          ? const SizedBox.shrink()
+          : CustomButton(
+              isBottomNavigationPosition: true,
+              isFullWidth: true,
+              text: "Send",
+              onPressed: () => _showPinPadDialog(ref),
+            ),
     );
   }
 
@@ -430,6 +466,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       textInputAction: TextInputAction.done,
       textAlign: TextAlign.right,
       autoCorrect: false,
+      leadingIcon: AppIcons.advanced,
       controller: amountController,
       validator: _validateAmount,
       onTap: () {
@@ -452,6 +489,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
             controller: recipientAddressController,
+            leadingIcon: AppIcons.addAccount,
             suffixIcon: AppIcons.scan,
             autoCorrect: false,
             onTrailingPressed: isMobile
@@ -462,7 +500,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             validator: _validateAlgorandAddress,
           ),
         ),
-        const SizedBox(width: kScreenPadding / 2),
         IconButton(
           style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
@@ -471,11 +508,8 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             ),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(kWidgetRadius),
+                borderRadius: BorderRadius.circular(100.0),
               ),
-            ),
-            backgroundColor: MaterialStateProperty.all<Color>(
-              context.colorScheme.surface,
             ),
             foregroundColor: MaterialStateProperty.all<Color>(
               context.colorScheme.onSurface,
@@ -494,9 +528,13 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final accountsState = ref.watch(accountsListProvider);
 
     if (accountsState.error != null) {
-      return showDialog<void>(
+      return showGeneralDialog<void>(
         context: context,
-        builder: (BuildContext context) {
+        barrierDismissible: true,
+        barrierLabel: '',
+        barrierColor: Colors.black54,
+        transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (context, animation1, animation2) {
           return AlertDialog(
             contentPadding: EdgeInsets.zero,
             titlePadding: const EdgeInsets.all(kScreenPadding),
@@ -514,57 +552,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final accounts = ref.read(accountsListProvider).accounts;
 
     if (!context.mounted) return;
+
     final selectedAccount = await showDialog<Map<String, String>>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          titlePadding: const EdgeInsets.all(kScreenPadding),
-          scrollable: true,
-          title: const Text(
-            'Select Address',
-            textAlign: TextAlign.center,
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: accounts.map<Widget>((account) {
-                return Column(
-                  children: [
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context, account),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.all(kScreenPadding),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(kWidgetRadius),
-                            color: context.colorScheme.surface,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              EllipsizedText(
-                                account['accountName']!,
-                                type: EllipsisType.end,
-                                style: context.textTheme.displayMedium,
-                              ),
-                              EllipsizedText(
-                                account['publicKey']!,
-                                type: EllipsisType.middle,
-                                style: context.textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
+      builder: (context) {
+        return CustomAlertDialog(
+          title: 'Select Address',
+          icon: AppIcons.contacts,
+          items: accounts,
         );
       },
     );
@@ -582,6 +577,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       maxLines: 3,
       controller: noteController,
       validator: _validateNote,
+      leadingIcon: AppIcons.about,
     );
   }
 
