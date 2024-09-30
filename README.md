@@ -40,24 +40,33 @@
   This is the Kibisis mobile app built in Flutter.
 </p>
 
-### Table of contents
+### Table Of Contents
 
 * [1. Overview](#-1-overview)
 * [2. Usage](#-2-usage)
 * [3. Development](#-3-development)
-    * [3.1. Requirements](#31-requirements)
-    * [3.2. Install Dependencies](#32-install-dependencies)
-    * [3.3. Run](#33-run)
-* [4. Releases](#-4-releases)
-  * [4.1. Overview](#41-overview)
-  * [4.2. Requirements](#42-requirements)
-  * [4.3. Create A Personal Doppler Config](#43-create-a-personal-doppler-config)
-  * [4.4. Setup `doppler`](#44-setup-doppler)
-  * [4.5. Build](#45-build)
-* [5. Appendix](#-5-appendix)
-    * [5.1. Useful Commands](#51-useful-commands)
-* [6. How To Contribute](#-6-how-to-contribute)
-* [7. License](#-7-license)
+  - [3.1. Requirements](#31-requirements)
+  - [3.2. Install Dependencies](#32-install-dependencies)
+  - [3.3. Run](#33-run)
+* [4. Building](#-4-building)
+  - [4.1. Requirements](#41-requirements)
+  - [4.2. Create A Personal Doppler Config](#42-create-a-personal-doppler-config)
+  - [4.3. Setup `doppler`](#43-setup-doppler)
+  - [4.4. Build](#44-build)
+    - [4.4.1. Android](#441-android)
+    - [4.4.2. iOS](#442-ios)
+* [5. Publishing](#-5-publishing)
+    - [5.1. Overview](#51-overview)
+    - [5.2. Requirements](#52-requirements)
+    - [5.3. Setup Doppler](#53-setup-doppler)
+    - [5.4. Publish Via Fastlane](#54-publish-via-fastlane)
+      - [5.4.1. Android](#541-android)
+      - [5.4.2. iOS](#542-ios)
+* [6. Appendix](#-6-appendix)
+  - [6.1. Useful Commands](#61-useful-commands)
+  - [6.2.Create An Upload Keystore](#62-create-an-upload-keystore)
+* [7. How To Contribute](#-7-how-to-contribute)
+* [8. License](#-8-license)
 
 ## 🗂️ 1. Overview
 
@@ -97,20 +106,16 @@ $ flutter run
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 🔖 4. Releases
+## 📦 4. Building
 
-### 4.1. Overview
-
-Releases are automated by CI/CD, but you can run a build locally using the keys stored on [Doppler](https://www.doppler.com/).  
-
-### 4.2. Requirements
+### 4.1. Requirements
 
 * [Doppler CLI][doppler]
 * [Flutter SDK v3.22.3][flutter]
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-### 4.3. Create A Personal Doppler Config
+### 4.2. Create A Personal Doppler Config
 
 To start using your own Doppler config, go to the project on [Doppler](https://dashboard.doppler.com/workplace/ae8c01548486ba93b8fd/projects/kibisis-mobile-app) and press the "+" to create a new personal branch config in the "Development" config
 
@@ -122,7 +127,7 @@ To start using your own Doppler config, go to the project on [Doppler](https://d
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-### 4.4. Setup `doppler`
+### 4.3. Setup `doppler`
 
 Follow the instructions [here](https://docs.doppler.com/docs/install-cli#local-development) to:
 
@@ -133,9 +138,9 @@ Follow the instructions [here](https://docs.doppler.com/docs/install-cli#local-d
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-### 4.5. Build
+### 4.4. Build
 
-#### Android
+#### 4.4.1. Android
 
 1. Create the signing keys with a wrapped Doppler command:
 ```shell
@@ -146,46 +151,148 @@ doppler run -- ./scripts/create_android_signing_keys.sh
 
 2. Build a release:
 ```shell
-flutter build <apk | aab> --release
+flutter build <apk|aab> --release
 ```
 
 3. The APK or AAB will use the signing keys from step 2 and add the file.
    i. APK builds will be in: `build/app/outputs/apk/release/app-release.apk`
    ii. AAB builds will be in: `build/app/outputs/bundle/release/app-release.aab`
 
+> 🚨 **WARNING:** The `dev` Doppler configs contain "dummy" upload signing keys and CANNOT be used to upload to the Play Store.
+
 <sup>[Back to top ^][table-of-contents]</sup>
 
-#### iOS
+#### 4.4.2. iOS
 
 Coming soon...
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 📑 5. Appendix
+## 🚀 5. Publishing
 
-### 5.1. Useful Commands
+### 5.1. Overview
+
+Publishing is automated by the CD, but it is possible to publish locally using the keys stored on [Doppler](https://www.doppler.com/) and [Fastlane][fastlane].
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+### 5.2. Requirements
+
+* [Doppler CLI][doppler]
+* [Bundler (via `gem`)][bundler]
+* [Fastlane (via `gem`)][fastlane]
+* [Ruby][ruby]
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+### 5.3. Setup Doppler
+
+Repeat the steps in [4.2. Create A Personal Doppler Config](#42-create-a-personal-doppler-config) and [4.3. Setup `doppler`](#43-setup-doppler) to setup Doppler.
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+### 5.3. Install Bundler Dependencies
+
+[Fastlane][fastlane] is installed and executed via [Bundler][bundler]. This repo contains a `Gemfile` to handle the Fastlane dependencies needed, so, with Bundler installed, you can simply run:
+```shell
+bundle install
+```
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+### 5.4. Publish Via Fastlane
+
+#### 5.4.1 Android
+
+1. Assuming Doppler setup has been setup, you will need fetch the production upload signing keys. This can be done using the command:
+```shell
+doppler run --config=prd -- ./scripts/create_android_signing_keys.sh
+```
+
+> ⚠️ **NOTE:** This is the same command as [4.4.1. Android](#441-android), but the config has been set to the "production".
+
+2. Build a new version of the app:
+```shell
+flutter build aab --release
+```
+
+3. Get the Google Cloud Service credentials that will allow you to upload an app bundle to the Play Store by using the following command:
+```shell
+./scripts/create_play_store_credentials.sh
+```
+
+> ⚠️ **NOTE:** The following script will require the `$GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY` to be set with the credentials.
+
+4. Use Fastlane to upload the release to the Google Play Store using the follwing commands:
+```shell
+cd ./android
+bundle exec fastlane <lane>
+```
+
+> ⚠️ **NOTE:** The `lane` can either be `beta` or `production`. With `beta` uploading to the Internal Testing track and `production` uploading to the live version of the app.
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+#### 5.4.2 iOS
+
+Coming soon...
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+## 📑 6. Appendix
+
+### 6.1. Useful Commands
+
+| Command                              | Description                                                                                                                                                                                               |
+|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `flutter pub add <package_name>`     | Installs a new package and saves it to the `pubspec.yaml` file.                                                                                                                                           |
+| `flutter run`                        | Runs the app locally.                                                                                                                                                                                     |
+| `flutter build <apk\|aab> --release` | Builds an Android APK/AAB to `build/app/outputs/bundle/release/app-release.<apk\|aab>`. NOTE: You will need a signing key, this can be acquired by following the steps in [4.4.1. Android](#441-android). |
+| `bundle exec fastlane <lane>`        | Uploads a mobile artifact to the Play Store/AppStore based on the lane, where `lane` is either `beta` or `production`.                                                                                    |
 
 See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-commands) reference for a full list of available commands.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 👏 6. How To Contribute
+### 6.2. Create An Upload Keystore
+
+The command below can be used to generate an upload keystore used for app (upload) signing:
+
+```shell
+keytool -genkeypair \
+  -v \
+  -validity 10000 \
+  -keystore upload_keystore.jks \
+  -keyalg RSA \
+  -keysize 2048 \
+  -keypass <key_password> \
+  -alias <key_alias> \
+  -storepass <keystore_password> \
+  -storetype JKS
+```
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+## 👏 7. How To Contribute
 
 Please read the [**Contributing Guide**][contribute] to learn about the development process.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 📄 7. License
+## 📄 8. License
 
 Please refer to the [COPYING][license] file.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
 <!-- Links -->
+[bundler]: https://bundler.io/
 [contribute]: ./CONTRIBUTING.md
 [doppler]: https://docs.doppler.com/docs/install-cli
+[fastlane]: https://docs.fastlane.tools/
 [flutter]: https://docs.flutter.dev/get-started/install
 [make]: https://www.gnu.org/software/make/
 [license]: ./COPYING
+[ruby]: https://www.ruby-lang.org/en/documentation/installation/
 [table-of-contents]: #table-of-contents
 

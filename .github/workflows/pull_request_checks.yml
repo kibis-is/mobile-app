@@ -49,7 +49,7 @@ jobs:
       - name: "🏗️ Build APK"
         run: flutter build apk --debug
       - name: "🏗️ Build AppBundle"
-        run: flutter build appbundle --debug
+        run: flutter build aab --debug
 
 #  build_ios:
 #    name: "Build iOS"

@@ -1,0 +1,26 @@
+name: "Use Ruby Dependencies"
+
+description: "Checks if the dependencies have been cached with the hash of the Gemfile.lock file."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "💎 Set up Ruby"
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "3.0"
+    - name: "📦 Install Bundler"
+      run: gem install bundler
+      shell: bash
+    - name: "💾 Cache dependencies"
+      uses: actions/cache@v4
+      id: cache-dependencies
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-bundler-${{ hashFiles('Gemfile.lock') }}
+    - name: "📦 Install"
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: |
+        bundle config set path 'vendor/bundle'
+        bundle install
+      shell: bash

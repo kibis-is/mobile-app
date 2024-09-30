@@ -22,14 +22,14 @@ function main {
 
   # decode the base64-encoded keystore and write it to a .jks file at the project root
   printf "%b decoding the base64-encoded key store to the keystore file... \n" "${INFO_PREFIX}"
-  echo "${ANDROID_KEYSTORE}" | base64 -d > "key.jks"
+  echo "${ANDROID_KEYSTORE}" | base64 -d > "upload_keystore.jks"
 
   # generate key.properties
   printf "%b creating key.properties file... \n" "${INFO_PREFIX}"
   {
     echo "keyAlias=${ANDROID_KEY_ALIAS}"
     echo "keyPassword=${ANDROID_KEY_PASSWORD}"
-    echo "storeFile=${PWD}/key.jks"
+    echo "storeFile=${PWD}/upload_keystore.jks"
     echo "storePassword=${ANDROID_KEYSTORE_PASSWORD}"
   } > "android/key.properties"
 
