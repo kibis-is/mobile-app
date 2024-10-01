@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
@@ -542,82 +541,6 @@ class AlgorandService {
         nextToken: null,
         transactions: [],
       );
-    }
-  }
-
-  Future<int> deployContract(Account account) async {
-    try {
-      // Load the TEAL files from the filesystem
-      final approvalProgramSource =
-          await File('teal/approval.teal').readAsString();
-      final clearProgramSource =
-          await File('teal/clear_state.teal').readAsString();
-
-      // Compile the TEAL programs
-      final approvalProgram =
-          await algorand.applicationManager.compileTEAL(approvalProgramSource);
-      final clearProgram =
-          await algorand.applicationManager.compileTEAL(clearProgramSource);
-
-      // Get the suggested transaction params
-      final params = await algorand.getSuggestedTransactionParams();
-
-      // Build and deploy the smart contract
-      final transaction = await (ApplicationCreateTransactionBuilder()
-            ..sender = account.address
-            ..approvalProgram = approvalProgram.program
-            ..clearStateProgram = clearProgram.program
-            ..globalStateSchema = StateSchema(
-              numUint: 1,
-              numByteSlice: 0,
-            )
-            ..localStateSchema = StateSchema(
-              numUint: 1,
-              numByteSlice: 1,
-            )
-            ..suggestedParams = params)
-          .build();
-
-      final signedTx = await transaction.sign(account);
-
-      debugPrint('Signed Transaction Details:');
-      debugPrint('Transaction ID: ${signedTx.transaction.id}');
-      debugPrint('Transaction Sender: ${signedTx.transaction.sender}');
-      debugPrint('Transaction Fee: ${signedTx.transaction.fee}');
-      debugPrint('Transaction First Valid: ${signedTx.transaction.firstValid}');
-      debugPrint('Transaction Last Valid: ${signedTx.transaction.lastValid}');
-      debugPrint('Transaction Genesis ID: ${signedTx.transaction.genesisId}');
-      debugPrint(
-          'Transaction Genesis Hash: ${signedTx.transaction.genesisHash}');
-      debugPrint('Transaction Group: ${signedTx.transaction.group}');
-      debugPrint('Transaction Lease: ${signedTx.transaction.lease}');
-      debugPrint('Transaction Note: ${signedTx.transaction.note}');
-      debugPrint('Transaction Type: ${signedTx.transaction.type}');
-      debugPrint('Transaction RekeyTo: ${signedTx.transaction.rekeyTo}');
-      debugPrint('Signed Transaction Signature: ${signedTx.signature}');
-
-      final txId =
-          await algorand.sendTransaction(signedTx, waitForConfirmation: true);
-
-      final transactionResponse =
-          await algorand.getPendingTransactionById(txId);
-
-      if (transactionResponse.applicationIndex == null) {
-        throw Exception("Transaction failed, no Application ID returned.");
-      }
-
-      final applicationId = transactionResponse.applicationIndex!;
-      debugPrint('Smart contract deployed with Application ID: $applicationId');
-      return applicationId;
-    } on AlgorandException catch (e, stackTrace) {
-      debugPrint("AlgorandException Message: ${e.message}");
-      debugPrint("AlgorandException Details: ${e.error}");
-      debugPrint("AlgorandException StackTrace: $stackTrace");
-      throw Exception("Failed to deploy smart contract: ${e.message}");
-    } catch (e, stackTrace) {
-      debugPrint("General Exception: $e");
-      debugPrint("General Exception StackTrace: $stackTrace");
-      throw Exception("Failed to deploy smart contract: $e");
     }
   }
 
