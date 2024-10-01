@@ -5,6 +5,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -23,70 +24,47 @@ class AssetListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(isDarkModeProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWideScreen = screenWidth > 600;
+    final mediaQueryHelper = MediaQueryHelper(context);
+
     return Stack(
       children: [
-        Material(
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.colorScheme.background,
-              border: Border.symmetric(
-                horizontal:
-                    BorderSide(width: 1, color: context.colorScheme.surface),
-              ),
-            ),
-            child: ListTile(
-                leading: _buildAssetIcon(
-                    context, ref, asset.params.defaultFrozen ?? false),
-                title: isWideScreen
-                    ? Text(asset.params.name ?? 'Unknown')
-                    : Hero(
-                        tag: '${asset.index}-name',
-                        child: EllipsizedText(
-                          asset.params.name ?? 'Unknown',
-                          style: context.textTheme.displaySmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                subtitle: isWideScreen
-                    ? Text(_getFormattedAmount())
-                    : Hero(
-                        tag: '${asset.index}-amount',
-                        child: EllipsizedText(
-                          _getFormattedAmount(),
-                          style: context.textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                trailing: _buildTrailing(context),
-                onTap:
-                    (onPressed == null) ? () => debugPrint('true') : onPressed),
-          ),
-        ),
-        if (asset.params.defaultFrozen ?? false)
-          Positioned(
-            top: kScreenPadding / 2,
-            right: kScreenPadding / 2,
-            child: AppIcons.icon(
-              icon: AppIcons.freeze,
-              size: AppIcons.small,
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ),
+        _buildListItem(context, ref, mediaQueryHelper),
+        if (asset.params.defaultFrozen ?? false) _buildFrozenIcon(context),
       ],
     );
   }
 
-  Widget _buildAssetIcon(
-      BuildContext context, WidgetRef ref, bool isFrozenDefault) {
-    ref.watch(isDarkModeProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWideScreen = screenWidth > 600;
+  Widget _buildListItem(
+      BuildContext context, WidgetRef ref, MediaQueryHelper mediaQueryHelper) {
+    return Material(
+      child: Container(
+        decoration: _buildListItemDecoration(context),
+        child: ListTile(
+          leading: _buildAssetIcon(context, ref),
+          title: _buildTitle(context, mediaQueryHelper),
+          subtitle: _buildSubtitle(context, mediaQueryHelper),
+          trailing: _buildTrailing(context),
+          onTap: onPressed ?? () => debugPrint('Tapped asset item'),
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration _buildListItemDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: context.colorScheme.background,
+      border: Border.symmetric(
+        horizontal: BorderSide(width: 1, color: context.colorScheme.surface),
+      ),
+    );
+  }
+
+  Widget _buildAssetIcon(BuildContext context, WidgetRef ref) {
+    final mediaQueryHelper = MediaQueryHelper(context);
     return Hero(
-      tag: isWideScreen ? 'wide-${asset.index}-icon' : '${asset.index}-icon',
+      tag: mediaQueryHelper.isWideScreen()
+          ? 'wide-${asset.index}-icon'
+          : '${asset.index}-icon',
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -95,23 +73,58 @@ class AssetListItem extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(kScreenPadding / 3),
           child: AppIcons.icon(
-              icon: AppIcons.voiCircleIcon,
-              color: context.colorScheme.onPrimary,
-              size: AppIcons.xlarge),
+            icon: AppIcons.voiCircleIcon,
+            color: context.colorScheme.onPrimary,
+            size: AppIcons.xlarge,
+          ),
         ),
       ),
     );
   }
 
+  Widget _buildTitle(BuildContext context, MediaQueryHelper mediaQueryHelper) {
+    final titleStyle =
+        context.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold);
+    return mediaQueryHelper.isWideScreen()
+        ? EllipsizedText(asset.params.name ?? 'Unknown', style: titleStyle)
+        : Hero(
+            tag: '${asset.index}-name',
+            child: EllipsizedText(asset.params.name ?? 'Unknown',
+                style: titleStyle),
+          );
+  }
+
+  Widget _buildSubtitle(
+      BuildContext context, MediaQueryHelper mediaQueryHelper) {
+    final subtitleStyle =
+        context.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold);
+    return mediaQueryHelper.isWideScreen()
+        ? EllipsizedText(_getFormattedAmount(), style: subtitleStyle)
+        : Hero(
+            tag: '${asset.index}-amount',
+            child: EllipsizedText(_getFormattedAmount(), style: subtitleStyle),
+          );
+  }
+
   Widget _buildTrailing(BuildContext context) {
-    return Container(
-      child: (onPressed == null && mode == AssetScreenMode.add)
-          ? Text(
-              'Owned',
-              style: context.textTheme.bodyMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            )
-          : AppIcons.icon(icon: AppIcons.arrowRight),
+    return mode == AssetScreenMode.add && onPressed == null
+        ? Text(
+            'Owned',
+            style: context.textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
+          )
+        : AppIcons.icon(icon: AppIcons.arrowRight);
+  }
+
+  Widget _buildFrozenIcon(BuildContext context) {
+    return Positioned(
+      top: kScreenPadding / 2,
+      right: kScreenPadding / 2,
+      child: AppIcons.icon(
+        icon: AppIcons.freeze,
+        size: AppIcons.small,
+        color: context.colorScheme.onSurfaceVariant,
+      ),
     );
   }
 

@@ -41,16 +41,14 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
+    filterController = TextEditingController(text: _getFilterText());
+  }
 
+  String _getFilterText() {
     final publicAddress = ref.read(accountProvider).account?.address;
-
-    if (publicAddress != null && publicAddress.isNotEmpty) {
-      filterController = TextEditingController(
-        text: ref.read(assetsProvider(publicAddress).notifier).filterText,
-      );
-    } else {
-      filterController = TextEditingController(text: '');
-    }
+    return publicAddress != null && publicAddress.isNotEmpty
+        ? ref.read(assetsProvider(publicAddress).notifier).filterText
+        : '';
   }
 
   @override
@@ -62,9 +60,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   @override
   Widget build(BuildContext context) {
-    final publicAddress = ref.watch(accountProvider).account?.address ?? '';
-    final assetsAsync = ref.watch(assetsProvider(publicAddress));
     final mediaQueryHelper = MediaQueryHelper(context);
+    final publicAddress = _getPublicAddress();
+    final assetsAsync = ref.watch(assetsProvider(publicAddress));
     final assetsFilterController =
         ref.watch(assetsFilterControllerProvider.notifier);
 
@@ -74,7 +72,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             children: [
               Expanded(
                 flex: mediaQueryHelper.getDynamicFlex()[0],
-                child: buildSearchAndAssetList(
+                child: _buildSearchAndAssetList(
                   assetsFilterController: assetsFilterController,
                   assetsAsync: assetsAsync,
                 ),
@@ -91,33 +89,31 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               ),
             ],
           )
-        : buildSearchAndAssetList(
+        : _buildSearchAndAssetList(
             assetsFilterController: assetsFilterController,
             assetsAsync: assetsAsync,
           );
   }
 
-  Widget buildSearchAndAssetList({
+  String _getPublicAddress() {
+    return ref.watch(accountProvider).account?.address ?? '';
+  }
+
+  Widget _buildSearchAndAssetList({
     required AssetsFilterController assetsFilterController,
     required AsyncValue<List<CombinedAsset>> assetsAsync,
   }) {
-    final RefreshController refreshController =
-        RefreshController(initialRefresh: false);
-
     return Column(
       children: [
         _buildSearchBar(assetsFilterController),
         Expanded(
           child: CustomPullToRefresh(
-            refreshController: refreshController,
-            onRefresh: () {
-              _onRefresh();
-              refreshController.refreshCompleted();
-            },
+            refreshController: _refreshController,
+            onRefresh: _onRefresh,
             child: assetsAsync.when(
               data: (assets) => _buildAssetsList(assets),
-              loading: () => _buildLoadingAssets(),
-              error: (error, stack) =>
+              loading: _buildLoadingAssets,
+              error: (_, __) =>
                   const Center(child: Text('Error loading assets')),
             ),
           ),
@@ -128,78 +124,75 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   Widget _buildSearchBar(AssetsFilterController assetsFilterController) {
     return Padding(
-      padding: const EdgeInsets.only(
-          left: kScreenPadding / 2,
-          right: kScreenPadding / 2,
-          top: kScreenPadding / 2),
+      padding: const EdgeInsets.symmetric(
+          horizontal: kScreenPadding / 2, vertical: kScreenPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            color: context.colorScheme.surface,
-            onPressed: _showFilterDialog,
-            icon: Icon(
-              AppIcons.importAccount,
-              color: context.colorScheme.onBackground,
-              size: AppIcons.medium,
-            ),
-          ),
-          Expanded(
-            child: CustomTextField(
-              controller: filterController,
-              labelText: 'Filter',
-              onChanged: (value) {
-                final publicAddress =
-                    ref.read(accountProvider).account?.address;
-
-                if (publicAddress != null && publicAddress.isNotEmpty) {
-                  ref
-                      .read(assetsProvider(publicAddress).notifier)
-                      .setFilter(value);
-                } else {
-                  debugPrint('Public address is not available');
-                }
-              },
-              autoCorrect: false,
-              suffixIcon:
-                  filterController.text.isNotEmpty ? AppIcons.cross : null,
-              leadingIcon: AppIcons.search,
-              onTrailingPressed: () {
-                filterController.clear();
-                final publicAddress =
-                    ref.read(accountProvider).account?.address;
-
-                if (publicAddress != null && publicAddress.isNotEmpty) {
-                  ref
-                      .read(assetsProvider(publicAddress).notifier)
-                      .setFilter('');
-                } else {
-                  debugPrint('Public address is not available');
-                }
-              },
-              isSmall: true,
-            ),
-          ),
-          FutureBuilder<bool>(
-            future: ref.read(accountProvider.notifier).hasPrivateKey(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox.shrink();
-              } else if (snapshot.hasData && snapshot.data == true) {
-                return IconButton(
-                  onPressed: () => context.goNamed(addAssetRouteName),
-                  icon: const Icon(
-                    AppIcons.add,
-                    size: AppIcons.medium,
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
+          _buildFilterButton(),
+          _buildFilterTextField(),
+          _buildAddAssetButton(),
         ],
       ),
+    );
+  }
+
+  Widget _buildFilterButton() {
+    return IconButton(
+      color: context.colorScheme.surface,
+      onPressed: _showFilterDialog,
+      icon: Icon(
+        AppIcons.importAccount,
+        color: context.colorScheme.onBackground,
+        size: AppIcons.medium,
+      ),
+    );
+  }
+
+  Widget _buildFilterTextField() {
+    return Expanded(
+      child: CustomTextField(
+        controller: filterController,
+        labelText: 'Filter',
+        onChanged: _handleFilterChange,
+        autoCorrect: false,
+        suffixIcon: filterController.text.isNotEmpty ? AppIcons.cross : null,
+        leadingIcon: AppIcons.search,
+        onTrailingPressed: _clearFilter,
+        isSmall: true,
+      ),
+    );
+  }
+
+  void _handleFilterChange(String value) {
+    final publicAddress = _getPublicAddress();
+    if (publicAddress.isNotEmpty) {
+      ref.read(assetsProvider(publicAddress).notifier).setFilter(value);
+    } else {
+      debugPrint('Public address is not available');
+    }
+  }
+
+  void _clearFilter() {
+    filterController.clear();
+    _handleFilterChange('');
+  }
+
+  Widget _buildAddAssetButton() {
+    return FutureBuilder<bool>(
+      future: ref.read(accountProvider.notifier).hasPrivateKey(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox.shrink();
+        }
+        if (snapshot.hasData && snapshot.data == true) {
+          return IconButton(
+            onPressed: () => context.goNamed(addAssetRouteName),
+            icon: const Icon(AppIcons.add, size: AppIcons.medium),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -214,19 +207,16 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       header: "Sort and Filter Assets",
       items: sortOptions,
       onPressed: (SelectItem item) {
-        Sorting newSorting = Sorting.values.firstWhere(
+        final newSorting = Sorting.values.firstWhere(
             (s) => s.toString().split('.').last == item.value,
             orElse: () => Sorting.assetId);
         ref.read(sortingProvider.notifier).state = newSorting;
         _sortAssets(newSorting);
       },
       singleWidget: Consumer(
-        builder: (context, ref, child) {
+        builder: (context, ref, _) {
           final showFrozen = ref.watch(showFrozenAssetsProvider);
           return CheckboxListTile(
-            tileColor: Colors.transparent,
-            checkboxShape: const CircleBorder(),
-            selectedTileColor: Colors.transparent,
             title: const Text("Show Frozen Assets"),
             value: showFrozen,
             onChanged: (bool? value) {
@@ -244,26 +234,21 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   void _sortAssets(Sorting sorting) {
-    final publicAddress = ref.read(accountProvider).account?.address;
-
-    if (publicAddress != null && publicAddress.isNotEmpty) {
-      final assetsNotifier = ref.read(assetsProvider(publicAddress).notifier);
-      assetsNotifier.sortAssets(sorting);
+    final publicAddress = _getPublicAddress();
+    if (publicAddress.isNotEmpty) {
+      ref.read(assetsProvider(publicAddress).notifier).sortAssets(sorting);
     } else {
-      // Handle the case where publicAddress is null or empty
       debugPrint('Public address is not available');
     }
   }
 
   void _filterAssets(bool showFrozen) {
-    final publicAddress = ref.read(accountProvider).account?.address;
-
-    if (publicAddress != null && publicAddress.isNotEmpty) {
+    final publicAddress = _getPublicAddress();
+    if (publicAddress.isNotEmpty) {
       ref
           .read(assetsProvider(publicAddress).notifier)
           .setShowFrozen(showFrozen);
     } else {
-      // Handle the case where publicAddress is null or empty
       debugPrint('Public address is not available');
     }
   }
@@ -282,12 +267,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         return AssetListItem(
           asset: asset,
           onPressed: () {
-            debugPrint(isWideScreen ? 'Landscape mode' : 'Portrait mode');
-
             if (isWideScreen) {
-              setState(() {
-                _selectedAsset = asset;
-              });
+              setState(() => _selectedAsset = asset);
             } else {
               ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
               context.goNamed(
@@ -303,17 +284,11 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   Widget _buildEmptyAssets() {
-    final publicAddress = ref.read(accountProvider).account?.address;
-    bool isFilterActive = false;
-
-    if (publicAddress != null && publicAddress.isNotEmpty) {
-      isFilterActive = ref
-          .read(assetsProvider(publicAddress).notifier)
-          .filterText
-          .isNotEmpty;
-    } else {
-      debugPrint('Public address is not available');
-    }
+    final isFilterActive = _getPublicAddress().isNotEmpty &&
+        ref
+            .read(assetsProvider(_getPublicAddress()).notifier)
+            .filterText
+            .isNotEmpty;
 
     return Center(
       child: Column(
@@ -335,23 +310,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           ),
           const SizedBox(height: kScreenPadding),
           TextButton(
-            onPressed: isFilterActive
-                ? () {
-                    final publicAddress =
-                        ref.read(accountProvider).account?.address;
-                    ref
-                        .read(assetsProvider(publicAddress ?? '').notifier)
-                        .setFilter('');
-                    if (publicAddress != null && publicAddress.isNotEmpty) {
-                      ref
-                          .read(assetsProvider(publicAddress).notifier)
-                          .setFilter('');
-                      filterController.clear();
-                    } else {
-                      debugPrint('Public address is not available');
-                    }
-                  }
-                : _onRefresh,
+            onPressed: isFilterActive ? _clearFilter : _onRefresh,
             child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
           ),
         ],
@@ -366,7 +325,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
       period: const Duration(milliseconds: 2000),
       child: ListView.separated(
         itemCount: 3,
-        itemBuilder: (context, index) => ListTile(
+        itemBuilder: (_, __) => ListTile(
           leading: const CircleAvatar(),
           title: Container(
               width: double.infinity,
@@ -377,17 +336,17 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               height: kScreenPadding,
               color: context.colorScheme.surface),
         ),
-        separatorBuilder: (BuildContext context, int index) =>
-            const SizedBox(height: kScreenPadding / 2),
+        separatorBuilder: (_, __) => const SizedBox(height: kScreenPadding / 2),
       ),
     );
   }
 
-  List<SelectItem> sortOptions = [
-    SelectItem(
-        name: "Sort by Index",
-        value: "index",
-        icon: Icons.format_list_numbered),
-    SelectItem(name: "Sort by Name", value: "name", icon: Icons.sort_by_alpha),
-  ];
+  List<SelectItem> get sortOptions => [
+        SelectItem(
+            name: "Sort by Index",
+            value: "index",
+            icon: Icons.format_list_numbered),
+        SelectItem(
+            name: "Sort by Name", value: "name", icon: Icons.sort_by_alpha),
+      ];
 }
