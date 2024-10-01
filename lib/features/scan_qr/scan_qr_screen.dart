@@ -274,8 +274,10 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             }
           } catch (e) {
             debugPrint('Error during session approval: $e');
-            !scanController.value.isRunning;
-            scanController.start();
+            rethrow;
+          } finally {
+            ref.read(loadingProvider.notifier).stopLoading();
+            isProcessing = false;
           }
           return null;
         },
@@ -286,7 +288,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
-        message: 'Failed to connect via WalletConnect: $e',
+        message: e.toString(),
       );
       !scanController.value.isRunning;
       scanController.start();
@@ -300,11 +302,16 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
 
       if (!mounted) return null;
 
-      final accounts = ref.read(accountsListProvider).accounts;
+      final accounts = ref
+          .read(accountsListProvider)
+          .accounts
+          .where((account) =>
+              account['privateKey'] != null &&
+              account['privateKey']!.isNotEmpty)
+          .toList(); // Filter out watch accounts
 
       if (accounts.isEmpty) {
-        await _showErrorDialog('No accounts available.');
-        return null;
+        throw Exception('No accounts available to connect.');
       }
 
       final selectedAccount = await showDialog<Map<String, String>>(
@@ -329,20 +336,6 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       debugPrint('Error loading accounts: $e');
       return null;
     }
-  }
-
-  Future<void> _showErrorDialog(String message) async {
-    await showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          titlePadding: const EdgeInsets.all(kScreenPadding),
-          title: const Text('Error'),
-          content: Text(message),
-        );
-      },
-    );
   }
 
   Future<void> _handleAccountImportResult(
