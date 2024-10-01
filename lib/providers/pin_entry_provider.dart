@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/pin_state.dart';
@@ -5,6 +6,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 
 final pinEntryStateNotifierProvider =
     StateNotifierProvider<PinEntryStateNotifier, PinState>((ref) {
@@ -66,7 +68,21 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
           ref
               .read(loadingProvider.notifier)
               .startLoading(message: _getOverlayText(mode));
-          await ref.read(accountProvider.notifier).loadAccountFromPrivateKey();
+          final activeAccountId = ref.read(storageProvider).getActiveAccount();
+          if (activeAccountId == null) {
+            throw Exception('No active account found.');
+          }
+
+          final accountName =
+              await ref.read(storageProvider).getAccountName(activeAccountId);
+          if (accountName == null || accountName.isEmpty) {
+            throw Exception(
+                'Account name not found for activeAccountId: $activeAccountId');
+          }
+
+          await ref
+              .read(accountProvider.notifier)
+              .initialiseFromPublicKey(accountName, activeAccountId);
           ref.read(isAuthenticatedProvider.notifier).state = true;
           clearError();
         } else {
@@ -76,6 +92,7 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
     } catch (e) {
       state = state.copyWith(error: 'Invalid PIN. Try again.', pin: '');
       ref.read(loadingProvider.notifier).stopLoading();
+      debugPrint('Error in pinComplete: ${e.toString()}');
     }
   }
 

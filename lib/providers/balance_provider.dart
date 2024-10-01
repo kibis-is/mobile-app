@@ -4,7 +4,7 @@ import 'package:kibisis/providers/algorand_provider.dart';
 
 final balanceProvider =
     StateNotifierProvider<BalanceNotifier, AsyncValue<double>>((ref) {
-  final publicAddress = ref.watch(accountProvider).account?.publicAddress ?? '';
+  final publicAddress = ref.watch(accountProvider).account?.address ?? '';
   return BalanceNotifier(ref, publicAddress);
 });
 

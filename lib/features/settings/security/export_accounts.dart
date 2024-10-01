@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -57,6 +58,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(accountsListProvider.notifier).loadAccounts();
       startOrAdjustTimer();
     });
   }
@@ -87,8 +89,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accounts =
-        ref.watch(accountsListProvider.select((value) => value.accounts));
+    final exportableAccountsAsyncValue = ref.watch(exportableAccountsProvider);
     final selectedAccountId = ref.watch(selectedAccountProvider) ?? '0';
     final qrDataAsyncValue = ref.watch(barcodeUriProvider(selectedAccountId));
 
@@ -98,54 +99,83 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: Column(
-          children: [
-            const SizedBox(height: kScreenPadding),
-            buildAccountDropDown(accounts, selectedAccountId),
-            const SizedBox(height: kScreenPadding),
-            buildQrCodeDisplay(qrDataAsyncValue),
-            const SizedBox(height: kScreenPadding),
-            if (accounts.length > 5) ...[
-              buildSlider(selectedAccountId),
-              const SizedBox(height: kScreenPadding),
-            ],
-            buildActionRow(selectedAccountId),
-          ],
+        child: exportableAccountsAsyncValue.when(
+          data: (exportableAccounts) {
+            if (exportableAccounts.isEmpty) {
+              return Center(
+                child: Text(
+                  'No accounts available for export.',
+                  style: context.textTheme.bodyLarge,
+                ),
+              );
+            }
+
+            return Column(
+              children: [
+                const SizedBox(height: kScreenPadding),
+                buildAccountDropDown(exportableAccounts, selectedAccountId),
+                const SizedBox(height: kScreenPadding),
+                buildQrCodeDisplay(qrDataAsyncValue),
+                const SizedBox(height: kScreenPadding),
+                if (exportableAccounts.length > 5) ...[
+                  buildSlider(selectedAccountId),
+                  const SizedBox(height: kScreenPadding),
+                ],
+                buildActionRow(selectedAccountId),
+              ],
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(
+            child: Text('Error: $error'),
+          ),
         ),
       ),
     );
   }
 
   Widget buildAccountDropDown(
-      List<Map<String, dynamic>> accounts, String selectedAccountId) {
-    if (accounts.length <= 1) return const SizedBox.shrink();
+      List<Map<String, String>> accounts, String selectedAccountId) {
+    final accountsWithPrivateKeyAsyncValue =
+        ref.watch(exportableAccountsProvider);
 
-    List<SelectItem> dropdownItems = accounts
-        .map((account) => SelectItem(
-              name: account['accountName'] ?? 'Unnamed Account',
-              value: account['accountId'] ?? '0',
-              icon: AppIcons.wallet,
-            ))
-        .toList();
-    dropdownItems.insert(0,
-        SelectItem(name: 'All Accounts', value: 'all', icon: AppIcons.group));
-
-    return CustomDropDown(
-      label: 'Account',
-      items: dropdownItems,
-      selectedValue: dropdownItems.firstWhere(
-        (item) => item.value == selectedAccountId,
-        orElse: () => dropdownItems[0],
-      ),
-      onChanged: (SelectItem? newValue) {
-        if (newValue != null) {
-          _timer?.cancel();
-          ref.read(selectedAccountProvider.notifier).state = newValue.value;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            startOrAdjustTimer();
-          });
+    return accountsWithPrivateKeyAsyncValue.when(
+      data: (exportableAccounts) {
+        if (exportableAccounts.isEmpty) {
+          return const SizedBox();
         }
+        List<SelectItem> dropdownItems = exportableAccounts
+            .map((account) => SelectItem(
+                  name: account['accountName'] ?? 'Unnamed Account',
+                  value: account['accountId'] ?? '0',
+                  icon: AppIcons.wallet,
+                ))
+            .toList();
+
+        // Make sure there's a valid default dropdown item
+        final selectedValue = dropdownItems.firstWhere(
+          (item) => item.value == selectedAccountId,
+          orElse: () => dropdownItems[0],
+        );
+
+        return CustomDropDown(
+          label: 'Account',
+          items: dropdownItems,
+          selectedValue: selectedValue,
+          onChanged: (SelectItem? newValue) {
+            if (newValue != null) {
+              ref.read(selectedAccountProvider.notifier).state = newValue.value;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                startOrAdjustTimer();
+              });
+            }
+          },
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Text('Error: $error'),
+      ),
     );
   }
 
@@ -163,7 +193,11 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
               : buildSingleQrView(qrData[0]);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, stack) => Center(child: Text('Error: $e')),
+        error: (e, stack) => const Center(
+            child: Text(
+          'This account cannot be exported, as it has no private key.',
+          textAlign: TextAlign.center,
+        )),
       ),
     );
   }

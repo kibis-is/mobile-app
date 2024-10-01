@@ -4,7 +4,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 
 final minimumBalanceProvider = Provider<double>((ref) {
-  final publicAddress = ref.watch(accountProvider).account?.publicAddress;
+  final publicAddress = ref.watch(accountProvider).account?.address;
 
   if (publicAddress == null || publicAddress.isEmpty) {
     return 0.1;

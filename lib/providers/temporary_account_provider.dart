@@ -2,7 +2,6 @@ import 'package:convert/convert.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/hex_coverter.dart';
@@ -65,6 +64,50 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     } catch (e) {
       state = state.copyWith(account: null, privateKey: null, seedPhrase: null);
       rethrow;
+    }
+  }
+
+  // Method for creating a temporary watch account
+  Future<void> createWatchAccount(String publicAddress) async {
+    try {
+      // Validate the public address
+      final isValid = _isValidAlgorandAddress(publicAddress);
+      if (!isValid) {
+        throw Exception('Invalid Algorand address.');
+      }
+
+      final accountInfo = AccountInformation(
+        address: publicAddress,
+        amount: 0,
+        amountWithoutPendingRewards: 0,
+        pendingRewards: 0,
+        rewards: 0,
+        round: 0,
+        status: 'Offline',
+        deleted: false,
+        assets: [],
+        appsLocalState: [],
+        createdApps: [],
+        createdAssets: [],
+      );
+
+      state = state.copyWith(
+        account: accountInfo, // Store as AccountInformation
+        privateKey: null, // No private key
+        seedPhrase: null, // No seed phrase
+      );
+    } catch (e) {
+      state = state.copyWith(account: null);
+      throw Exception('Failed to create watch account: ${e.toString()}');
+    }
+  }
+
+  bool _isValidAlgorandAddress(String address) {
+    try {
+      Address.fromAlgorandAddress(address: address);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -183,11 +226,5 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
 
   void reset() {
     state = TemporaryAccountState();
-  }
-
-  Future<void> createWatchAccount(String publicKey) async {
-    state = state.copyWith(
-      account: WatchAccount(publicKey: publicKey),
-    );
   }
 }

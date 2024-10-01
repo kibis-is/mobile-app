@@ -8,8 +8,7 @@ import 'dart:convert';
 final transactionsProvider =
     StateNotifierProvider<TransactionsNotifier, AsyncValue<List<Transaction>>>(
   (ref) {
-    final publicAddress =
-        ref.watch(accountProvider).account?.publicAddress ?? '';
+    final publicAddress = ref.watch(accountProvider).account?.address ?? '';
     return TransactionsNotifier(ref, publicAddress);
   },
 );

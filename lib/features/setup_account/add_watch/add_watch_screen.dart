@@ -96,12 +96,13 @@ class AddWatchScreen extends ConsumerWidget {
         return;
       }
 
+      // Store the watch account's public address in the temporary account provider
       await ref
           .read(temporaryAccountProvider.notifier)
           .createWatchAccount(publicAddress);
 
+      // Navigate to the account name setup page
       if (!context.mounted) return;
-
       GoRouter.of(context).push(accountFlow == AccountFlow.setup
           ? '/setup/setupNameAccount'
           : '/addAccount/addAccountNameAccount');

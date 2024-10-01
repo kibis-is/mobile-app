@@ -13,34 +13,31 @@ class ActivityTab extends ConsumerStatefulWidget {
 }
 
 class _ActivityTabState extends ConsumerState<ActivityTab> {
-  static const _pageSize = 5; // Set page size as an integer
+  static const _pageSize = 5;
   final PagingController<int, TransactionItem> _pagingController =
-      PagingController(firstPageKey: 0); // pageKey is an integer
+      PagingController(firstPageKey: 0);
 
   @override
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey); // Fetch the next page when needed
+      _fetchPage(pageKey);
     });
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final publicAddress =
-          ref.read(accountProvider).account?.publicAddress ?? '';
+      final publicAddress = ref.read(accountProvider).account?.address ?? '';
 
-      // Fetch the paginated transactions from the provider
       final newItems = await ref
           .read(transactionsProvider.notifier)
-          .getPaginatedTransactions(publicAddress, pageKey,
-              _pageSize); // Ensure the limit is an integer
+          .getPaginatedTransactions(publicAddress, pageKey, _pageSize);
 
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
       } else {
-        final nextPageKey = pageKey + newItems.length; // pageKey is an int
+        final nextPageKey = pageKey + newItems.length;
         _pagingController.appendPage(newItems, nextPageKey);
       }
     } catch (error) {
@@ -50,7 +47,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
 
   @override
   void dispose() {
-    _pagingController.dispose(); // Dispose the paging controller
+    _pagingController.dispose();
     super.dispose();
   }
 

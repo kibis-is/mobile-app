@@ -42,7 +42,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
 
-    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    final publicAddress = ref.read(accountProvider).account?.address;
 
     if (publicAddress != null && publicAddress.isNotEmpty) {
       filterController = TextEditingController(
@@ -62,7 +62,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
 
   @override
   Widget build(BuildContext context) {
-    final publicAddress = ref.watch(accountProvider).account?.publicAddress;
+    final publicAddress = ref.watch(accountProvider).account?.address ?? '';
     final assetsAsync = ref.watch(assetsProvider(publicAddress));
 
     final mediaQueryHelper = MediaQueryHelper(context);
@@ -138,7 +138,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               labelText: 'Filter',
               onChanged: (value) {
                 final publicAddress =
-                    ref.read(accountProvider).account?.publicAddress;
+                    ref.read(accountProvider).account?.address;
 
                 if (publicAddress != null && publicAddress.isNotEmpty) {
                   ref
@@ -155,7 +155,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               onTrailingPressed: () {
                 filterController.clear();
                 final publicAddress =
-                    ref.read(accountProvider).account?.publicAddress;
+                    ref.read(accountProvider).account?.address;
 
                 if (publicAddress != null && publicAddress.isNotEmpty) {
                   ref
@@ -168,12 +168,25 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               isSmall: true,
             ),
           ),
-          IconButton(
-            onPressed: () => context.goNamed(addAssetRouteName),
-            icon: const Icon(
-              AppIcons.add,
-              size: AppIcons.medium,
-            ),
+          FutureBuilder<bool>(
+            future: ref.read(accountProvider.notifier).hasPrivateKey(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox.shrink();
+              } else if (snapshot.hasData && snapshot.data == true) {
+                // Show the "Add" button only if the account has a private key (not a watch account)
+                return IconButton(
+                  onPressed: () => context.goNamed(addAssetRouteName),
+                  icon: const Icon(
+                    AppIcons.add,
+                    size: AppIcons.medium,
+                  ),
+                );
+              } else {
+                return const SizedBox
+                    .shrink(); // Hide the button if it's a watch account
+              }
+            },
           ),
         ],
       ),
@@ -221,7 +234,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   void _sortAssets(Sorting sorting) {
-    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    final publicAddress = ref.read(accountProvider).account?.address;
 
     if (publicAddress != null && publicAddress.isNotEmpty) {
       final assetsNotifier = ref.read(assetsProvider(publicAddress).notifier);
@@ -233,7 +246,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   void _filterAssets(bool showFrozen) {
-    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    final publicAddress = ref.read(accountProvider).account?.address;
 
     if (publicAddress != null && publicAddress.isNotEmpty) {
       ref
@@ -280,7 +293,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   }
 
   Widget _buildEmptyAssets() {
-    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    final publicAddress = ref.read(accountProvider).account?.address;
     bool isFilterActive = false;
 
     if (publicAddress != null && publicAddress.isNotEmpty) {
@@ -315,9 +328,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             onPressed: isFilterActive
                 ? () {
                     final publicAddress =
-                        ref.read(accountProvider).account?.publicAddress;
+                        ref.read(accountProvider).account?.address;
                     ref
-                        .read(assetsProvider(publicAddress).notifier)
+                        .read(assetsProvider(publicAddress ?? '').notifier)
                         .setFilter('');
                     if (publicAddress != null && publicAddress.isNotEmpty) {
                       ref
