@@ -64,9 +64,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   Widget build(BuildContext context) {
     final publicAddress = ref.watch(accountProvider).account?.address ?? '';
     final assetsAsync = ref.watch(assetsProvider(publicAddress));
-
     final mediaQueryHelper = MediaQueryHelper(context);
-    final flex = mediaQueryHelper.getDynamicFlex();
     final assetsFilterController =
         ref.watch(assetsFilterControllerProvider.notifier);
 
@@ -75,43 +73,57 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: flex[0],
-                child: Column(
-                  children: [
-                    _buildSearchBar(assetsFilterController),
-                    Expanded(
-                      child: CustomPullToRefresh(
-                        refreshController: _refreshController,
-                        onRefresh: _onRefresh,
-                        child: assetsAsync.when(
-                          data: (assets) => _buildAssetsList(assets),
-                          loading: () => _buildLoadingAssets(),
-                          error: (error, stack) => _buildEmptyAssets(),
-                        ),
-                      ),
-                    ),
-                  ],
+                flex: mediaQueryHelper.getDynamicFlex()[0],
+                child: buildSearchAndAssetList(
+                  assetsFilterController: assetsFilterController,
+                  assetsAsync: assetsAsync,
                 ),
               ),
               Expanded(
-                flex: flex[1],
+                flex: mediaQueryHelper.getDynamicFlex()[1],
                 child: _selectedAsset != null
                     ? ViewAssetScreen(
                         asset: _selectedAsset!,
                         isPanelMode: true,
                       )
                     : const Center(
-                        child: Text('Select an asset to view details'),
-                      ),
+                        child: Text('Select an asset to view details')),
               ),
             ],
           )
-        : assetsAsync.when(
-            data: (assets) => _buildAssetsList(assets),
-            loading: () => _buildLoadingAssets(),
-            error: (error, stack) =>
-                const Center(child: Text('Error loading assets')),
+        : buildSearchAndAssetList(
+            assetsFilterController: assetsFilterController,
+            assetsAsync: assetsAsync,
           );
+  }
+
+  Widget buildSearchAndAssetList({
+    required AssetsFilterController assetsFilterController,
+    required AsyncValue<List<CombinedAsset>> assetsAsync,
+  }) {
+    final RefreshController refreshController =
+        RefreshController(initialRefresh: false);
+
+    return Column(
+      children: [
+        _buildSearchBar(assetsFilterController),
+        Expanded(
+          child: CustomPullToRefresh(
+            refreshController: refreshController,
+            onRefresh: () {
+              _onRefresh();
+              refreshController.refreshCompleted();
+            },
+            child: assetsAsync.when(
+              data: (assets) => _buildAssetsList(assets),
+              loading: () => _buildLoadingAssets(),
+              error: (error, stack) =>
+                  const Center(child: Text('Error loading assets')),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildSearchBar(AssetsFilterController assetsFilterController) {
@@ -174,7 +186,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SizedBox.shrink();
               } else if (snapshot.hasData && snapshot.data == true) {
-                // Show the "Add" button only if the account has a private key (not a watch account)
                 return IconButton(
                   onPressed: () => context.goNamed(addAssetRouteName),
                   icon: const Icon(
@@ -183,8 +194,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
                   ),
                 );
               } else {
-                return const SizedBox
-                    .shrink(); // Hide the button if it's a watch account
+                return const SizedBox.shrink();
               }
             },
           ),
