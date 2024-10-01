@@ -26,8 +26,8 @@ class AppResetUtil {
       await _disconnectAllSessions(ref);
 
       await _clearStorage(ref);
-      await _resetProvidersInBatches(ref);
-      _resetSimpleProviders(ref);
+      _invalidateProviders(ref);
+      _resetExplicitProviders(ref);
 
       debugPrint('Reset process completed.');
     } catch (e, stackTrace) {
@@ -50,59 +50,38 @@ class AppResetUtil {
     }
   }
 
+  // Clear secure storage
   static Future<void> _clearStorage(WidgetRef ref) async {
     final storageService = ref.read(storageProvider);
     try {
       await storageService.clearOneByOne();
+      debugPrint('Storage cleared successfully.');
     } catch (e) {
-      debugPrint('Error clearing secure storage: $e');
+      debugPrint('Error clearing storage: $e');
       throw Exception('Failed to clear storage: $e');
     }
 
     ref.invalidate(storageProvider);
-    debugPrint('TRACKING: 1 - storage cleared');
   }
 
-  static void _resetSimpleProviders(WidgetRef ref) {
-    try {
-      ref.read(isAuthenticatedProvider.notifier).state = false;
-      ref.read(errorProvider.notifier).state = '';
-      ref.read(setupCompleteProvider.notifier).reset();
-    } catch (e) {
-      debugPrint('Error resetting simple providers: $e');
-      throw Exception('Failed to reset simple providers: $e');
-    }
+  static void _invalidateProviders(WidgetRef ref) {
+    ref.invalidate(accountProvider);
+    ref.invalidate(pinProvider);
+    ref.invalidate(pinEntryStateNotifierProvider);
+    ref.invalidate(activeAccountProvider);
+    ref.invalidate(temporaryAccountProvider);
+    ref.invalidate(balanceProvider);
+    ref.invalidate(assetsProvider(''));
+    ref.invalidate(transactionsProvider);
+    ref.invalidate(selectedAssetProvider);
+    ref.invalidate(isDarkModeProvider);
+    ref.invalidate(showFrozenAssetsProvider);
   }
 
-  static Future<void> _resetProvidersInBatches(WidgetRef ref) async {
-    try {
-      final List<void Function()> resetFunctions = [
-        () => ref.read(pinProvider.notifier).reset(),
-        () => ref.read(pinEntryStateNotifierProvider.notifier).reset(),
-        () => ref.read(temporaryAccountProvider.notifier).reset(),
-        () => ref.read(selectedAssetProvider.notifier).reset(),
-        () => ref.read(isDarkModeProvider.notifier).reset(),
-        () => ref.read(showFrozenAssetsProvider.notifier).reset(),
-        () => ref.read(accountProvider.notifier).reset(),
-        () => ref.read(activeAccountProvider.notifier).reset(),
-        () => ref.read(transactionsProvider.notifier).reset(),
-        () => ref.read(balanceProvider.notifier).reset(),
-        () => ref.read(assetsProvider('').notifier).reset(),
-        () =>
-            ref.read(accountDataFetchStatusProvider.notifier).setFetched(false),
-      ];
-
-      for (int i = 0; i < resetFunctions.length; i += 3) {
-        final batch = resetFunctions.sublist(
-            i, i + 3 > resetFunctions.length ? resetFunctions.length : i + 3);
-        await Future.wait(batch.map((resetFunction) async {
-          resetFunction();
-        }));
-        await Future.delayed(const Duration(milliseconds: 50));
-      }
-    } catch (e) {
-      debugPrint('Error resetting providers in batches: $e');
-      throw Exception('Failed to reset providers in batches: $e');
-    }
+  static void _resetExplicitProviders(WidgetRef ref) {
+    ref.read(isAuthenticatedProvider.notifier).state = false;
+    ref.read(errorProvider.notifier).state = '';
+    ref.read(setupCompleteProvider.notifier).setSetupComplete(false);
+    ref.read(accountDataFetchStatusProvider.notifier).setFetched(false);
   }
 }
