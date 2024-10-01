@@ -40,10 +40,8 @@ class AssetListItem extends ConsumerWidget {
                 leading: _buildAssetIcon(
                     context, ref, asset.params.defaultFrozen ?? false),
                 title: isWideScreen
-                    ? Text(asset.params.name ??
-                        'Unknown') // No Hero in landscape mode
+                    ? Text(asset.params.name ?? 'Unknown')
                     : Hero(
-                        // Use Hero in portrait mode for navigation
                         tag: '${asset.index}-name',
                         child: EllipsizedText(
                           asset.params.name ?? 'Unknown',
@@ -53,7 +51,7 @@ class AssetListItem extends ConsumerWidget {
                         ),
                       ),
                 subtitle: isWideScreen
-                    ? Text(_getFormattedAmount()) // No Hero in landscape mode
+                    ? Text(_getFormattedAmount())
                     : Hero(
                         tag: '${asset.index}-amount',
                         child: EllipsizedText(
@@ -88,7 +86,7 @@ class AssetListItem extends ConsumerWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isWideScreen = screenWidth > 600;
     return Hero(
-      tag: isWideScreen ? '' : '${asset.index}-icon',
+      tag: isWideScreen ? 'wide-${asset.index}-icon' : '${asset.index}-icon',
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
