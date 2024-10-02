@@ -106,7 +106,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
             firstPageProgressIndicatorBuilder: (context) => const Center(
               child: CircularProgressIndicator(),
             ),
-            // Add the missing empty list indicator
             noItemsFoundIndicatorBuilder: (context) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -120,6 +119,11 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
                     'There are no items in your transaction history.',
                     style: context.textTheme.bodySmall,
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: kScreenPadding),
+                  TextButton(
+                    onPressed: _onRefresh,
+                    child: const Text('Retry'),
                   ),
                 ],
               ),
