@@ -4,6 +4,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 
 class AccountHandler {
   final WidgetRef ref;
@@ -25,6 +26,7 @@ class AccountHandler {
       }
 
       ref.invalidate(accountProvider);
+      invalidateProviders(ref);
 
       await ref
           .read(accountProvider.notifier)

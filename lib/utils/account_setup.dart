@@ -9,7 +9,6 @@ import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/account_selection.dart';
-import 'package:kibisis/utils/refresh_account_data.dart';
 
 class AccountSetupUtility {
   static Future<void> completeAccountSetup({
@@ -42,7 +41,6 @@ class AccountSetupUtility {
       final accountHandler = AccountHandler(ref);
       await accountHandler.handleAccountSelection(newAccountId);
     }
-    invalidateProviders(ref);
   }
 
   static Future<void> _handleCleanUp(
