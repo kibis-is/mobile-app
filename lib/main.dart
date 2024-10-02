@@ -14,6 +14,7 @@ import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
 import 'package:kibisis/theme/themes.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:kibisis/utils/app_lifecycle_handler.dart';
 import 'package:kibisis/utils/wallet_connect_manageer.dart';
@@ -24,10 +25,27 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(const ProviderScope(child: Kibisis()));
-  });
+
+  runApp(
+    Builder(builder: (context) {
+      final mediaQueryHelper = MediaQueryHelper(context);
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mediaQueryHelper.isWideScreen()) {
+          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+        } else {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]);
+        }
+      });
+
+      return const ProviderScope(child: Kibisis());
+    }),
+  );
 }
 
 class Kibisis extends ConsumerStatefulWidget {
