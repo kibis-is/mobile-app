@@ -69,6 +69,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
               for (var controller in seedPhraseControllers) {
                 controller.clear();
               }
+              formKey.currentState?.reset();
             },
           ),
           IconButton(
