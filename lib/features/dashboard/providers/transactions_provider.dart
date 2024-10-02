@@ -13,11 +13,17 @@ final transactionsProvider =
   },
 );
 
+class PaginatedTransactionItems {
+  final List<TransactionItem> items;
+  final String? nextToken;
+
+  PaginatedTransactionItems({required this.items, required this.nextToken});
+}
+
 class TransactionsNotifier
     extends StateNotifier<AsyncValue<List<Transaction>>> {
   final Ref ref;
   final String publicAddress;
-  String? nextToken;
 
   TransactionsNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
@@ -28,7 +34,6 @@ class TransactionsNotifier
     await getTransactions(publicAddress, isInitial: true);
   }
 
-  // Fetches initial transactions or more transactions for pagination
   Future<void> getTransactions(String publicAddress,
       {bool isInitial = false}) async {
     if (publicAddress.isEmpty) {
@@ -39,26 +44,17 @@ class TransactionsNotifier
     try {
       if (isInitial) {
         state = const AsyncValue.loading();
-        nextToken = null; // Reset the nextToken for initial load
       }
 
       final response = await ref.read(algorandServiceProvider).getTransactions(
             publicAddress,
             limit: 5,
-            nextToken: nextToken,
           );
 
       final transactions = response.transactions;
 
       if (mounted) {
-        if (isInitial) {
-          state = AsyncValue.data(transactions);
-        } else {
-          final currentState = state.value ?? [];
-          state = AsyncValue.data([...currentState, ...transactions]);
-        }
-
-        nextToken = response.nextToken;
+        state = AsyncValue.data(transactions);
       }
     } catch (e) {
       if (mounted) {
@@ -67,20 +63,20 @@ class TransactionsNotifier
     }
   }
 
-  Future<List<TransactionItem>> getPaginatedTransactions(
-      String publicAddress, int pageKey, int limit) async {
-    if (publicAddress.isEmpty) return [];
+  Future<PaginatedTransactionItems> getPaginatedTransactions(
+      String publicAddress, String? pageKey, int limit) async {
+    if (publicAddress.isEmpty) {
+      return PaginatedTransactionItems(items: [], nextToken: null);
+    }
 
     try {
       final response = await ref.read(algorandServiceProvider).getTransactions(
             publicAddress,
             limit: limit,
-            nextToken: nextToken, // Use nextToken for pagination
+            nextToken: pageKey, // Use pageKey as nextToken
           );
 
-      // Update the nextToken for the next page
-      nextToken = response.nextToken;
-
+      final nextToken = response.nextToken;
       final transactions = response.transactions;
 
       // Convert transactions to TransactionItems
@@ -121,14 +117,17 @@ class TransactionsNotifier
         ));
       }
 
-      return transactionItems;
+      return PaginatedTransactionItems(
+        items: transactionItems,
+        nextToken: nextToken,
+      );
     } catch (e) {
-      return [];
+      return PaginatedTransactionItems(items: [], nextToken: null);
     }
   }
 
   void reset() {
     state = const AsyncValue.data([]);
-    nextToken = null;
+    // No need to reset nextToken here
   }
 }

@@ -14,8 +14,10 @@ class ActivityTab extends ConsumerStatefulWidget {
 
 class _ActivityTabState extends ConsumerState<ActivityTab> {
   static const _pageSize = 5;
-  final PagingController<int, TransactionItem> _pagingController =
-      PagingController(firstPageKey: 0);
+
+  // Change the page key type to String? to use nextToken
+  final PagingController<String?, TransactionItem> _pagingController =
+      PagingController(firstPageKey: null);
 
   @override
   void initState() {
@@ -25,19 +27,23 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
     });
   }
 
-  Future<void> _fetchPage(int pageKey) async {
+  Future<void> _fetchPage(String? pageKey) async {
     try {
       final publicAddress = ref.read(accountProvider).account?.address ?? '';
 
-      final newItems = await ref
+      // Fetch the items and the nextToken
+      final result = await ref
           .read(transactionsProvider.notifier)
           .getPaginatedTransactions(publicAddress, pageKey, _pageSize);
 
-      final isLastPage = newItems.length < _pageSize;
+      final newItems = result.items;
+      final nextPageKey = result.nextToken;
+
+      final isLastPage = nextPageKey == null || newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
       } else {
-        final nextPageKey = pageKey + newItems.length;
+        // Use nextToken as the next page key
         _pagingController.appendPage(newItems, nextPageKey);
       }
     } catch (error) {
@@ -53,7 +59,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
 
   @override
   Widget build(BuildContext context) {
-    return PagedListView<int, TransactionItem>(
+    return PagedListView<String?, TransactionItem>(
       pagingController: _pagingController,
       builderDelegate: PagedChildBuilderDelegate<TransactionItem>(
         itemBuilder: (context, item, index) => item,
