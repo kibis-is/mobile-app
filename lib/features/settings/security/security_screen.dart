@@ -26,80 +26,51 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize the local state with the current value from the provider
     _enablePinLock = ref.read(pinLockStateAdapter);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Remove ref.watch(pinLockStateAdapter) since we're managing it locally
     ref.watch(lockTimeoutProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(SecurityScreen.title),
-      ),
+      appBar: AppBar(title: const Text(SecurityScreen.title)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
           children: [
             const SizedBox(height: kScreenPadding),
-            buildSettingsToggle(),
+            _buildSettingsToggle(),
             if (_enablePinLock) ...[
               const SizedBox(height: kScreenPadding),
-              buildTimeoutDropdown(ref),
+              _buildTimeoutDropdown(),
             ],
             const SizedBox(height: kScreenPadding),
-            buildSecurityOptions(context, ref),
+            _buildSecurityOptions(),
           ],
         ),
       ),
     );
   }
 
-  Widget buildSettingsToggle() {
+  Widget _buildSettingsToggle() {
     return SwitchListTile(
       title: const Text('Enable Password Lock'),
       value: _enablePinLock,
       onChanged: (newValue) async {
         if (!newValue) {
-          // User is trying to disable password lock; prompt for PIN
-          final pinVerified = await showDialog<bool>(
-            context: context,
-            builder: (context) => PinPadDialog(
-              title: 'Verify Pin',
-              onPinVerified: () {
-                // The dialog will be popped within the PinPadDialog
-              },
-            ),
-          );
-
-          if (pinVerified == true && context.mounted) {
-            // PIN verified; proceed to disable password lock
-            setState(() {
-              _enablePinLock = false;
-            });
-            ref.read(pinLockProvider.notifier).setPasswordLock(false);
-            final storage = ref.read(storageProvider);
-            storage.setTimeoutEnabled(false);
-          } else {
-            // PIN verification failed or was canceled; do not change the switch
-            // No need to update _enablePinLock since it remains true
+          final pinVerified = await _verifyPin();
+          if (pinVerified) {
+            _updatePinLockState(false);
           }
         } else {
-          // User is enabling password lock; proceed without verification
-          setState(() {
-            _enablePinLock = true;
-          });
-          ref.read(pinLockProvider.notifier).setPasswordLock(true);
-          final storage = ref.read(storageProvider);
-          storage.setTimeoutEnabled(true);
+          _updatePinLockState(true);
         }
       },
     );
   }
 
-  Widget buildTimeoutDropdown(WidgetRef ref) {
+  Widget _buildTimeoutDropdown() {
     final timeoutSeconds = ref.watch(lockTimeoutProvider);
     return CustomDropDown(
       label: 'Timeout',
@@ -110,27 +81,21 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
       ),
       onChanged: (SelectItem? newValue) {
         if (newValue != null) {
-          final int timeoutSeconds;
-          try {
-            timeoutSeconds = int.parse(newValue.value);
-          } on Exception {
-            return;
-          }
+          final int timeoutSeconds = int.parse(newValue.value);
           ref.read(lockTimeoutProvider.notifier).setTimeout(timeoutSeconds);
-          final storage = ref.read(storageProvider);
-          storage.setLockTimeout(ref.read(lockTimeoutProvider));
+          ref.read(storageProvider).setLockTimeout(timeoutSeconds);
         }
       },
     );
   }
 
-  Widget buildSecurityOptions(BuildContext context, WidgetRef ref) {
+  Widget _buildSecurityOptions() {
     return Column(
       children: [
         TransparentListTile(
           icon: AppIcons.importAccount,
           title: 'Export Accounts',
-          onTap: () => _handleChangePin(context, ref, () {
+          onTap: () => _handlePinVerification(() {
             GoRouter.of(context).pushNamed(exportAccountsRouteName);
           }),
         ),
@@ -138,7 +103,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
         TransparentListTile(
           icon: AppIcons.importAccount,
           title: 'Change Pin',
-          onTap: () => _handleChangePin(context, ref, () {
+          onTap: () => _handlePinVerification(() {
             GoRouter.of(context).pushNamed(pinPadChangePinRouteName);
           }),
         ),
@@ -146,18 +111,28 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
     );
   }
 
-  Future<void> _handleChangePin(
-      BuildContext context, WidgetRef ref, VoidCallback onPinVerified) async {
+  Future<bool> _verifyPin() async {
     final pinVerified = await showDialog<bool>(
       context: context,
       builder: (context) => PinPadDialog(
         title: 'Verify Pin',
-        onPinVerified: () {
-          // The dialog will be popped within the PinPadDialog
-        },
+        onPinVerified: () {},
       ),
     );
-    if (pinVerified == true && context.mounted) {
+    return pinVerified == true;
+  }
+
+  void _updatePinLockState(bool newValue) {
+    setState(() {
+      _enablePinLock = newValue;
+    });
+    ref.read(pinLockProvider.notifier).setPasswordLock(newValue);
+    ref.read(storageProvider).setTimeoutEnabled(newValue);
+  }
+
+  Future<void> _handlePinVerification(VoidCallback onPinVerified) async {
+    final pinVerified = await _verifyPin();
+    if (pinVerified && context.mounted) {
       onPinVerified();
     }
   }
