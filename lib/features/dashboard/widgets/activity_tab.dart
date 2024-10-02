@@ -19,7 +19,6 @@ class ActivityTab extends ConsumerStatefulWidget {
 class _ActivityTabState extends ConsumerState<ActivityTab> {
   static const _pageSize = 5;
   late final RefreshController _refreshController;
-  // Change the page key type to String? to use nextToken
   final PagingController<String?, TransactionItem> _pagingController =
       PagingController(firstPageKey: null);
 
@@ -54,7 +53,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
       } else {
-        // Use nextToken as the next page key
         _pagingController.appendPage(newItems, nextPageKey);
       }
     } catch (error) {
