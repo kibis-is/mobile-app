@@ -72,6 +72,7 @@ class CustomTextField extends ConsumerWidget {
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
         fillColor: context.colorScheme.surface,
+        hoverColor: context.colorScheme.surface,
         filled: true,
         counterText: "",
         prefixIcon: leadingIcon != null
