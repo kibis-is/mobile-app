@@ -26,11 +26,11 @@ class AccountHandler {
       }
 
       ref.invalidate(accountProvider);
-      invalidateProviders(ref);
 
       await ref
           .read(accountProvider.notifier)
           .initialiseFromPublicKey(accountName, accountId);
+      invalidateProviders(ref);
     } catch (e) {
       debugPrint('Handle Account Selection Error: ${e.toString()}');
       ref.read(errorProvider.notifier).state = 'Failed to select account: $e';
