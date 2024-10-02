@@ -8,6 +8,7 @@ import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/media_query_helper.dart';
 
 class ImportSeedScreen extends ConsumerStatefulWidget {
   static String title = 'Import Seed';
@@ -54,8 +55,9 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double itemWidth =
-        (MediaQuery.of(context).size.width - 3 * kScreenPadding) / 2;
+    final mediaQueryHelper = MediaQueryHelper(context);
+    final bool isWideScreen = mediaQueryHelper.isWideScreen();
+    final int columnCount = isWideScreen ? 3 : 2;
 
     return Scaffold(
       appBar: AppBar(
@@ -89,40 +91,58 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Add your seed phrase to import your account.',
+                  'Enter your seed phrase to import your account.',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: kScreenPadding),
-                Wrap(
-                  spacing: kScreenPadding,
-                  runSpacing: kScreenPadding,
-                  children: List.generate(
-                    25,
-                    (index) => SizedBox(
-                      width: itemWidth,
-                      child: CustomTextField(
-                        controller: seedPhraseControllers[index],
-                        focusNode: focusNodes[index],
-                        labelText: '${index + 1}',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Enter word';
-                          }
-                          return null;
-                        },
-                        onFieldSubmitted: (value) {
-                          if (index < 24) {
-                            FocusScope.of(context)
-                                .requestFocus(focusNodes[index + 1]);
-                          } else {
-                            if (formKey.currentState!.validate()) {
-                              _importAccount();
-                            }
-                          }
-                        },
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final double itemWidth =
+                        constraints.maxWidth / columnCount -
+                            (kScreenPadding * (columnCount - 1)) / columnCount;
+
+                    return GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columnCount,
+                        crossAxisSpacing: kScreenPadding / 2,
+                        mainAxisSpacing: kScreenPadding / 2,
+                        childAspectRatio: itemWidth / 60,
                       ),
-                    ),
-                  ),
+                      itemCount:
+                          25 + (columnCount - (25 % columnCount)) % columnCount,
+                      itemBuilder: (context, index) {
+                        if (index >= 25) {
+                          return const SizedBox.shrink();
+                        }
+                        return SizedBox(
+                          width: itemWidth,
+                          child: CustomTextField(
+                            controller: seedPhraseControllers[index],
+                            focusNode: focusNodes[index],
+                            labelText: '${index + 1}',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Enter word ${index + 1}';
+                              }
+                              return null;
+                            },
+                            onFieldSubmitted: (value) {
+                              if (index < 24) {
+                                FocusScope.of(context)
+                                    .requestFocus(focusNodes[index + 1]);
+                              } else {
+                                if (formKey.currentState!.validate()) {
+                                  _importAccount();
+                                }
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
                 const SizedBox(height: kScreenPadding * 2),
                 CustomButton(
