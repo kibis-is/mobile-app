@@ -19,6 +19,7 @@ import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 final sortingProvider = StateProvider<Sorting>((ref) => Sorting.assetId);
@@ -42,6 +43,13 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
     filterController = TextEditingController(text: _getFilterText());
+    _loadShowFrozenAssets();
+  }
+
+  void _loadShowFrozenAssets() async {
+    final prefs = await SharedPreferences.getInstance();
+    final showFrozen = prefs.getBool('showFrozenAssets') ?? false;
+    ref.read(showFrozenAssetsProvider.notifier).setShowFrozenAssets(showFrozen);
   }
 
   String _getFilterText() {
@@ -242,12 +250,16 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     }
   }
 
-  void _filterAssets(bool showFrozen) {
+  void _filterAssets(bool showFrozen) async {
     final publicAddress = _getPublicAddress();
     if (publicAddress.isNotEmpty) {
       ref
           .read(assetsProvider(publicAddress).notifier)
           .setShowFrozen(showFrozen);
+
+      // Save the show frozen assets state to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('showFrozenAssets', showFrozen);
     } else {
       debugPrint('Public address is not available');
     }
