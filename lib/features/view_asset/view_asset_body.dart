@@ -91,7 +91,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
   Widget build(BuildContext context) {
     final userBalance = widget.asset.amount;
     final totalSupply = double.parse(widget.asset.params.total.toString());
-    final String publicKey = ref.watch(accountProvider).account?.publicAddress;
+    final String publicKey = ref.watch(accountProvider).account?.address ?? '';
     final mediaQueryHelper = MediaQueryHelper(context);
 
     return SingleChildScrollView(
@@ -223,32 +223,42 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
               ),
             ),
             const SizedBox(height: kScreenPadding),
-            _buildAnimatedItem(
-              5,
-              Align(
-                alignment: Alignment.centerLeft,
-                child: CustomButton(
-                  text: widget.mode == AssetScreenMode.view
-                      ? 'Send Asset'
-                      : 'Add Asset',
-                  isFullWidth: !mediaQueryHelper.isWideScreen(),
-                  buttonType: ButtonType.secondary,
-                  onPressed: () async {
-                    if (widget.mode == AssetScreenMode.view) {
-                      // Set the active asset before navigating
-                      ref
-                          .read(activeAssetProvider.notifier)
-                          .setActiveAsset(widget.asset);
-                      context
-                          .pushNamed(sendTransactionRouteName, pathParameters: {
-                        'mode': 'asset',
-                      });
-                    } else if (widget.mode == AssetScreenMode.add) {
-                      await _optInAsset(context, ref, widget.asset);
-                    }
-                  },
-                ),
-              ),
+            FutureBuilder<bool>(
+              future: ref.read(accountProvider.notifier).hasPrivateKey(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasData && snapshot.data == true) {
+                  return _buildAnimatedItem(
+                    5,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: CustomButton(
+                        text: widget.mode == AssetScreenMode.view
+                            ? 'Send Asset'
+                            : 'Add Asset',
+                        isFullWidth: !mediaQueryHelper.isWideScreen(),
+                        buttonType: ButtonType.secondary,
+                        onPressed: () async {
+                          if (widget.mode == AssetScreenMode.view) {
+                            ref
+                                .read(activeAssetProvider.notifier)
+                                .setActiveAsset(widget.asset);
+                            context.pushNamed(sendTransactionRouteName,
+                                pathParameters: {
+                                  'mode': 'asset',
+                                });
+                          } else if (widget.mode == AssetScreenMode.add) {
+                            await _optInAsset(context, ref, widget.asset);
+                          }
+                        },
+                      ),
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
             ),
           ],
         ),

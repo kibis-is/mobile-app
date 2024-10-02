@@ -58,15 +58,6 @@ class CustomNavigatorObserver extends NavigatorObserver {
   final Ref ref;
 
   CustomNavigatorObserver(this.ref);
-
-  // @override
-  // void didPop(Route route, Route? previousRoute) {
-  //   super.didPop(route, previousRoute);
-  //   Future.delayed(Duration.zero, () {
-  //     ref.read(loadingProvider.notifier).stopLoading();
-  //     debugPrint('Screen popped, stopped loading!');
-  //   });
-  // }
 }
 
 class RouterNotifier extends ChangeNotifier {

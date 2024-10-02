@@ -52,7 +52,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget build(BuildContext context) {
     final networks = networkOptions;
     final accountState = ref.watch(accountProvider);
-    final publicKey = accountState.account?.publicAddress;
+    final publicKey = accountState.account?.address;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -168,97 +168,106 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildFloatingActionButton() {
     ref.watch(isDarkModeProvider);
-    return ExpandableFab(
-      key: _key,
-      type: ExpandableFabType.up,
-      distance: 70,
-      pos: ExpandableFabPos.right,
-      overlayStyle: const ExpandableFabOverlayStyle(
-        color: Colors.black54,
-      ),
-      openButtonBuilder: RotateFloatingActionButtonBuilder(
-        child: const Icon(AppIcons.menu),
-        fabSize: ExpandableFabSize.regular,
-        foregroundColor: Colors.white,
-        backgroundColor: context.colorScheme.secondary,
-        shape: const CircleBorder(),
-      ),
-      closeButtonBuilder: FloatingActionButtonBuilder(
-        size: 56,
-        builder: (BuildContext context, void Function()? onPressed,
-            Animation<double> progress) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(kWidgetRadius),
-            ),
-            child: IconButton(
-              onPressed: onPressed,
-              icon: const Icon(
-                AppIcons.cross,
-                color: Colors.white,
-              ),
-            ),
-          );
-        },
-      ),
-      childrenOffset: const Offset(5, 0),
-      children: [
-        CustomFabChild(
-          icon: AppIcons.send,
-          backgroundColor: context.colorScheme.secondary,
-          iconColor: Colors.white,
-          borderRadius: 100,
-          onPressed: () {
-            closeFab();
-            context.goNamed(
-              sendTransactionRouteName,
-              pathParameters: {'mode': 'payment'},
-            );
-          },
-        ),
-        if (Platform.isAndroid || Platform.isIOS)
-          CustomFabChild(
-            borderRadius: 100,
-            icon: AppIcons.scan,
-            backgroundColor: context.colorScheme.primary,
-            iconColor: context.colorScheme.onPrimary,
-            onPressed: () async {
-              closeFab();
-              final scannedData = await GoRouter.of(context)
-                  .push('/qrScanner', extra: ScanMode.catchAll);
-              if (scannedData != null &&
-                  scannedData is String &&
-                  QRCodeScannerLogic().isPublicKeyFormat(scannedData)) {
-                if (!mounted) return;
-                GoRouter.of(context).goNamed(
-                  sendTransactionRouteName,
-                  pathParameters: {'mode': 'payment'},
-                  extra: {'address': scannedData},
-                );
-              }
+
+    return FutureBuilder<bool>(
+      future: ref.read(accountProvider.notifier).hasPrivateKey(),
+      builder: (context, snapshot) {
+        final hasPrivateKey = snapshot.data ?? false;
+
+        return ExpandableFab(
+          key: _key,
+          type: ExpandableFabType.up,
+          distance: 70,
+          pos: ExpandableFabPos.right,
+          overlayStyle: const ExpandableFabOverlayStyle(
+            color: Colors.black54,
+          ),
+          openButtonBuilder: RotateFloatingActionButtonBuilder(
+            child: const Icon(AppIcons.menu),
+            fabSize: ExpandableFabSize.regular,
+            foregroundColor: Colors.white,
+            backgroundColor: context.colorScheme.secondary,
+            shape: const CircleBorder(),
+          ),
+          closeButtonBuilder: FloatingActionButtonBuilder(
+            size: 56,
+            builder: (BuildContext context, void Function()? onPressed,
+                Animation<double> progress) {
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(kWidgetRadius),
+                ),
+                child: IconButton(
+                  onPressed: onPressed,
+                  icon: const Icon(
+                    AppIcons.cross,
+                    color: Colors.white,
+                  ),
+                ),
+              );
             },
           ),
-        CustomFabChild(
-          borderRadius: 100,
-          icon: AppIcons.wallet,
-          backgroundColor: context.colorScheme.primary,
-          iconColor: context.colorScheme.onPrimary,
-          onPressed: () {
-            closeFab();
-            GoRouter.of(context).push('/$accountListRouteName');
-          },
-        ),
-        CustomFabChild(
-          borderRadius: 100,
-          icon: AppIcons.settings,
-          backgroundColor: context.colorScheme.primary,
-          iconColor: context.colorScheme.onPrimary,
-          onPressed: () {
-            GoRouter.of(context).push('/$settingsRouteName');
-            closeFab();
-          },
-        ),
-      ],
+          childrenOffset: const Offset(5, 0),
+          children: [
+            if (hasPrivateKey) // Show the send button if the account has a private key
+              CustomFabChild(
+                icon: AppIcons.send,
+                backgroundColor: context.colorScheme.secondary,
+                iconColor: Colors.white,
+                borderRadius: 100,
+                onPressed: () {
+                  closeFab();
+                  context.goNamed(
+                    sendTransactionRouteName,
+                    pathParameters: {'mode': 'payment'},
+                  );
+                },
+              ),
+            if (Platform.isAndroid || Platform.isIOS)
+              CustomFabChild(
+                borderRadius: 100,
+                icon: AppIcons.scan,
+                backgroundColor: context.colorScheme.primary,
+                iconColor: context.colorScheme.onPrimary,
+                onPressed: () async {
+                  closeFab();
+                  final scannedData = await GoRouter.of(context)
+                      .push('/qrScanner', extra: ScanMode.catchAll);
+                  if (scannedData != null &&
+                      scannedData is String &&
+                      QRCodeScannerLogic().isPublicKeyFormat(scannedData)) {
+                    if (!context.mounted) return;
+                    GoRouter.of(context).goNamed(
+                      sendTransactionRouteName,
+                      pathParameters: {'mode': 'payment'},
+                      extra: {'address': scannedData},
+                    );
+                  }
+                },
+              ),
+            CustomFabChild(
+              borderRadius: 100,
+              icon: AppIcons.wallet,
+              backgroundColor: context.colorScheme.primary,
+              iconColor: context.colorScheme.onPrimary,
+              onPressed: () {
+                closeFab();
+                GoRouter.of(context).push('/$accountListRouteName');
+              },
+            ),
+            CustomFabChild(
+              borderRadius: 100,
+              icon: AppIcons.settings,
+              backgroundColor: context.colorScheme.primary,
+              iconColor: context.colorScheme.onPrimary,
+              onPressed: () {
+                GoRouter.of(context).push('/$settingsRouteName');
+                closeFab();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

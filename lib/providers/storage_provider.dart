@@ -111,7 +111,7 @@ class StorageService {
 
   Future<void> deleteAccount(String accountId) async {
     final accounts = await getAccounts() ?? {};
-    accounts.remove(accountId); // Remove the NFT cache for this account
+    accounts.remove(accountId);
     await _prefs?.remove('nfts_$accountId');
     await setAccounts(accounts);
   }

@@ -17,7 +17,6 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
-import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
@@ -94,7 +93,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Future<List<SelectItem>> _getAssetsAndCurrenciesAsList(WidgetRef ref) async {
-    final publicAddress = ref.read(accountProvider).account?.publicAddress;
+    final publicAddress = ref.read(accountProvider).account?.address;
     AsyncValue<List<CombinedAsset>> assetsAsync = const AsyncValue.loading();
 
     if (publicAddress != null && publicAddress.isNotEmpty) {
@@ -176,8 +175,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<bool> _validateForm(WidgetRef ref) async {
     if (!_formKey.currentState!.validate()) return false;
-    final publicAddress =
-        ref.read(accountProvider).account?.publicAddress ?? '';
+    final publicAddress = ref.read(accountProvider).account?.address ?? '';
     final amount = amountController.text;
 
     if (!await hasSufficientFunds(publicAddress, amount)) {
@@ -345,9 +343,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final activeAccount = ref.watch(accountProvider).account;
-    final isWatchAccount = activeAccount is WatchAccount;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Send"),
@@ -381,14 +376,25 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: isWatchAccount
-          ? const SizedBox.shrink()
-          : CustomButton(
-              isBottomNavigationPosition: true,
-              isFullWidth: true,
-              text: "Send",
-              onPressed: () => _showPinPadDialog(ref),
-            ),
+      bottomNavigationBar: FutureBuilder<bool>(
+        future: ref.read(accountProvider.notifier).hasPrivateKey(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox.shrink();
+          }
+
+          if (snapshot.hasError || !(snapshot.data ?? false)) {
+            return const SizedBox.shrink();
+          }
+
+          return CustomButton(
+            isBottomNavigationPosition: true,
+            isFullWidth: true,
+            text: "Send",
+            onPressed: () => _showPinPadDialog(ref),
+          );
+        },
+      ),
     );
   }
 

@@ -61,7 +61,7 @@ class AssetList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchState = ref.watch(searchProvider);
-    final publicAddress = ref.watch(accountProvider).account?.publicAddress;
+    final publicAddress = ref.watch(accountProvider).account?.address ?? '';
     final ownedAssets = ref.watch(assetsProvider(publicAddress));
 
     return Expanded(

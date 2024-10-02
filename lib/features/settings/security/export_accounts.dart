@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -57,6 +58,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(accountsListProvider.notifier).loadAccounts();
       startOrAdjustTimer();
     });
   }
@@ -76,19 +78,22 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     _timer?.cancel();
     _timer = Timer.periodic(Duration(milliseconds: interval), (Timer timer) {
       if (!mounted) return;
-      final currentPage = ref.read(currentPageProvider);
-      ref.read(currentPageProvider.notifier).state =
-          (currentPage + 1) % qrKeys.length;
-      if (_pageController.hasClients) {
-        _pageController.jumpToPage(ref.read(currentPageProvider));
-      }
+      _updateCurrentPage();
     });
+  }
+
+  void _updateCurrentPage() {
+    final currentPage = ref.read(currentPageProvider);
+    ref.read(currentPageProvider.notifier).state =
+        (currentPage + 1) % qrKeys.length;
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(ref.read(currentPageProvider));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final accounts =
-        ref.watch(accountsListProvider.select((value) => value.accounts));
+    final exportableAccountsAsyncValue = ref.watch(exportableAccountsProvider);
     final selectedAccountId = ref.watch(selectedAccountProvider) ?? '0';
     final qrDataAsyncValue = ref.watch(barcodeUriProvider(selectedAccountId));
 
@@ -98,58 +103,90 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-        child: Column(
-          children: [
-            const SizedBox(height: kScreenPadding),
-            buildAccountDropDown(accounts, selectedAccountId),
-            const SizedBox(height: kScreenPadding),
-            buildQrCodeDisplay(qrDataAsyncValue),
-            const SizedBox(height: kScreenPadding),
-            if (accounts.length > 5) ...[
-              buildSlider(selectedAccountId),
-              const SizedBox(height: kScreenPadding),
-            ],
-            buildActionRow(selectedAccountId),
-          ],
+        child: exportableAccountsAsyncValue.when(
+          data: (exportableAccounts) => _buildExportableAccountsView(
+              context, exportableAccounts, selectedAccountId, qrDataAsyncValue),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(
+            child: Text('Error: $error'),
+          ),
         ),
       ),
     );
   }
 
-  Widget buildAccountDropDown(
-      List<Map<String, dynamic>> accounts, String selectedAccountId) {
-    if (accounts.length <= 1) return const SizedBox.shrink();
+  Widget _buildExportableAccountsView(
+    BuildContext context,
+    List<Map<String, String>> exportableAccounts,
+    String selectedAccountId,
+    AsyncValue<List<String>> qrDataAsyncValue,
+  ) {
+    if (exportableAccounts.isEmpty) {
+      return Center(
+        child: Text(
+          'No accounts available for export.',
+          style: context.textTheme.bodyLarge,
+        ),
+      );
+    }
 
-    List<SelectItem> dropdownItems = accounts
+    return Column(
+      children: [
+        const SizedBox(height: kScreenPadding),
+        _buildAccountDropDown(exportableAccounts, selectedAccountId),
+        const SizedBox(height: kScreenPadding),
+        _buildQrCodeDisplay(qrDataAsyncValue),
+        const SizedBox(height: kScreenPadding),
+        if (exportableAccounts.length > 5) ...[
+          _buildSlider(selectedAccountId),
+          const SizedBox(height: kScreenPadding),
+        ],
+        _buildActionRow(selectedAccountId),
+      ],
+    );
+  }
+
+  Widget _buildAccountDropDown(
+      List<Map<String, String>> accounts, String selectedAccountId) {
+    final dropdownItems = accounts
         .map((account) => SelectItem(
               name: account['accountName'] ?? 'Unnamed Account',
               value: account['accountId'] ?? '0',
               icon: AppIcons.wallet,
             ))
         .toList();
-    dropdownItems.insert(0,
-        SelectItem(name: 'All Accounts', value: 'all', icon: AppIcons.group));
+
+    _autoSelectFirstAccount(dropdownItems, selectedAccountId);
+
+    final selectedValue = dropdownItems.firstWhere(
+      (item) => item.value == selectedAccountId,
+      orElse: () => dropdownItems[0],
+    );
 
     return CustomDropDown(
       label: 'Account',
       items: dropdownItems,
-      selectedValue: dropdownItems.firstWhere(
-        (item) => item.value == selectedAccountId,
-        orElse: () => dropdownItems[0],
-      ),
+      selectedValue: selectedValue,
       onChanged: (SelectItem? newValue) {
         if (newValue != null) {
-          _timer?.cancel();
           ref.read(selectedAccountProvider.notifier).state = newValue.value;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            startOrAdjustTimer();
-          });
+          _restartTimer();
         }
       },
     );
   }
 
-  Widget buildQrCodeDisplay(AsyncValue<List<String>> qrDataAsyncValue) {
+  void _autoSelectFirstAccount(
+      List<SelectItem> dropdownItems, String selectedAccountId) {
+    if (selectedAccountId == '0') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final firstAccount = dropdownItems[0];
+        ref.read(selectedAccountProvider.notifier).state = firstAccount.value;
+      });
+    }
+  }
+
+  Widget _buildQrCodeDisplay(AsyncValue<List<String>> qrDataAsyncValue) {
     return Flexible(
       child: qrDataAsyncValue.when(
         data: (List<String> qrData) {
@@ -159,16 +196,21 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
           qrKeys = List.generate(qrData.length, (index) => GlobalKey());
           resetTimer();
           return qrData.length > 1
-              ? buildSlideshow(qrData)
-              : buildSingleQrView(qrData[0]);
+              ? _buildSlideshow(qrData)
+              : _buildSingleQrView(qrData[0]);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, stack) => Center(child: Text('Error: $e')),
+        error: (e, stack) => const Center(
+          child: Text(
+            'This account cannot be exported, as it has no private key.',
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     );
   }
 
-  Widget buildSlider(String selectedAccountId) {
+  Widget _buildSlider(String selectedAccountId) {
     if (selectedAccountId != 'all') return const SizedBox.shrink();
     return SliderTheme(
       data: SliderTheme.of(context)
@@ -192,7 +234,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     );
   }
 
-  Widget buildSlideshow(List<String> qrData) {
+  Widget _buildSlideshow(List<String> qrData) {
     return Column(
       children: [
         Flexible(
@@ -200,18 +242,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
             controller: _pageController,
             itemCount: qrData.length,
             itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                alignment: Alignment.topCenter,
-                child: RepaintBoundary(
-                  key: qrKeys[index],
-                  child: QrImageView(
-                    backgroundColor: Colors.white,
-                    data: qrData[index],
-                    version: QrVersions.auto,
-                  ),
-                ),
-              );
+              return _buildQrPage(qrData[index], index);
             },
           ),
         ),
@@ -219,7 +250,22 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     );
   }
 
-  Widget buildSingleQrView(String qrData) {
+  Widget _buildQrPage(String qrData, int index) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      alignment: Alignment.topCenter,
+      child: RepaintBoundary(
+        key: qrKeys[index],
+        child: QrImageView(
+          backgroundColor: Colors.white,
+          data: qrData,
+          version: QrVersions.auto,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSingleQrView(String qrData) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -250,7 +296,13 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     });
   }
 
-  Widget buildActionRow(String selectedAccountId) {
+  void _restartTimer() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      startOrAdjustTimer();
+    });
+  }
+
+  Widget _buildActionRow(String selectedAccountId) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[

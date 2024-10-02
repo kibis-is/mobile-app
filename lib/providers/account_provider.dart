@@ -1,8 +1,8 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:convert/convert.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
-import 'package:kibisis/models/watch_account.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
@@ -18,7 +18,7 @@ final accountProvider =
 });
 
 class AccountState {
-  final dynamic account;
+  final AccountInformation? account;
   final String? accountName;
   final String? accountId;
   final String? applicationId;
@@ -33,7 +33,7 @@ class AccountState {
   });
 
   AccountState copyWith({
-    dynamic account,
+    AccountInformation? account,
     String? accountName,
     String? accountId,
     String? applicationId,
@@ -61,7 +61,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
   Future<void> _initializeAccountFromStorage() async {
     final activeAccountId = storageService.getActiveAccount();
-    if (activeAccountId == null) {
+    if (activeAccountId == null || activeAccountId.isEmpty) {
       state = state.copyWith(error: 'No active account found');
       return;
     }
@@ -74,7 +74,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
       final applicationId =
           await storageService.getApplicationId(activeAccountId);
 
-      await initialiseFromPrivateKey(accountName, activeAccountId);
+      await initialiseFromPublicKey(accountName, activeAccountId);
 
       state = state.copyWith(applicationId: applicationId);
     } catch (e) {
@@ -82,23 +82,66 @@ class AccountNotifier extends StateNotifier<AccountState> {
     }
   }
 
-  Future<void> initialiseFromPrivateKey(
+  Future<void> initialiseFromPublicKey(
       String accountName, String activeAccountId) async {
-    final privateKey =
-        await storageService.getAccountData(activeAccountId, 'privateKey');
-    if (privateKey != null && privateKey.isNotEmpty) {
-      final account = await algorand.loadAccountFromPrivateKey(privateKey);
+    try {
+      final publicKey = await storageService.getPublicKey(activeAccountId);
+      if (publicKey == null || publicKey.isEmpty) {
+        state = state.copyWith(error: 'Public key not found in storage');
+        return;
+      }
+
+      // Option 1: Check locally if it's an unfunded account
+      final isFunded = await checkIfAccountIsFunded(publicKey);
+      if (!isFunded) {
+        state = state.copyWith(
+          accountId: activeAccountId,
+          accountName: accountName,
+          account: AccountInformation(
+            address: publicKey,
+            amount: 0,
+            amountWithoutPendingRewards: 0,
+            pendingRewards: 0,
+            rewards: 0,
+            round: 0,
+            status: 'Offline',
+            deleted: false,
+            assets: [],
+            appsLocalState: [],
+            createdApps: [],
+            createdAssets: [],
+          ),
+          error:
+              'This account has not been funded yet. Please fund it to see details.',
+        );
+        return;
+      }
+      final accountResponse =
+          await algorand.indexer().getAccountById(publicKey);
+
       final applicationId =
           await storageService.getApplicationId(activeAccountId);
 
       state = state.copyWith(
         accountId: activeAccountId,
         accountName: accountName,
-        account: account,
+        account: accountResponse.account,
         applicationId: applicationId,
       );
-    } else {
-      state = state.copyWith(error: 'Private key not found in storage');
+    } catch (e) {
+      state = state.copyWith(
+          error: 'Failed to initialize account: ${e.toString()}');
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<bool> checkIfAccountIsFunded(String publicKey) async {
+    try {
+      final accountResponse =
+          await algorand.indexer().getAccountById(publicKey);
+      return accountResponse.account.amountWithoutPendingRewards > 0;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -116,10 +159,33 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
   Future<void> createAccount() async {
     try {
+      // Step 1: Create a new Algorand account
       final account = await algorand.createAccount();
-      state = state.copyWith(account: account);
+
+      // Step 2: Extract private key and public address from the created account
+      final privateKeyBytes = await account.keyPair.extractPrivateKeyBytes();
+      final encodedPrivateKey =
+          hex.encode(privateKeyBytes); // Encode private key to store securely
+      final publicKey =
+          account.publicAddress; // Public address (Algorand address)
+
+      // Step 3: Generate a new account ID
+      final accountId = await storageService.generateNextAccountId();
+
+      // Step 4: Store the private key and public key in secure storage
+      await storageService.setAccountData(
+          accountId, 'privateKey', encodedPrivateKey);
+      await storageService.setAccountData(accountId, 'publicKey', publicKey);
+
+      // Step 5: Set the active account in the storage
+      await storageService.setActiveAccount(accountId);
+
+      // Step 6: Initialize the account state using the public key
+      await initialiseFromPublicKey('New Account', accountId);
     } catch (e) {
+      // Handle errors gracefully
       ref.read(errorProvider.notifier).state = 'Failed to create account: $e';
+      debugPrint('Error creating account: $e');
     }
   }
 
@@ -184,7 +250,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
           accountId, 'seedPhrase', seedPhraseString);
       await storageService.setActiveAccount(accountId);
 
-      // Initialize applicationId as null for a newly restored account
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
@@ -194,39 +259,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
     } catch (e) {
       state = state.copyWith(error: 'Failed to restore account: $e');
       throw Exception('Failed to restore account: $e');
-    }
-  }
-
-  Future<void> loadAccountFromPrivateKey() async {
-    try {
-      final activeAccountId = storageService.getActiveAccount();
-      if (activeAccountId == null) {
-        throw Exception('No active account found');
-      }
-
-      final privateKey =
-          await storageService.getAccountData(activeAccountId, 'privateKey');
-      final accountName =
-          await storageService.getAccountData(activeAccountId, 'accountName');
-      final applicationId =
-          await storageService.getApplicationId(activeAccountId);
-
-      if (privateKey == null || accountName == null) {
-        throw Exception('Missing account data for the active account');
-      }
-
-      final account = await algorand.loadAccountFromPrivateKey(privateKey);
-
-      state = state.copyWith(
-        accountId: activeAccountId,
-        accountName: accountName,
-        account: account,
-        applicationId: applicationId,
-        error: null,
-      );
-    } catch (e) {
-      state =
-          state.copyWith(error: 'Failed to load account from private key: $e');
     }
   }
 
@@ -252,7 +284,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
           'Public address is not available.');
       return '';
     }
-    return state.account!.publicAddress.toString();
+    return state.account?.address ?? '';
   }
 
   Future<String> getSeedPhraseAsString() async {
@@ -283,9 +315,12 @@ class AccountNotifier extends StateNotifier<AccountState> {
         throw Exception('Account is missing in temporary account data');
       }
 
+      // Generate a new account ID
       final accountId = await storageService.generateNextAccountId();
 
+      // Handle the case where the account is a regular Algorand Account
       if (tempAccountState.account is Account) {
+        // Ensure private key and seed phrase are available
         if (tempAccountState.privateKey == null ||
             tempAccountState.seedPhrase == null) {
           throw Exception(
@@ -294,6 +329,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
         ref.read(isAuthenticatedProvider.notifier).state = true;
 
+        // Store account details (account name, private key, seed phrase, and public key)
         await storageService.setAccountData(
             accountId, 'accountName', accountName);
         await storageService.setAccountData(
@@ -301,30 +337,63 @@ class AccountNotifier extends StateNotifier<AccountState> {
         await storageService.setAccountData(
             accountId, 'seedPhrase', tempAccountState.seedPhrase!);
 
-        final publicKey =
-            (tempAccountState.account as Account).publicAddress.toString();
+        final publicKey = (tempAccountState.account as Account).publicAddress;
+        if (publicKey.isEmpty) {
+          throw Exception('Public key is missing.');
+        }
         await storageService.setAccountData(accountId, 'publicKey', publicKey);
-      } else if (tempAccountState.account is WatchAccount) {
+
+        // Set the newly created account as active
+        await storageService.setActiveAccount(accountId);
+      }
+      // Handle the case where the account is a watch account (AccountInformation)
+      else if (tempAccountState.account is AccountInformation) {
+        final publicKey =
+            (tempAccountState.account as AccountInformation).address;
+
+        if (publicKey.isEmpty) {
+          throw Exception('Public key is missing.');
+        }
+
+        // Store account details (account name, public key)
         await storageService.setAccountData(
             accountId, 'accountName', accountName);
-
-        final publicKey = (tempAccountState.account as WatchAccount).publicKey;
         await storageService.setAccountData(accountId, 'publicKey', publicKey);
+
+        // Mark the account as a watch account
+        await storageService.setAccountData(
+            accountId, 'isWatchAccount', 'true');
+
+        // Set the newly created watch account as active
+        await storageService.setActiveAccount(accountId);
       } else {
         throw Exception('Unsupported account type');
       }
 
+      // Update the state with the new account information
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
-        applicationId: null,
+        applicationId: null, // No applicationId at this point
         error: null,
       );
 
+      // Reset the temporary account state
       ref.read(temporaryAccountProvider.notifier).reset();
     } catch (e) {
       state = state.copyWith(error: 'Failed to finalize account creation: $e');
     }
+  }
+
+  Future<bool> hasPrivateKey() async {
+    final accountId = state.accountId;
+    if (accountId == null) {
+      return false;
+    }
+
+    final privateKey =
+        await storageService.getAccountData(accountId, 'privateKey');
+    return privateKey != null && privateKey.isNotEmpty;
   }
 
   void reset() {

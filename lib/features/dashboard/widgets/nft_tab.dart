@@ -47,8 +47,8 @@ class NftTabState extends ConsumerState<NftTab> {
 
   void _onRefresh() async {
     ref.invalidate(nftNotifierProvider);
-    final publicAddress = ref.read(
-        accountProvider.select((state) => state.account?.publicAddress ?? ''));
+    final publicAddress = ref
+        .read(accountProvider.select((state) => state.account?.address ?? ''));
     if (publicAddress.isNotEmpty) {
       await ref
           .read(nftNotifierProvider.notifier)

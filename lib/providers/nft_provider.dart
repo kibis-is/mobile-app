@@ -8,7 +8,7 @@ import 'package:kibisis/providers/storage_provider.dart';
 
 final nftNotifierProvider =
     StateNotifierProvider<NFTNotifier, AsyncValue<List<NFT>>>((ref) {
-  final publicAddress = ref.watch(accountProvider).account?.publicAddress;
+  final publicAddress = ref.watch(accountProvider).account?.address;
   if (publicAddress != null) {
     return NFTNotifier(ref, publicAddress);
   }
@@ -48,7 +48,8 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
         final List<dynamic> tokens = body['tokens'];
         _nextToken = body['next'];
 
-        if (tokens.isEmpty) {
+        if (tokens.isEmpty && isInitialLoad) {
+          state = const AsyncValue.data([]);
           _isLoadingMore = false;
           return;
         }

@@ -6,6 +6,11 @@ final accountsListProvider =
   return AccountsListNotifier(ref);
 });
 
+final exportableAccountsProvider =
+    FutureProvider<List<Map<String, String>>>((ref) async {
+  return ref.read(accountsListProvider.notifier).getAccountsWithPrivateKey();
+});
+
 class AccountsListState {
   final List<Map<String, String>> accounts;
   final bool isLoading;
@@ -48,7 +53,6 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
         return;
       }
 
-      // Map accounts without including private keys
       final accountsList = accountsMap.entries.map((entry) {
         final accountId = entry.key;
         final accountData = entry.value;
@@ -76,5 +80,31 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
     return state.accounts
         .where((account) => account['accountId'] != activeAccount)
         .toList();
+  }
+
+  Future<List<Map<String, String>>> getAccountsWithPrivateKey() async {
+    final storageService = ref.read(storageProvider);
+    final accountsMap = await storageService.getAccounts();
+
+    if (accountsMap == null) {
+      return [];
+    }
+
+    final accountsWithPrivateKey = accountsMap.entries
+        .where((entry) =>
+            entry.value.containsKey('privateKey') &&
+            entry.value['privateKey']!.isNotEmpty)
+        .map((entry) {
+      final accountId = entry.key;
+      final accountData = entry.value;
+      final publicKey = accountData['publicKey'] ?? 'No Public Key';
+      return {
+        'accountId': accountId,
+        'accountName': accountData['accountName'] ?? 'Unnamed Account',
+        'publicKey': publicKey,
+      };
+    }).toList();
+
+    return accountsWithPrivateKey;
   }
 }

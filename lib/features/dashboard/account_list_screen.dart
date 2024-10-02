@@ -8,6 +8,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_body.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/account_selection.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -29,6 +30,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
   Widget build(BuildContext context) {
     final mediaQueryHelper = MediaQueryHelper(context);
     final accountsListState = ref.watch(accountsListProvider);
+    final isSetupComplete = ref.watch(setupCompleteProvider);
     final flex = mediaQueryHelper.getDynamicFlex();
 
     return Scaffold(
@@ -49,8 +51,10 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
                 ),
                 Expanded(
                   flex: flex[1],
-                  child: const AddAccountBody(
-                    accountFlow: AccountFlow.addNew,
+                  child: AddAccountBody(
+                    accountFlow: isSetupComplete
+                        ? AccountFlow.addNew
+                        : AccountFlow.setup,
                   ),
                 ),
               ],
