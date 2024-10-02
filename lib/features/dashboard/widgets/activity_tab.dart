@@ -8,6 +8,7 @@ import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ActivityTab extends ConsumerStatefulWidget {
   const ActivityTab({super.key});
@@ -41,7 +42,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
     try {
       final publicAddress = ref.read(accountProvider).account?.address ?? '';
 
-      // Fetch the items and the nextToken
       final result = await ref
           .read(transactionsProvider.notifier)
           .getPaginatedTransactions(publicAddress, pageKey, _pageSize);
@@ -101,9 +101,8 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
             newPageErrorIndicatorBuilder: (context) => const Center(
               child: CircularProgressIndicator(),
             ),
-            firstPageProgressIndicatorBuilder: (context) => const Center(
-              child: CircularProgressIndicator(),
-            ),
+            firstPageProgressIndicatorBuilder: (context) =>
+                _buildShimmerLoading(context),
             noItemsFoundIndicatorBuilder: (context) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -128,5 +127,33 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
             ),
           ),
         ));
+  }
+
+  Widget _buildShimmerLoading(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: context.colorScheme.background,
+      highlightColor: context.colorScheme.onSurfaceVariant,
+      period: const Duration(milliseconds: 2000),
+      child: Column(
+        children: List.generate(
+            3,
+            (index) => Padding(
+                  padding: const EdgeInsets.only(bottom: kScreenPadding / 2),
+                  child: ListTile(
+                    leading: const CircleAvatar(),
+                    title: Container(
+                      width: double.infinity,
+                      height: kScreenPadding,
+                      color: context.colorScheme.surface,
+                    ),
+                    subtitle: Container(
+                      width: double.infinity,
+                      height: kScreenPadding,
+                      color: context.colorScheme.surface,
+                    ),
+                  ),
+                )),
+      ),
+    );
   }
 }
