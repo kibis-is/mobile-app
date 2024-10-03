@@ -390,14 +390,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_confetti:
-    dependency: "direct main"
-    description:
-      name: flutter_confetti
-      sha256: "7a0f586a0295b1dad6be364a82c59b8579e1cc8af99b0cba0461b6fabd60ff78"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.0"
   flutter_expandable_fab:
     dependency: "direct main"
     description:
@@ -1454,13 +1446,13 @@ packages:
     source: hosted
     version: "1.2.1"
   win32:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: win32
-      sha256: "0eaf06e3446824099858367950a813472af675116bf63f008a4c2a75ae13e9cb"
+      sha256: "4d45dc9069dba4619dc0ebd93c7cec5e66d8482cb625a370ac806dcc8165f2ec"
       url: "https://pub.dev"
     source: hosted
-    version: "5.5.0"
+    version: "5.5.5"
   win32_registry:
     dependency: transitive
     description:

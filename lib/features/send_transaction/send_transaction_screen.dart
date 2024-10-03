@@ -24,12 +24,12 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
-import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:kibisis/providers/network_provider.dart';
 
 final dropdownItemsProvider =
     StateProvider<AsyncValue<List<SelectItem>>>((ref) {
@@ -110,7 +110,12 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   Future<List<SelectItem>> _getAssetsAndCurrenciesAsList(WidgetRef ref) async {
     final publicAddress = ref.read(accountProvider).account?.address;
 
-    final assetsAsync = ref.read(assetsProvider(publicAddress ?? ''));
+    if (publicAddress == null || publicAddress.isEmpty) {
+      debugPrint('No public address available');
+      return [];
+    }
+
+    final assetsAsync = ref.read(assetsProvider(publicAddress));
 
     if (assetsAsync is! AsyncData<List<CombinedAsset>>) {
       return [];
@@ -125,6 +130,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         name: asset.params.name ?? 'Unnamed Asset',
         value: asset.index.toString(),
         icon: AppIcons.asset,
+        assetType: asset.assetType,
       );
     }).toList();
 
@@ -134,7 +140,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           SelectItem(
             name: 'No Network',
             value: "-1",
-            icon: AppIcons.error, // Error icon for missing network
+            icon: AppIcons.error,
           ),
     );
 
