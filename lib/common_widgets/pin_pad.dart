@@ -425,6 +425,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
               showCustomSnackBar(
                 context: context,
                 snackType: SnackType.success,
+                showConfetti: true,
                 message: "PIN successfully changed",
               );
               isConfirmingPin = false;

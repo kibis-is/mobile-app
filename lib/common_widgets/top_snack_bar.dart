@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -47,6 +48,7 @@ void showCustomSnackBar({
   required BuildContext context,
   required SnackType snackType,
   required String message,
+  bool showConfetti = false,
 }) {
   final colorScheme = Theme.of(context).colorScheme;
   final textStyle = Theme.of(context).textTheme.displayMedium!.copyWith(
@@ -68,4 +70,19 @@ void showCustomSnackBar({
     Overlay.of(context),
     snackBar,
   );
+
+  if (showConfetti) {
+    Confetti.launch(
+      context,
+      options: const ConfettiOptions(
+        spread: 100,
+        particleCount: 120,
+        startVelocity: 30,
+        gravity: 0.7,
+        ticks: 400,
+        x: 0.5,
+        y: 0.0,
+      ),
+    );
+  }
 }

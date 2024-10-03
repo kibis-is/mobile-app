@@ -423,6 +423,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     showCustomSnackBar(
       context: context,
       snackType: SnackType.success,
+      showConfetti: true,
       message: 'Successfully connected',
     );
     GoRouter.of(context).goNamed(sessionsRouteName);
