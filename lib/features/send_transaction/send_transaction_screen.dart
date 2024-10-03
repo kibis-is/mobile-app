@@ -24,14 +24,17 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
+import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
-import 'package:kibisis/utils/arc200_service.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-final dropdownItemsProvider = StateProvider<List<SelectItem>>((ref) => []);
+final dropdownItemsProvider =
+    StateProvider<AsyncValue<List<SelectItem>>>((ref) {
+  return const AsyncValue.loading();
+});
 
 final sendTransactionScreenModeProvider =
     StateProvider<SendTransactionScreenMode>((ref) {
@@ -82,67 +85,60 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   }
 
   Future<void> _loadAssetsAndCurrencies() async {
-    final items = await _getAssetsAndCurrenciesAsList(ref);
-    if (mounted) {
-      ref.read(dropdownItemsProvider.notifier).state = items;
-      final activeAsset = ref.read(activeAssetProvider);
-      ref.read(selectedAssetProvider.notifier).selectAsset(
-          items: items, assetId: activeAsset?.index ?? 0, mode: widget.mode);
+    try {
+      ref.read(dropdownItemsProvider.notifier).state =
+          const AsyncValue.loading();
+
+      final items = await _getAssetsAndCurrenciesAsList(ref);
+
+      if (mounted) {
+        ref.read(dropdownItemsProvider.notifier).state = AsyncValue.data(items);
+
+        final activeAsset = ref.read(activeAssetProvider);
+        ref.read(selectedAssetProvider.notifier).selectAsset(
+              items: items,
+              assetId: activeAsset?.index ?? 0,
+              mode: widget.mode,
+            );
+      }
+    } catch (e, stack) {
+      ref.read(dropdownItemsProvider.notifier).state =
+          AsyncValue.error(e, stack);
     }
   }
 
   Future<List<SelectItem>> _getAssetsAndCurrenciesAsList(WidgetRef ref) async {
     final publicAddress = ref.read(accountProvider).account?.address;
-    AsyncValue<List<CombinedAsset>> standardAssetsAsync =
-        const AsyncValue.loading();
-    AsyncValue<List<CombinedAsset>> arc200AssetsAsync =
-        const AsyncValue.loading();
 
-    if (publicAddress != null && publicAddress.isNotEmpty) {
-      standardAssetsAsync = ref.read(assetsProvider(publicAddress));
-      final arc200Assets = await ref
-          .read(arc200ServiceProvider)
-          .fetchArc200Assets(publicAddress);
-      arc200AssetsAsync = AsyncValue.data(arc200Assets);
-    } else {
-      debugPrint('Public address is not available');
-      standardAssetsAsync = const AsyncValue.data([]);
-      arc200AssetsAsync = const AsyncValue.data([]);
-    }
+    final assetsAsync = ref.read(assetsProvider(publicAddress ?? ''));
 
-    if (standardAssetsAsync is! AsyncData<List<CombinedAsset>> ||
-        arc200AssetsAsync is! AsyncData<List<CombinedAsset>>) {
+    if (assetsAsync is! AsyncData<List<CombinedAsset>>) {
       return [];
     }
 
-    final standardAssets = standardAssetsAsync.value;
-    final arc200Assets = arc200AssetsAsync.value;
+    final assets = assetsAsync.value;
 
-    // Use a map to ensure uniqueness by asset index
-    Map<int, SelectItem> combinedMap = {};
+    final network = ref.read(networkProvider);
 
-    // Add standard assets to the map
-    for (var asset in standardAssets) {
-      combinedMap[asset.index] = SelectItem(
+    List<SelectItem> combinedList = assets.map((asset) {
+      return SelectItem(
         name: asset.params.name ?? 'Unnamed Asset',
         value: asset.index.toString(),
         icon: AppIcons.asset,
-        assetType: asset.assetType,
       );
-    }
+    }).toList();
 
-    // Add ARC-200 assets, ensuring no duplicates
-    for (var asset in arc200Assets) {
-      combinedMap[asset.index] = SelectItem(
-        name: asset.params.name ?? 'Unnamed ARC-0200',
-        value: asset.index.toString(),
-        icon: AppIcons.asset,
-        assetType: asset.assetType,
-      );
-    }
+    combinedList.insert(
+      0,
+      network ??
+          SelectItem(
+            name: 'No Network',
+            value: "-1",
+            icon: AppIcons.error, // Error icon for missing network
+          ),
+    );
 
-    // Convert the map values back to a list
-    return combinedMap.values.toList();
+    return combinedList;
   }
 
   bool _isValidAmount(String value) {
@@ -378,13 +374,12 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             key: _formKey,
             child: Consumer(
               builder: (context, ref, child) {
-                final dropdownItems = ref.watch(dropdownItemsProvider);
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     _maxSendInfo(context, ref),
                     const SizedBox(height: kScreenPadding),
-                    _buildCustomDropDown(ref, dropdownItems),
+                    _buildCustomDropDown(ref), // Updated call here
                     const SizedBox(height: kScreenPadding),
                     _buildAmountTextField(),
                     const SizedBox(height: kScreenPadding),
@@ -468,24 +463,70 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     );
   }
 
-  Widget _buildCustomDropDown(WidgetRef ref, List<SelectItem> dropdownItems) {
-    final isDisabled = dropdownItems.length <= 1;
+  Widget _buildCustomDropDown(WidgetRef ref) {
+    final dropdownItemsAsync = ref.watch(dropdownItemsProvider);
 
-    return GestureDetector(
-      onTap: isDisabled ? () {} : null,
-      child: AbsorbPointer(
-        absorbing: isDisabled,
-        child: CustomDropDown(
+    return dropdownItemsAsync.when(
+      loading: () {
+        // Display the spinner inside the dropdown
+        return CustomDropDown(
           label: 'Asset',
-          items: dropdownItems,
-          selectedValue: ref.watch(selectedAssetProvider),
-          onChanged: (SelectItem? newValue) {
-            if (newValue != null) {
-              ref.read(selectedAssetProvider.notifier).setAsset(newValue);
-            }
-          },
-        ),
+          items: [
+            SelectItem(
+              name: 'Loading...',
+              value: '',
+              icon: AppIcons.voiIcon, // Use a loading icon
+            ),
+          ],
+          selectedValue: null,
+          onChanged: null, // Disable interaction while loading
+        );
+      },
+      error: (err, stack) => CustomDropDown(
+        label: 'Asset',
+        items: [
+          SelectItem(
+            name: 'Failed to load',
+            value: '',
+            icon: AppIcons.error, // Use an error icon
+          ),
+        ],
+        selectedValue: null,
+        onChanged: null, // Disable interaction on error
       ),
+      data: (dropdownItems) {
+        // Disable the dropdown if there are no items
+        final isDisabled = dropdownItems.isEmpty;
+
+        return GestureDetector(
+          onTap: isDisabled ? null : () {}, // Disable tapping when disabled
+          child: AbsorbPointer(
+            absorbing: isDisabled, // Disable interaction when no items
+            child: CustomDropDown(
+              label: 'Asset',
+              items: dropdownItems.isNotEmpty
+                  ? dropdownItems
+                  : [
+                      SelectItem(
+                        name: 'No Assets Found',
+                        value: '',
+                        icon: AppIcons.error, // Use an error icon
+                      ),
+                    ],
+              selectedValue: ref.watch(selectedAssetProvider),
+              onChanged: isDisabled
+                  ? null
+                  : (SelectItem? newValue) {
+                      if (newValue != null) {
+                        ref
+                            .read(selectedAssetProvider.notifier)
+                            .setAsset(newValue);
+                      }
+                    },
+            ),
+          ),
+        );
+      },
     );
   }
 

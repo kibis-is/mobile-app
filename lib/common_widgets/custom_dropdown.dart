@@ -7,7 +7,7 @@ import 'package:kibisis/utils/theme_extensions.dart';
 
 class CustomDropDown extends StatelessWidget {
   final bool isExpanded;
-  final ValueChanged<SelectItem?> onChanged;
+  final ValueChanged<SelectItem?>? onChanged;
   final List<SelectItem> items;
   final SelectItem? selectedValue;
   final String label;
@@ -15,7 +15,7 @@ class CustomDropDown extends StatelessWidget {
   const CustomDropDown({
     super.key,
     this.isExpanded = true,
-    required this.onChanged,
+    this.onChanged,
     required this.items,
     this.selectedValue,
     required this.label,
@@ -54,7 +54,8 @@ class CustomDropDown extends StatelessWidget {
               value: item,
               child: Row(
                 children: [
-                  AppIcons.icon(icon: item.icon, color: context.colorScheme.onBackground),
+                  AppIcons.icon(
+                      icon: item.icon, color: context.colorScheme.onBackground),
                   const SizedBox(width: kScreenPadding / 2),
                   Flexible(
                     child: EllipsizedText(item.name,
