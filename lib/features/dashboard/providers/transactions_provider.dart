@@ -71,44 +71,37 @@ class TransactionsNotifier
       final response = await ref.read(algorandServiceProvider).getTransactions(
             publicAddress,
             limit: limit,
-            nextToken: pageKey, // Use pageKey as nextToken
+            nextToken: pageKey,
           );
 
       final nextToken = response.nextToken;
       final transactions = response.transactions;
 
-      // Convert transactions to TransactionItems
       List<TransactionItem> transactionItems = [];
 
       for (final transaction in transactions) {
-        // Determine transaction direction based on type and sender/receiver
         TransactionDirection direction;
 
-        // Check for payment transactions
-        if (transaction.type == 'pay') {
-          if (transaction.sender == publicAddress) {
+        if (transaction.type == 'pay' || transaction.type == 'axfer') {
+          final sender = transaction.sender;
+          final receiver =
+              transaction.paymentTransaction?.receiver.toString() ??
+                  transaction.assetTransferTransaction?.receiver.toString() ??
+                  '';
+
+          // Determine outgoing (sender is me, receiver is NOT me)
+          if (sender == publicAddress && receiver != publicAddress) {
             direction = TransactionDirection.outgoing;
-          } else if (transaction.paymentTransaction?.receiver.toString() ==
-              publicAddress) {
+          }
+          // Determine incoming (receiver is me, sender is NOT me)
+          else if (receiver == publicAddress && sender != publicAddress) {
             direction = TransactionDirection.incoming;
+          } else if (sender == publicAddress && receiver == publicAddress) {
+            direction = TransactionDirection.outgoing;
           } else {
             direction = TransactionDirection.unknown;
           }
-        }
-        // Check for asset transfer transactions
-        else if (transaction.type == 'axfer') {
-          if (transaction.sender == publicAddress) {
-            direction = TransactionDirection.outgoing;
-          } else if (transaction.assetTransferTransaction?.receiver
-                  .toString() ==
-              publicAddress) {
-            direction = TransactionDirection.incoming;
-          } else {
-            direction = TransactionDirection.unknown;
-          }
-        }
-        // If it's another type of transaction, set it to unknown
-        else {
+        } else {
           direction = TransactionDirection.unknown;
         }
 
@@ -126,7 +119,6 @@ class TransactionsNotifier
         final assetId = transaction.assetTransferTransaction?.assetId;
         final assetAmount = transaction.assetTransferTransaction?.amount ?? 0;
 
-        // Resolve the asset name asynchronously if assetId is present
         String? assetName;
         if (assetId != null) {
           final asset =
@@ -136,7 +128,7 @@ class TransactionsNotifier
 
         transactionItems.add(TransactionItem(
           transaction: transaction,
-          direction: direction, // Pass the new TransactionDirection
+          direction: direction,
           otherPartyAddress: otherPartyAddress,
           amount: assetId != null
               ? assetAmount.toString()
