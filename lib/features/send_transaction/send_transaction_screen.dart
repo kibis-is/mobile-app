@@ -118,27 +118,31 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final standardAssets = standardAssetsAsync.value;
     final arc200Assets = arc200AssetsAsync.value;
 
-    // Combine both lists
-    List<SelectItem> combinedList = [
-      ...standardAssets.map((asset) {
-        return SelectItem(
-          name: asset.params.name ?? 'Unnamed Asset',
-          value: asset.index.toString(),
-          icon: AppIcons.asset,
-          assetType: asset.assetType,
-        );
-      }),
-      ...arc200Assets.map((asset) {
-        return SelectItem(
-          name: asset.params.name ?? 'Unnamed ARC-0200',
-          value: asset.index.toString(),
-          icon: AppIcons.asset,
-          assetType: asset.assetType,
-        );
-      })
-    ];
+    // Use a map to ensure uniqueness by asset index
+    Map<int, SelectItem> combinedMap = {};
 
-    return combinedList;
+    // Add standard assets to the map
+    for (var asset in standardAssets) {
+      combinedMap[asset.index] = SelectItem(
+        name: asset.params.name ?? 'Unnamed Asset',
+        value: asset.index.toString(),
+        icon: AppIcons.asset,
+        assetType: asset.assetType,
+      );
+    }
+
+    // Add ARC-200 assets, ensuring no duplicates
+    for (var asset in arc200Assets) {
+      combinedMap[asset.index] = SelectItem(
+        name: asset.params.name ?? 'Unnamed ARC-0200',
+        value: asset.index.toString(),
+        icon: AppIcons.asset,
+        assetType: asset.assetType,
+      );
+    }
+
+    // Convert the map values back to a list
+    return combinedMap.values.toList();
   }
 
   bool _isValidAmount(String value) {
@@ -267,6 +271,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       showCustomSnackBar(
         context: context,
         snackType: SnackType.success,
+        showConfetti: true,
         message: 'Transaction successful',
       );
     }
