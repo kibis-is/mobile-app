@@ -1,8 +1,8 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:kibisis/models/arc0200_contract.dart';
-import 'package:test/test.dart';
 
 void main() {
-  final algodURL = 'https://testnet-api.voi.nodly.io';
+  const algodURL = 'https://testnet-api.voi.nodly.io';
 
   group('decimals', () {
     test('should get the decimals', () async {

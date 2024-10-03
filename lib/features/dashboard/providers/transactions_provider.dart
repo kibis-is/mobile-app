@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
+import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'dart:convert';
@@ -80,9 +81,41 @@ class TransactionsNotifier
       List<TransactionItem> transactionItems = [];
 
       for (final transaction in transactions) {
-        final isOutgoing = transaction.sender == publicAddress;
-        final otherPartyAddress = isOutgoing
-            ? transaction.paymentTransaction?.receiver.toString() ?? ''
+        // Determine transaction direction based on type and sender/receiver
+        TransactionDirection direction;
+
+        // Check for payment transactions
+        if (transaction.type == 'pay') {
+          if (transaction.sender == publicAddress) {
+            direction = TransactionDirection.outgoing;
+          } else if (transaction.paymentTransaction?.receiver.toString() ==
+              publicAddress) {
+            direction = TransactionDirection.incoming;
+          } else {
+            direction = TransactionDirection.unknown;
+          }
+        }
+        // Check for asset transfer transactions
+        else if (transaction.type == 'axfer') {
+          if (transaction.sender == publicAddress) {
+            direction = TransactionDirection.outgoing;
+          } else if (transaction.assetTransferTransaction?.receiver
+                  .toString() ==
+              publicAddress) {
+            direction = TransactionDirection.incoming;
+          } else {
+            direction = TransactionDirection.unknown;
+          }
+        }
+        // If it's another type of transaction, set it to unknown
+        else {
+          direction = TransactionDirection.unknown;
+        }
+
+        final otherPartyAddress = direction == TransactionDirection.outgoing
+            ? transaction.paymentTransaction?.receiver.toString() ??
+                transaction.assetTransferTransaction?.receiver.toString() ??
+                ''
             : transaction.sender;
 
         final note = utf8.decode(base64.decode(transaction.note ?? ''));
@@ -103,7 +136,7 @@ class TransactionsNotifier
 
         transactionItems.add(TransactionItem(
           transaction: transaction,
-          isOutgoing: isOutgoing,
+          direction: direction, // Pass the new TransactionDirection
           otherPartyAddress: otherPartyAddress,
           amount: assetId != null
               ? assetAmount.toString()

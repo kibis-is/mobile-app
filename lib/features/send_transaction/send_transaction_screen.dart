@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:algorand_dart/algorand_dart.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,10 +24,10 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
-import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/arc200_service.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -94,39 +93,51 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<List<SelectItem>> _getAssetsAndCurrenciesAsList(WidgetRef ref) async {
     final publicAddress = ref.read(accountProvider).account?.address;
-    AsyncValue<List<CombinedAsset>> assetsAsync = const AsyncValue.loading();
+    AsyncValue<List<CombinedAsset>> standardAssetsAsync =
+        const AsyncValue.loading();
+    AsyncValue<List<CombinedAsset>> arc200AssetsAsync =
+        const AsyncValue.loading();
 
     if (publicAddress != null && publicAddress.isNotEmpty) {
-      assetsAsync = ref.read(assetsProvider(publicAddress));
+      standardAssetsAsync = ref.read(assetsProvider(publicAddress));
+      final arc200Assets = await ref
+          .read(arc200ServiceProvider)
+          .fetchArc200Assets(publicAddress);
+      arc200AssetsAsync = AsyncValue.data(arc200Assets);
     } else {
       debugPrint('Public address is not available');
-      assetsAsync = const AsyncValue.data([]);
+      standardAssetsAsync = const AsyncValue.data([]);
+      arc200AssetsAsync = const AsyncValue.data([]);
     }
 
-    final network = ref.read(networkProvider);
-
-    if (assetsAsync is! AsyncData<List<CombinedAsset>>) {
+    if (standardAssetsAsync is! AsyncData<List<CombinedAsset>> ||
+        arc200AssetsAsync is! AsyncData<List<CombinedAsset>>) {
       return [];
     }
 
-    final assets = assetsAsync.value;
-    List<SelectItem> combinedList = assets.map((asset) {
-      return SelectItem(
-        name: asset.params.name ?? 'Unnamed Asset',
-        value: asset.index.toString(),
-        icon: AppIcons.asset,
-      );
-    }).toList();
+    final standardAssets = standardAssetsAsync.value;
+    final arc200Assets = arc200AssetsAsync.value;
 
-    combinedList.insert(
-      0,
-      network ??
-          SelectItem(
-            name: 'No Network',
-            value: "-1",
-            icon: AppIcons.error,
-          ),
-    );
+    // Combine both lists
+    List<SelectItem> combinedList = [
+      ...standardAssets.map((asset) {
+        return SelectItem(
+          name: asset.params.name ?? 'Unnamed Asset',
+          value: asset.index.toString(),
+          icon: AppIcons.asset,
+          assetType: asset.assetType,
+        );
+      }),
+      ...arc200Assets.map((asset) {
+        return SelectItem(
+          name: asset.params.name ?? 'Unnamed ARC-0200',
+          value: asset.index.toString(),
+          icon: AppIcons.asset,
+          assetType: asset.assetType,
+        );
+      })
+    ];
+
     return combinedList;
   }
 
@@ -203,41 +214,49 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       final algorand = ref.read(algorandProvider);
       final account = await algorand.loadAccountFromPrivateKey(privateKey);
 
-      double amountInAlgos = double.parse(amountController.text);
       final selectedItem = ref.read(selectedAssetProvider);
       if (selectedItem == null) {
         throw Exception("No item selected for the transaction.");
       }
-      if (selectedItem.value.startsWith("network")) {
-        final txId = await ref.read(algorandServiceProvider).sendPayment(
-            account,
-            recipientAddressController.text,
-            amountInAlgos,
-            noteController.text);
 
+      if (selectedItem.assetType == AssetType.standard) {
+        // Standard asset transfer
+        await ref.read(algorandServiceProvider).transferAsset(
+              assetId: int.parse(selectedItem.value),
+              senderAccount: account,
+              receiverAddress: recipientAddressController.text,
+              amount: int.parse(amountController.text),
+            );
+        _showSuccessSnackbar("Standard Asset transfer successful.");
+      } else if (selectedItem.assetType == AssetType.arc200) {
+        // ARC-0200 asset transfer
+        await ref.read(algorandServiceProvider).sendARC0200Asset(
+              amount: BigInt.parse(amountController.text),
+              appID: BigInt.parse(selectedItem.value),
+              receiverAddress: recipientAddressController.text,
+              senderAccount: account,
+            );
+        _showSuccessSnackbar("ARC-0200 Asset transfer successful.");
+      } else if (selectedItem.value.startsWith("network")) {
+        // Network token (Algorand) transfer
+        final txId = await ref.read(algorandServiceProvider).sendPayment(
+              account,
+              recipientAddressController.text,
+              double.parse(amountController.text),
+              noteController.text,
+            );
         if (txId.isEmpty || txId == 'error') {
           throw Exception('Transaction failed');
         }
         _showSuccessSnackbar(txId);
       } else {
-        await ref.read(algorandServiceProvider).transferAsset(
-            int.parse(selectedItem.value),
-            account,
-            recipientAddressController.text,
-            int.parse(amountController.text));
-        _showSuccessSnackbar("Asset transfer successful.");
+        throw Exception("Unsupported asset type.");
       }
+
       ref.invalidate(transactionsProvider);
       ref.invalidate(balanceProvider);
-    } on AlgorandException catch (e) {
-      String errorMessage =
-          ref.read(algorandServiceProvider).parseAlgorandException(e);
-      debugPrint('AlgorandException: $errorMessage');
-      _showErrorSnackbar(errorMessage);
     } catch (e) {
-      String errorMessage = e.toString();
-      debugPrint('Error: $errorMessage');
-      _showErrorSnackbar(errorMessage);
+      _showErrorSnackbar(e.toString());
     } finally {
       goBack();
     }

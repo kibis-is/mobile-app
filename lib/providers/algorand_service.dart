@@ -6,7 +6,6 @@ import 'package:kibisis/models/arc0200_contract.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/utils/avm/sign_transaction.dart';
-import 'package:kibisis/utils/conver_to_combined_asset.dart';
 
 class AlgorandService {
   final Algorand algorand;
@@ -72,7 +71,7 @@ class AlgorandService {
         suggestedParams: suggestedParams,
       );
     } catch (error) {
-      debugPrint( 'Failed to create unsigned transfer transactions: $error');
+      debugPrint('Failed to create unsigned transfer transactions: $error');
 
       return 'error';
     }
@@ -89,7 +88,8 @@ class AlgorandService {
         transaction: unsignedTransaction,
       );
 
-      signedTransactions.add(Uint8List.fromList(Encoder.encodeMessagePack(signedTransaction)));
+      signedTransactions.add(
+          Uint8List.fromList(Encoder.encodeMessagePack(signedTransaction)));
     }
 
     return await algorand.sendRawTransactions(
@@ -496,8 +496,11 @@ class AlgorandService {
     }
   }
 
-  Future<void> transferAsset(int assetId, Account senderAccount,
-      String receiverAddress, int amount) async {
+  Future<void> transferAsset(
+      {required int assetId,
+      required Account senderAccount,
+      required String receiverAddress,
+      required int amount}) async {
     try {
       final txId = await algorand.assetManager.transfer(
         assetId: assetId,

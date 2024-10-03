@@ -5,7 +5,6 @@ import 'package:algorand_dart/algorand_dart.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:kibisis/constants/avm.dart';
 import 'package:kibisis/exceptions/avm_application_read_exception.dart';
 import 'package:kibisis/models/box_reference.dart';
@@ -49,7 +48,8 @@ class BaseContract {
   /// **Returns:**
   /// [Uint8List] The method selector.
   ///
-  static Uint8List createMethodSelectorFromMethodSignature(String methodSignature) {
+  static Uint8List createMethodSelectorFromMethodSignature(
+      String methodSignature) {
     final digest = sha512256.convert(utf8.encode(methodSignature));
     final hashBytes = Uint8List.fromList(digest.bytes);
 
@@ -59,21 +59,22 @@ class BaseContract {
 
   /// private functions
 
-  Future<Map<String, dynamic>> _createReadApplicationTransactionMessagePack({
-    required String methodSignature,
-    required List<Uint8List> appArgs,
-    TransactionParams? suggestedParams
-  }) async {
+  Future<Map<String, dynamic>> _createReadApplicationTransactionMessagePack(
+      {required String methodSignature,
+      required List<Uint8List> appArgs,
+      TransactionParams? suggestedParams}) async {
     final _appArgs = [
       createMethodSelectorFromMethodSignature(methodSignature),
       ...appArgs,
     ];
     final transaction = await (ApplicationCallTransactionBuilder()
-        ..sender = Address.fromAlgorandAddress(address: await _getFeeSinkAddress()) // we need an address that contains a balance
-        ..applicationId = appID.toInt()
-        ..arguments = _appArgs
-        ..suggestedParams = suggestedParams ?? await _transactionParams())
-      .build();
+          ..sender = Address.fromAlgorandAddress(
+              address:
+                  await _getFeeSinkAddress()) // we need an address that contains a balance
+          ..applicationId = appID.toInt()
+          ..arguments = _appArgs
+          ..suggestedParams = suggestedParams ?? await _transactionParams())
+        .build();
 
     return transaction.toMessagePack();
   }
@@ -103,34 +104,41 @@ class BaseContract {
   /// [Future<Map<String, dynamic>>] A list of the simulate transactions result
   /// encoded in message pack.
   ///
-  Future<Map<String, dynamic>> _simulateTransactions(List<SimulateTransactionParam> simulateTransactions) async {
-    final transactions = simulateTransactions.map((value) => value.transactionMessagePack).toList();
+  Future<Map<String, dynamic>> _simulateTransactions(
+      List<SimulateTransactionParam> simulateTransactions) async {
+    final transactions = simulateTransactions
+        .map((value) => value.transactionMessagePack)
+        .toList();
     final Map<String, dynamic> request = {
       'allow-empty-signatures': true,
       'allow-unnamed-resources': true,
-      'txn-groups': [{
-        'txns': List.generate(transactions.length, (index) {
-          final value = transactions[index];
-          final authAddress = simulateTransactions[index].authAddress;
+      'txn-groups': [
+        {
+          'txns': List.generate(transactions.length, (index) {
+            final value = transactions[index];
+            final authAddress = simulateTransactions[index].authAddress;
 
-          return {
-            'txn': value,
-            if (authAddress != null) 'sgnr': Address.fromAlgorandAddress(address: authAddress).publicKey, // add the auth address as the signer
-          };
-        }),
-      }],
+            return {
+              'txn': value,
+              if (authAddress != null)
+                'sgnr': Address.fromAlgorandAddress(address: authAddress)
+                    .publicKey, // add the auth address as the signer
+            };
+          }),
+        }
+      ],
     };
     final encodedRequest = Encoder.encodeMessagePack(request);
-    final result = await _client.request<Map<String, dynamic>>('/v2/transactions/simulate',
-      queryParameters: {},
-      options: Options(
-        method: 'POST',
-        headers: <String, dynamic>{r'Content-Type': 'application/x-binary'},
-        extra: {},
-        contentType: 'application/x-binary',
-      ),
-      data: Stream.fromIterable(encodedRequest.map((i) => [i]))
-    );
+    final result = await _client.request<Map<String, dynamic>>(
+        '/v2/transactions/simulate',
+        queryParameters: {},
+        options: Options(
+          method: 'POST',
+          headers: <String, dynamic>{r'Content-Type': 'application/x-binary'},
+          extra: {},
+          contentType: 'application/x-binary',
+        ),
+        data: Stream.fromIterable(encodedRequest.map((i) => [i])));
 
     return result.data!;
   }
@@ -183,33 +191,32 @@ class BaseContract {
     return AccountInformation.fromJson(result.data!);
   }
 
-  Future<Map<String, dynamic>> createWriteApplicationTransactionMessagePack({
-    required String methodSignature,
-    required String sender,
-    required List<Uint8List> appArgs,
-    TransactionParams? suggestedParams,
-    String? note,
-    List<BoxReference>? boxNames
-  }) async {
+  Future<Map<String, dynamic>> createWriteApplicationTransactionMessagePack(
+      {required String methodSignature,
+      required String sender,
+      required List<Uint8List> appArgs,
+      TransactionParams? suggestedParams,
+      String? note,
+      List<BoxReference>? boxNames}) async {
     final _appArgs = [
       createMethodSelectorFromMethodSignature(methodSignature),
       ...appArgs,
     ];
     final transaction = await (ApplicationCallTransactionBuilder()
-      ..sender = Address.fromAlgorandAddress(address: sender)
-      ..applicationId = appID.toInt()
-      ..arguments = _appArgs
-      ..suggestedParams = suggestedParams ?? await _transactionParams()
-      ..noteText = note)
+          ..sender = Address.fromAlgorandAddress(address: sender)
+          ..applicationId = appID.toInt()
+          ..arguments = _appArgs
+          ..suggestedParams = suggestedParams ?? await _transactionParams()
+          ..noteText = note)
         .build();
     final transactionAsMessagePack = transaction.toMessagePack();
 
     // if we have box references, add them as they are not supported in algorand dart
     if (boxNames != null) {
       transactionAsMessagePack['apbx'] = boxNames.map((value) => {
-        'i': value.id,
-        'n': value.name,
-      });
+            'i': value.id,
+            'n': value.name,
+          });
     }
 
     return transactionAsMessagePack;
@@ -227,13 +234,17 @@ class BaseContract {
     Map<String, dynamic> transactionMessagePack;
 
     try {
-      transactionMessagePack = await createWriteApplicationTransactionMessagePack(
+      transactionMessagePack =
+          await createWriteApplicationTransactionMessagePack(
         methodSignature: methodSignature,
         sender: sender,
         appArgs: appArgs,
         suggestedParams: suggestedParams,
       );
-      response = await _simulateTransactions([SimulateTransactionParam(transactionMessagePack, authAddress: authAddress)]);
+      response = await _simulateTransactions([
+        SimulateTransactionParam(transactionMessagePack,
+            authAddress: authAddress)
+      ]);
     } catch (error) {
       debugPrint('failed to simulate transaction: $error');
 
@@ -241,7 +252,8 @@ class BaseContract {
     }
 
     if (response['txn-groups'][0].containsKey('failure-message')) {
-      throw AVMApplicationReadException(appID, response['txn-groups'][0]['failure-message']);
+      throw AVMApplicationReadException(
+          appID, response['txn-groups'][0]['failure-message']);
     }
 
     boxes = response['txn-groups'][0]['unnamed-resources-accessed']['boxes'];
@@ -250,10 +262,9 @@ class BaseContract {
       return [];
     }
 
-    return boxes.map((value) => BoxReference(
-        value.app,
-        base64.decode(value.name)
-    )).toList();
+    return boxes
+        .map((value) => BoxReference(value.app, base64.decode(value.name)))
+        .toList();
   }
 
   /// Calls a read function on the contract using the simulate transactions.
@@ -268,18 +279,22 @@ class BaseContract {
   /// final result = await contract.readByMethodSignature(methodSignature: 'arc200_balanceOf(address)uint256', appArgs: []);
   /// print(result); // Output: 1000
   /// ```
-  Future<Uint8List?> readByMethodSignature({
-    required String methodSignature,
-    required List<Uint8List> appArgs,
-    TransactionParams? suggestedParams
-  }) async {
+  Future<Uint8List?> readByMethodSignature(
+      {required String methodSignature,
+      required List<Uint8List> appArgs,
+      TransactionParams? suggestedParams}) async {
     String? log;
     Map<String, dynamic> response;
     Map<String, dynamic> transactionMessagePack;
 
     try {
-      transactionMessagePack = await _createReadApplicationTransactionMessagePack(methodSignature: methodSignature, appArgs: appArgs, suggestedParams: suggestedParams);
-      response = await _simulateTransactions([SimulateTransactionParam(transactionMessagePack)]);
+      transactionMessagePack =
+          await _createReadApplicationTransactionMessagePack(
+              methodSignature: methodSignature,
+              appArgs: appArgs,
+              suggestedParams: suggestedParams);
+      response = await _simulateTransactions(
+          [SimulateTransactionParam(transactionMessagePack)]);
     } catch (error) {
       debugPrint('failed to simulate transaction: $error');
 
@@ -287,10 +302,12 @@ class BaseContract {
     }
 
     if (response['txn-groups'][0].containsKey('failure-message')) {
-      throw AVMApplicationReadException(appID, response['txn-groups'][0]['failure-message']);
+      throw AVMApplicationReadException(
+          appID, response['txn-groups'][0]['failure-message']);
     }
 
-    log = response['txn-groups'][0]['txn-results'][0]['txn-result']['logs']?.removeLast(); // the last log will be the value
+    log = response['txn-groups'][0]['txn-results'][0]['txn-result']['logs']
+        ?.removeLast(); // the last log will be the value
 
     if (log == null) {
       debugPrint('no log found for application "$appID"');
@@ -298,7 +315,8 @@ class BaseContract {
       return null;
     }
 
-    return base64.decode(log) // the log will be encoded in base64
+    return base64
+        .decode(log) // the log will be encoded in base64
         .sublist(4); // remove the log prefix (first 4 bytes)
   }
 }
