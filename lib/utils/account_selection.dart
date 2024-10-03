@@ -4,6 +4,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 
 class AccountHandler {
   final WidgetRef ref;
@@ -29,6 +30,7 @@ class AccountHandler {
       await ref
           .read(accountProvider.notifier)
           .initialiseFromPublicKey(accountName, accountId);
+      invalidateProviders(ref);
     } catch (e) {
       debugPrint('Handle Account Selection Error: ${e.toString()}');
       ref.read(errorProvider.notifier).state = 'Failed to select account: $e';

@@ -1,14 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
-import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'dart:convert';
 
-final transactionsProvider =
-    StateNotifierProvider<TransactionsNotifier, AsyncValue<List<Transaction>>>(
-  (ref) {
-    final publicAddress = ref.watch(accountProvider).account?.address ?? '';
+final transactionsProvider = StateNotifierProvider.family<TransactionsNotifier,
+    AsyncValue<List<Transaction>>, String>(
+  (ref, publicAddress) {
     return TransactionsNotifier(ref, publicAddress);
   },
 );
@@ -31,11 +29,10 @@ class TransactionsNotifier
   }
 
   Future<void> _init() async {
-    await getTransactions(publicAddress, isInitial: true);
+    await getTransactions(isInitial: true);
   }
 
-  Future<void> getTransactions(String publicAddress,
-      {bool isInitial = false}) async {
+  Future<void> getTransactions({bool isInitial = false}) async {
     if (publicAddress.isEmpty) {
       state = const AsyncValue.data([]);
       return;
@@ -64,7 +61,7 @@ class TransactionsNotifier
   }
 
   Future<PaginatedTransactionItems> getPaginatedTransactions(
-      String publicAddress, String? pageKey, int limit) async {
+      String? pageKey, int limit) async {
     if (publicAddress.isEmpty) {
       return PaginatedTransactionItems(items: [], nextToken: null);
     }

@@ -12,9 +12,10 @@ class ShowFrozenAssetsProvider extends StateNotifier<bool> {
     loadInitialState();
   }
 
-  void loadInitialState() async {
+  Future<void> loadInitialState() async {
     final storageService = ref.read(storageProvider);
-    state = storageService.getShowFrozenAssets() ?? false;
+    final savedState = storageService.getShowFrozenAssets();
+    state = savedState ?? false;
   }
 
   void setShowFrozenAssets(bool showFrozenAssets) {

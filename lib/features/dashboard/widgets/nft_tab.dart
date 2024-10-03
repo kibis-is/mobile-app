@@ -11,6 +11,7 @@ import 'package:kibisis/providers/nft_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class NftTab extends ConsumerStatefulWidget {
@@ -34,6 +35,10 @@ class NftTabState extends ConsumerState<NftTab> {
     filterController = TextEditingController(
       text: ref.read(nftNotifierProvider.notifier).filterText,
     );
+
+    // Load the saved view type from SharedPreferences
+    _loadViewType();
+
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 100 &&
@@ -43,6 +48,19 @@ class NftTabState extends ConsumerState<NftTab> {
         });
       }
     });
+  }
+
+  void _loadViewType() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedViewType = prefs.getString('nftViewType');
+
+    if (savedViewType != null) {
+      setState(() {
+        viewType = savedViewType == NftViewType.grid.toString()
+            ? NftViewType.grid
+            : NftViewType.card;
+      });
+    }
   }
 
   void _onRefresh() async {
@@ -57,11 +75,14 @@ class NftTabState extends ConsumerState<NftTab> {
     _refreshController.refreshCompleted();
   }
 
-  void _toggleNftView() {
+  void _toggleNftView() async {
     setState(() {
       viewType =
           viewType == NftViewType.grid ? NftViewType.card : NftViewType.grid;
     });
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('nftViewType', viewType.toString());
   }
 
   @override

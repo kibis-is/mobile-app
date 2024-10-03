@@ -67,6 +67,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
           ? null
           : FloatingActionButton(
               onPressed: _navigateToAddAccount,
+              shape: const CircleBorder(),
               backgroundColor: context.colorScheme.secondary,
               child: const Icon(AppIcons.add),
             ),

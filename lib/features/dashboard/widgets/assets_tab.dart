@@ -19,6 +19,7 @@ import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:kibisis/common_widgets/asset_list_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 final sortingProvider = StateProvider<Sorting>((ref) => Sorting.assetId);
@@ -33,15 +34,32 @@ class AssetsTab extends ConsumerStatefulWidget {
 }
 
 class _AssetsTabState extends ConsumerState<AssetsTab> {
-  late final RefreshController _refreshController;
+  late final RefreshController _wideScreenRefreshController;
+  late final RefreshController _narrowScreenRefreshController;
   CombinedAsset? _selectedAsset;
   late TextEditingController filterController;
 
   @override
   void initState() {
     super.initState();
-    _refreshController = RefreshController(initialRefresh: false);
+    _wideScreenRefreshController = RefreshController(initialRefresh: false);
+    _narrowScreenRefreshController = RefreshController(initialRefresh: false);
     filterController = TextEditingController(text: _getFilterText());
+    _loadShowFrozenAssets();
+  }
+
+  @override
+  void dispose() {
+    _wideScreenRefreshController.dispose();
+    _narrowScreenRefreshController.dispose();
+    filterController.dispose();
+    super.dispose();
+  }
+
+  void _loadShowFrozenAssets() async {
+    final prefs = await SharedPreferences.getInstance();
+    final showFrozen = prefs.getBool('showFrozenAssets') ?? false;
+    ref.read(showFrozenAssetsProvider.notifier).setShowFrozenAssets(showFrozen);
   }
 
   String _getFilterText() {
@@ -49,13 +67,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     return publicAddress != null && publicAddress.isNotEmpty
         ? ref.read(assetsProvider(publicAddress).notifier).filterText
         : '';
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    filterController.dispose();
-    super.dispose();
   }
 
   @override
@@ -72,7 +83,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             children: [
               Expanded(
                 flex: mediaQueryHelper.getDynamicFlex()[0],
-                child: _buildSearchAndAssetList(
+                child: _buildWideScreenSearchAndAssetList(
                   assetsFilterController: assetsFilterController,
                   assetsAsync: assetsAsync,
                 ),
@@ -89,17 +100,13 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               ),
             ],
           )
-        : _buildSearchAndAssetList(
+        : _buildNarrowScreenSearchAndAssetList(
             assetsFilterController: assetsFilterController,
             assetsAsync: assetsAsync,
           );
   }
 
-  String _getPublicAddress() {
-    return ref.watch(accountProvider).account?.address ?? '';
-  }
-
-  Widget _buildSearchAndAssetList({
+  Widget _buildWideScreenSearchAndAssetList({
     required AssetsFilterController assetsFilterController,
     required AsyncValue<List<CombinedAsset>> assetsAsync,
   }) {
@@ -108,8 +115,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         _buildSearchBar(assetsFilterController),
         Expanded(
           child: CustomPullToRefresh(
-            refreshController: _refreshController,
-            onRefresh: _onRefresh,
+            refreshController: _wideScreenRefreshController,
+            onRefresh: _onWideScreenRefresh,
             child: assetsAsync.when(
               data: (assets) => _buildAssetsList(assets),
               loading: _buildLoadingAssets,
@@ -120,6 +127,43 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         ),
       ],
     );
+  }
+
+  Widget _buildNarrowScreenSearchAndAssetList({
+    required AssetsFilterController assetsFilterController,
+    required AsyncValue<List<CombinedAsset>> assetsAsync,
+  }) {
+    return Column(
+      children: [
+        _buildSearchBar(assetsFilterController),
+        Expanded(
+          child: CustomPullToRefresh(
+            refreshController: _narrowScreenRefreshController,
+            onRefresh: _onNarrowScreenRefresh,
+            child: assetsAsync.when(
+              data: (assets) => _buildAssetsList(assets),
+              loading: _buildLoadingAssets,
+              error: (_, __) =>
+                  const Center(child: Text('Error loading assets')),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _getPublicAddress() {
+    return ref.watch(accountProvider).account?.address ?? '';
+  }
+
+  void _onWideScreenRefresh() {
+    ref.invalidate(assetsProvider);
+    _wideScreenRefreshController.refreshCompleted();
+  }
+
+  void _onNarrowScreenRefresh() {
+    ref.invalidate(assetsProvider);
+    _narrowScreenRefreshController.refreshCompleted();
   }
 
   Widget _buildSearchBar(AssetsFilterController assetsFilterController) {
@@ -196,11 +240,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     );
   }
 
-  void _onRefresh() {
-    ref.invalidate(assetsProvider);
-    _refreshController.refreshCompleted();
-  }
-
   void _showFilterDialog() {
     customBottomSheet(
       context: context,
@@ -242,12 +281,15 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     }
   }
 
-  void _filterAssets(bool showFrozen) {
+  void _filterAssets(bool showFrozen) async {
     final publicAddress = _getPublicAddress();
     if (publicAddress.isNotEmpty) {
       ref
           .read(assetsProvider(publicAddress).notifier)
           .setShowFrozen(showFrozen);
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('showFrozenAssets', showFrozen);
     } else {
       debugPrint('Public address is not available');
     }
@@ -290,6 +332,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             .filterText
             .isNotEmpty;
 
+    final isWideScreen = MediaQuery.of(context).size.width > 600;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -310,12 +354,21 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           ),
           const SizedBox(height: kScreenPadding),
           TextButton(
-            onPressed: isFilterActive ? _clearFilter : _onRefresh,
+            onPressed:
+                isFilterActive ? _clearFilter : () => _onRefresh(isWideScreen),
             child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
           ),
         ],
       ),
     );
+  }
+
+  void _onRefresh(bool isWideScreen) {
+    if (isWideScreen) {
+      _wideScreenRefreshController.requestRefresh();
+    } else {
+      _narrowScreenRefreshController.requestRefresh();
+    }
   }
 
   Widget _buildLoadingAssets() {
