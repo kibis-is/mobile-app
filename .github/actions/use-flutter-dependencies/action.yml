@@ -9,23 +9,11 @@ runs:
       with:
         java-version: "17"
         distribution: "zulu"
-
-    - name: "🔧 Cache Flutter SDK"
-      id: flutter-cache
-      uses: actions/cache@v3
-      with:
-        path: ${{ runner.tool_cache }}/flutter
-        key: flutter-sdk-${{ runner.os }}-${{ hashFiles('pubspec.yaml') }}
-        restore-keys: |
-          flutter-sdk-${{ runner.os }}-
-
     - name: "🔧 Setup Flutter"
-      if: steps.flutter-cache.outputs.cache-hit != 'true'  # only run if the sdk cache is not found
       uses: subosito/flutter-action@v2
       with:
         flutter-version: 3.22.3
         channel: stable
-
     - name: "📦 Cache Pub Dependencies"
       id: pub-cache
       uses: actions/cache@v3
@@ -36,7 +24,6 @@ runs:
         key: flutter-pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
         restore-keys: |
           flutter-pub-${{ runner.os }}-
-
     - name: "📦 Install Dependencies"
       if: steps.pub-cache.outputs.cache-hit != 'true'  # only run if the dependencies cache is not found
       run: flutter pub get
