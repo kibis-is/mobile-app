@@ -46,23 +46,21 @@ jobs:
         uses: actions/checkout@v4
       - name: "🔧 Setup"
         uses: ./.github/actions/use-flutter-dependencies
-      - name: "🏗️ Build APK"
-        run: flutter build apk --debug
       - name: "🏗️ Build AppBundle"
         run: flutter build aab --debug
 
-#  build_ios:
-#    name: "Build iOS"
-#    needs: [validate_pr_title]
-#    runs-on: macos-latest
-#    environment: development
-#    steps:
-#      - name: "🛎 Checkout"
-#        uses: actions/checkout@v4
-#      - name: "🔧 Setup"
-#        uses: ./.github/actions/use-flutter-dependencies
-#      - name: "🏗️ Build ios"
-#        run: flutter build ios --release --no-codesign
+  build_ios:
+    name: "Build iOS"
+    needs: [validate_pr_title]
+    runs-on: macos-latest
+    environment: development
+    steps:
+      - name: "🛎 Checkout"
+        uses: actions/checkout@v4
+      - name: "🔧 Setup"
+        uses: ./.github/actions/use-flutter-dependencies
+      - name: "🏗️ Build ios"
+        run: flutter build ios --debug
 
   tests:
     name: "Tests"
