@@ -257,7 +257,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           final showFrozen = ref.watch(showFrozenAssetsProvider);
           return CheckboxListTile(
             title: const Text("Show Frozen Assets"),
+            tileColor: Colors.transparent,
             value: showFrozen,
+            checkboxShape: const CircleBorder(),
             onChanged: (bool? value) {
               if (value != null) {
                 ref
