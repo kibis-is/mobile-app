@@ -62,6 +62,8 @@ class AppIcons {
   static const IconData decimals = Icons.looks_one_rounded;
   static const IconData totalSupply = Icons.pie_chart_rounded;
   static const IconData download = Icons.download_rounded;
+  static const IconData incoming = Icons.arrow_circle_left_outlined;
+  static const IconData outgoing = Icons.arrow_circle_right_outlined;
 
   static const String svgBasePath = 'assets/images/';
 

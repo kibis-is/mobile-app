@@ -12,10 +12,10 @@ import 'package:kibisis/utils/avm/is_zero_address.dart';
 
 class ARC0200Contract extends BaseContract {
   ARC0200Contract({
-    required BigInt appID,
-    required String algodURL,
-    String? algodToken,
-  }) : super(appID: appID, algodURL: algodURL, algodToken: algodToken);
+    required super.appID,
+    required super.algodURL,
+    super.algodToken,
+  });
 
   /// Gets the balance of an address.
   ///
@@ -44,9 +44,11 @@ class ARC0200Contract extends BaseContract {
       return BigInt.zero;
     }
 
-    result = await readByMethodSignature(methodSignature: 'arc200_balanceOf(address)uint256', appArgs: [
-      ABIAddressType().encode(address),
-    ]);
+    result = await readByMethodSignature(
+        methodSignature: 'arc200_balanceOf(address)uint256',
+        appArgs: [
+          ABIAddressType().encode(address),
+        ]);
 
     if (result == null) {
       return BigInt.zero;
@@ -99,7 +101,7 @@ class ARC0200Contract extends BaseContract {
   }) async {
     final receiverBalance = await balanceOf(receiver);
     final encodedAmount = ABIUintType(256).encode(amount);
-    final methodSignature = 'arc200_transfer(address,uint256)bool';
+    const methodSignature = 'arc200_transfer(address,uint256)bool';
     final appArgs = [
       ABIAddressType().encode(receiver),
       encodedAmount,
@@ -117,7 +119,8 @@ class ARC0200Contract extends BaseContract {
     Map<String, dynamic>? payTransaction;
 
     if (boxReferences.isEmpty) {
-      throw AVMApplicationReadException(appID, 'failed to get box references for sender "$sender" and receiver "$receiver"');
+      throw AVMApplicationReadException(appID,
+          'failed to get box references for sender "$sender" and receiver "$receiver"');
     }
 
     // create the application call transaction
@@ -134,11 +137,13 @@ class ARC0200Contract extends BaseContract {
     if (receiverBalance <= BigInt.zero) {
       boxStorageCost = calculateBoxMBR(boxReferences[0].name, encodedAmount);
       payTransaction = (await (PaymentTransactionBuilder()
-        ..amount = boxStorageCost
-        ..sender = Address.fromAlgorandAddress(address: sender)
-        ..receiver = Address.fromAlgorandAddress(address: address())
-        ..noteText = 'Initial box storage funding for account "$receiver" for application "$appID"')
-          .build()).toMessagePack();
+                ..amount = boxStorageCost
+                ..sender = Address.fromAlgorandAddress(address: sender)
+                ..receiver = Address.fromAlgorandAddress(address: address())
+                ..noteText =
+                    'Initial box storage funding for account "$receiver" for application "$appID"')
+              .build())
+          .toMessagePack();
 
       // assign group ids
       groupID = computeGroupID([payTransaction, applicationTransaction]);
@@ -168,7 +173,8 @@ class ARC0200Contract extends BaseContract {
   /// print(decimals); // Output: 6
   /// ```
   Future<int> decimals() async {
-    final result = await readByMethodSignature(methodSignature: 'arc200_decimals()uint8', appArgs: []);
+    final result = await readByMethodSignature(
+        methodSignature: 'arc200_decimals()uint8', appArgs: []);
 
     if (result == null) {
       return 0;
@@ -193,7 +199,8 @@ class ARC0200Contract extends BaseContract {
   /// print(name); // Output: Voi Incentive Token
   /// ```
   Future<String> name() async {
-    final result = await readByMethodSignature(methodSignature: 'arc200_name()byte[32]', appArgs: []);
+    final result = await readByMethodSignature(
+        methodSignature: 'arc200_name()byte[32]', appArgs: []);
 
     if (result == null) {
       return '';
@@ -218,7 +225,8 @@ class ARC0200Contract extends BaseContract {
   /// print(symbol); // Output: VIA
   /// ```
   Future<String> symbol() async {
-    final result = await readByMethodSignature(methodSignature: 'arc200_symbol()byte[8]', appArgs: []);
+    final result = await readByMethodSignature(
+        methodSignature: 'arc200_symbol()byte[8]', appArgs: []);
 
     if (result == null) {
       return '';
@@ -243,7 +251,8 @@ class ARC0200Contract extends BaseContract {
   /// print(totalSupply.toString()); // Output: 1000
   /// ```
   Future<BigInt> totalSupply() async {
-    final result = await readByMethodSignature(methodSignature: 'arc200_totalSupply()uint256', appArgs: []);
+    final result = await readByMethodSignature(
+        methodSignature: 'arc200_totalSupply()uint256', appArgs: []);
 
     if (result == null) {
       return BigInt.zero;

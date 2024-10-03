@@ -12,7 +12,7 @@ import 'package:kibisis/utils/theme_extensions.dart';
 
 class TransactionItem extends ConsumerWidget {
   final Transaction transaction;
-  final bool isOutgoing;
+  final TransactionDirection direction;
   final String otherPartyAddress;
   final String? amount;
   final String note;
@@ -22,7 +22,7 @@ class TransactionItem extends ConsumerWidget {
   const TransactionItem({
     super.key,
     required this.transaction,
-    required this.isOutgoing,
+    required this.direction,
     required this.otherPartyAddress,
     this.amount,
     required this.note,
@@ -35,17 +35,21 @@ class TransactionItem extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: context.colorScheme.primary,
+        color: direction == TransactionDirection.outgoing
+            ? context.colorScheme.error
+            : direction == TransactionDirection.incoming
+                ? context.colorScheme.secondary
+                : context
+                    .colorScheme.onSurface, // Use neutral color for unknown
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(kScreenPadding / 3),
-        child: AppIcons.icon(
-            icon: network.startsWith('network-voi')
-                ? AppIcons.voiCircleIcon
-                : AppIcons.algorandIcon,
-            size: AppIcons.xlarge,
-            color: context.colorScheme.onPrimary),
-      ),
+      child: AppIcons.icon(
+          icon: direction == TransactionDirection.outgoing
+              ? AppIcons.outgoing
+              : direction == TransactionDirection.incoming
+                  ? AppIcons.incoming
+                  : Icons.help_outline, // Neutral icon for unknown
+          size: AppIcons.xlarge,
+          color: context.colorScheme.onPrimary),
     );
   }
 
@@ -125,7 +129,7 @@ class TransactionItem extends ConsumerWidget {
                             : (amount != null &&
                                     amount != '0' &&
                                     !(amount?.startsWith('0') ?? false))
-                                ? '${isOutgoing ? '-' : '+'}$amount'
+                                ? '${direction == TransactionDirection.outgoing ? '-' : '+'}$amount'
                                 : '$amount',
                         style: context.textTheme.labelMedium?.copyWith(
                           fontWeight: FontWeight.bold,
@@ -134,9 +138,12 @@ class TransactionItem extends ConsumerWidget {
                                   amount?.startsWith('0') == true ||
                                   type == 'appl')
                               ? context.colorScheme.onSurface
-                              : isOutgoing
+                              : direction == TransactionDirection.outgoing
                                   ? context.colorScheme.error
-                                  : context.colorScheme.secondary,
+                                  : direction == TransactionDirection.incoming
+                                      ? context.colorScheme.secondary
+                                      : context.colorScheme
+                                          .onSurface, // Neutral color for unknown
                         ),
                       ),
                     ),

@@ -59,3 +59,9 @@ enum ScanMode {
 }
 
 enum AssetType { standard, arc200 }
+
+enum TransactionDirection {
+  incoming,
+  outgoing,
+  unknown,
+}
