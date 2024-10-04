@@ -46,7 +46,7 @@ dependencies:
   flutter_confetti: ^0.3.0
 
 dependency_overrides:
-  win32: ^5.5.4
+  win32: 5.5.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
