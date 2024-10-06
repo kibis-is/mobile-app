@@ -16,6 +16,7 @@ import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:vibration/vibration.dart';
 
 class PinPad extends ConsumerStatefulWidget {
   final int pinLength;
@@ -321,16 +322,16 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   }
 
   void _handlePinKeyPressed(String key) {
-    if (isPinCompleted) return; // Prevent input if PIN is completed
+    if (isPinCompleted) return;
 
+    _handleVibration(10);
     final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
     final pinTitleNotifier = ref.read(pinTitleProvider.notifier);
 
     pinPadProvider.addKey(key);
 
     if (pinPadProvider.isPinComplete()) {
-      isPinCompleted = true; // Set flag to prevent further input
-
+      isPinCompleted = true;
       if ((widget.mode == PinPadMode.setup ||
               widget.mode == PinPadMode.changePin) &&
           !isConfirmingPin) {
@@ -341,7 +342,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         _triggerAnimation();
         pinPadProvider.reset();
         pinPadProvider.clearError();
-        isPinCompleted = false; // Re-enable input after clearing
+        isPinCompleted = false;
       } else {
         _processCompletePin();
       }
@@ -432,6 +433,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
               pinTitleNotifier.setCreatePinTitle();
             }
           } else {
+            _handleVibration(100);
             pinNotifier.setError(pinErrorString);
             _triggerAnimation();
             pinNotifier.reset();
@@ -450,6 +452,12 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
       default:
         debugPrint('Unhandled mode in _handlePinComplete');
         break;
+    }
+  }
+
+  Future<void> _handleVibration(int duration) async {
+    if (await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate(duration: duration);
     }
   }
 
