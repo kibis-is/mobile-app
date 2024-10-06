@@ -1,9 +1,9 @@
 import 'package:kibisis/providers/storage_provider.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 import 'package:flutter/foundation.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 
 class WalletConnectManager {
-  late Web3Wallet _walletConnectClient;
+  late ReownWalletKit _walletConnectClient;
   bool _isInitialized = false;
   final StorageService _storageService;
 
@@ -15,7 +15,7 @@ class WalletConnectManager {
           ? '86eaff455340651e0ee12c8572c2d228'
           : '0451c3741ac5a5eba94c213ee1073cb1';
 
-      _walletConnectClient = await Web3Wallet.createInstance(
+      _walletConnectClient = await ReownWalletKit.createInstance(
         projectId: projectId,
         relayUrl: 'wss://relay.walletconnect.com',
         metadata: const PairingMetadata(
@@ -111,7 +111,7 @@ class WalletConnectManager {
     try {
       await _walletConnectClient.disconnectSession(
         topic: topic,
-        reason: const WalletConnectError(
+        reason: const ReownSignError(
           code: 0,
           message: "User disconnected the session",
         ),
@@ -228,7 +228,7 @@ class WalletConnectManager {
     }
   }
 
-  Web3Wallet get client => _walletConnectClient;
+  ReownWalletKit get client => _walletConnectClient;
 
   bool get isInitialized => _isInitialized;
 

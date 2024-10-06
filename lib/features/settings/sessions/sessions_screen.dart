@@ -9,9 +9,9 @@ import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:kibisis/utils/wallet_connect_manageer.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/session_models.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 
 class SessionsScreen extends ConsumerStatefulWidget {
   static String title = 'Sessions';

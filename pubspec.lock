@@ -992,6 +992,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  reown_core:
+    dependency: transitive
+    description:
+      name: reown_core
+      sha256: acfdd52de8a1c9c2c96007a9911cfe7750254233493b391ac90bcf629bf1f7c6
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+  reown_sign:
+    dependency: transitive
+    description:
+      name: reown_sign
+      sha256: ee2a555c815ba300699615b499d2d67060fdf4e7ba6469e21c4501e6cd47bd02
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+  reown_walletkit:
+    dependency: "direct main"
+    description:
+      name: reown_walletkit
+      sha256: "1e9dfbd59cf82f3aeba565ad8dd2006150f0403c82a3b1a1a5fbb977126d2c07"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   riverpod:
     dependency: transitive
     description:
@@ -1405,14 +1429,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.13"
-  walletconnect_flutter_v2:
-    dependency: "direct main"
-    description:
-      name: walletconnect_flutter_v2
-      sha256: "373348d8d0b6d3cabff067f00b7e48c234c000a6a5d4db20deea3636fa45b4fb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.1"
   watcher:
     dependency: transitive
     description:
