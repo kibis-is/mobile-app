@@ -106,19 +106,21 @@ class QRCodeScannerLogic {
     }
   }
 
-  Future<Set<Map<String, dynamic>>> _handleImportAccountUri(String uri) async {
+  Future<List<Map<String, dynamic>>> _handleImportAccountUri(String uri) async {
     Uri? parsedUri = Uri.tryParse(uri);
     if (parsedUri == null) {
       throw Exception('Invalid URI format');
     }
 
     // Extract query parameters
-    Map<String, List<String>> params = getQueryParameters(parsedUri.query);
+    List<MapEntry<String, String>> params =
+        getOrderedQueryParameters(parsedUri.query);
 
-    if (params.containsKey('encoding') && params['encoding']?.first == 'hex') {
+    if (params
+        .any((param) => param.key == 'encoding' && param.value == 'hex')) {
       // If the URI contains the "encoding=hex", it's a legacy format
       return handleLegacyUri(params);
-    } else if (params.containsKey('privatekey')) {
+    } else if (params.any((param) => param.key == 'privatekey')) {
       // If the URI contains "privatekey" but no encoding, it's a modern format
       return handleModernUri(params);
     } else {
@@ -130,11 +132,9 @@ class QRCodeScannerLogic {
     return data.length == 58 && RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(data);
   }
 
-  Map<String, List<String>> getQueryParameters(String query) {
-    List<String> names = [];
-    List<String> privateKeys = [];
-    int importedAccountCounter = 1;
-    String? lastName;
+// New method to parse query parameters into a list of key-value pairs, preserving order
+  List<MapEntry<String, String>> getOrderedQueryParameters(String query) {
+    List<MapEntry<String, String>> params = [];
 
     var queryString = query.split('?').last;
     var parts = queryString.split('&');
@@ -144,60 +144,57 @@ class QRCodeScannerLogic {
       if (index != -1) {
         var key = Uri.decodeComponent(part.substring(0, index));
         var value = Uri.decodeComponent(part.substring(index + 1));
-
-        if (key == 'name') {
-          lastName = value;
-        } else if (key == 'privatekey') {
-          if (lastName != null) {
-            names.add(lastName);
-            lastName = null;
-          } else {
-            names.add('Imported Account $importedAccountCounter');
-            importedAccountCounter++;
-          }
-          privateKeys.add(value);
-        }
+        params.add(MapEntry(key, value));
       }
     }
 
-    return {'name': names, 'privatekey': privateKeys};
+    return params;
   }
 
-  Set<Map<String, dynamic>> handleModernUri(Map<String, List<String>> params) {
-    Set<Map<String, dynamic>> result = {};
+  List<Map<String, dynamic>> handleModernUri(
+      List<MapEntry<String, String>> params) {
+    List<Map<String, dynamic>> result = [];
 
-    List<String> names = params['name'] ?? [];
-    List<String> privateKeys = params['privatekey'] ?? [];
+    String? currentName;
     int importedAccountCounter = 1;
 
-    for (int i = 0; i < privateKeys.length; i++) {
-      String name;
+    for (var param in params) {
+      if (param.key == 'name') {
+        currentName = param.value;
+      } else if (param.key == 'privatekey') {
+        String name = currentName ?? 'Imported Account $importedAccountCounter';
+        if (currentName == null) {
+          importedAccountCounter++;
+        }
+        currentName = null;
 
-      if (i < names.length) {
-        name = names[i];
-      } else {
-        name = 'Imported Account $importedAccountCounter';
-        importedAccountCounter++;
+        Uint8List? seed = _decodePrivateKey(param.value);
+
+        if (seed == null || seed.length != 32) {
+          throw Exception('Invalid private key');
+        }
+
+        result.add({
+          'name': name,
+          'seed': seed,
+        });
       }
-
-      Uint8List? seed = _decodePrivateKey(privateKeys[i]);
-
-      if (seed == null || seed.length != 32) {
-        throw Exception('Invalid private key');
-      }
-
-      result.add({'name': name, 'seed': seed});
     }
 
     return result;
   }
 
-  Set<Map<String, dynamic>> handleLegacyUri(Map<String, List<String>> params) {
-    Set<Map<String, dynamic>> result = {};
+  List<Map<String, dynamic>> handleLegacyUri(
+      List<MapEntry<String, String>> params) {
+    List<Map<String, dynamic>> result = [];
 
     const String name = 'Imported Account';
-    final String key = params['privatekey']?.first ?? '';
-    Uint8List? seed = _decodePrivateKey(key);
+    final privateKeyParam = params.firstWhere(
+      (param) => param.key == 'privatekey',
+      orElse: () => throw Exception('Missing privatekey in legacy URI'),
+    );
+
+    Uint8List? seed = _decodePrivateKey(privateKeyParam.value);
 
     if (seed == null || seed.length != 32) {
       throw Exception('Invalid private key');

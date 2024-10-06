@@ -21,8 +21,7 @@ import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/wallet_connect_manageer.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_events.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 
 final isPaginatedScanProvider = StateProvider<bool>((ref) => false);
 final isTorchEnabledProvider = StateProvider<bool>((ref) => false);
@@ -229,7 +228,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   }
 
   Future<void> _handleScanResult(dynamic scanResult) async {
-    if (scanResult is Set<Map<String, dynamic>>) {
+    if (scanResult is List<Map<String, dynamic>>) {
       await _handleAccountImportResult(scanResult);
     } else if (scanResult is String) {
       await _handleStringResult(scanResult);
@@ -339,7 +338,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   }
 
   Future<void> _handleAccountImportResult(
-      Set<Map<String, dynamic>> accounts) async {
+      List<Map<String, dynamic>> accounts) async {
     try {
       for (var account in accounts) {
         final String name = account['name'];

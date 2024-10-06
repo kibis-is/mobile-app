@@ -34,7 +34,7 @@ Future<List<String>> generateAllAccountURIs(Ref ref) async {
     final privateKey =
         await storageService.getAccountData(accountId ?? '', 'privateKey');
     if (privateKey == null || privateKey.isEmpty) {
-      continue; // Skip if private key not found
+      continue;
     }
     accountDataList.add('$accountName$privateKey');
     if (accountChunks.isEmpty || accountChunks.last.length >= chunkSize) {
@@ -50,14 +50,11 @@ Future<List<String>> generateAllAccountURIs(Ref ref) async {
     return [];
   }
 
-  final String allData = accountDataList.join();
-  final String globalChecksum = md5.convert(utf8.encode(allData)).toString();
-
   List<String> uris = [];
-  int pageNumber = 1;
-  final int totalPages = accountChunks.length;
+  int totalPages = accountChunks.length;
 
-  for (var chunk in accountChunks) {
+  for (int pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+    final chunk = accountChunks[pageNumber - 1];
     final StringBuffer uri = StringBuffer('avm://account/import?');
     final List<String> params = [];
 
@@ -71,12 +68,15 @@ Future<List<String>> generateAllAccountURIs(Ref ref) async {
     if (params.isEmpty) {
       continue;
     }
-
     uri.write(params.join('&'));
 
-    uri.write('&checksum=$globalChecksum&page=$pageNumber:$totalPages');
+    if (totalPages > 1) {
+      final String allData = accountDataList.join();
+      final String globalChecksum =
+          md5.convert(utf8.encode(allData)).toString();
+      uri.write('&checksum=$globalChecksum&page=$pageNumber:$totalPages');
+    }
     uris.add(uri.toString());
-    pageNumber++;
   }
 
   return uris;
