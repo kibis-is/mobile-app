@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/nft.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -322,5 +323,33 @@ class StorageService {
 
   Future<void> clearNFTsForAccount(String accountId) async {
     await _prefs?.remove('nfts_$accountId');
+  }
+
+  static const String _contactsKey = 'contacts';
+
+  Future<List<Contact>> getContacts() async {
+    final contactsJson = _prefs?.getStringList(_contactsKey) ?? [];
+    return contactsJson.map((contactString) {
+      final jsonData = jsonDecode(contactString);
+      return Contact.fromJson(jsonData);
+    }).toList();
+  }
+
+  Future<void> saveContacts(List<Contact> contacts) async {
+    final contactsJson =
+        contacts.map((contact) => jsonEncode(contact.toJson())).toList();
+    await _prefs?.setStringList(_contactsKey, contactsJson);
+  }
+
+  Future<void> addContact(Contact contact) async {
+    final contacts = await getContacts();
+    contacts.add(contact);
+    await saveContacts(contacts);
+  }
+
+  Future<void> removeContact(String contactId) async {
+    final contacts = await getContacts();
+    contacts.removeWhere((contact) => contact.id == contactId);
+    await saveContacts(contacts);
   }
 }
