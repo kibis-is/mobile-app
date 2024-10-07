@@ -30,14 +30,7 @@ class AnimatedProgressBar extends ConsumerWidget {
               child: Container(
                 height: double.infinity,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      context.colorScheme.primary,
-                      context.colorScheme.secondary,
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
+                  color: context.colorScheme.primary,
                   borderRadius: BorderRadius.circular(kWidgetRadius),
                 ),
               ),

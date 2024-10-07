@@ -56,9 +56,25 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   WalletConnectManager? walletConnectManager;
 
   @override
+  void initState() {
+    super.initState();
+
+    // Start the scanController manually
+    scanController.start();
+
+    // Use a post-frame callback to safely reset providers after the first build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(multipartScanProvider.notifier).reset();
+        ref.read(progressBarProvider.notifier).state = 0.0;
+        ref.read(isPaginatedScanProvider.notifier).state = false;
+      }
+    });
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     if (walletConnectManager == null) {
       final storageService = ref.read(storageProvider);
       walletConnectManager = WalletConnectManager(storageService);
@@ -186,7 +202,6 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         return ScannerOverlay(scanWindowRect: scanWindowRect);
       },
       onDetect: (BarcodeCapture capture) async {
-        await _handleVibration();
         if (_debounceTimer?.isActive ?? false || isProcessing) {
           return;
         }
@@ -197,6 +212,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         scanController.stop();
 
         _debounceTimer = Timer(const Duration(milliseconds: 2000), () async {
+          await _handleVibration(100);
           var scannerLogic = QRCodeScannerLogic(
             accountFlow: (widget.accountFlow ??
                 (widget.scanMode == ScanMode.catchAll
@@ -226,9 +242,9 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     );
   }
 
-  Future<void> _handleVibration() async {
+  Future<void> _handleVibration(duration) async {
     if (await Vibration.hasVibrator() ?? false) {
-      Vibration.vibrate(duration: 100);
+      Vibration.vibrate(duration: duration);
     }
   }
 
@@ -387,58 +403,43 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
 
   Future<void> _handleAccountImportResult(
       List<Map<String, dynamic>> accounts) async {
-    try {
-      for (var account in accounts) {
-        final String name = account['name'];
-        final Uint8List seed = account['seed'];
-
-        bool accountExists;
-        try {
-          accountExists = await ref
-              .read(temporaryAccountProvider.notifier)
-              .accountAlreadyExists(seed.toString());
-        } catch (e) {
-          debugPrint('Error checking if account exists for key $seed: $e');
-          throw Exception('Failed to check existing accounts.');
-        }
-
-        if (accountExists) {
-          debugPrint('Account already exists for key: $seed');
-          throw Exception('Account already exists.');
-        }
-
-        try {
-          await ref
-              .read(temporaryAccountProvider.notifier)
-              .restoreAccountFromSeed(seed, name: name);
-        } catch (e) {
-          debugPrint('Error restoring account for $name: $e');
-          throw Exception('Failed to restore account.');
-        }
-
-        try {
-          await AccountSetupUtility.completeAccountSetup(
-            ref: ref,
-            accountFlow: widget.accountFlow ?? AccountFlow.general,
-            accountName: name,
-            setFinalState: account == accounts.last,
-          );
-        } catch (e) {
-          debugPrint('Error completing account setup for $name: $e');
-          throw Exception('Failed to complete account setup.');
-        }
-      }
+    for (var account in accounts) {
+      final String name = account['name'];
+      final Uint8List seed = account['seed'];
 
       try {
-        invalidateProviders(ref);
-        _navigateToAccountPage(accounts.length);
+        // Check if account already exists
+        bool accountExists = await ref
+            .read(temporaryAccountProvider.notifier)
+            .accountAlreadyExists(seed.toString());
+
+        if (accountExists) {
+          debugPrint('Account already exists: $name');
+          continue; // Skip this account and proceed with others
+        }
+
+        await ref
+            .read(temporaryAccountProvider.notifier)
+            .restoreAccountFromSeed(seed, name: name);
+
+        await AccountSetupUtility.completeAccountSetup(
+          ref: ref,
+          accountFlow: widget.accountFlow ?? AccountFlow.general,
+          accountName: name,
+          setFinalState: account == accounts.last,
+        );
+        debugPrint('Successfully imported account: $name');
       } catch (e) {
-        debugPrint('Error invalidating providers: $e');
-        throw Exception('Failed to invalidate providers.');
+        debugPrint('Failed to import account: $name. Error: $e');
       }
+    }
+
+    try {
+      invalidateProviders(ref);
+      _navigateToAccountPage(accounts.length);
     } catch (e) {
-      debugPrint('Error processing scan result: $e');
-      rethrow;
+      debugPrint('Error invalidating providers: $e');
+      throw Exception('Failed to finalize account import.');
     }
   }
 
@@ -502,11 +503,8 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   @override
   void dispose() {
     _debounceTimer?.cancel();
+    scanController.stop();
     scanController.dispose();
-    // Reset the providers when disposing
-    ref.read(multipartScanProvider.notifier).reset();
-    ref.read(progressBarProvider.notifier).state = 0.0;
-    ref.read(isPaginatedScanProvider.notifier).state = false;
     super.dispose();
   }
 }
