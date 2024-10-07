@@ -6,15 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
-import 'package:kibisis/common_widgets/custom_dialog_picker.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/features/contacts/contacts_dialog.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
+import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
@@ -22,6 +23,7 @@ import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
+import 'package:kibisis/providers/contacts_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -60,6 +62,8 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       TextEditingController(text: '0');
   final TextEditingController recipientAddressController =
       TextEditingController();
+  final TextEditingController contactNameController = TextEditingController();
+  bool saveAsContact = false;
   final TextEditingController noteController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int _remainingBytes = 1000;
@@ -88,12 +92,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     try {
       ref.read(dropdownItemsProvider.notifier).state =
           const AsyncValue.loading();
-
       final items = await _getAssetsAndCurrenciesAsList(ref);
-
       if (mounted) {
         ref.read(dropdownItemsProvider.notifier).state = AsyncValue.data(items);
-
         final activeAsset = ref.read(activeAssetProvider);
         ref.read(selectedAssetProvider.notifier).selectAsset(
               items: items,
@@ -109,20 +110,17 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<List<SelectItem>> _getAssetsAndCurrenciesAsList(WidgetRef ref) async {
     final publicAddress = ref.read(accountProvider).account?.address;
-
     if (publicAddress == null || publicAddress.isEmpty) {
       debugPrint('No public address available');
       return [];
     }
 
     final assetsAsync = ref.read(assetsProvider(publicAddress));
-
     if (assetsAsync is! AsyncData<List<CombinedAsset>>) {
       return [];
     }
 
     final assets = assetsAsync.value;
-
     final network = ref.read(networkProvider);
 
     List<SelectItem> combinedList = assets.map((asset) {
@@ -137,11 +135,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     combinedList.insert(
       0,
       network ??
-          SelectItem(
-            name: 'No Network',
-            value: "-1",
-            icon: AppIcons.error,
-          ),
+          SelectItem(name: 'No Network', value: "-1", icon: AppIcons.error),
     );
 
     return combinedList;
@@ -226,25 +220,24 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       }
 
       if (selectedItem.assetType == AssetType.standard) {
-        // Standard asset transfer
         await ref.read(algorandServiceProvider).transferAsset(
               assetId: int.parse(selectedItem.value),
               senderAccount: account,
               receiverAddress: recipientAddressController.text,
               amount: int.parse(amountController.text),
             );
+        _saveContact();
         _showSuccessSnackbar("Standard Asset transfer successful.");
       } else if (selectedItem.assetType == AssetType.arc200) {
-        // ARC-0200 asset transfer
         await ref.read(algorandServiceProvider).sendARC0200Asset(
               amount: BigInt.parse(amountController.text),
               appID: BigInt.parse(selectedItem.value),
               receiverAddress: recipientAddressController.text,
               senderAccount: account,
             );
+        _saveContact();
         _showSuccessSnackbar("ARC-0200 Asset transfer successful.");
       } else if (selectedItem.value.startsWith("network")) {
-        // Network token (Algorand) transfer
         final txId = await ref.read(algorandServiceProvider).sendPayment(
               account,
               recipientAddressController.text,
@@ -254,6 +247,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         if (txId.isEmpty || txId == 'error') {
           throw Exception('Transaction failed');
         }
+        _saveContact();
         _showSuccessSnackbar(txId);
       } else {
         throw Exception("Unsupported asset type.");
@@ -265,6 +259,24 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       _showErrorSnackbar(e.toString());
     } finally {
       goBack();
+    }
+  }
+
+  void _saveContact() async {
+    final contactName = contactNameController.text.trim();
+    if (contactName.isNotEmpty) {
+      final newContact = Contact(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: contactName,
+        publicKey: recipientAddressController.text.trim(),
+      );
+
+      try {
+        await ref.read(contactsListProvider.notifier).addContact(newContact);
+        _showSuccessSnackbar('Contact saved successfully.');
+      } catch (e) {
+        _showErrorSnackbar('Failed to save contact: ${e.toString()}');
+      }
     }
   }
 
@@ -385,11 +397,25 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                   children: [
                     _maxSendInfo(context, ref),
                     const SizedBox(height: kScreenPadding),
-                    _buildCustomDropDown(ref), // Updated call here
+                    _buildCustomDropDown(ref),
                     const SizedBox(height: kScreenPadding),
                     _buildAmountTextField(),
                     const SizedBox(height: kScreenPadding),
                     _buildRecipientAddressTextField(context, ref),
+                    const SizedBox(height: kScreenPadding),
+                    CustomTextField(
+                      labelText: 'Contact Name (Optional)',
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      controller: contactNameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a contact name';
+                        }
+                        return null;
+                      },
+                      leadingIcon: Icons.person,
+                    ),
                     const SizedBox(height: kScreenPadding),
                     _buildNoteTextField(),
                     if (_remainingBytes < 1000) _buildRemainingBytesIndicator(),
@@ -473,41 +499,36 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final dropdownItemsAsync = ref.watch(dropdownItemsProvider);
 
     return dropdownItemsAsync.when(
-      loading: () {
-        // Display the spinner inside the dropdown
-        return CustomDropDown(
-          label: 'Asset',
-          items: [
-            SelectItem(
-              name: 'Loading...',
-              value: '',
-              icon: AppIcons.voiIcon, // Use a loading icon
-            ),
-          ],
-          selectedValue: null,
-          onChanged: null, // Disable interaction while loading
-        );
-      },
+      loading: () => CustomDropDown(
+        label: 'Asset',
+        items: [
+          SelectItem(
+            name: 'Loading...',
+            value: '',
+            icon: AppIcons.voiIcon,
+          ),
+        ],
+        selectedValue: null,
+        onChanged: null,
+      ),
       error: (err, stack) => CustomDropDown(
         label: 'Asset',
         items: [
           SelectItem(
             name: 'Failed to load',
             value: '',
-            icon: AppIcons.error, // Use an error icon
+            icon: AppIcons.error,
           ),
         ],
         selectedValue: null,
-        onChanged: null, // Disable interaction on error
+        onChanged: null,
       ),
       data: (dropdownItems) {
-        // Disable the dropdown if there are no items
         final isDisabled = dropdownItems.isEmpty;
-
         return GestureDetector(
-          onTap: isDisabled ? null : () {}, // Disable tapping when disabled
+          onTap: isDisabled ? null : () {},
           child: AbsorbPointer(
-            absorbing: isDisabled, // Disable interaction when no items
+            absorbing: isDisabled,
             child: CustomDropDown(
               label: 'Asset',
               items: dropdownItems.isNotEmpty
@@ -516,7 +537,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                       SelectItem(
                         name: 'No Assets Found',
                         value: '',
-                        icon: AppIcons.error, // Use an error icon
+                        icon: AppIcons.error,
                       ),
                     ],
               selectedValue: ref.watch(selectedAssetProvider),
@@ -567,7 +588,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
             textInputAction: TextInputAction.next,
             controller: recipientAddressController,
             leadingIcon: AppIcons.addAccount,
-            suffixIcon: AppIcons.scan,
+            suffixIcon: isMobile ? AppIcons.scan : null,
             autoCorrect: false,
             onTrailingPressed: isMobile
                 ? () async {
@@ -603,46 +624,43 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Future<void> _showAddressBook(BuildContext context, WidgetRef ref) async {
     final accountsState = ref.watch(accountsListProvider);
+    final contactsState = ref.watch(contactsListProvider);
 
-    if (accountsState.error != null) {
-      return showGeneralDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel: '',
-        barrierColor: Colors.black54,
-        transitionDuration: const Duration(milliseconds: 300),
-        pageBuilder: (context, animation1, animation2) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.zero,
-            titlePadding: const EdgeInsets.all(kScreenPadding),
-            title: const Text('Error'),
-            content: Text(accountsState.error!),
-          );
-        },
-      );
+    if (accountsState.error != null || contactsState.error != null) {
+      return;
     }
 
-    if (accountsState.isLoading) {
-      await ref.read(accountsListProvider.notifier).loadAccounts();
+    if (accountsState.isLoading || contactsState.isLoading) {
+      await Future.wait([
+        ref.read(accountsListProvider.notifier).loadAccounts(),
+        ref.read(contactsListProvider.notifier).loadContacts(),
+      ]);
     }
 
-    final accounts = ref.read(accountsListProvider).accounts;
+    final accounts = accountsState.accounts;
+    final contacts = contactsState.contacts;
 
     if (!context.mounted) return;
 
-    final selectedAccount = await showDialog<Map<String, String>>(
+    final selectedData = await showDialog<Map<String, String>>(
       context: context,
       builder: (context) {
-        return CustomAlertDialog(
-          title: 'Select Address',
-          icon: AppIcons.contacts,
-          items: accounts,
+        return AddressBookDialog(
+          accounts: accounts,
+          contacts: contacts,
+          onAccountSelected: (account) {
+            Navigator.pop(context, {'publicKey': account['publicKey']!});
+          },
+          onContactSelected: (contact) {
+            Navigator.pop(context, {'publicKey': contact.publicKey});
+          },
+          onCancel: () => Navigator.pop(context),
         );
       },
     );
 
-    if (selectedAccount != null) {
-      recipientAddressController.text = selectedAccount['publicKey']!;
+    if (selectedData != null) {
+      recipientAddressController.text = selectedData['publicKey']!;
     }
   }
 
