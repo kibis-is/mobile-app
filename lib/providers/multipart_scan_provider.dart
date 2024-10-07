@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final multipartScanProvider =
@@ -7,25 +6,29 @@ final multipartScanProvider =
 );
 
 class MultipartScanState {
-  final Map<String, String> scannedParts;
+  final Map<String, List<MapEntry<String, String>>> scannedParts;
   final int totalParts;
   final bool isComplete;
+  final String? checksum;
 
   MultipartScanState({
     this.scannedParts = const {},
     this.totalParts = 0,
     this.isComplete = false,
+    this.checksum,
   });
 
   MultipartScanState copyWith({
-    Map<String, String>? scannedParts,
+    Map<String, List<MapEntry<String, String>>>? scannedParts,
     int? totalParts,
     bool? isComplete,
+    String? checksum,
   }) {
     return MultipartScanState(
       scannedParts: scannedParts ?? this.scannedParts,
       totalParts: totalParts ?? this.totalParts,
       isComplete: isComplete ?? this.isComplete,
+      checksum: checksum ?? this.checksum,
     );
   }
 }
@@ -33,12 +36,31 @@ class MultipartScanState {
 class MultipartScanNotifier extends StateNotifier<MultipartScanState> {
   MultipartScanNotifier() : super(MultipartScanState());
 
-  void addPart(String page, String data) {
-    final newParts = Map<String, String>.from(state.scannedParts);
-    newParts[page] = data;
+  // Getter for scanned parts
+  Map<String, List<MapEntry<String, String>>> get scannedParts =>
+      state.scannedParts;
+
+  // Getter for total parts
+  int get totalParts => state.totalParts;
+
+  // Getter to check if the scanning is complete
+  bool get isComplete => state.isComplete;
+
+  void addPart(
+      String page, List<MapEntry<String, String>> params, String checksum) {
+    if (state.checksum != null && state.checksum != checksum) {
+      throw Exception(
+          'Checksum does not match. The scanned QR codes are not from the same set.');
+    }
+
+    final newParts =
+        Map<String, List<MapEntry<String, String>>>.from(state.scannedParts);
+    newParts[page] = params;
     state = state.copyWith(
-        scannedParts: newParts,
-        isComplete: newParts.length == state.totalParts);
+      scannedParts: newParts,
+      checksum: checksum,
+      isComplete: newParts.length == state.totalParts,
+    );
   }
 
   void setTotalParts(int total) {
@@ -61,14 +83,9 @@ class MultipartScanNotifier extends StateNotifier<MultipartScanState> {
         .whereType<int>()
         .toSet();
 
-    debugPrint('Scanned part numbers: $scannedPartNumbers');
-    debugPrint('Total parts: ${state.totalParts}');
-
     final allParts = List<int>.generate(state.totalParts, (index) => index + 1);
     final remainingParts =
         allParts.where((part) => !scannedPartNumbers.contains(part)).toList();
-
-    debugPrint('Remaining parts: $remainingParts');
 
     return remainingParts;
   }

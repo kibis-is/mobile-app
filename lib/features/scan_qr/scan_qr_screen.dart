@@ -22,6 +22,7 @@ import 'package:kibisis/utils/wallet_connect_manageer.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:vibration/vibration.dart';
 
 final isPaginatedScanProvider = StateProvider<bool>((ref) => false);
 final isTorchEnabledProvider = StateProvider<bool>((ref) => false);
@@ -103,34 +104,31 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       appBar: _buildAppBar(),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Center(
-            child: Stack(
-              fit: StackFit.loose,
-              alignment: Alignment.center,
-              children: [
-                _buildScannerView(scanWindowRect),
-                SizedBox(
-                  width: constraints.maxWidth * kDialogWidth,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (isPaginatedScan) ...[
-                        const AnimatedProgressBar(),
-                        const SizedBox(height: kScreenPadding),
-                      ],
-                      if (isPaginatedScan) ...[
-                        const SizedBox(height: kScreenPadding),
-                        _buildNextQrCodeText(),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
+      body: Stack(
+        children: [
+          _buildScannerView(scanWindowRect),
+          Positioned(
+            left: kScreenPadding,
+            right: kScreenPadding,
+            top: scanWindowTop - kScreenPadding * 3,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+              child: isPaginatedScan
+                  ? const AnimatedProgressBar()
+                  : const SizedBox.shrink(),
             ),
-          );
-        },
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: scanWindowTop + scanWindowHeight + kScreenPadding,
+            child: Center(
+              child: isPaginatedScan
+                  ? _buildNextQrCodeText()
+                  : const SizedBox.shrink(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -187,7 +185,8 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       overlayBuilder: (BuildContext context, BoxConstraints constraints) {
         return ScannerOverlay(scanWindowRect: scanWindowRect);
       },
-      onDetect: (BarcodeCapture capture) {
+      onDetect: (BarcodeCapture capture) async {
+        await _handleVibration();
         if (_debounceTimer?.isActive ?? false || isProcessing) {
           return;
         }
@@ -227,6 +226,12 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     );
   }
 
+  Future<void> _handleVibration() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate(duration: 100);
+    }
+  }
+
   Future<void> _handleScanResult(dynamic scanResult) async {
     if (scanResult is List<Map<String, dynamic>>) {
       await _handleAccountImportResult(scanResult);
@@ -234,9 +239,52 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       await _handleStringResult(scanResult);
     } else if (scanResult is Uri) {
       await _handleWalletConnectResult(scanResult);
+    } else if (scanResult is Map<String, dynamic>) {
+      // Handle paginated URI
+      await _handlePaginatedScanResult(scanResult);
     } else {
       debugPrint('Invalid scan result: $scanResult');
       throw Exception('Invalid scan result');
+    }
+  }
+
+  Future<void> _handlePaginatedScanResult(
+      Map<String, dynamic> scanResult) async {
+    final checksum = scanResult['checksum'] as String;
+    final currentPage = scanResult['currentPage'] as int;
+    final totalPages = scanResult['totalPages'] as int;
+    final params = scanResult['params'] as List<MapEntry<String, String>>;
+
+    final pageKey = '$currentPage:$totalPages';
+
+    final multipartScanNotifier = ref.read(multipartScanProvider.notifier);
+
+    if (multipartScanNotifier.scannedParts.isEmpty) {
+      multipartScanNotifier.setTotalParts(totalPages);
+      ref.read(isPaginatedScanProvider.notifier).state = true;
+    }
+
+    multipartScanNotifier.addPart(pageKey, params, checksum);
+
+    final progress = multipartScanNotifier.scannedParts.length / totalPages;
+    ref.read(progressBarProvider.notifier).state = progress;
+
+    if (multipartScanNotifier.isComplete) {
+      List<MapEntry<String, String>> allParams = [];
+      for (var partParams in multipartScanNotifier.scannedParts.values) {
+        allParams.addAll(partParams);
+      }
+
+      final accounts = QRCodeScannerLogic().handleModernUri(allParams);
+
+      await _handleAccountImportResult(accounts);
+
+      multipartScanNotifier.reset();
+      ref.read(progressBarProvider.notifier).state = 0.0;
+      ref.read(isPaginatedScanProvider.notifier).state = false;
+    } else {
+      !scanController.value.isRunning;
+      scanController.start();
     }
   }
 
@@ -455,6 +503,10 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   void dispose() {
     _debounceTimer?.cancel();
     scanController.dispose();
+    // Reset the providers when disposing
+    ref.read(multipartScanProvider.notifier).reset();
+    ref.read(progressBarProvider.notifier).state = 0.0;
+    ref.read(isPaginatedScanProvider.notifier).state = false;
     super.dispose();
   }
 }
