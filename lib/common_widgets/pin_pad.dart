@@ -324,7 +324,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   void _handlePinKeyPressed(String key) {
     if (isPinCompleted) return;
 
-    _handleVibration(10);
+    _handleVibration(kHapticButtonPressDuration);
     final pinPadProvider = ref.read(pinEntryStateNotifierProvider.notifier);
     final pinTitleNotifier = ref.read(pinTitleProvider.notifier);
 
@@ -433,7 +433,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
               pinTitleNotifier.setCreatePinTitle();
             }
           } else {
-            _handleVibration(100);
+            _handleVibration(kHapticErrorDuration);
             pinNotifier.setError(pinErrorString);
             _triggerAnimation();
             pinNotifier.reset();

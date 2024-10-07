@@ -27,6 +27,7 @@ import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:vibration/vibration.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   static String title = 'Dashboard';
@@ -179,6 +180,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           type: ExpandableFabType.up,
           distance: 70,
           pos: ExpandableFabPos.right,
+          onOpen: () => _handleVibration(kHapticButtonPressDuration),
           overlayStyle: const ExpandableFabOverlayStyle(
             color: Colors.black54,
           ),
@@ -269,6 +271,12 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
         );
       },
     );
+  }
+
+  Future<void> _handleVibration(int duration) async {
+    if (await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate(duration: duration);
+    }
   }
 
   void closeFab() {

@@ -10,6 +10,8 @@ const int kPinLength = 6;
 const String kVersionNumber = 'v0.4.0';
 const int kMaxAccountNameLength = 32;
 const double kDialogWidth = 0.75;
+const int kHapticButtonPressDuration = 5;
+const int kHapticErrorDuration = 100;
 
 enum PinPadMode { setup, unlock, verifyTransaction, changePin }
 
