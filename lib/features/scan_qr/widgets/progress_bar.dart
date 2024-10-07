@@ -22,7 +22,6 @@ class AnimatedProgressBar extends ConsumerWidget {
       ),
       child: Stack(
         alignment: Alignment.center,
-        fit: StackFit.loose,
         children: [
           Align(
             alignment: Alignment.centerLeft,
@@ -34,7 +33,7 @@ class AnimatedProgressBar extends ConsumerWidget {
                   gradient: LinearGradient(
                     colors: [
                       context.colorScheme.primary,
-                      context.colorScheme.secondary
+                      context.colorScheme.secondary,
                     ],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,

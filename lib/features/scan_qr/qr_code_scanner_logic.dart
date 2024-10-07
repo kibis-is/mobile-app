@@ -4,7 +4,6 @@ import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:vibration/vibration.dart';
 
 class QRCodeScannerLogic {
   final AccountFlow accountFlow;
@@ -18,8 +17,6 @@ class QRCodeScannerLogic {
     try {
       String rawData = capture.barcodes.first.rawValue ?? '';
       if (rawData.isEmpty) throw Exception('Invalid QR code data');
-
-      await _handleVibration();
 
       switch (scanMode) {
         case ScanMode.privateKey:
@@ -100,13 +97,7 @@ class QRCodeScannerLogic {
     }
   }
 
-  Future<void> _handleVibration() async {
-    if (await Vibration.hasVibrator() ?? false) {
-      Vibration.vibrate(duration: 100);
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> _handleImportAccountUri(String uri) async {
+  Future<dynamic> _handleImportAccountUri(String uri) async {
     Uri? parsedUri = Uri.tryParse(uri);
     if (parsedUri == null) {
       throw Exception('Invalid URI format');
@@ -116,23 +107,68 @@ class QRCodeScannerLogic {
     List<MapEntry<String, String>> params =
         getOrderedQueryParameters(parsedUri.query);
 
-    if (params
+    // Check for modern URI format (contains 'privatekey' without 'encoding')
+    bool isModernUri = params.any((param) => param.key == 'privatekey') &&
+        !params.any((param) => param.key == 'encoding' && param.value == 'hex');
+
+    if (isModernUri) {
+      // Check if the URI is paginated
+      bool isPaginated = params.any((param) => param.key == 'page');
+      if (isPaginated) {
+        // Handle multi-part URI
+        return handlePaginatedUri(params);
+      } else {
+        // Handle normal modern URI
+        return handleModernUri(params);
+      }
+    } else if (params
         .any((param) => param.key == 'encoding' && param.value == 'hex')) {
-      // If the URI contains the "encoding=hex", it's a legacy format
+      // Handle legacy URI (with 'encoding=hex')
       return handleLegacyUri(params);
-    } else if (params.any((param) => param.key == 'privatekey')) {
-      // If the URI contains "privatekey" but no encoding, it's a modern format
-      return handleModernUri(params);
     } else {
       throw Exception('Unknown import account URI format');
     }
+  }
+
+  Map<String, dynamic> handlePaginatedUri(
+      List<MapEntry<String, String>> params) {
+    String? checksum;
+    String? pageInfo;
+
+    // Extract checksum and page
+    for (var param in params) {
+      if (param.key == 'checksum') {
+        checksum = param.value;
+      } else if (param.key == 'page') {
+        pageInfo = param.value;
+      }
+    }
+
+    if (checksum == null || pageInfo == null) {
+      throw Exception('Paginated URI missing checksum or page information');
+    }
+
+    // Parse pageInfo
+    List<String> pageParts = pageInfo.split(':');
+    if (pageParts.length != 2) {
+      throw Exception('Invalid page format in paginated URI');
+    }
+    int currentPage = int.parse(pageParts[0]);
+    int totalPages = int.parse(pageParts[1]);
+
+    // Return the params as a List<MapEntry<String, String>>
+    return {
+      'checksum': checksum,
+      'currentPage': currentPage,
+      'totalPages': totalPages,
+      'params': params, // Make sure this is a List<MapEntry<String, String>>
+    };
   }
 
   bool isPublicKeyFormat(String data) {
     return data.length == 58 && RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(data);
   }
 
-// New method to parse query parameters into a list of key-value pairs, preserving order
   List<MapEntry<String, String>> getOrderedQueryParameters(String query) {
     List<MapEntry<String, String>> params = [];
 
