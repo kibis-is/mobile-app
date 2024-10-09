@@ -1,3 +1,10 @@
+# [1.0.0-beta.8](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.7...v1.0.0-beta.8) (2024-10-09)
+
+
+### Bug Fixes
+
+* export account screen qr code where it was not displaying correctly on landscape ([5951b99](https://github.com/agoralabs-sh/kibisis-mobile-app/commit/5951b997b25a965754fb5cd7ad12be26c493d806))
+
 # [1.0.0-beta.7](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2024-10-09)
 
 
