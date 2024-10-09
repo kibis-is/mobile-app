@@ -11,6 +11,7 @@ class ColorPalette {
   // Other Colors
   static const Color voiPurple = Color(0xFF5A21B6);
   static const Color usdcAsset = Color(0xFF80BDFF);
+  static const Color orange = Color(0xFFFCAA54);
 
   static const Color lightThemePrimary = Color(0xFFCC7DFF);
   static const Color lightThemeSecondary = Color(0xFF00c2b0);
