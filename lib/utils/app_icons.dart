@@ -64,6 +64,7 @@ class AppIcons {
   static const IconData download = Icons.download_rounded;
   static const IconData incoming = Icons.arrow_circle_left_outlined;
   static const IconData outgoing = Icons.arrow_circle_right_outlined;
+  static const IconData sendToSelf = Icons.change_circle_outlined;
 
   static const String svgBasePath = 'assets/images/';
 

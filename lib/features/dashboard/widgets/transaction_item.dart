@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/providers/accounts_list_provider.dart'; // Ensure accounts provider is imported
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -29,9 +30,27 @@ class TransactionItem extends ConsumerWidget {
     required this.type,
     this.assetName,
   });
-
   Widget _getTransactionIcon(
       BuildContext context, bool isDarkMode, String network) {
+    // Check if this is a transaction within the same account (self-transfer)
+    // final isSameAccountTransaction = otherPartyAddress == transaction.sender &&
+    //     otherPartyAddress ==
+    //         (transaction.paymentTransaction?.receiver.toString() ?? '');
+
+    // // if (isSameAccountTransaction) {
+    // //   return Container(
+    // //     decoration: const BoxDecoration(
+    // //       shape: BoxShape.circle,
+    // //       color: Colors.blue,
+    // //     ),
+    // //     child: AppIcons.icon(
+    // //       icon: AppIcons.importAccount,
+    // //       size: AppIcons.xlarge,
+    // //       color: Colors.white,
+    // //     ),
+    // //   );
+    // // }
+
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -39,17 +58,17 @@ class TransactionItem extends ConsumerWidget {
             ? context.colorScheme.error
             : direction == TransactionDirection.incoming
                 ? context.colorScheme.secondary
-                : context
-                    .colorScheme.onSurface, // Use neutral color for unknown
+                : context.colorScheme.primary,
       ),
       child: AppIcons.icon(
-          icon: direction == TransactionDirection.outgoing
-              ? AppIcons.outgoing
-              : direction == TransactionDirection.incoming
-                  ? AppIcons.incoming
-                  : Icons.help_outline, // Neutral icon for unknown
-          size: AppIcons.xlarge,
-          color: context.colorScheme.onPrimary),
+        icon: direction == TransactionDirection.outgoing
+            ? AppIcons.outgoing
+            : direction == TransactionDirection.incoming
+                ? AppIcons.incoming
+                : AppIcons.sendToSelf,
+        size: AppIcons.xlarge,
+        color: Colors.white,
+      ),
     );
   }
 
@@ -57,6 +76,17 @@ class TransactionItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(isDarkModeProvider);
     final network = ref.watch(networkProvider)?.value ?? '';
+
+    final accounts = ref.watch(accountsListProvider).accounts;
+
+    final account = accounts.firstWhere(
+      (account) => account['publicKey'] == otherPartyAddress,
+      orElse: () => <String, String>{},
+    );
+
+    final accountName = account.isNotEmpty ? account['accountName'] : null;
+    final displayName = accountName ?? otherPartyAddress;
+
     return Column(
       children: [
         Material(
@@ -77,20 +107,27 @@ class TransactionItem extends ConsumerWidget {
                     color: context.colorScheme.background,
                     border: Border.symmetric(
                       horizontal: BorderSide(
-                          width: 1, color: context.colorScheme.surface),
+                        width: 1,
+                        color: context.colorScheme.surface,
+                      ),
                     ),
                   ),
                   child: ListTile(
                     onTap: () {
                       Clipboard.setData(
-                          ClipboardData(text: transaction.id ?? 'No ID'));
+                        ClipboardData(text: transaction.id ?? 'No ID'),
+                      );
                       showCustomSnackBar(
                         context: context,
                         snackType: SnackType.neutral,
                         message: 'Transaction ID Copied',
                       );
                     },
-                    leading: _getTransactionIcon(context, isDarkMode, network),
+                    leading: _getTransactionIcon(
+                      context,
+                      isDarkMode,
+                      network,
+                    ),
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -104,20 +141,20 @@ class TransactionItem extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        if (otherPartyAddress != '')
-                          EllipsizedText(
-                            type: EllipsisType.middle,
-                            ellipsis: '...',
-                            otherPartyAddress,
-                            style: context.textTheme.bodyMedium,
-                          ),
-                        if (note != '')
+                        EllipsizedText(
+                          displayName, // Ensure we handle null safely
+                          type: EllipsisType.middle,
+                          ellipsis: '...',
+                          style: context.textTheme.bodyMedium,
+                        ),
+                        if (note.isNotEmpty)
                           EllipsizedText(
                             type: EllipsisType.end,
                             ellipsis: '...',
                             note,
                             style: context.textTheme.bodySmall?.copyWith(
-                                color: context.colorScheme.secondary),
+                              color: context.colorScheme.secondary,
+                            ),
                           ),
                       ],
                     ),
@@ -142,8 +179,7 @@ class TransactionItem extends ConsumerWidget {
                                   ? context.colorScheme.error
                                   : direction == TransactionDirection.incoming
                                       ? context.colorScheme.secondary
-                                      : context.colorScheme
-                                          .onSurface, // Neutral color for unknown
+                                      : context.colorScheme.onSurface,
                         ),
                       ),
                     ),
@@ -158,10 +194,7 @@ class TransactionItem extends ConsumerWidget {
   }
 
   String _formatDateTime(int roundTime) {
-    // Convert seconds since epoch to DateTime object in milliseconds
     final dateTime = DateTime.fromMillisecondsSinceEpoch(roundTime * 1000);
-
-    // Format the DateTime object into a readable string
     return '${dateTime.day.toString().padLeft(2, '0')}/'
         '${dateTime.month.toString().padLeft(2, '0')}/'
         '${dateTime.year}, '
