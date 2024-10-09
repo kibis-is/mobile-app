@@ -1,3 +1,10 @@
+# [1.0.0-beta.6](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2024-10-09)
+
+
+### Bug Fixes
+
+* use correct fastlane option ([8b64705](https://github.com/agoralabs-sh/kibisis-mobile-app/commit/8b647057250ee77025488b32155530c251fea525))
+
 # [1.0.0-beta.5](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2024-10-09)
 
 
