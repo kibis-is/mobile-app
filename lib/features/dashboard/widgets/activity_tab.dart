@@ -53,7 +53,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
       final result = await ref
           .read(transactionsProvider(publicAddress).notifier)
           .getPaginatedTransactions(pageKey, _pageSize);
-
+      if (!mounted) return;
       final newItems = result.items;
       final nextPageKey = result.nextToken;
 
