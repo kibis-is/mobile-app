@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
@@ -12,14 +13,10 @@ import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/barcode_uri_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
-import 'package:kibisis/utils/save_qr_image.dart';
 
 final selectedAccountProvider = StateProvider<String?>((ref) {
-  final activeAccountId = ref.read(activeAccountProvider);
-  return activeAccountId;
+  return ref.read(activeAccountProvider);
 });
-
-final isAnimatingProvider = StateProvider<bool>((ref) => false);
 
 final currentPageProvider = StateProvider<int>((ref) => 0);
 
@@ -42,7 +39,6 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(accountsListProvider.notifier).loadAccounts();
-      startOrAdjustTimer();
     });
   }
 
@@ -52,25 +48,21 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     super.dispose();
   }
 
-  void startOrAdjustTimer() {
-    if (!ref.read(isAnimatingProvider)) {
-      _timer?.cancel();
-      return;
-    }
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(milliseconds: 2000), (Timer timer) {
-      if (!mounted) return;
-      _updateCurrentPage();
-    });
-  }
+  void _startOrAdjustTimer() {
+    _timer?.cancel(); // Cancel any existing timer
 
-  void _updateCurrentPage() {
-    final currentPage = ref.read(currentPageProvider);
-    ref.read(currentPageProvider.notifier).state =
-        (currentPage + 1) % qrKeys.length;
-    if (_pageController.hasClients) {
-      _pageController.jumpToPage(ref.read(currentPageProvider));
-    }
+    // Start the timer to switch pages every 2 seconds
+    _timer = Timer.periodic(const Duration(seconds: 2), (Timer timer) {
+      final currentPage = ref.read(currentPageProvider);
+      final nextPage = (currentPage + 1) % qrKeys.length; // Seamless looping
+
+      ref.read(currentPageProvider.notifier).state = nextPage;
+
+      if (_pageController.hasClients) {
+        // Jump to the next page instantly without animation
+        _pageController.jumpToPage(nextPage);
+      }
+    });
   }
 
   @override
@@ -82,16 +74,33 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(ExportAccountsScreen.title),
+        actions: [
+          IconButton(
+            icon: AppIcons.icon(icon: AppIcons.copy),
+            onPressed: qrKeys.isNotEmpty
+                ? () => copyToClipboard(
+                    context,
+                    ref
+                            .read(barcodeUriProvider(selectedAccountId))
+                            .value
+                            ?.join('\n') ??
+                        '')
+                : null,
+            tooltip: 'Copy URI',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: exportableAccountsAsyncValue.when(
           data: (exportableAccounts) => _buildExportableAccountsView(
-              context, exportableAccounts, selectedAccountId, qrDataAsyncValue),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
-            child: Text('Error: $error'),
+            context,
+            exportableAccounts,
+            selectedAccountId,
+            qrDataAsyncValue,
           ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
         ),
       ),
     );
@@ -113,41 +122,37 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     }
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: kScreenPadding),
         _buildAccountDropDown(exportableAccounts, selectedAccountId),
         const SizedBox(height: kScreenPadding),
-        _buildQrCodeDisplay(
-            qrDataAsyncValue, selectedAccountId), // QR code with play/pause
-        const SizedBox(height: kScreenPadding),
-        _buildActionRow(selectedAccountId),
+        Expanded(
+          // This ensures the QR code takes the remaining space without causing overflow
+          child: _buildQrCodeDisplay(qrDataAsyncValue, selectedAccountId),
+        ),
       ],
     );
   }
 
   Widget _buildAccountDropDown(
-      List<Map<String, String>> accounts, String selectedAccountId) {
-    // Add "All Accounts" option
+    List<Map<String, String>> accounts,
+    String selectedAccountId,
+  ) {
     final dropdownItems = [
-      SelectItem(
-        name: 'All Accounts',
-        value: 'all', // Make sure 'all' is unique from account IDs
-        icon: AppIcons.wallet,
-      ),
+      SelectItem(name: 'All Accounts', value: 'all', icon: AppIcons.wallet),
       ...accounts.map((account) => SelectItem(
             name: account['accountName'] ?? 'Unnamed Account',
-            value: account['accountId'] ?? '0', // Ensure this is unique
+            value: account['accountId'] ?? '0',
             icon: AppIcons.wallet,
-          ))
+          )),
     ];
 
-    // Check if the active account is in the exportable list
     final activeAccountId = ref.read(activeAccountProvider);
     final selectedValue = dropdownItems.firstWhere(
       (item) =>
           item.value == activeAccountId || item.value == selectedAccountId,
-      orElse: () => dropdownItems[
-          1], // If the active account isn't in the list, select the first account (not "All Accounts")
+      orElse: () => dropdownItems[1],
     );
 
     return CustomDropDown(
@@ -157,159 +162,104 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
       onChanged: (SelectItem? newValue) {
         if (newValue != null) {
           ref.read(selectedAccountProvider.notifier).state = newValue.value;
+
+          // Automatically start/adjust the timer when "All Accounts" is selected
           if (newValue.value == 'all') {
-            ref.read(isAnimatingProvider.notifier).state =
-                true; // Start animation if "All Accounts" is selected
+            _startOrAdjustTimer();
+          } else {
+            _timer?.cancel(); // Stop the timer for individual accounts
           }
-          _restartTimer(); // Restart the timer when a new account is selected
         }
       },
     );
   }
 
   Widget _buildQrCodeDisplay(
-      AsyncValue<List<String>> qrDataAsyncValue, String selectedAccountId) {
-    final hasMultiplePages = (qrDataAsyncValue.asData?.value.length ?? 0) > 1;
+    AsyncValue<List<String>> qrDataAsyncValue,
+    String selectedAccountId,
+  ) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const double padding = kScreenPadding + 16.0; // Adjust this for padding
+        final double availableHeight = constraints.maxHeight - padding;
+        final double qrCodeSize = min(constraints.maxWidth, availableHeight);
 
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min, // Shrink-wrap the content
-        children: [
-          qrDataAsyncValue.when(
-            data: (List<String> qrData) {
-              if (!mounted) {
-                return const SizedBox.shrink();
-              }
-              qrKeys = List.generate(qrData.length, (index) => GlobalKey());
-              resetTimer();
-              return qrData.length > 1
-                  ? _buildQrCodeWithPlayPause(qrData)
-                  : _buildSingleQrView(qrData[0]);
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, stack) => const Center(
-              child: Text(
-                'This account cannot be exported, as it has no private key.',
-                textAlign: TextAlign.center,
+        return qrDataAsyncValue.when(
+          data: (List<String> qrData) {
+            qrKeys = List.generate(qrData.length, (index) => GlobalKey());
+
+            if (selectedAccountId == 'all') {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _startOrAdjustTimer(); // Start the timer if "All Accounts" is selected
+              });
+            } else {
+              _timer
+                  ?.cancel(); // Ensure the timer stops if a single account is selected
+            }
+
+            return Align(
+              alignment: Alignment.topCenter,
+              child: SizedBox(
+                height: qrCodeSize,
+                width: qrCodeSize,
+                child: qrData.length > 1
+                    ? _buildQrCodeWithPagination(qrData, qrCodeSize)
+                    : _buildSingleQrCodeView(qrData[0], qrCodeSize),
               ),
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, stack) => const Center(
+            child: Text(
+              'This account cannot be exported, as it has no private key.',
+              textAlign: TextAlign.center,
             ),
           ),
-          if (selectedAccountId == 'all' && hasMultiplePages)
-            _buildPlayPauseButton(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQrCodeWithPlayPause(List<String> qrData) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 300, // Define a height constraint for the QR code container
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: qrData.length,
-            itemBuilder: (context, index) {
-              return Container(
-                alignment: Alignment.topCenter,
-                child: RepaintBoundary(
-                  key: qrKeys[index],
-                  child: QrImageView(
-                    backgroundColor: Colors.white,
-                    data: qrData[index],
-                    version: QrVersions.auto,
-                    size: 300, // Define the size of the QR code
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 16), // Add some space between QR and button
-      ],
-    );
-  }
-
-  Widget _buildSingleQrView(String qrData) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          height: 300, // Define a fixed height
-          child: Container(
-            alignment: Alignment.topCenter,
-            child: RepaintBoundary(
-              key: qrKeys[0],
-              child: QrImageView(
-                backgroundColor: Colors.white,
-                data: qrData,
-                version: QrVersions.auto,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: kScreenPadding),
-      ],
-    );
-  }
-
-  Widget _buildPlayPauseButton() {
-    return IconButton(
-      icon:
-          Icon(ref.watch(isAnimatingProvider) ? Icons.pause : Icons.play_arrow),
-      onPressed: () {
-        ref.read(isAnimatingProvider.notifier).state =
-            !ref.read(isAnimatingProvider); // Toggle play/pause state
-        _restartTimer(); // Restart the timer based on the play/pause toggle
+        );
       },
     );
   }
 
-  void resetTimer() {
-    _timer?.cancel();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      startOrAdjustTimer();
-    });
+  Widget _buildSingleQrCodeView(String qrData, double qrCodeSize) {
+    return RepaintBoundary(
+      key: qrKeys[0],
+      child: QrImageView(
+        backgroundColor: ColorPalette.lightThemeBackground,
+        data: qrData,
+        version: QrVersions.auto,
+        size: qrCodeSize,
+      ),
+    );
   }
 
-  void _restartTimer() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      startOrAdjustTimer();
-    });
+  Widget _buildQrCodeWithPagination(List<String> qrData, double qrCodeSize) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double availableHeight = constraints.maxHeight;
+
+        return SizedBox(
+          height: qrCodeSize,
+          width: qrCodeSize,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: qrData.length,
+            itemBuilder: (context, index) =>
+                _buildQrCodePage(qrData[index], index, qrCodeSize),
+          ),
+        );
+      },
+    );
   }
 
-  Widget _buildActionRow(String selectedAccountId) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        IconButton(
-          icon: AppIcons.icon(
-            icon: AppIcons.copy,
-            size: AppIcons.xlarge,
-          ),
-          onPressed: qrKeys.isNotEmpty
-              ? () => copyToClipboard(
-                  context,
-                  ref
-                          .read(barcodeUriProvider(selectedAccountId))
-                          .value
-                          ?.join('\n') ??
-                      '')
-              : null,
-          tooltip: 'Copy URI',
-        ),
-        if (Platform.isAndroid || Platform.isIOS)
-          IconButton(
-            icon: AppIcons.icon(
-              icon: AppIcons.download,
-              size: AppIcons.xlarge,
-            ),
-            onPressed: qrKeys.isNotEmpty
-                ? () => QRCodeUtils.saveQrImage(qrKeys[0])
-                : null,
-            tooltip: 'Download QR Image',
-          ),
-      ],
+  Widget _buildQrCodePage(String qrData, int index, double qrCodeSize) {
+    return RepaintBoundary(
+      key: qrKeys[index],
+      child: QrImageView(
+        backgroundColor: ColorPalette.lightThemeBackground,
+        data: qrData,
+        version: QrVersions.auto,
+        size: qrCodeSize, // Make sure each page has the correct size
+      ),
     );
   }
 }
