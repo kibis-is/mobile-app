@@ -4,14 +4,14 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
-class AddressBookDialog extends StatelessWidget {
+class ContactsDialog extends StatelessWidget {
   final List<Map<String, String>> accounts;
   final List<Contact> contacts;
   final Function(Map<String, String>) onAccountSelected;
   final Function(Contact) onContactSelected;
   final VoidCallback onCancel;
 
-  const AddressBookDialog({
+  const ContactsDialog({
     required this.accounts,
     required this.contacts,
     required this.onAccountSelected,
@@ -144,7 +144,10 @@ class AddressBookDialog extends StatelessWidget {
               ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
-      onTap: onTap,
+      onTap: () {
+        onTap(); // Trigger the function to handle the selection
+        Navigator.pop(context); // Close the dialog after selection
+      },
     );
   }
 }

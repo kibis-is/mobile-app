@@ -1,14 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/contact.dart';
-import '../providers/storage_provider.dart';
+import 'package:kibisis/models/contact.dart';
+import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/first_or_where_null.dart';
 
-// Define the provider for contacts management
 final contactsListProvider =
     StateNotifierProvider<ContactsListNotifier, ContactsListState>((ref) {
   return ContactsListNotifier(ref);
 });
 
-// Define the state class to represent the contacts state
 class ContactsListState {
   final List<Contact> contacts;
   final bool isLoading;
@@ -20,7 +19,6 @@ class ContactsListState {
     this.error,
   });
 
-  // Copy with method for immutability
   ContactsListState copyWith({
     List<Contact>? contacts,
     bool? isLoading,
@@ -34,7 +32,6 @@ class ContactsListState {
   }
 }
 
-// Define the StateNotifier to handle business logic for managing contacts
 class ContactsListNotifier extends StateNotifier<ContactsListState> {
   final Ref ref;
 
@@ -43,7 +40,6 @@ class ContactsListNotifier extends StateNotifier<ContactsListState> {
     loadContacts();
   }
 
-  // Load all contacts from storage
   Future<void> loadContacts() async {
     try {
       final storageService = ref.read(storageProvider);
@@ -55,63 +51,56 @@ class ContactsListNotifier extends StateNotifier<ContactsListState> {
     }
   }
 
-  // Add a new contact to the storage and update the state
-  Future<void> addContact(Contact contact) async {
-    final storageService = ref.read(storageProvider);
-    final contacts = await storageService.getContacts();
-
-    // Check for duplicates (name or public key)
-    final duplicate = contacts
-        .any((c) => c.publicKey == contact.publicKey || c.name == contact.name);
-    if (duplicate) {
-      throw Exception(
-          'A contact with the same name or address already exists.');
-    }
-
-    // Add the contact and save the updated list
-    contacts.add(contact);
-    await storageService.saveContacts(contacts);
-
-    // Update the state with the new list of contacts
-    state = state.copyWith(contacts: contacts);
+  Future<Contact?> getContactByPublicKey(String publicKey) async {
+    final contacts = await ref.read(storageProvider).getContacts();
+    return contacts
+        .firstWhereOrNull((contact) => contact.publicKey == publicKey);
   }
 
-  // Remove a contact by its ID
   Future<void> removeContact(String contactId) async {
     final storageService = ref.read(storageProvider);
     final contacts = await storageService.getContacts();
 
-    // Remove the contact from the list
     contacts.removeWhere((contact) => contact.id == contactId);
     await storageService.saveContacts(contacts);
 
-    // Reload the updated list of contacts
     await loadContacts();
   }
 
-  // Update an existing contact's name
-  Future<void> updateContact(String contactId, String newName) async {
+  Future<void> updateContact(Contact updatedContact) async {
     final storageService = ref.read(storageProvider);
     final contacts = await storageService.getContacts();
 
-    // Find the contact and update the name
-    final index = contacts.indexWhere((contact) => contact.id == contactId);
+    final index =
+        contacts.indexWhere((contact) => contact.id == updatedContact.id);
     if (index != -1) {
-      contacts[index] = Contact(
-          id: contactId, name: newName, publicKey: contacts[index].publicKey);
-      await storageService.saveContacts(contacts);
-
-      // Update the state with the updated contact list
-      state = state.copyWith(contacts: contacts);
+      contacts[index] = updatedContact;
+    } else {
+      throw Exception('Contact not found.');
     }
+
+    await storageService.saveContacts(contacts);
+    state = state.copyWith(contacts: contacts);
   }
 
-  // Clear all contacts
   Future<void> clearAllContacts() async {
     final storageService = ref.read(storageProvider);
     await storageService.saveContacts([]);
 
-    // Update the state to reflect the empty contacts list
     state = state.copyWith(contacts: []);
+  }
+
+  Future<void> addOrUpdateContact(Contact contact) async {
+    final storageService = ref.read(storageProvider);
+    final contacts = await storageService.getContacts();
+    final index = contacts.indexWhere((c) => c.publicKey == contact.publicKey);
+
+    if (index != -1) {
+      contacts[index] = contact;
+    } else {
+      contacts.add(contact);
+    }
+    await storageService.saveContacts(contacts);
+    state = state.copyWith(contacts: contacts);
   }
 }

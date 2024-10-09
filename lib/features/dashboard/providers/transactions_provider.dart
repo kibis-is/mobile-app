@@ -4,6 +4,8 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'dart:convert';
+import 'package:kibisis/providers/contacts_provider.dart';
+import 'package:kibisis/utils/first_or_where_null.dart';
 
 final transactionsProvider = StateNotifierProvider.family<TransactionsNotifier,
     AsyncValue<List<Transaction>>, String>(
@@ -79,6 +81,8 @@ class TransactionsNotifier
 
       List<TransactionItem> transactionItems = [];
 
+      final contacts = ref.read(contactsListProvider).contacts;
+
       for (final transaction in transactions) {
         TransactionDirection direction;
 
@@ -89,15 +93,10 @@ class TransactionsNotifier
                   transaction.assetTransferTransaction?.receiver.toString() ??
                   '';
 
-          // Determine outgoing (sender is me, receiver is NOT me)
           if (sender == publicAddress && receiver != publicAddress) {
             direction = TransactionDirection.outgoing;
-          }
-          // Determine incoming (receiver is me, sender is NOT me)
-          else if (receiver == publicAddress && sender != publicAddress) {
+          } else if (receiver == publicAddress && sender != publicAddress) {
             direction = TransactionDirection.incoming;
-          } else if (sender == publicAddress && receiver == publicAddress) {
-            direction = TransactionDirection.outgoing;
           } else {
             direction = TransactionDirection.unknown;
           }
@@ -110,6 +109,12 @@ class TransactionsNotifier
                 transaction.assetTransferTransaction?.receiver.toString() ??
                 ''
             : transaction.sender;
+
+        // Check if otherPartyAddress exists in contacts
+        final contact = contacts.firstWhereOrNull(
+            (contact) => contact.publicKey == otherPartyAddress);
+        final displayAddress =
+            contact?.name ?? otherPartyAddress; // Use contact name if available
 
         final note = utf8.decode(base64.decode(transaction.note ?? ''));
         final type = transaction.type;
@@ -129,7 +134,7 @@ class TransactionsNotifier
         transactionItems.add(TransactionItem(
           transaction: transaction,
           direction: direction,
-          otherPartyAddress: otherPartyAddress,
+          otherPartyAddress: displayAddress, // Show contact name if exists
           amount: assetId != null
               ? assetAmount.toString()
               : amountInAlgos.toString(),

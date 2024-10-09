@@ -71,11 +71,9 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
   @override
   Widget build(BuildContext context) {
     final publicAddress = ref.watch(accountProvider).account?.address ?? '';
-
-    // Check if the publicAddress has changed
     if (_previousPublicAddress != publicAddress) {
       _previousPublicAddress = publicAddress;
-      _pagingController.refresh(); // Refresh the PagingController
+      _pagingController.refresh();
     }
 
     final transactionsAsync = ref.watch(transactionsProvider(publicAddress));
@@ -86,11 +84,10 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
       child: transactionsAsync.when(
         data: (transactions) => _buildTransactionList(),
         loading: () => _buildShimmerLoading(context),
-        error: (error, _) => Center(
-          child: Text(
-            'Error loading transactions: $error',
-            style: context.textTheme.bodySmall,
-          ),
+        error: (error, _) => _buildCenteredMessage(
+          context,
+          title: 'Error loading transactions',
+          subtitle: error.toString(),
         ),
       ),
     );
@@ -101,55 +98,65 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
       pagingController: _pagingController,
       builderDelegate: PagedChildBuilderDelegate<TransactionItem>(
         itemBuilder: (context, item, index) => item,
-        firstPageErrorIndicatorBuilder: (context) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'No Transactions Found',
-                style: context.textTheme.titleSmall,
-              ),
-              const SizedBox(height: kScreenPadding / 2),
-              Text(
-                'You have not made any transactions.',
-                style: context.textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: kScreenPadding),
-              TextButton(
-                onPressed: _onRefresh,
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+        firstPageErrorIndicatorBuilder: (context) => _buildCenteredMessage(
+          context,
+          title: 'No Transactions Found',
+          subtitle: 'You have not made any transactions.',
+          showRetryButton: true,
         ),
-        newPageErrorIndicatorBuilder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        newPageErrorIndicatorBuilder: (context) =>
+            _buildShimmerLoading(context),
         firstPageProgressIndicatorBuilder: (context) =>
             _buildShimmerLoading(context),
-        noItemsFoundIndicatorBuilder: (context) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'No Transactions Available',
-                style: context.textTheme.titleSmall,
-              ),
-              const SizedBox(height: kScreenPadding / 2),
-              Text(
-                'There are no items in your transaction history.',
-                style: context.textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: kScreenPadding),
-              TextButton(
-                onPressed: _onRefresh,
-                child: const Text('Retry'),
-              ),
-            ],
+        newPageProgressIndicatorBuilder: (context) =>
+            _buildShimmerLoading(context),
+        noItemsFoundIndicatorBuilder: (context) => _buildCenteredMessage(
+          context,
+          title: 'No Transactions Found',
+          subtitle: 'You have not made any transactions.',
+          showRetryButton: true,
+        ),
+        noMoreItemsIndicatorBuilder: (context) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: Center(
+            child: Text(
+              'No more transactions.',
+              style: context.textTheme.bodyMedium,
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCenteredMessage(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    bool showRetryButton = false,
+  }) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: context.textTheme.titleSmall,
+          ),
+          const SizedBox(height: kScreenPadding / 2),
+          Text(
+            subtitle,
+            style: context.textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+          if (showRetryButton) ...[
+            const SizedBox(height: kScreenPadding),
+            TextButton(
+              onPressed: _onRefresh,
+              child: const Text('Retry'),
+            ),
+          ],
+        ],
       ),
     );
   }
