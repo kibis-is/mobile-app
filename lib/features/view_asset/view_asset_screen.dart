@@ -25,15 +25,29 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen> {
   @override
   Widget build(BuildContext context) {
     final activeAsset = widget.asset ?? ref.watch(activeAssetProvider);
+
+    if (activeAsset == null) {
+      // Handle the case where no asset is available, e.g., show a message or an empty state.
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+              widget.mode == AssetScreenMode.view ? 'View Asset' : 'Add Asset'),
+        ),
+        body: const Center(
+          child: Text('No asset available to display.'),
+        ),
+      );
+    }
+
     if (!widget.isPanelMode) {
       return Scaffold(
         appBar: AppBar(
           title: Text(
               widget.mode == AssetScreenMode.view ? 'View Asset' : 'Add Asset'),
         ),
-        body: ViewAssetBody(asset: activeAsset!),
+        body: ViewAssetBody(asset: activeAsset),
       );
     }
-    return ViewAssetBody(asset: activeAsset!);
+    return ViewAssetBody(asset: activeAsset);
   }
 }
