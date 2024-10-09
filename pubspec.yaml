@@ -1,7 +1,7 @@
 name: kibisis
 description: "Kibisis Mobile App"
 publish_to: 'none'
-version: 1.0.0+10000002
+version: 1.0.0+10000004
 environment:
   sdk: '>=3.3.1 <4.0.0'
 dependencies:
@@ -44,7 +44,6 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   flutter_confetti: ^0.3.0
   reown_walletkit: ^1.0.1
-
 dependency_overrides:
   win32: 5.5.0
 dev_dependencies:
@@ -63,8 +62,7 @@ flutter_native_splash:
   android: true
   ios: true
   web: true
-  fullscreen: true 
-
+  fullscreen: true
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
