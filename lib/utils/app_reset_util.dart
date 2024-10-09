@@ -59,7 +59,7 @@ class AppResetUtil {
   static Future<void> _clearStorage(WidgetRef ref) async {
     final storageService = ref.read(storageProvider);
     try {
-      await storageService.clearOneByOne();
+      await storageService.clearAll();
       debugPrint('Storage cleared successfully.');
     } catch (e) {
       debugPrint('Error clearing storage: $e');

@@ -148,18 +148,6 @@ class StorageService {
     }, 'Error clearing all data');
   }
 
-  Future<void> clearOneByOne() async {
-    try {
-      final allKeys = await _secureStorage.readAll();
-      for (String key in allKeys.keys) {
-        await _secureStorage.delete(key: key);
-      }
-    } catch (e) {
-      debugPrint('Error clearing secure storage: ${e.toString()}');
-      rethrow;
-    }
-  }
-
   Future<String> generateNextAccountId() async {
     final accounts = await getAccounts();
     if (accounts == null || accounts.isEmpty) {
