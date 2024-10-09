@@ -75,13 +75,13 @@ void showCustomSnackBar({
     Confetti.launch(
       context,
       options: const ConfettiOptions(
-        spread: 100,
-        particleCount: 120,
+        spread: 90,
+        particleCount: 72,
         startVelocity: 30,
         gravity: 0.7,
-        ticks: 400,
+        ticks: 300,
         x: 0.5,
-        y: 0.0,
+        y: 0.2,
       ),
     );
   }
