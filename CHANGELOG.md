@@ -1,3 +1,10 @@
+# [1.0.0-beta.5](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2024-10-09)
+
+
+### Features
+
+* update package mismatch ([3979324](https://github.com/agoralabs-sh/kibisis-mobile-app/commit/39793244f0817b24dabb05d2ba46563419e91468))
+
 # [1.0.0-beta.4](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2024-10-09)
 
 
