@@ -1,3 +1,10 @@
+# [1.0.0-beta.7](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2024-10-09)
+
+
+### Features
+
+* move fastlane to automatically publish ([e364199](https://github.com/agoralabs-sh/kibisis-mobile-app/commit/e364199e4c517ad2dbcd21e223b992569ca573a4))
+
 # [1.0.0-beta.6](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2024-10-09)
 
 
