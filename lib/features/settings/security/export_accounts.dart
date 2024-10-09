@@ -235,8 +235,6 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
   Widget _buildQrCodeWithPagination(List<String> qrData, double qrCodeSize) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double availableHeight = constraints.maxHeight;
-
         return SizedBox(
           height: qrCodeSize,
           width: qrCodeSize,
