@@ -3,7 +3,7 @@ lane :beta do
     upload_to_play_store(
         aab: File.expand_path('../..', __dir__) + '/build/app/outputs/bundle/release/app-release.aab',
         json_key: File.expand_path('../..', __dir__) + '/play_store_credentials.json',
-        release_status: 'completed',
+        release_status: 'draft',
         track: 'internal'
     )
 end
@@ -13,7 +13,7 @@ lane :production do
     upload_to_play_store(
         aab: File.expand_path('../..', __dir__) + '/build/app/outputs/bundle/release/app-release.aab',
         json_key: File.expand_path('../..', __dir__) + '/play_store_credentials.json',
-        release_status: 'completed',
+        release_status: 'draft',
         track: 'production'
     )
 end
