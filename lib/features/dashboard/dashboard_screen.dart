@@ -24,6 +24,7 @@ import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -229,7 +230,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               CustomFabChild(
                 borderRadius: 100,
                 icon: AppIcons.scan,
-                backgroundColor: context.colorScheme.primary,
+                backgroundColor: ColorPalette.usdcAsset,
                 iconColor: context.colorScheme.onPrimary,
                 onPressed: () async {
                   closeFab();
@@ -260,7 +261,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
             CustomFabChild(
               borderRadius: 100,
               icon: AppIcons.settings,
-              backgroundColor: context.colorScheme.primary,
+              backgroundColor: ColorPalette.orange,
               iconColor: context.colorScheme.onPrimary,
               onPressed: () {
                 GoRouter.of(context).push('/$settingsRouteName');
