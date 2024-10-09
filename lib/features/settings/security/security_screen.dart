@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_dropdown.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/transparent_list_tile.dart';
@@ -72,20 +73,35 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
 
   Widget _buildTimeoutDropdown() {
     final timeoutSeconds = ref.watch(lockTimeoutProvider);
-    return CustomDropDown(
-      label: 'Timeout',
-      items: timeoutList,
-      selectedValue: timeoutList.firstWhere(
-        (item) => item.value == timeoutSeconds.toString(),
-        orElse: () => timeoutList.first,
-      ),
-      onChanged: (SelectItem? newValue) {
-        if (newValue != null) {
-          final int timeoutSeconds = int.parse(newValue.value);
-          ref.read(lockTimeoutProvider.notifier).setTimeout(timeoutSeconds);
-          ref.read(storageProvider).setLockTimeout(timeoutSeconds);
-        }
+
+    // Find the currently selected timeout item
+    final selectedItem = timeoutList.firstWhere(
+      (item) => item.value == timeoutSeconds.toString(),
+      orElse: () => timeoutList.first,
+    );
+
+    return GestureDetector(
+      onTap: () {
+        customBottomSheet(
+          context: context,
+          items: timeoutList,
+          header: 'Select Timeout',
+          onPressed: (SelectItem selectedItem) {
+            final int timeoutSeconds = int.parse(selectedItem.value);
+            ref.read(lockTimeoutProvider.notifier).setTimeout(timeoutSeconds);
+            ref.read(storageProvider).setLockTimeout(timeoutSeconds);
+          },
+        );
       },
+      child: AbsorbPointer(
+        absorbing: true,
+        child: CustomDropDown(
+          label: 'Timeout',
+          items: timeoutList,
+          selectedValue: selectedItem,
+          onChanged: null,
+        ),
+      ),
     );
   }
 
