@@ -1,3 +1,11 @@
+# [1.0.0-beta.9](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.8...v1.0.0-beta.9) (2024-10-10)
+
+
+### Bug Fixes
+
+* incorrect version of test package for currently used dart sdk. Set to 1.24.9 ([8fc7567](https://github.com/agoralabs-sh/kibisis-mobile-app/commit/8fc75673ec9a37f6e17c5c7137ce89b06364287f))
+* Remove unused variable ([915d865](https://github.com/agoralabs-sh/kibisis-mobile-app/commit/915d865d9d776e0aaf445b5e4eb3ca274402f420))
+
 # [1.0.0-beta.8](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.7...v1.0.0-beta.8) (2024-10-09)
 
 
