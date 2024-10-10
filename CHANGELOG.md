@@ -1,3 +1,10 @@
+# [1.0.0-beta.10](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.9...v1.0.0-beta.10) (2024-10-10)
+
+
+### Features
+
+* add a delete contact button ([65ca386](https://github.com/agoralabs-sh/kibisis-mobile-app/commit/65ca3864ebf7a9dd32265a8bf1072e4b15566e68))
+
 # [1.0.0-beta.9](https://github.com/agoralabs-sh/kibisis-mobile-app/compare/v1.0.0-beta.8...v1.0.0-beta.9) (2024-10-10)
 
 
