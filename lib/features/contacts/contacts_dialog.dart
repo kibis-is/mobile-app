@@ -1,10 +1,14 @@
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/contact.dart';
+import 'package:kibisis/providers/contacts_provider.dart';
+import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 
-class ContactsDialog extends StatelessWidget {
+class ContactsDialog extends ConsumerWidget {
   final List<Map<String, String>> accounts;
   final List<Contact> contacts;
   final Function(Map<String, String>) onAccountSelected;
@@ -21,7 +25,7 @@ class ContactsDialog extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
       length: _getTabCount(),
       child: Dialog(
@@ -34,16 +38,20 @@ class ContactsDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(kWidgetRadius),
         ),
         backgroundColor: context.colorScheme.background,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildTabBar(context),
-            SizedBox(
-              height: 400,
-              child: _buildTabBarView(context),
-            ),
-            _buildCancelButton(context),
-          ],
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTabBar(context),
+                SizedBox(
+                  height: 400,
+                  child: _buildTabBarView(context, setState, ref),
+                ),
+                _buildCancelButton(context),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -67,25 +75,79 @@ class ContactsDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildTabBarView(BuildContext context) {
+  Widget _buildTabBarView(
+    BuildContext context,
+    StateSetter setState,
+    WidgetRef ref,
+  ) {
     return TabBarView(
       children: [
-        if (contacts.isNotEmpty) _buildContactList(context),
+        if (contacts.isNotEmpty) _buildContactList(context, setState, ref),
         _buildAccountList(context),
       ],
     );
   }
 
-  Widget _buildContactList(BuildContext context) {
+  Widget _buildContactList(
+    BuildContext context,
+    StateSetter setState,
+    WidgetRef ref,
+  ) {
     return ListView.builder(
       itemCount: contacts.length,
       itemBuilder: (context, index) {
         final contact = contacts[index];
-        return _buildListTile(
-          context,
-          title: contact.name,
-          subtitle: contact.publicKey,
-          onTap: () => onContactSelected(contact),
+        return ListTile(
+          tileColor: Colors.transparent,
+          title: EllipsizedText(
+            contact.name,
+            style: context.textTheme.displayMedium,
+          ),
+          subtitle: EllipsizedText(
+            contact.publicKey,
+            type: EllipsisType.middle,
+          ),
+          leading: CircleAvatar(
+            backgroundColor: context.colorScheme.primary,
+            child: Text(
+              contact.name[0].toUpperCase(),
+              style: context.textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          trailing: IconButton(
+              icon: AppIcons.icon(
+                icon: AppIcons.cross,
+                color: context.colorScheme.onBackground,
+                size: AppIcons.medium,
+              ),
+              onPressed: () async {
+                final confirm = await _confirmDeleteContact(context, contact);
+                if (confirm) {
+                  await _deleteContact(ref, contact);
+                  await ref.read(contactsListProvider.notifier).loadContacts();
+
+                  if (!context.mounted) return;
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return ContactsDialog(
+                        accounts: accounts,
+                        contacts: ref.read(contactsListProvider).contacts,
+                        onAccountSelected: onAccountSelected,
+                        onContactSelected: onContactSelected,
+                        onCancel: onCancel,
+                      );
+                    },
+                  );
+                }
+              }),
+          onTap: () {
+            onContactSelected(contact);
+            Navigator.of(context).pop();
+          },
         );
       },
     );
@@ -149,5 +211,29 @@ class ContactsDialog extends StatelessWidget {
         Navigator.pop(context); // Close the dialog after selection
       },
     );
+  }
+
+  Future<void> _deleteContact(WidgetRef ref, Contact contact) async {
+    await ref.read(contactsListProvider.notifier).removeContact(contact.id);
+    await ref.read(contactsListProvider.notifier).loadContacts();
+  }
+
+  Future<bool> _confirmDeleteContact(
+      BuildContext context, Contact contact) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationDialog(
+          title: 'Delete Contact',
+          content: 'Are you sure you want to delete ${contact.name}?',
+        );
+      },
+    );
+
+    if (result == true && context.mounted) {
+      Navigator.of(context).pop();
+    }
+
+    return result ?? false;
   }
 }

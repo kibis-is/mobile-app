@@ -448,9 +448,6 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                       textInputAction: TextInputAction.done,
                       controller: contactNameController,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a contact name';
-                        }
                         return null;
                       },
                       leadingIcon: Icons.person,
@@ -546,35 +543,32 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         items: [
           SelectItem(
             name: 'Loading...',
-            value:
-                'loading', // Ensure it has a unique value even in loading state
+            value: 'loading',
             icon: AppIcons.voiIcon,
           ),
         ],
         selectedValue: null,
-        onChanged: null, // Disable interaction while loading
+        onChanged: null,
       ),
       error: (err, stack) => CustomDropDown(
         label: 'Asset',
         items: [
           SelectItem(
             name: 'Failed to load',
-            value: 'error', // Ensure unique value in error state
+            value: 'error',
             icon: AppIcons.error,
           ),
         ],
         selectedValue: null,
-        onChanged: null, // Disable interaction on error
+        onChanged: null,
       ),
       data: (dropdownItems) {
-        // Ensure each SelectItem has a unique value
-        final isDisabled = dropdownItems.isEmpty || dropdownItems.length == 1;
+        final isDisabled = dropdownItems.length < 2;
         final selectedAsset = ref.watch(selectedAssetProvider);
 
-        // Ensure selectedValue exists in the items or fallback to first item
         final selectedValue = dropdownItems.firstWhereOrNull(
                 (item) => item.value == selectedAsset?.value) ??
-            dropdownItems.firstOrNull; // fallback to the first item
+            dropdownItems.firstOrNull;
 
         return GestureDetector(
           onTap: isDisabled
@@ -600,15 +594,12 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                   : [
                       SelectItem(
                         name: 'No Assets Found',
-                        value:
-                            'no_assets', // Ensure unique value for empty list
+                        value: 'no_assets',
                         icon: AppIcons.error,
                       ),
                     ],
-              selectedValue:
-                  selectedValue, // Use fallback if no valid selected item
-              onChanged:
-                  null, // Disabled interaction, handled by GestureDetector
+              selectedValue: selectedValue,
+              onChanged: null,
             ),
           ),
         );
