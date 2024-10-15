@@ -161,7 +161,7 @@ fabric.properties
 /android/app/debug
 /android/app/profile
 /android/app/release
-upload_keystore.jks
+signing_keystore.jks
 android/secure.properties
 
 ### Fastlane
