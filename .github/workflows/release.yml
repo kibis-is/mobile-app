@@ -7,8 +7,19 @@ on:
         required: true
         type: string
     secrets:
-      WRITE_REPOS_TOKEN:
+      APK_SIGNING_KEY_ALIAS:
         required: true
+      APK_SIGNING_KEY_PASSWORD:
+        required: true
+      APK_SIGNING_KEYSTORE:
+        required: true
+      APK_SIGNING_KEYSTORE_PASSWORD:
+        required: true
+
+permissions:
+  contents: write # to be able to publish a github release
+  issues: write # to be able to comment on released issues
+  pull-requests: write # to be able to comment on released pull requests
 
 jobs:
   release:
@@ -22,8 +33,19 @@ jobs:
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
+      - name: "📱 Setup Flutter"
+        uses: ./.github/actions/use-flutter-dependencies
       - name: "📦 Install yq"
         uses: ./.github/actions/install-yq # needed to update pubspec.yaml via a shell command
+      - name: "🔑 Create Android Signing Keys"
+        env:
+          ANDROID_KEY_ALIAS: ${{ secrets.APK_SIGNING_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.APK_SIGNING_KEY_PASSWORD }}
+          ANDROID_KEYSTORE: ${{ secrets.APK_SIGNING_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.APK_SIGNING_KEYSTORE_PASSWORD }}
+        run: ./scripts/create_android_signing_keys.sh
+      - name: "🏗️ Build Android APK"
+        run: flutter build apk --release
       - name: "🔧 Setup Node"
         uses: actions/setup-node@v4
         with:
@@ -39,5 +61,5 @@ jobs:
           GIT_COMMITTER_NAME: agoralabs-bot
           GIT_COMMITTER_EMAIL: tech@agoralabs.sh
           # used to push the release commit and create the tags
-          GITHUB_TOKEN: ${{ secrets.WRITE_REPOS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn semantic-release
