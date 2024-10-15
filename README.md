@@ -256,7 +256,7 @@ See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-com
 
 ### 6.2. Create An Upload Keystore
 
-The command below can be used to generate an upload keystore used for app (upload) signing:
+The command below can be used to generate a keystore used for app signing:
 
 ```shell
 keytool -genkeypair \

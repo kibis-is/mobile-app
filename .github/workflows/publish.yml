@@ -7,13 +7,13 @@ on:
         required: true
         type: string
     secrets:
-      ANDROID_KEY_ALIAS:
+      PLAY_STORE_UPLOAD_KEY_ALIAS:
         required: true
-      ANDROID_KEY_PASSWORD:
+      PLAY_STORE_UPLOAD_KEY_PASSWORD:
         required: true
-      ANDROID_KEYSTORE:
+      PLAY_STORE_UPLOAD_KEYSTORE:
         required: true
-      ANDROID_KEYSTORE_PASSWORD:
+      PLAY_STORE_UPLOAD_KEYSTORE_PASSWORD:
         required: true
       GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY:
         required: true
@@ -32,10 +32,10 @@ jobs:
         uses: ./.github/actions/use-ruby-dependencies
       - name: "🔑 Create Android Signing Keys"
         env:
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.PLAY_STORE_UPLOAD_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.PLAY_STORE_UPLOAD_KEY_PASSWORD }}
+          ANDROID_KEYSTORE: ${{ secrets.PLAY_STORE_UPLOAD_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.PLAY_STORE_UPLOAD_KEYSTORE_PASSWORD }}
         run: ./scripts/create_android_signing_keys.sh
       - name: "🔑 Create Play Store Credentials"
         env:

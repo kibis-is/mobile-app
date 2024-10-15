@@ -29,6 +29,9 @@
     [
       "@semantic-release/github",
       {
+        "assets": [
+          { "label": "kibisis_release.apk" ,"path": "build/app/outputs/flutter-apk/release/app-release.apk" }
+        ],
         "releasedLabels": ["🚀 released"]
       }
     ]
