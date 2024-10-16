@@ -5,6 +5,11 @@ on:
     branches:
       - beta
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   deploy:
     name: "🔖 Release"

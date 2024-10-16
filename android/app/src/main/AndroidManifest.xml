@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="${applicationId}" xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission
         android:name="android.permission.CAMERA"/>
     <uses-feature
@@ -9,7 +9,9 @@
         android:label="Kibisis"
         android:name="${applicationName}"
         android:allowBackup="false"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+    >
         <activity
             android:name=".MainActivity"
             android:exported="true"
