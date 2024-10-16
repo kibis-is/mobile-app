@@ -1,3 +1,10 @@
+# [1.0.0-beta.11](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.10...v1.0.0-beta.11) (2024-10-16)
+
+
+### Features
+
+* add adaptive icons ([#13](https://github.com/kibis-is/mobile-app/issues/13)) ([a6fe285](https://github.com/kibis-is/mobile-app/commit/a6fe28504a1efc5abea1db29e92516f77522068a))
+
 # [1.0.0-beta.10](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.9...v1.0.0-beta.10) (2024-10-10)
 
 
