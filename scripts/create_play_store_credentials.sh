@@ -7,7 +7,8 @@ source "${SCRIPT_DIR}/set_vars.sh"
 # Public: Creates a JSON to contain the Play Store credentials.
 #
 # Required environment variables:
-# * $GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY - A Google Cloud service account key in JSON format.
+# * $GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY - A Google Cloud service account key in JSON format encoded
+# in base64.
 #
 # Examples
 #
@@ -23,7 +24,7 @@ function main {
   fi
 
   printf "%b creating play_store_credentials.json... \n" "${INFO_PREFIX}"
-  echo "${GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY}" > "play_store_credentials.json"
+  echo "${GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY}" | base64 -d > "play_store_credentials.json"
 
   exit 0
 }

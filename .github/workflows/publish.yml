@@ -6,7 +6,18 @@ on:
       environment:
         required: true
         type: string
+      release_upload_url:
+        required: true
+        type: string
     secrets:
+      APK_SIGNING_KEY_ALIAS:
+        required: true
+      APK_SIGNING_KEY_PASSWORD:
+        required: true
+      APK_SIGNING_KEYSTORE:
+        required: true
+      APK_SIGNING_KEYSTORE_PASSWORD:
+        required: true
       PLAY_STORE_UPLOAD_KEY_ALIAS:
         required: true
       PLAY_STORE_UPLOAD_KEY_PASSWORD:
@@ -19,6 +30,32 @@ on:
         required: true
 
 jobs:
+  publish_android_apk:
+    name: "Publish Android APK"
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: "🛎 Checkout"
+        uses: actions/checkout@v4
+      - name: "📱 Setup Flutter"
+        uses: ./.github/actions/use-flutter-dependencies
+      - name: "🔑 Create Android Signing Keys"
+        env:
+          ANDROID_KEY_ALIAS: ${{ secrets.APK_SIGNING_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.APK_SIGNING_KEY_PASSWORD }}
+          ANDROID_KEYSTORE: ${{ secrets.APK_SIGNING_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.APK_SIGNING_KEYSTORE_PASSWORD }}
+        run: ./scripts/create_android_signing_keys.sh
+      - name: "🏗️ Build Android APK"
+        run: flutter build apk --release
+      - name: "📤 Upload Release Asset"
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ inputs.release_upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-release.apk
+          asset_name: kibisis_release.apk
+          asset_content_type: application/vnd.android.package-archive
+
   publish_to_play_store:
     name: "Publish To The Play Store"
     runs-on: ubuntu-latest
