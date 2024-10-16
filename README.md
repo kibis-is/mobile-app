@@ -9,30 +9,30 @@
 </h1>
 
 <h4 align="center">
-  An AVM wallet that goes beyond just DeFi.
+  The wallet for your lifestyle.
 </h4>
 
 <p align="center">
-  <a href="https://github.com/agoralabs-sh/kibisis-mobile-app/releases/latest">
-    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/agoralabs-sh/kibisis-mobile-app?&logo=github">
+  <a href="https://github.com/kibis-is/mobile-app/releases/latest">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/kibis-is/mobile-app?&logo=github">
   </a>
-  <a href="https://github.com/agoralabs-sh/kibisis-mobile-app/releases/latest">
-    <img alt="GitHub Release Date - Published At" src="https://img.shields.io/github/release-date/agoralabs-sh/kibisis-mobile-app?logo=github">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/agoralabs-sh/kibisis-mobile-app/releases">
-    <img alt="GitHub Pre-release" src="https://img.shields.io/github/v/release/agoralabs-sh/kibisis-mobile-app?include_prereleases&label=pre-release&logo=github">
-  </a>
-  <a href="https://github.com/agoralabs-sh/kibisis-mobile-app/releases">
-    <img alt="GitHub Pre-release Date - Published At" src="https://img.shields.io/github/release-date-pre/agoralabs-sh/kibisis-mobile-app?label=pre-release date&logo=github">
+  <a href="https://github.com/kibis-is/mobile-app/releases/latest">
+    <img alt="GitHub Release Date - Published At" src="https://img.shields.io/github/release-date/kibis-is/mobile-app?logo=github">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/agoralabs-sh/kibisis-mobile-app/blob/main/LICENSE">
-    <img alt="GitHub License" src="https://img.shields.io/github/license/agoralabs-sh/kibisis-mobile-app">
+  <a href="https://github.com/kibis-is/mobile-app/releases">
+    <img alt="GitHub Pre-release" src="https://img.shields.io/github/v/release/kibis-is/mobile-app?include_prereleases&label=pre-release&logo=github">
+  </a>
+  <a href="https://github.com/kibis-is/mobile-app/releases">
+    <img alt="GitHub Pre-release Date - Published At" src="https://img.shields.io/github/release-date-pre/kibis-is/mobile-app?label=pre-release date&logo=github">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/kibis-is/mobile-app/blob/main/LICENSE">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/kibis-is/mobile-app">
   </a>
 </p>
 
@@ -117,7 +117,7 @@ $ flutter run
 
 ### 4.2. Create A Personal Doppler Config
 
-To start using your own Doppler config, go to the project on [Doppler](https://dashboard.doppler.com/workplace/ae8c01548486ba93b8fd/projects/kibisis-mobile-app) and press the "+" to create a new personal branch config in the "Development" config
+To start using your own Doppler config, go to the project on [Doppler](https://dashboard.doppler.com/workplace/ae8c01548486ba93b8fd/projects/mobile-app) and press the "+" to create a new personal branch config in the "Development" config
 
 <p align="center">
   <img alt="Screen grab of the Doppler dashboard when creating a branch config" src=".github/assets/create_doppler_config.png" style="padding-top: 15px" height="512" />
@@ -132,7 +132,7 @@ To start using your own Doppler config, go to the project on [Doppler](https://d
 Follow the instructions [here](https://docs.doppler.com/docs/install-cli#local-development) to:
 
 * login to Doppler, and;
-* setup Doppler to use the `kibisis-mobile-app` project with your personal config.
+* setup Doppler to use the `mobile-app` project with your personal config.
 
 > ⚠️ **NOTE:** When naming your token, it is recommended you use: "<your_name>-<device_name>".
 
