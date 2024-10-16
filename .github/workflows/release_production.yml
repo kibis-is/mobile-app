@@ -5,11 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write # to be able to publish a github release
-  issues: write # to be able to comment on released issues
-  pull-requests: write # to be able to comment on released pull requests
-
 jobs:
   deploy:
     name: "🔖 Release"
@@ -21,3 +16,4 @@ jobs:
       APK_SIGNING_KEY_PASSWORD: ${{ secrets.APK_SIGNING_KEY_PASSWORD }}
       APK_SIGNING_KEYSTORE: ${{ secrets.APK_SIGNING_KEYSTORE }}
       APK_SIGNING_KEYSTORE_PASSWORD: ${{ secrets.APK_SIGNING_KEYSTORE_PASSWORD }}
+      READ_AND_WRITE_REPOS_TOKEN: ${{ secrets.READ_AND_WRITE_REPOS_TOKEN }}
