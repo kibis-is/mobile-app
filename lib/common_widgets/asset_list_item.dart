@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/combined_asset.dart';
+import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/number_shortener.dart';
@@ -61,6 +62,7 @@ class AssetListItem extends ConsumerWidget {
 
   Widget _buildAssetIcon(BuildContext context, WidgetRef ref) {
     final mediaQueryHelper = MediaQueryHelper(context);
+    final network = ref.watch(networkProvider);
     return Hero(
       tag: mediaQueryHelper.isWideScreen()
           ? 'wide-${asset.index}-icon'
@@ -73,7 +75,9 @@ class AssetListItem extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(kScreenPadding / 3),
           child: AppIcons.icon(
-            icon: AppIcons.voiCircleIcon,
+            icon: network?.value.startsWith('network-voi') ?? false
+                ? AppIcons.voiCircleIcon
+                : AppIcons.algorandIcon,
             color: context.colorScheme.onPrimary,
             size: AppIcons.xlarge,
           ),
@@ -109,9 +113,9 @@ class AssetListItem extends ConsumerWidget {
   Widget _buildTrailing(BuildContext context) {
     return mode == AssetScreenMode.add && onPressed == null
         ? Text(
-            'Owned',
-            style: context.textTheme.bodyMedium
-                ?.copyWith(fontWeight: FontWeight.bold),
+            'Already\nadded',
+            style: context.textTheme.bodySmall,
+            textAlign: TextAlign.right,
           )
         : AppIcons.icon(icon: AppIcons.arrowRight);
   }

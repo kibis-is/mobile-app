@@ -3,18 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/providers/network_provider.dart';
 import '../models/combined_asset.dart';
 
 final arc200ServiceProvider = Provider<Arc200Service>((ref) {
-  return Arc200Service();
+  return Arc200Service(ref);
 });
 
 class Arc200Service {
-  final String baseUrl;
+  late final String baseUrl;
 
-  Arc200Service(
-      {this.baseUrl = 'https://mainnet-idx.nautilus.sh/nft-indexer/v1/arc200'});
+  Arc200Service(Ref ref) {
+    final network = ref.watch(networkProvider);
+    switch (network?.value) {
+      case "network-voi-mainnet":
+        baseUrl = 'https://mainnet-idx.nautilus.sh/nft-indexer/v1/arc200';
+        break;
+      case "network-voi-testnet":
+        baseUrl = 'https://testnet-idx.nautilus.sh/nft-indexer/v1/arc200';
+        break;
+      case "network-algorand-mainnet":
+      case "network-algorand-testnet":
+      default:
+        baseUrl = '';
+        break;
+    }
+
+    debugPrint('Selected network baseURL: $baseUrl');
+  }
   Future<List<CombinedAsset>> fetchArc200Assets(String publicAddress) async {
+    if (baseUrl.isEmpty) {
+      debugPrint('No ARC200 assets available for the selected network.');
+      return [];
+    }
+
     try {
       final balancesUrl = '$baseUrl/balances?accountId=$publicAddress';
       final balancesResponse = await http.get(Uri.parse(balancesUrl));
@@ -52,6 +74,11 @@ class Arc200Service {
   }
 
   Future<Map<String, dynamic>> fetchArc200TokenDetails(int contractId) async {
+    if (baseUrl.isEmpty) {
+      throw Exception(
+          'No ARC200 token details available for the selected network.');
+    }
+
     final tokenUrl = '$baseUrl/tokens?contractId=$contractId';
     final tokenResponse = await http.get(Uri.parse(tokenUrl));
 
@@ -66,6 +93,12 @@ class Arc200Service {
 
   Future<List<CombinedAsset>> searchArc200AssetsByContractIdOrName(
       String query) async {
+    if (baseUrl.isEmpty) {
+      debugPrint(
+          'No ARC200 assets available for searching in the selected network.');
+      return [];
+    }
+
     final searchUrl = '$baseUrl/tokens?limit=100';
     final response = await http.get(Uri.parse(searchUrl));
 

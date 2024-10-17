@@ -10,6 +10,7 @@ import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/common_widgets/custom_fab_child.dart';
 import 'package:kibisis/common_widgets/initialising_animation.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/activity_tab.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
@@ -27,6 +28,7 @@ import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:vibration/vibration.dart';
 
@@ -293,7 +295,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       List<SelectItem> networks, AccountState accountState) {
     return SplitAppBar(
       leadingWidget: _buildBalanceWidget(context, ref, networks, accountState),
-      actionWidget: _buildNetworkSelectButton(context, networks, ref),
+      actionWidget: _buildNetworkSelectButton(context, ref),
     );
   }
 
@@ -350,30 +352,41 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildNetworkSelectButton(
-      BuildContext context, List<SelectItem> networks, WidgetRef ref) {
+  Widget _buildNetworkSelectButton(BuildContext context, WidgetRef ref) {
+    List<SelectItem> networks = ref.watch(networkOptionsProvider);
+
     return MaterialButton(
       padding: EdgeInsets.zero,
       elevation: 0,
-      shape: const CircleBorder(),
-      onPressed: networks.length > 1
-          ? () {
-              customBottomSheet(
-                  context: context,
-                  header: "Select Network",
-                  items: networks,
-                  hasButton: false,
-                  buttonText: "Add Network",
-                  buttonOnPressed: () {
-                    GoRouter.of(context).go('/addAsset');
-                  },
-                  onPressed: (SelectItem selectedNetwork) {
-                    ref
-                        .read(networkProvider.notifier)
-                        .setNetwork(selectedNetwork);
-                  });
+      hoverColor: Colors.transparent,
+      onPressed: () {
+        customBottomSheet(
+          context: context,
+          header: "Select Network",
+          items: networks,
+          hasButton: false,
+          onPressed: (SelectItem selectedNetwork) async {
+            bool success = await ref
+                .read(networkProvider.notifier)
+                .setNetwork(selectedNetwork);
+            invalidateProviders(ref);
+            if (success && context.mounted) {
+              showCustomSnackBar(
+                context: context,
+                snackType: SnackType.success,
+                message: "Switched to ${selectedNetwork.name}",
+              );
+            } else {
+              if (!context.mounted) return;
+              showCustomSnackBar(
+                context: context,
+                snackType: SnackType.error,
+                message: "Failed to switch to ${selectedNetwork.name}",
+              );
             }
-          : null,
+          },
+        );
+      },
       child: NetworkSelect(networkCount: networks.length),
     );
   }

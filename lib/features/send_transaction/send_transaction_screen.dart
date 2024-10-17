@@ -284,23 +284,34 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       ref.invalidate(transactionsProvider);
       ref.invalidate(balanceProvider);
     } catch (e) {
-      _showErrorSnackbar(e.toString());
+      var errorMessage = e.toString();
+      debugPrint(
+          "Transaction failed with error: $errorMessage"); // For debugging
+      var friendlyErrorMessage = processTransactionError(errorMessage);
+      _showErrorSnackbar(friendlyErrorMessage);
     } finally {
       goBack();
+    }
+  }
+
+  String processTransactionError(String errorMessage) {
+    if (errorMessage.contains("overspend")) {
+      return 'Insufficient funds.';
+    } else if (errorMessage.toLowerCase().contains("confirm")) {
+      return 'Transaction failed to confirm within the expected rounds.';
+    } else {
+      return errorMessage; // Directly return the detailed error message
     }
   }
 
   void _saveContact() async {
     final contactName = contactNameController.text.trim();
     final recipientPublicKey = recipientAddressController.text.trim();
-
-    // Check if the recipient public key is already one of your accounts
     final accounts = ref.read(accountsListProvider).accounts;
     final isMyAccount =
         accounts.any((account) => account['publicKey'] == recipientPublicKey);
 
     if (contactName.isNotEmpty && !isMyAccount) {
-      // Proceed only if it's not one of your accounts
       final newContact = Contact(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: contactName,

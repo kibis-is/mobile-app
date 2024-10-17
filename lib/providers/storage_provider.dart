@@ -340,4 +340,17 @@ class StorageService {
     contacts.removeWhere((contact) => contact.id == contactId);
     await saveContacts(contacts);
   }
+
+  static const String _showTestNetworksKey = 'showTestNetworks';
+
+  Future<void> setShowTestNetworks(bool show) async {
+    if (_prefs == null) {
+      throw Exception("SharedPreferences is not initialized");
+    }
+    await _prefs.setBool(_showTestNetworksKey, show);
+  }
+
+  bool getShowTestNetworks() {
+    return _prefs?.getBool(_showTestNetworksKey) ?? false;
+  }
 }

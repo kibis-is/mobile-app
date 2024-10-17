@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/arc200_service.dart';
 import '../models/combined_asset.dart';
 
@@ -35,45 +36,38 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
     }
     try {
       final algorandService = ref.read(algorandServiceProvider);
-      final arc200Service = Arc200Service();
-      final arc200Assets = await arc200Service.fetchArc200Assets(publicAddress);
+      final network = ref.read(networkProvider);
       final standardAssets =
           await algorandService.getAccountAssets(publicAddress);
-      final List<CombinedAsset> standardCombinedAssets = [];
-      for (var asset in standardAssets) {
-        try {
-          final combinedAsset = CombinedAsset(
-            index: asset.index,
-            params: asset.params,
-            createdAtRound: asset.createdAtRound,
-            deleted: asset.deleted,
-            destroyedAtRound: asset.destroyedAtRound,
-            assetType: AssetType.standard,
-            amount: asset.amount,
-            isFrozen: asset.isFrozen,
-          );
-          standardCombinedAssets.add(combinedAsset);
-        } catch (e) {
-          debugPrint(
-              'Error processing assetId: ${asset.index}, skipping. Error: $e');
-          continue;
-        }
-      }
+      List<CombinedAsset> standardCombinedAssets = standardAssets
+          .map((asset) => CombinedAsset(
+                index: asset.index,
+                params: asset.params,
+                createdAtRound: asset.createdAtRound,
+                deleted: asset.deleted,
+                destroyedAtRound: asset.destroyedAtRound,
+                assetType: AssetType.standard,
+                amount: asset.amount,
+                isFrozen: asset.isFrozen,
+              ))
+          .toList();
       _allAssets = standardCombinedAssets;
 
-      _allAssets = [...standardCombinedAssets, ...arc200Assets];
+      if (network?.value.startsWith('network-voi') ?? false) {
+        final arc200Service = Arc200Service(ref);
+        final arc200Assets =
+            await arc200Service.fetchArc200Assets(publicAddress);
+        _allAssets = [...standardCombinedAssets, ...arc200Assets];
+      }
 
       state = AsyncValue.data(_filteredAssets());
-    } on AlgorandException {
-      if (mounted) {
-        debugPrint('AlgorandException occurred while fetching assets.');
-        state = AsyncValue.error('Failed to fetch assets', StackTrace.current);
-      }
-    } catch (e) {
-      if (mounted) {
-        debugPrint('Exception occurred: $e');
-        state = AsyncValue.error(e, StackTrace.current);
-      }
+    } on AlgorandException catch (algEx) {
+      debugPrint(
+          'AlgorandException occurred while fetching assets: ${algEx.message}');
+      state = AsyncValue.error('Failed to fetch assets', StackTrace.current);
+    } catch (e, stack) {
+      debugPrint('Exception occurred while fetching assets: $e');
+      state = AsyncValue.error(e, stack);
     }
   }
 

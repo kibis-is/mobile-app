@@ -122,18 +122,18 @@ class AlgorandService {
               "Transaction confirmed in round: ${transactionResponse.confirmedRound}");
           return txId;
         } else {
-          debugPrint(
+          throw Exception(
               "Transaction failed to confirm within the expected rounds.");
-          return 'error';
         }
       }
-      return txId;
+      throw Exception(
+          "Transaction failed: Transaction ID invalid or marked as 'error'.");
     } on AlgorandException catch (e) {
       debugPrint(e.message);
-      return 'error';
+      throw Exception("Transaction error: ${e.message}");
     } catch (e) {
       debugPrint("Failed to send payment: $e");
-      return 'error';
+      throw Exception("Failed to send payment: $e");
     }
   }
 
