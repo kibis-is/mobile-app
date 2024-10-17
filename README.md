@@ -48,6 +48,7 @@
   - [3.1. Requirements](#31-requirements)
   - [3.2. Install Dependencies](#32-install-dependencies)
   - [3.3. Run](#33-run)
+  - [3.4. Launcher Icons](#34-launcher-icons)
 * [4. Building](#-4-building)
   - [4.1. Requirements](#41-requirements)
   - [4.2. Create A Personal Doppler Config](#42-create-a-personal-doppler-config)
@@ -103,6 +104,29 @@ $ flutter pub get
 ```bash
 $ flutter run
 ```
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+### 3.4. Launcher Icons
+
+The icons are configured using the [`flutter_launcher_icons`](https://pub.dev/packages/flutter_launcher_icons) package. The configuration sits in the `pubspec.yaml` file.
+
+Tl;dr, you can create new icons by running the command:
+```shell
+dart run flutter_launcher_icons
+```
+
+> **NOTE:** This will create the icons for all platforms except Android, see below for details on Android.
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+##### Android
+
+The Android launcher icons are created using Android Studio's Image Asset Studio. You can follow [this](https://developer.android.com/studio/write/create-app-icons#access) on how to create adaptive icons.
+
+> **NOTE:** If you are running Android Studio from the root, you will need to reopen Android Studio from the `andriod/` directory in order to access the "Andorid View".
+
+For more information regarding Adaptive Icons, see [here](https://developer.android.com/develop/ui/views/launch/icon_design_adaptive).
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
@@ -249,6 +273,7 @@ Coming soon...
 | `flutter run`                        | Runs the app locally.                                                                                                                                                                                     |
 | `flutter build <apk\|aab> --release` | Builds an Android APK/AAB to `build/app/outputs/bundle/release/app-release.<apk\|aab>`. NOTE: You will need a signing key, this can be acquired by following the steps in [4.4.1. Android](#441-android). |
 | `bundle exec fastlane <lane>`        | Uploads a mobile artifact to the Play Store/AppStore based on the lane, where `lane` is either `beta` or `production`.                                                                                    |
+| `dart run flutter_launcher_icons`     | Creates the launcher and store icons for all the apps (Android is excluded. See [](#)).                                                                                                                   |
 
 See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-commands) reference for a full list of available commands.
 
