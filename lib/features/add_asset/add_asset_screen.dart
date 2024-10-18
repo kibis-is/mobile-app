@@ -11,6 +11,7 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AddAssetScreen extends ConsumerWidget {
   static String title = 'Add Asset';
@@ -106,9 +107,37 @@ class AssetList extends ConsumerWidget {
                 const SizedBox(height: kScreenPadding / 2),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => _buildLoadingAssets(
+            context), // Replaced the CircularProgressIndicator with your shimmer effect
         error: (e, stack) =>
             const Center(child: Text('Sorry, there was an error.')),
+      ),
+    );
+  }
+
+  Widget _buildLoadingAssets(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
+      child: Shimmer.fromColors(
+        baseColor: context.colorScheme.background,
+        highlightColor: context.colorScheme.onSurfaceVariant,
+        period: const Duration(milliseconds: 2000),
+        child: ListView.separated(
+          itemCount: 3,
+          itemBuilder: (_, __) => ListTile(
+            leading: const CircleAvatar(),
+            title: Container(
+                width: double.infinity,
+                height: kScreenPadding,
+                color: context.colorScheme.surface),
+            subtitle: Container(
+                width: double.infinity,
+                height: kScreenPadding,
+                color: context.colorScheme.surface),
+          ),
+          separatorBuilder: (_, __) =>
+              const SizedBox(height: kScreenPadding / 2),
+        ),
       ),
     );
   }
