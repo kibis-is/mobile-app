@@ -9,6 +9,7 @@ import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
@@ -93,6 +94,10 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     final totalSupply = double.parse(widget.asset.params.total.toString());
     final String publicKey = ref.watch(accountProvider).account?.address ?? '';
     final mediaQueryHelper = MediaQueryHelper(context);
+    final network = ref.watch(networkProvider)?.value;
+    final networkIcon = network?.startsWith('network-voi') ?? false
+        ? AppIcons.voiIcon
+        : AppIcons.algorandIcon;
 
     return SingleChildScrollView(
       child: Padding(
@@ -109,7 +114,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                     radius: 50.0,
                     backgroundColor: context.colorScheme.primary,
                     child: SvgPicture.asset(
-                      '${AppIcons.svgBasePath}${AppIcons.voiCircleIcon}.svg',
+                      '${AppIcons.svgBasePath}$networkIcon.svg',
                       width: 80,
                       height: 80,
                       semanticsLabel: 'Asset Icon',

@@ -18,7 +18,6 @@ import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/features/dashboard/widgets/nft_tab.dart';
 import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
-import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
@@ -30,6 +29,7 @@ import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:vibration/vibration.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -87,8 +87,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildNavigationBar() {
-    ref.watch(isDarkModeProvider);
-
+    final network = ref.watch(networkProvider)?.value;
     return NavigationBarTheme(
       data: NavigationBarThemeData(
         labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>((states) {
@@ -133,12 +132,16 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           destinations: [
             NavigationDestination(
               icon: AppIcons.icon(
-                  icon: AppIcons.voiIcon,
+                  icon: network?.startsWith('network-voi') ?? false
+                      ? AppIcons.voiIcon
+                      : AppIcons.algorandIcon,
                   color: context.colorScheme.onSurfaceVariant,
                   size: AppIcons.small),
               label: 'Assets',
               selectedIcon: AppIcons.icon(
-                  icon: AppIcons.voiIcon,
+                  icon: network?.startsWith('network-voi') ?? false
+                      ? AppIcons.voiIcon
+                      : AppIcons.algorandIcon,
                   color: context.colorScheme.primary,
                   size: AppIcons.small),
             ),
@@ -171,8 +174,6 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildFloatingActionButton() {
-    ref.watch(isDarkModeProvider);
-
     return FutureBuilder<bool>(
       future: ref.read(accountProvider.notifier).hasPrivateKey(),
       builder: (context, snapshot) {
@@ -394,7 +395,33 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildDashboardInfoPanel(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, String? publicKey, AccountState accountState) {
     if (publicKey == null) {
-      return const Center(child: CircularProgressIndicator());
+      return Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Padding(
+          padding: const EdgeInsets.only(
+              left: kScreenPadding, right: kScreenPadding / 2),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Account Name Placeholder
+              Container(
+                width: 150,
+                height: 24,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 8),
+
+              // Public Key Placeholder
+              Container(
+                width: double.infinity,
+                height: 16,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
+      );
     } else {
       return DashboardInfoPanel(
         networks: networks,

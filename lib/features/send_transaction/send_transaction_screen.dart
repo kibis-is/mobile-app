@@ -539,7 +539,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     return CustomTextField(
       labelText: 'Account',
       isEnabled: false,
-      leadingIcon: AppIcons.about,
+      leadingIcon: AppIcons.wallet,
       controller: activeAccountController,
       onTap: null,
     );
@@ -547,7 +547,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Widget _buildCustomDropDown(WidgetRef ref) {
     final dropdownItemsAsync = ref.watch(dropdownItemsProvider);
-
+    final network = ref.watch(networkProvider)?.value;
     return dropdownItemsAsync.when(
       loading: () => CustomDropDown(
         label: 'Asset',
@@ -555,7 +555,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           SelectItem(
             name: 'Loading...',
             value: 'loading',
-            icon: AppIcons.voiIcon,
+            icon: network?.startsWith('network-voi') ?? false
+                ? AppIcons.voiIcon
+                : AppIcons.algorandIcon,
           ),
         ],
         selectedValue: null,

@@ -77,7 +77,7 @@ class AssetListItem extends ConsumerWidget {
           child: AppIcons.icon(
             icon: network?.value.startsWith('network-voi') ?? false
                 ? AppIcons.voiCircleIcon
-                : AppIcons.algorandIcon,
+                : AppIcons.algorandCircleIcon,
             color: context.colorScheme.onPrimary,
             size: AppIcons.xlarge,
           ),

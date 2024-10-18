@@ -71,6 +71,7 @@ class AppIcons {
   static const String voiIcon = 'voi-asset-icon';
   static const String voiCircleIcon = 'voi-circle';
   static const String algorandIcon = 'algorand-logo';
+  static const String algorandCircleIcon = 'algorand-circle';
 
   static Color? defaultColor;
 
