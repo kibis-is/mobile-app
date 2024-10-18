@@ -25,7 +25,6 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
   @override
   void initState() {
     super.initState();
-    // Reset the checkbox provider state when the screen is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(checkboxProvider.notifier).state = false;
     });

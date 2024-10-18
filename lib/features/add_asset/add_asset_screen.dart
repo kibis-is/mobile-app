@@ -107,8 +107,7 @@ class AssetList extends ConsumerWidget {
                 const SizedBox(height: kScreenPadding / 2),
           );
         },
-        loading: () => _buildLoadingAssets(
-            context), // Replaced the CircularProgressIndicator with your shimmer effect
+        loading: () => _buildLoadingAssets(context),
         error: (e, stack) =>
             const Center(child: Text('Sorry, there was an error.')),
       ),

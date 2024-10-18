@@ -135,7 +135,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
         period: const Duration(milliseconds: 2000),
         child: ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
-          itemCount: 3, // Number of loading placeholders
+          itemCount: 3,
           itemBuilder: (_, __) => ListTile(
             leading: Container(
               width: 40,
@@ -205,8 +205,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
         future: _sessionsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildLoadingSessions(
-                context); // Replace CircularProgressIndicator with shimmer
+            return _buildLoadingSessions(context);
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
