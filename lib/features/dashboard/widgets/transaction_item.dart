@@ -32,25 +32,6 @@ class TransactionItem extends ConsumerWidget {
   });
   Widget _getTransactionIcon(
       BuildContext context, bool isDarkMode, String network) {
-    // Check if this is a transaction within the same account (self-transfer)
-    // final isSameAccountTransaction = otherPartyAddress == transaction.sender &&
-    //     otherPartyAddress ==
-    //         (transaction.paymentTransaction?.receiver.toString() ?? '');
-
-    // // if (isSameAccountTransaction) {
-    // //   return Container(
-    // //     decoration: const BoxDecoration(
-    // //       shape: BoxShape.circle,
-    // //       color: Colors.blue,
-    // //     ),
-    // //     child: AppIcons.icon(
-    // //       icon: AppIcons.importAccount,
-    // //       size: AppIcons.xlarge,
-    // //       color: Colors.white,
-    // //     ),
-    // //   );
-    // // }
-
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,

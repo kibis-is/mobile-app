@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/providers/allow_test_networks_provider.dart';
 import 'package:kibisis/models/select_item.dart';
-import 'package:kibisis/providers/network_provider.dart'; // Ensure you import networkProvider
-import 'package:kibisis/common_widgets/top_snack_bar.dart'; // Assuming this is where you handle snack bars
+import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 
 class AdvancedScreen extends ConsumerStatefulWidget {
   static const String title = 'Advanced';
@@ -17,7 +17,6 @@ class AdvancedScreen extends ConsumerStatefulWidget {
 class _AdvancedScreenState extends ConsumerState<AdvancedScreen> {
   @override
   Widget build(BuildContext context) {
-    // Listening to network changes right in the build method
     ref.listen<SelectItem?>(networkProvider, (_, SelectItem? newNetwork) {
       if (newNetwork != null) {
         showCustomSnackBar(
