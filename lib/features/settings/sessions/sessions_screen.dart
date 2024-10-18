@@ -12,6 +12,7 @@ import 'package:kibisis/utils/wallet_connect_manageer.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SessionsScreen extends ConsumerStatefulWidget {
   static String title = 'Sessions';
@@ -125,6 +126,41 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
     );
   }
 
+  Widget _buildLoadingSessions(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
+      child: Shimmer.fromColors(
+        baseColor: context.colorScheme.background,
+        highlightColor: context.colorScheme.onSurfaceVariant,
+        period: const Duration(milliseconds: 2000),
+        child: ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+          itemCount: 3, // Number of loading placeholders
+          itemBuilder: (_, __) => ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: context.colorScheme.surface,
+              ),
+            ),
+            title: Container(
+              width: double.infinity,
+              height: kScreenPadding,
+              color: context.colorScheme.surface,
+            ),
+            subtitle: Container(
+              width: double.infinity,
+              height: kScreenPadding / 2,
+              color: context.colorScheme.surface,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final accountsState = ref.watch(accountsListProvider);
@@ -169,7 +205,8 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
         future: _sessionsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildLoadingSessions(
+                context); // Replace CircularProgressIndicator with shimmer
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
