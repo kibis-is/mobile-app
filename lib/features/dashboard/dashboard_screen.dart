@@ -355,6 +355,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildNetworkSelectButton(BuildContext context, WidgetRef ref) {
     List<SelectItem> networks = ref.watch(networkOptionsProvider);
+    SelectItem? currentNetwork = ref.watch(networkProvider);
 
     return MaterialButton(
       padding: EdgeInsets.zero,
@@ -367,6 +368,10 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           items: networks,
           hasButton: false,
           onPressed: (SelectItem selectedNetwork) async {
+            if (selectedNetwork.value == currentNetwork?.value) {
+              return;
+            }
+
             bool success = await ref
                 .read(networkProvider.notifier)
                 .setNetwork(selectedNetwork);
