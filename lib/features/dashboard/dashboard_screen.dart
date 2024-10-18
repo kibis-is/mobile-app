@@ -395,29 +395,34 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildDashboardInfoPanel(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, String? publicKey, AccountState accountState) {
     if (publicKey == null) {
-      return Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: Padding(
-          padding: const EdgeInsets.only(
-              left: kScreenPadding, right: kScreenPadding / 2),
+      return Padding(
+        padding: const EdgeInsets.only(
+            left: kScreenPadding, right: kScreenPadding / 2),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Account Name Placeholder
-              Container(
-                width: 150,
-                height: 24,
-                color: Colors.white,
+              EllipsizedText(
+                'Loading Account',
+                type: EllipsisType.end,
+                textAlign: TextAlign.start,
+                style: context.textTheme.titleLarge?.copyWith(
+                  letterSpacing: 1.3,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              const SizedBox(height: 8),
-
-              // Public Key Placeholder
-              Container(
-                width: double.infinity,
-                height: 16,
-                color: Colors.white,
+              const SizedBox(height: kScreenPadding / 2),
+              EllipsizedText(
+                'Please wait',
+                type: EllipsisType.end,
+                textAlign: TextAlign.start,
+                style: context.textTheme.bodySmall
+                    ?.copyWith(letterSpacing: 1.5, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(height: kScreenPadding / 2 + 2),
             ],
           ),
         ),
