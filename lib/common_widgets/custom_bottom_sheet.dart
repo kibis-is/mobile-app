@@ -22,25 +22,28 @@ Future<dynamic> customBottomSheet({
     context: context,
     isScrollControlled: true,
     builder: (BuildContext context) {
-      return DraggableScrollableSheet(
-        expand: false,
-        builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: kScreenPadding * 2, vertical: kScreenPadding),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildHeader(context, header),
-                  const SizedBox(height: kScreenPadding),
-                  if (isSingleWidgetMode)
-                    singleWidget
-                  else
-                    _buildItemList(context, items!, onPressed!),
-                  if (hasButton)
-                    CustomButton(
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final double maxHeight = constraints.maxHeight * 0.9;
+          return Container(
+            constraints: BoxConstraints(
+              maxHeight:
+                  maxHeight, // Prevent sheet from growing beyond 90% of screen
+            ),
+            padding: const EdgeInsets.symmetric(
+                horizontal: kScreenPadding * 2, vertical: kScreenPadding),
+            child: Wrap(
+              children: [
+                _buildHeader(context, header),
+                const SizedBox(height: kScreenPadding),
+                if (isSingleWidgetMode)
+                  singleWidget
+                else
+                  _buildItemList(context, items!, onPressed!, maxHeight),
+                if (hasButton)
+                  Padding(
+                    padding: const EdgeInsets.only(top: kScreenPadding),
+                    child: CustomButton(
                       text: buttonText ?? "Confirm",
                       onPressed: () {
                         if (buttonOnPressed != null) {
@@ -50,10 +53,9 @@ Future<dynamic> customBottomSheet({
                       },
                       isFullWidth: true,
                     ),
-                  if (isSingleWidgetMode)
-                    const SizedBox(height: kScreenPadding),
-                ],
-              ),
+                  ),
+                if (isSingleWidgetMode) const SizedBox(height: kScreenPadding),
+              ],
             ),
           );
         },
@@ -75,14 +77,21 @@ Widget _buildItemList(
   BuildContext context,
   List<dynamic> items,
   Function(SelectItem) onPressed,
+  double maxHeight,
 ) {
-  return ListView.builder(
-    shrinkWrap: true,
-    physics: const BouncingScrollPhysics(),
-    itemCount: items.length,
-    itemBuilder: (BuildContext context, int index) {
-      return _buildListItem(context, items[index], onPressed);
-    },
+  return ConstrainedBox(
+    // Constrain the height to the available space to ensure scrolling if needed
+    constraints: BoxConstraints(
+      maxHeight:
+          maxHeight * 0.7, // The list can take up 70% of the available height
+    ),
+    child: ListView.builder(
+      shrinkWrap: true, // Ensure the list shrinks when few items are present
+      itemCount: items.length,
+      itemBuilder: (BuildContext context, int index) {
+        return _buildListItem(context, items[index], onPressed);
+      },
+    ),
   );
 }
 
