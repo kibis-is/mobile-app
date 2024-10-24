@@ -1,3 +1,10 @@
+# [1.0.0-beta.13](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.12...v1.0.0-beta.13) (2024-10-24)
+
+
+### Bug Fixes
+
+* Removed unused code ([92940c4](https://github.com/kibis-is/mobile-app/commit/92940c49c949c4b2fac0e836a47def438c949bc3))
+
 # [1.0.0-beta.12](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.11...v1.0.0-beta.12) (2024-10-24)
 
 
