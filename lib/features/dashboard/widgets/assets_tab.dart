@@ -36,7 +36,6 @@ class AssetsTab extends ConsumerStatefulWidget {
 class _AssetsTabState extends ConsumerState<AssetsTab> {
   late final RefreshController _wideScreenRefreshController;
   late final RefreshController _narrowScreenRefreshController;
-  CombinedAsset? _selectedAsset;
   late TextEditingController filterController;
 
   @override
@@ -77,6 +76,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     final assetsFilterController =
         ref.watch(assetsFilterControllerProvider.notifier);
 
+    // Watch the active asset from the provider
+    final activeAsset = ref.watch(activeAssetProvider);
+
     return mediaQueryHelper.isWideScreen()
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,13 +92,14 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               ),
               Expanded(
                 flex: mediaQueryHelper.getDynamicFlex()[1],
-                child: _selectedAsset != null
-                    ? ViewAssetScreen(
-                        asset: _selectedAsset!,
+                // Use the active asset from the provider
+                child: activeAsset != null
+                    ? const ViewAssetScreen(
                         isPanelMode: true,
                       )
                     : const Center(
-                        child: Text('Select an asset to view details')),
+                        child: Text('Select an asset to view details'),
+                      ),
               ),
             ],
           )
@@ -311,10 +314,8 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         return AssetListItem(
           asset: asset,
           onPressed: () {
-            if (isWideScreen) {
-              setState(() => _selectedAsset = asset);
-            } else {
-              ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
+            ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
+            if (!isWideScreen) {
               context.goNamed(
                 viewAssetRouteName,
                 extra: asset,
