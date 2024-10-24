@@ -33,6 +33,7 @@ Future<dynamic> customBottomSheet({
             padding: const EdgeInsets.symmetric(
                 horizontal: kScreenPadding * 2, vertical: kScreenPadding),
             child: Wrap(
+              alignment: WrapAlignment.center,
               children: [
                 _buildHeader(context, header),
                 const SizedBox(height: kScreenPadding),
