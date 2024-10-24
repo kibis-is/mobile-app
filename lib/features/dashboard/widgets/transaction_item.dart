@@ -73,15 +73,6 @@ class TransactionItem extends ConsumerWidget {
         Material(
           child: Stack(
             children: [
-              if (transaction.roundTime != null)
-                Positioned(
-                  bottom: kScreenPadding / 4,
-                  right: kScreenPadding,
-                  child: Text(
-                    _formatDateTime(transaction.roundTime!),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                ),
               Material(
                 child: Container(
                   decoration: BoxDecoration(
@@ -167,6 +158,15 @@ class TransactionItem extends ConsumerWidget {
                   ),
                 ),
               ),
+              if (transaction.roundTime != null)
+                Positioned(
+                  bottom: kScreenPadding / 4,
+                  right: kScreenPadding,
+                  child: Text(
+                    _formatDateTime(transaction.roundTime!),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ),
             ],
           ),
         ),
