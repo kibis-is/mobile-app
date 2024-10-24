@@ -111,7 +111,7 @@ class AssetListItem extends ConsumerWidget {
   }
 
   Widget _buildTrailing(BuildContext context) {
-    return mode == AssetScreenMode.add && onPressed == null
+    return mode == AssetScreenMode.view
         ? Text(
             'Already\nadded',
             style: context.textTheme.bodySmall,
