@@ -12,7 +12,6 @@ class PinPadScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(pinTitleProvider.notifier, (previous, next) {});
     final title = ref.watch(pinTitleProvider);
 
     return Scaffold(
