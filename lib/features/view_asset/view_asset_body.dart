@@ -246,7 +246,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
             _buildAnimatedItem(
               5,
               Align(
-                alignment: Alignment.centerRight,
+                alignment: Alignment.centerLeft,
                 child: CustomButton(
                   text: isOwned ? 'Send Asset' : 'Add Asset',
                   isFullWidth: !mediaQueryHelper.isWideScreen(),
