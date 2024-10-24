@@ -26,10 +26,9 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
         state = const AsyncValue.loading();
 
         List<CombinedAsset> combinedAssets = [];
+        final searchQueryLower = searchQuery.toLowerCase().trim();
 
         final algorandService = ref.read(algorandServiceProvider);
-        final arc200Service = ref.read(arc200ServiceProvider);
-
         final algorandResponse = await algorandService.searchAssets(
           searchQuery,
           0,
@@ -38,9 +37,17 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
         );
         final standardAssets = algorandResponse.assets
             .map(AssetConverter.convertAssetToCombinedWithoutAmount)
-            .toList();
+            .where((asset) {
+          final assetName = asset.params.name?.toLowerCase().trim() ?? '';
+          final unitName = asset.params.unitName?.toLowerCase().trim() ?? '';
+          final contractId = asset.index.toString().trim();
+          return assetName.contains(searchQueryLower) ||
+              unitName.contains(searchQueryLower) ||
+              contractId.contains(searchQueryLower);
+        }).toList();
         combinedAssets.addAll(standardAssets);
 
+        final arc200Service = ref.read(arc200ServiceProvider);
         final arc200AssetsByIdOrName = await arc200Service
             .searchArc200AssetsByContractIdOrName(searchQuery);
         combinedAssets.addAll(arc200AssetsByIdOrName);

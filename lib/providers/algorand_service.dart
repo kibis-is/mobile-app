@@ -315,7 +315,8 @@ class AlgorandService {
       } else if (_isValidAlgorandAddress(searchQuery)) {
         assetsQuery = assetsQuery.whereCreator(searchQuery);
       } else if (searchQuery.length > 1) {
-        assetsQuery = assetsQuery.whereUnitName(searchQuery);
+        assetsQuery = assetsQuery.whereUnitName(searchQuery).whereAssetName(
+            searchQuery); // <-- Add this line to search by asset name
       } else {
         throw Exception('Search query is too short.');
       }
@@ -467,8 +468,12 @@ class AlgorandService {
     }
   }
 
-  Future<void> optInAsset(int assetId, Account account) async {
+  Future<void> optInAsset(int assetId, String privateKey) async {
     try {
+      if (privateKey.isEmpty) {
+        throw Exception('Private key not found for the active account');
+      }
+      final account = await Account.fromPrivateKey(privateKey);
       final txId = await algorand.assetManager.optIn(
         assetId: assetId,
         account: account,
@@ -479,8 +484,6 @@ class AlgorandService {
             await algorand.waitForConfirmation(txId, timeout: 4);
         if (transactionResponse.confirmedRound != null &&
             transactionResponse.confirmedRound! > 0) {
-          debugPrint(
-              "Asset opt-in confirmed in round: ${transactionResponse.confirmedRound}");
         } else {
           debugPrint(
               "Asset opt-in failed to confirm within the expected rounds.");

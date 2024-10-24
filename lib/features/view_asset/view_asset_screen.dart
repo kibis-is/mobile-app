@@ -25,9 +25,7 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen> {
   @override
   Widget build(BuildContext context) {
     final activeAsset = widget.asset ?? ref.watch(activeAssetProvider);
-
     if (activeAsset == null) {
-      // Handle the case where no asset is available, e.g., show a message or an empty state.
       return Scaffold(
         appBar: AppBar(
           title: Text(

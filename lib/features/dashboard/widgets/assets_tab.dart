@@ -317,7 +317,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               ref.read(activeAssetProvider.notifier).setActiveAsset(asset);
               context.goNamed(
                 viewAssetRouteName,
-                pathParameters: {'mode': 'view'},
                 extra: asset,
               );
             }

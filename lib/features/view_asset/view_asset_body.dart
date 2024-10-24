@@ -1,13 +1,18 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
+import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
+import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/assets_provider.dart';
+import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -16,6 +21,7 @@ import 'package:kibisis/utils/copy_to_clipboard.dart';
 import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class ViewAssetBody extends ConsumerStatefulWidget {
@@ -88,16 +94,24 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     final userBalance = widget.asset.amount;
     final totalSupply = double.parse(widget.asset.params.total.toString());
-    final String publicKey = ref.watch(accountProvider).account?.address ?? '';
     final mediaQueryHelper = MediaQueryHelper(context);
     final network = ref.watch(networkProvider)?.value;
     final networkIcon = network?.startsWith('network-voi') ?? false
-        ? AppIcons.voiIcon
-        : AppIcons.algorandIcon;
+        ? AppIcons.voiCircleIcon
+        : AppIcons.algorandCircleIcon;
+
+    final publicAddress = ref.watch(accountProvider).account?.address ?? '';
+    final assetsState = ref.watch(assetsProvider(publicAddress));
+
+    bool isOwned = false;
+
+    if (assetsState is AsyncData<List<CombinedAsset>> && assetsState.hasValue) {
+      isOwned =
+          assetsState.value.any((asset) => asset.index == widget.asset.index);
+    }
 
     return SingleChildScrollView(
       child: Padding(
@@ -129,6 +143,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                   tag: '${widget.asset.index}-name',
                   child: Text(
                     widget.asset.params.name ?? 'Unnamed Asset',
+                    textAlign: TextAlign.center,
                     style: context.textTheme.displayMedium
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
@@ -150,7 +165,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
             const SizedBox(height: kScreenPadding),
             EllipsizedText(
               type: EllipsisType.middle,
-              publicKey,
+              publicAddress,
               style: context.textTheme.bodyMedium,
             ),
             const SizedBox(height: kScreenPadding),
@@ -161,7 +176,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                 controller: TextEditingController(
                   text: widget.asset.params.unitName ?? 'Not available',
                 ),
-                labelText: 'UnitName',
+                labelText: 'Unit Name',
                 isEnabled: false,
               ),
             ),
@@ -228,42 +243,27 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
               ),
             ),
             const SizedBox(height: kScreenPadding),
-            FutureBuilder<bool>(
-              future: ref.read(accountProvider.notifier).hasPrivateKey(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasData && snapshot.data == true) {
-                  return _buildAnimatedItem(
-                    5,
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: CustomButton(
-                        text: widget.mode == AssetScreenMode.view
-                            ? 'Send Asset'
-                            : 'Add Asset',
-                        isFullWidth: !mediaQueryHelper.isWideScreen(),
-                        buttonType: ButtonType.secondary,
-                        onPressed: () async {
-                          if (widget.mode == AssetScreenMode.view) {
-                            ref
-                                .read(activeAssetProvider.notifier)
-                                .setActiveAsset(widget.asset);
-                            context.pushNamed(sendTransactionRouteName,
-                                pathParameters: {
-                                  'mode': 'asset',
-                                });
-                          } else if (widget.mode == AssetScreenMode.add) {
-                            await _optInAsset(context, ref, widget.asset);
-                          }
-                        },
-                      ),
-                    ),
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
-              },
+            _buildAnimatedItem(
+              5,
+              Align(
+                alignment: Alignment.centerRight,
+                child: CustomButton(
+                  text: isOwned ? 'Send Asset' : 'Add Asset',
+                  isFullWidth: !mediaQueryHelper.isWideScreen(),
+                  buttonType: ButtonType.secondary,
+                  onPressed: () async {
+                    if (isOwned) {
+                      ref
+                          .read(activeAssetProvider.notifier)
+                          .setActiveAsset(widget.asset);
+                      context.pushNamed(sendTransactionRouteName,
+                          pathParameters: {'mode': 'asset'});
+                    } else {
+                      await _optInAsset();
+                    }
+                  },
+                ),
+              ),
             ),
           ],
         ),
@@ -271,24 +271,84 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     );
   }
 
-  Future<void> _optInAsset(
-      BuildContext context, WidgetRef ref, CombinedAsset asset) async {
+  Future<void> _optInAsset() async {
+    final loadingNotifier = ref.read(loadingProvider.notifier);
+    loadingNotifier.startLoading(message: 'Opting in...');
+
+    final algorandService = ref.read(algorandServiceProvider);
+    final activeAsset = ref.read(activeAssetProvider);
+    final balanceState = ref.read(balanceProvider);
+
+    if (activeAsset == null) {
+      loadingNotifier.stopLoading();
+      throw Exception('Active asset is null');
+    }
+
+    final balance = balanceState.maybeWhen(
+      data: (balance) => balance,
+      orElse: () => 0.0,
+    );
+
+    if (balance == 0) {
+      loadingNotifier.stopLoading();
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.error,
+        message: 'Please fund your account to proceed.',
+      );
+      return;
+    }
+
     try {
-      ref
-          .read(loadingProvider.notifier)
-          .startLoading(message: 'Opting in', withProgressBar: true);
+      if (activeAsset.assetType == AssetType.arc200) {
+        throw Exception('Asset type not yet supported');
+      }
 
-      await Future.delayed(const Duration(seconds: 2));
+      final privateKey =
+          await ref.read(accountProvider.notifier).getPrivateKey();
 
-      ref.read(loadingProvider.notifier).stopLoading();
+      await algorandService.optInAsset(activeAsset.index, privateKey);
 
-      if (context.mounted) {
-        context.go('/');
+      invalidateProviders(ref);
+
+      if (mounted) {
+        GoRouter.of(context).go('/');
+        showCustomSnackBar(
+          context: context,
+          snackType: SnackType.success,
+          message: 'Asset successfully opted in',
+        );
+      }
+    } on AlgorandException catch (e) {
+      if (mounted) {
+        _handleAlgorandException(e, context);
       }
     } catch (e) {
-      ref.read(loadingProvider.notifier).stopLoading();
-      debugPrint('Failed to opt-in: $e');
+      if (mounted) {
+        showCustomSnackBar(
+          context: context,
+          snackType: SnackType.error,
+          message: e.toString(),
+        );
+      }
+    } finally {
+      loadingNotifier.stopLoading();
     }
+  }
+
+  void _handleAlgorandException(AlgorandException e, BuildContext context) {
+    String userFriendlyMessage = 'An error occurred with Algorand service';
+
+    if (e.message.contains('overspend')) {
+      userFriendlyMessage = 'Insufficient balance.';
+    }
+
+    debugPrint(e.message);
+    showCustomSnackBar(
+      context: context,
+      snackType: SnackType.error,
+      message: userFriendlyMessage,
+    );
   }
 
   Widget _buildHeroOrChild(

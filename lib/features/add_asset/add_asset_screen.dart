@@ -68,48 +68,47 @@ class AssetList extends ConsumerWidget {
 
     return Expanded(
       child: searchState.when(
-        data: (assets) {
-          if (assets.isEmpty) {
+        data: (searchedAssets) {
+          if (searchedAssets.isEmpty) {
             return const Center(
               child: Text('No assets found.'),
             );
           }
 
-          return ListView.separated(
-            itemCount: assets.length,
-            itemBuilder: (context, index) {
-              final asset = assets[index];
-              final isOwned = ownedAssets.maybeWhen(
-                data: (assets) =>
-                    assets.any((ownedAsset) => ownedAsset.index == asset.index),
-                orElse: () => false,
-              );
-              return AssetListItem(
-                asset: asset,
-                mode: AssetScreenMode.add,
-                onPressed: isOwned
-                    ? null
-                    : () {
-                        ref
-                            .read(activeAssetProvider.notifier)
-                            .setActiveAsset(asset);
-
-                        context.pushNamed(
-                          viewAssetRouteName,
-                          pathParameters: {
-                            'mode': 'add',
-                          },
-                        );
-                      },
+          return ownedAssets.maybeWhen(
+            data: (ownedAssetsData) {
+              return ListView.separated(
+                itemCount: searchedAssets.length,
+                itemBuilder: (context, index) {
+                  final asset = searchedAssets[index];
+                  final isOwned = ownedAssetsData
+                      .any((ownedAsset) => ownedAsset.index == asset.index);
+                  return AssetListItem(
+                    asset: asset,
+                    mode: isOwned ? AssetScreenMode.view : AssetScreenMode.add,
+                    onPressed: () {
+                      ref
+                          .read(activeAssetProvider.notifier)
+                          .setActiveAsset(asset);
+                      context.pushNamed(viewAssetRouteName);
+                    },
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) =>
+                    const SizedBox(height: kScreenPadding / 2),
               );
             },
-            separatorBuilder: (BuildContext context, int index) =>
-                const SizedBox(height: kScreenPadding / 2),
+            orElse: () {
+              return const Center(child: CircularProgressIndicator());
+            },
           );
         },
-        loading: () => _buildLoadingAssets(context),
-        error: (e, stack) =>
-            const Center(child: Text('Sorry, there was an error.')),
+        loading: () {
+          return _buildLoadingAssets(context);
+        },
+        error: (e, stack) {
+          return const Center(child: Text('Sorry, there was an error.'));
+        },
       ),
     );
   }
