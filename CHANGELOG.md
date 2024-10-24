@@ -1,3 +1,31 @@
+# [1.0.0-beta.12](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.11...v1.0.0-beta.12) (2024-10-24)
+
+
+### Bug Fixes
+
+* Align action button to the left to prevent overlapping with floating action button. ([189cb71](https://github.com/kibis-is/mobile-app/commit/189cb71d355473157bac45e1e12075c819323c61))
+* Asset select field on the Send Transaction screen now fixed to handle long lists of items. ([ddce1bd](https://github.com/kibis-is/mobile-app/commit/ddce1bd25962707fb577b3d93ebcd1b36bedae47))
+* Bottom sheet now correctly scrolling with high long lists ([a31f159](https://github.com/kibis-is/mobile-app/commit/a31f15919df25c9b2919b026628a734e7d843ead))
+* Bottom sheet title now aligns correctyl to centre ([6ba7139](https://github.com/kibis-is/mobile-app/commit/6ba7139eee590e7c04dd1df18569a5f56a2e075d))
+* Change to allow user to open 'already added' assets in the asset search screen. ([3c709c2](https://github.com/kibis-is/mobile-app/commit/3c709c23234fc02294db038db6627a84a1a4c5aa))
+* Correctly showing Algorand icons instead of Voi icons when using the Algorand network. ([a29037d](https://github.com/kibis-is/mobile-app/commit/a29037d014effae55aacabad0099357fddc20563))
+* Fix bug when switching networks when viewing in a tablet or desktop where the left panel still shows an asset from the other network. ([1ba1dde](https://github.com/kibis-is/mobile-app/commit/1ba1ddebee2c43701a9fc56df585de053b180389))
+* Fixed error showing when user selected network already active, causing it to re-init the account. Now correctly takes no action. ([abf7341](https://github.com/kibis-is/mobile-app/commit/abf73412636da5f77d9d8b6b72a8cbe78ea3af59))
+* Fixed issue with searching and opting in to assets. ([9deb1c9](https://github.com/kibis-is/mobile-app/commit/9deb1c9ce934f304c35e450bdbeb0a57cb1704da))
+* Now once again showing the date / time of transactions ([aff392a](https://github.com/kibis-is/mobile-app/commit/aff392a203f3069331fc81c8a10d7896b531efad))
+* remove unused commented code ([3c16486](https://github.com/kibis-is/mobile-app/commit/3c164864a466604cb7a97b6e27deeaa43dbbe82f))
+* Removed some irrelevant comments ([0ee9aa6](https://github.com/kibis-is/mobile-app/commit/0ee9aa66ae503f7d1a1ec4322d3a9fafa4dd70b5))
+* removed some unused code ([63b5ce0](https://github.com/kibis-is/mobile-app/commit/63b5ce024d1ae342167c7d30d557d28c22c6297d))
+* version number updates for leak_tracker ([880c1dd](https://github.com/kibis-is/mobile-app/commit/880c1dda0f212a5b082c59d83b6347f47cba94d9))
+
+
+### Features
+
+* Now showing shimmer effect when loading sessions in place of the default circular spinner ([394e84d](https://github.com/kibis-is/mobile-app/commit/394e84d5fc0932219397cd9ea35aa360e6018702))
+* Now showing shimmer effect when searching for assets, in place of the default circular spinner ([535be5f](https://github.com/kibis-is/mobile-app/commit/535be5f99eb7c2e8893b93b8bd2ffe1d06d43f07))
+* shimmer loading effect on account name when fetching account details. ([4067ec3](https://github.com/kibis-is/mobile-app/commit/4067ec30adbaa7bf87d9833f1f68cdc2bdbf55ac))
+* Users can now change between Voi and Algorand main and test networks. ([eeaa20c](https://github.com/kibis-is/mobile-app/commit/eeaa20cf60797b6011dcc12acc7f9d987197857b))
+
 # [1.0.0-beta.11](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.10...v1.0.0-beta.11) (2024-10-16)
 
 
