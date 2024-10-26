@@ -15,6 +15,6 @@ void invalidateProviders(WidgetRef ref) {
   ref.invalidate(assetsProvider);
   ref.invalidate(transactionsProvider);
   ref.invalidate(pinTitleProvider);
-  ref.invalidate(exportableAccountsProvider);
+  ref.invalidate(privateKeyAccountsProvider);
   ref.invalidate(activeAssetProvider);
 }

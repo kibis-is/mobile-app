@@ -67,7 +67,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final exportableAccountsAsyncValue = ref.watch(exportableAccountsProvider);
+    final exportableAccountsAsyncValue = ref.watch(privateKeyAccountsProvider);
     final selectedAccountId = ref.watch(selectedAccountProvider) ?? '0';
     final qrDataAsyncValue = ref.watch(barcodeUriProvider(selectedAccountId));
 

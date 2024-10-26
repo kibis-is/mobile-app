@@ -104,66 +104,109 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
   Widget _buildAccountItem(BuildContext context, Map<String, dynamic> account) {
     final accountName = account['accountName'] ?? 'Unnamed Account';
     final publicKey = account['publicKey'] ?? 'No Public Key';
+    final privateKeyAccounts = ref.watch(privateKeyAccountsProvider);
 
-    return InkWell(
-      child: Material(
-        elevation: 6.0,
-        borderRadius: BorderRadius.circular(kScreenPadding),
-        child: Container(
-          decoration: BoxDecoration(
-            image: const DecorationImage(
-              opacity: 0.2,
-              image: AssetImage('assets/images/voi-logo.png'),
-              fit: BoxFit.cover,
-            ),
-            border: GradientBoxBorder(
-              gradient: LinearGradient(
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-                colors: [Colors.transparent, Colors.white.withOpacity(0.5)],
-              ),
-              width: 1,
-            ),
+    return privateKeyAccounts.when(
+      data: (accountsWithPrivateKey) {
+        final isWatchAccount = !accountsWithPrivateKey.any((privateAccount) =>
+            privateAccount['accountId'] == account['accountId']);
+
+        debugPrint(
+            'Account ID: ${account['accountId']}, isWatchAccount: $isWatchAccount');
+
+        return InkWell(
+          child: Material(
+            elevation: 6.0,
             borderRadius: BorderRadius.circular(kScreenPadding),
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [0.0, 0.5],
-              colors: [
-                ColorPalette.cardGradientTurquoiseA,
-                ColorPalette.cardGradientPurpleB,
-              ],
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: const [0.0, 0.5],
+                  colors: isWatchAccount
+                      ? [
+                          ColorPalette.cardGradientLightBlue,
+                          ColorPalette.cardGradientMediumBlue,
+                        ]
+                      : [
+                          ColorPalette.cardGradientPurpleA,
+                          ColorPalette.cardGradientPurpleB,
+                        ],
+                ),
+                image: isWatchAccount
+                    ? null
+                    : const DecorationImage(
+                        opacity: 0.2,
+                        image: AssetImage('assets/images/voi-logo.png'),
+                        fit: BoxFit.cover,
+                      ),
+                border: GradientBoxBorder(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                    colors: [Colors.transparent, Colors.white.withOpacity(0.5)],
+                  ),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(kScreenPadding),
+              ),
+              padding: const EdgeInsets.all(kScreenPadding),
+              child: Stack(
+                children: [
+                  if (isWatchAccount)
+                    Positioned.fill(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          double size = constraints.biggest.shortestSide;
+                          return Center(
+                            child: Icon(
+                              AppIcons.watch,
+                              color: Colors.white.withOpacity(0.2),
+                              size: size,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildEditButton(
+                          context, account['accountId']!, accountName),
+                      const SizedBox(height: kScreenPadding / 2),
+                      _buildLogo(),
+                      const SizedBox(height: kScreenPadding / 2),
+                      _buildAccountName(
+                          context, accountName, account['accountId']!),
+                      const SizedBox(height: kScreenPadding / 2),
+                      _buildPublicKey(context, publicKey),
+                      const SizedBox(height: kScreenPadding),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          padding: const EdgeInsets.all(kScreenPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildEditButton(context, account['accountId']!, accountName),
-              const SizedBox(height: kScreenPadding / 2),
-              _buildLogo(),
-              const SizedBox(height: kScreenPadding / 2),
-              _buildAccountName(context, accountName, account['accountId']!),
-              const SizedBox(height: kScreenPadding / 2),
-              _buildPublicKey(context, publicKey),
-              const SizedBox(height: kScreenPadding),
-            ],
-          ),
-        ),
-      ),
-      onTap: () {
-        ref
-            .read(loadingProvider.notifier)
-            .startLoading(message: 'Loading Account');
-        final accountHandler = AccountHandler(ref);
+          onTap: () {
+            ref
+                .read(loadingProvider.notifier)
+                .startLoading(message: 'Loading Account');
+            final accountHandler = AccountHandler(ref);
 
-        accountHandler.handleAccountSelection(account['accountId']).then((_) {
-          GoRouter.of(context).go('/');
-        }).catchError((e) {
-          debugPrint('Error handling account selection: ${e.toString()}');
-          ref.read(loadingProvider.notifier).stopLoading();
-        });
+            accountHandler
+                .handleAccountSelection(account['accountId'])
+                .then((_) {
+              GoRouter.of(context).go('/');
+            }).catchError((e) {
+              debugPrint('Error handling account selection: ${e.toString()}');
+              ref.read(loadingProvider.notifier).stopLoading();
+            });
+          },
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, stack) => const Center(child: Text('Error loading accounts')),
     );
   }
 

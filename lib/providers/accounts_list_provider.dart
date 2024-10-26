@@ -6,7 +6,7 @@ final accountsListProvider =
   return AccountsListNotifier(ref);
 });
 
-final exportableAccountsProvider =
+final privateKeyAccountsProvider =
     FutureProvider<List<Map<String, String>>>((ref) async {
   return ref.read(accountsListProvider.notifier).getAccountsWithPrivateKey();
 });
