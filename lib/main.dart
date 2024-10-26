@@ -62,16 +62,15 @@ class _KibisisState extends ConsumerState<Kibisis> {
   @override
   void initState() {
     super.initState();
-    initApp().then((_) {
-      FlutterNativeSplash.remove();
-    }).catchError((error) {
-      debugPrint("Initialization error: $error");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initializeApp();
       FlutterNativeSplash.remove();
     });
   }
 
-  Future<void> initApp() async {
+  Future<void> _initializeApp() async {
     final storageService = ref.read(storageProvider);
+    storageService.getActiveAccount();
     walletConnectManager = WalletConnectManager(storageService);
     await walletConnectManager.reconnectSessions();
     _lifecycleHandler = AppLifecycleHandler(
@@ -91,90 +90,76 @@ class _KibisisState extends ConsumerState<Kibisis> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, _) {
-        final sharedPreferences = ref.watch(sharedPreferencesProvider);
-        final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
-        final isConnected = ref.watch(connectivityProvider);
+    final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
+    final isConnected = ref.watch(connectivityProvider);
+    final isDarkTheme = ref.watch(isDarkModeStateAdapter);
+    final router = ref.watch(goRouterProvider);
+    final loadingState = ref.watch(loadingProvider);
 
-        return sharedPreferences.when(
-          data: (prefs) {
-            final isDarkTheme = ref.watch(isDarkModeStateAdapter);
-            final router = ref.watch(goRouterProvider);
-            final progress = ref.watch(loadingProvider).progress;
-            final message = ref.watch(loadingProvider).message;
-            final isLoading = ref.watch(loadingProvider).isLoading;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: isDarkTheme ? Brightness.dark : Brightness.light,
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ));
 
-            SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness:
-                  isDarkTheme ? Brightness.dark : Brightness.light,
-              systemNavigationBarColor: Colors.black,
-              systemNavigationBarIconBrightness: Brightness.light,
-            ));
-
-            return MaterialApp.router(
-              scaffoldMessengerKey: rootScaffoldMessengerKey,
-              routerConfig: router,
-              title: 'Kibisis',
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-              builder: (context, widget) {
-                return ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: LoadingOverlay(
-                    progressIndicator: CustomLoadingOverlay(
-                      text: message,
-                      percent: progress,
+    return MaterialApp.router(
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
+      routerConfig: router,
+      title: 'Kibisis',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+      builder: (context, widget) {
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: LoadingOverlay(
+            progressIndicator: CustomLoadingOverlay(
+              text: loadingState.message,
+              percent: loadingState.progress,
+            ),
+            isLoading: loadingState.isLoading,
+            color: context.colorScheme.surface,
+            opacity: 1.0,
+            child: DefaultColorInitializer(
+              child: Center(
+                child: Column(
+                  children: [
+                    Expanded(child: widget ?? const SizedBox.shrink()),
+                    Visibility(
+                      visible: isSplashScreenVisible,
+                      child: const SplashScreen(),
                     ),
-                    isLoading: isLoading,
-                    color: context.colorScheme.surface,
-                    opacity: 1.0,
-                    child: Stack(
-                      children: [
-                        DefaultColorInitializer(child: Center(child: widget)),
-                        if (isSplashScreenVisible) const SplashScreen(),
-                        if (!isConnected)
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                              color: context.colorScheme.error,
-                              padding: const EdgeInsets.all(kScreenPadding / 2),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.warning,
-                                      color: context.colorScheme.onError),
-                                  const SizedBox(width: kScreenPadding / 2),
-                                  Text(
-                                    'No Internet Connection',
-                                    style: context.textTheme.displaySmall
-                                        ?.copyWith(
-                                            color: context.colorScheme.onError),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
+                    Visibility(
+                      visible: !isConnected,
+                      child: _buildConnectionWarning(context),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-          loading: () => const Material(
-            child: Center(child: CircularProgressIndicator()),
-          ),
-          error: (error, stack) => const Material(
-            child: Center(
-                child: Text('Initialization error, please restart the app.')),
+                  ],
+                ),
+              ),
+            ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildConnectionWarning(BuildContext context) {
+    return Container(
+      color: context.colorScheme.error,
+      padding: const EdgeInsets.all(kScreenPadding / 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.warning, color: context.colorScheme.onError),
+          const SizedBox(width: kScreenPadding / 2),
+          Text(
+            'No Internet Connection',
+            style: context.textTheme.displaySmall
+                ?.copyWith(color: context.colorScheme.onError),
+          ),
+        ],
+      ),
     );
   }
 }
