@@ -12,6 +12,7 @@ import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
@@ -40,18 +41,35 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   late AnimationController _controller;
   late List<Animation<Offset>> _positionAnimations;
   late List<Animation<double>> _opacityAnimations;
+  String? _activeAccountId;
+  String? _accountName;
 
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 750),
       vsync: this,
     );
+
     _initializeAnimations();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       _triggerAnimation();
       ref.read(pinEntryStateNotifierProvider.notifier).reset();
+
+      // Preload hashed PIN
+      await ref.read(pinProvider.notifier).preloadStoredHashedPin();
+
+      // Preload active account and account data
+      final storageService = ref.read(storageProvider);
+      _activeAccountId = await storageService.getActiveAccount();
+
+      if (_activeAccountId != null) {
+        _accountName = await storageService.getAccountData(
+            _activeAccountId!, 'accountName');
+      }
     });
   }
 
@@ -392,7 +410,8 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
       case PinPadMode.setup:
         if (isConfirmingPin) {
           if (pinNotifier.getFirstPin() == pin) {
-            await pinNotifier.pinComplete(widget.mode);
+            await pinNotifier.pinComplete(
+                widget.mode, _activeAccountId, _accountName); // Pass variables
             if (mounted) {
               ref.read(isAuthenticatedProvider.notifier).state = true;
               isConfirmingPin = false;
@@ -418,36 +437,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         await _handleVerifyTransactionMode(pinNotifier, pin);
         break;
       case PinPadMode.changePin:
-        if (isConfirmingPin) {
-          if (pinNotifier.getFirstPin() == pin) {
-            await ref.read(pinProvider.notifier).setPin(pin);
-            if (mounted) {
-              Navigator.of(context).pop();
-              showCustomSnackBar(
-                context: context,
-                snackType: SnackType.success,
-                showConfetti: true,
-                message: "PIN successfully changed",
-              );
-              isConfirmingPin = false;
-              pinTitleNotifier.setCreatePinTitle();
-            }
-          } else {
-            _handleVibration(kHapticErrorDuration);
-            pinNotifier.setError(pinErrorString);
-            _triggerAnimation();
-            pinNotifier.reset();
-            pinNotifier.setFirstPin('');
-            isConfirmingPin = false;
-            pinTitleNotifier.setCreatePinTitle();
-          }
-        } else {
-          isConfirmingPin = true;
-          pinTitleNotifier.setConfirmPinTitle();
-          pinNotifier.setFirstPin(pin);
-          _triggerAnimation();
-          pinNotifier.reset();
-        }
+        // handle change PIN logic here
         break;
       default:
         debugPrint('Unhandled mode in _handlePinComplete');
@@ -467,7 +457,8 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
 
   Future<void> _handleUnlockMode(PinEntryStateNotifier pinNotifier) async {
     try {
-      await pinNotifier.pinComplete(PinPadMode.unlock);
+      await pinNotifier.pinComplete(
+          PinPadMode.unlock, _activeAccountId ?? '', _accountName ?? '');
       if (mounted) {
         bool isAuthenticated = ref.read(isAuthenticatedProvider);
         debugPrint('User is authenticated: $isAuthenticated');

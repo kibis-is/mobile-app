@@ -15,13 +15,13 @@ class ActiveAccountNotifier extends StateNotifier<String?> {
     _loadActiveAccount();
   }
 
-  String getActiveAccountId() {
-    return storageService.getActiveAccount() ?? '';
+  Future<String> getActiveAccountId() async {
+    return await storageService.getActiveAccount() ?? '';
   }
 
   Future<void> _loadActiveAccount() async {
     try {
-      state = getActiveAccountId();
+      state = await getActiveAccountId();
     } catch (e) {
       debugPrint("_loadActiveAccount error: $e");
       state = null;

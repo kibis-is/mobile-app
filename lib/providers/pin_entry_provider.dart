@@ -6,7 +6,6 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
-import 'package:kibisis/providers/storage_provider.dart';
 
 final pinEntryStateNotifierProvider =
     StateNotifierProvider<PinEntryStateNotifier, PinState>((ref) {
@@ -58,7 +57,8 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
     }
   }
 
-  Future<void> pinComplete(PinPadMode mode) async {
+  Future<void> pinComplete(
+      PinPadMode mode, String? activeAccountId, String? accountName) async {
     try {
       if (mode == PinPadMode.setup) {
         await pinStateNotifier.setPin(state.pin);
@@ -68,13 +68,12 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
           ref
               .read(loadingProvider.notifier)
               .startLoading(message: _getOverlayText(mode));
-          final activeAccountId = ref.read(storageProvider).getActiveAccount();
+
+          // Use passed variables directly
           if (activeAccountId == null) {
             throw Exception('No active account found.');
           }
 
-          final accountName =
-              await ref.read(storageProvider).getAccountName(activeAccountId);
           if (accountName == null || accountName.isEmpty) {
             throw Exception(
                 'Account name not found for activeAccountId: $activeAccountId');

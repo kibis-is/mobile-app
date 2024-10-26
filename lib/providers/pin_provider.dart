@@ -11,13 +11,19 @@ final pinProvider = StateNotifierProvider<PinStateNotifier, PinState>((ref) {
 class PinStateNotifier extends StateNotifier<PinState> {
   final Ref ref;
   final StorageService storageService;
+  String? _storedHashedPin;
 
   PinStateNotifier(this.ref, this.storageService) : super(PinState());
+
+  Future<void> preloadStoredHashedPin() async {
+    _storedHashedPin = await storageService.getPinHash();
+  }
 
   Future<void> setPin(String pin) async {
     try {
       String hashedPin = CryptoUtils.hashPin(pin);
       await storageService.setPinHash(hashedPin);
+      _storedHashedPin = hashedPin;
     } catch (e) {
       state = state.copyWith(error: 'Failed to set PIN: $e');
     }
@@ -25,7 +31,11 @@ class PinStateNotifier extends StateNotifier<PinState> {
 
   Future<bool> verifyPin(String enteredPin) async {
     try {
-      String? storedHashedPin = await storageService.getPinHash();
+      String? storedHashedPin = _storedHashedPin;
+      if (storedHashedPin == null) {
+        storedHashedPin = await storageService.getPinHash();
+        _storedHashedPin = storedHashedPin;
+      }
       if (storedHashedPin == null) {
         return false;
       }
@@ -43,6 +53,7 @@ class PinStateNotifier extends StateNotifier<PinState> {
       if (isOldPinValid) {
         final newPinHash = CryptoUtils.hashPin(newPin);
         await storageService.setPinHash(newPinHash);
+        _storedHashedPin = newPinHash;
         return true;
       } else {
         return false;

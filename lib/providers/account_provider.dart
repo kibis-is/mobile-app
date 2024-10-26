@@ -60,7 +60,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
   }
 
   Future<void> _initializeAccountFromStorage() async {
-    final activeAccountId = storageService.getActiveAccount();
+    final activeAccountId = await storageService.getActiveAccount();
     if (activeAccountId == null || activeAccountId.isEmpty) {
       state = state.copyWith(error: 'No active account found');
       return;
@@ -91,7 +91,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
         return;
       }
 
-      // Option 1: Check locally if it's an unfunded account
       final isFunded = await checkIfAccountIsFunded(publicKey);
       if (!isFunded) {
         state = state.copyWith(
@@ -159,31 +158,22 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
   Future<void> createAccount() async {
     try {
-      // Step 1: Create a new Algorand account
       final account = await algorand.createAccount();
 
-      // Step 2: Extract private key and public address from the created account
       final privateKeyBytes = await account.keyPair.extractPrivateKeyBytes();
-      final encodedPrivateKey =
-          hex.encode(privateKeyBytes); // Encode private key to store securely
-      final publicKey =
-          account.publicAddress; // Public address (Algorand address)
+      final encodedPrivateKey = hex.encode(privateKeyBytes);
+      final publicKey = account.publicAddress;
 
-      // Step 3: Generate a new account ID
       final accountId = await storageService.generateNextAccountId();
 
-      // Step 4: Store the private key and public key in secure storage
       await storageService.setAccountData(
           accountId, 'privateKey', encodedPrivateKey);
       await storageService.setAccountData(accountId, 'publicKey', publicKey);
 
-      // Step 5: Set the active account in the storage
       await storageService.setActiveAccount(accountId);
 
-      // Step 6: Initialize the account state using the public key
       await initialiseFromPublicKey('New Account', accountId);
     } catch (e) {
-      // Handle errors gracefully
       ref.read(errorProvider.notifier).state = 'Failed to create account: $e';
       debugPrint('Error creating account: $e');
     }
@@ -214,12 +204,12 @@ class AccountNotifier extends StateNotifier<AccountState> {
           await storageService.setActiveAccount(otherAccounts.first);
           final accountData = await storageService.getAccountData(
               otherAccounts.first, 'accountName');
-          final applicationId = await storageService.getApplicationId(
-              otherAccounts.first); // Retrieve new account's applicationId
+          final applicationId =
+              await storageService.getApplicationId(otherAccounts.first);
           state = state.copyWith(
             accountId: otherAccounts.first,
             accountName: accountData,
-            applicationId: applicationId, // Update applicationId
+            applicationId: applicationId,
           );
         } else {
           state = AccountState();
@@ -253,7 +243,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
-        applicationId: null, // No applicationId yet
+        applicationId: null,
         error: null,
       );
     } catch (e) {
@@ -315,12 +305,9 @@ class AccountNotifier extends StateNotifier<AccountState> {
         throw Exception('Account is missing in temporary account data');
       }
 
-      // Generate a new account ID
       final accountId = await storageService.generateNextAccountId();
 
-      // Handle the case where the account is a regular Algorand Account
       if (tempAccountState.account is Account) {
-        // Ensure private key and seed phrase are available
         if (tempAccountState.privateKey == null ||
             tempAccountState.seedPhrase == null) {
           throw Exception(
@@ -329,7 +316,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
         ref.read(isAuthenticatedProvider.notifier).state = true;
 
-        // Store account details (account name, private key, seed phrase, and public key)
         await storageService.setAccountData(
             accountId, 'accountName', accountName);
         await storageService.setAccountData(
@@ -343,11 +329,8 @@ class AccountNotifier extends StateNotifier<AccountState> {
         }
         await storageService.setAccountData(accountId, 'publicKey', publicKey);
 
-        // Set the newly created account as active
         await storageService.setActiveAccount(accountId);
-      }
-      // Handle the case where the account is a watch account (AccountInformation)
-      else if (tempAccountState.account is AccountInformation) {
+      } else if (tempAccountState.account is AccountInformation) {
         final publicKey =
             (tempAccountState.account as AccountInformation).address;
 
@@ -355,30 +338,25 @@ class AccountNotifier extends StateNotifier<AccountState> {
           throw Exception('Public key is missing.');
         }
 
-        // Store account details (account name, public key)
         await storageService.setAccountData(
             accountId, 'accountName', accountName);
         await storageService.setAccountData(accountId, 'publicKey', publicKey);
 
-        // Mark the account as a watch account
         await storageService.setAccountData(
             accountId, 'isWatchAccount', 'true');
 
-        // Set the newly created watch account as active
         await storageService.setActiveAccount(accountId);
       } else {
         throw Exception('Unsupported account type');
       }
 
-      // Update the state with the new account information
       state = state.copyWith(
         accountId: accountId,
         accountName: accountName,
-        applicationId: null, // No applicationId at this point
+        applicationId: null,
         error: null,
       );
 
-      // Reset the temporary account state
       ref.read(temporaryAccountProvider.notifier).reset();
     } catch (e) {
       state = state.copyWith(error: 'Failed to finalize account creation: $e');

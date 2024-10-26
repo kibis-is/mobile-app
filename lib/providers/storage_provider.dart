@@ -35,6 +35,7 @@ final storageProvider = Provider<StorageService>((ref) {
 class StorageService {
   final SharedPreferences? _prefs;
   final FlutterSecureStorage _secureStorage;
+  String? _cachedActiveAccount;
   static const int _maxRetries = 5;
   static const Duration _retryDelay = Duration(milliseconds: 400);
 
@@ -118,16 +119,15 @@ class StorageService {
   }
 
   Future<void> setActiveAccount(String accountId) async {
-    debugPrint('Setting Active Account: $accountId');
+    _cachedActiveAccount = accountId;
     await _prefs?.setString('activeAccount', accountId);
   }
 
-  String? getActiveAccount() {
-    try {
-      return _prefs?.getString('activeAccount');
-    } catch (e) {
-      return '0';
-    }
+  Future<String?> getActiveAccount() async {
+    if (_cachedActiveAccount != null) return _cachedActiveAccount;
+
+    _cachedActiveAccount = _prefs?.getString('activeAccount');
+    return _cachedActiveAccount;
   }
 
   String? getDefaultNetwork() {
