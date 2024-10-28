@@ -16,6 +16,7 @@ import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
@@ -280,9 +281,8 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     final activeAsset = ref.read(activeAssetProvider);
     final balanceState = ref.read(balanceProvider);
 
-    // Validate prerequisites and retrieve the non-nullable active asset
     final asset = await _validatePrerequisites(activeAsset, balanceState);
-    if (asset == null) return; // Exit if validation fails
+    if (asset == null) return;
 
     try {
       final privateKey = await _retrievePrivateKey();
@@ -319,7 +319,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
       return null;
     }
 
-    return activeAsset; // Return the non-nullable active asset
+    return activeAsset;
   }
 
   Future<String> _retrievePrivateKey() async {
@@ -333,21 +333,36 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
 
   Future<void> _performOptIn(String privateKey, CombinedAsset activeAsset,
       AlgorandService algorandService) async {
+    final accountId = await ref.read(accountProvider.notifier).getAccountId();
+    final publicAddress =
+        await ref.read(accountProvider.notifier).getPublicAddress();
+    final storageService = ref.read(storageProvider);
+
+    if (accountId == null || publicAddress.isEmpty) {
+      throw Exception('Account ID or Public Address is not available');
+    }
+
     switch (activeAsset.assetType) {
       case AssetType.standard:
-        await algorandService.optInAsset(activeAsset.index, privateKey);
-        break;
-      case AssetType.arc200:
-        final account = await algorandService.algorand
-            .loadAccountFromPrivateKey(privateKey);
-        final txId = await algorandService.sendARC0200Asset(
-          amount: BigInt.zero,
-          appID: BigInt.from(activeAsset.index),
-          receiverAddress: account.publicAddress,
-          senderAccount: account,
+        await algorandService.optInAsset(
+          assetId: activeAsset.index,
+          assetType: AssetType.standard,
+          privateKey: privateKey,
+          accountId: accountId,
         );
-        await algorandService.algorand.waitForConfirmation(txId);
         break;
+
+      case AssetType.arc200:
+        await algorandService.optInAsset(
+          assetId: activeAsset.index,
+          assetType: AssetType.arc200,
+          privateKey: privateKey,
+          publicAddress: publicAddress,
+          storageService: storageService,
+          accountId: accountId,
+        );
+        break;
+
       default:
         throw Exception('Unsupported asset type');
     }

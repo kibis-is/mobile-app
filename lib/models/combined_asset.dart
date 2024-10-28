@@ -72,13 +72,13 @@ class CombinedAssetParameters {
   factory CombinedAssetParameters.fromArc200(
       Map<String, dynamic> tokenDetails) {
     return CombinedAssetParameters(
-      total: int.parse(tokenDetails['totalSupply']),
-      decimals: tokenDetails['decimals'],
-      creator: tokenDetails['creator'],
-      name: tokenDetails['name'],
-      unitName: tokenDetails['symbol'],
+      total: int.parse(tokenDetails['totalSupply'] ?? '0'),
+      decimals: tokenDetails['decimals'] ?? 0,
+      creator: tokenDetails['creator'] ?? 'Unknown',
+      name: tokenDetails['name'] ?? 'Unknown',
+      unitName: tokenDetails['symbol'] ?? 'Unknown',
       // ARC200 tokens don't have some of these properties, so we set them to null or reasonable defaults.
-      clawback: null,
+      clawback: '0',
       defaultFrozen: false,
       freeze: null,
       manager: null,

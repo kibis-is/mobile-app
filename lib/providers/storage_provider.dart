@@ -38,6 +38,7 @@ class StorageService {
   String? _cachedActiveAccount;
   static const int _maxRetries = 5;
   static const Duration _retryDelay = Duration(milliseconds: 400);
+  static const String _arc200FollowedAssetsKey = 'arc200_followed_assets';
 
   StorageService(this._prefs, this._secureStorage);
 
@@ -352,5 +353,31 @@ class StorageService {
 
   bool getShowTestNetworks() {
     return _prefs?.getBool(_showTestNetworksKey) ?? false;
+  }
+
+  Future<void> followArc200Asset(String accountId, int assetId) async {
+    final followedAssets = await getFollowedArc200Assets(accountId);
+    if (!followedAssets.contains(assetId)) {
+      followedAssets.add(assetId);
+      await _prefs?.setStringList(
+        '${_arc200FollowedAssetsKey}_$accountId',
+        followedAssets.map((id) => id.toString()).toList(),
+      );
+    }
+  }
+
+  Future<void> unfollowArc200Asset(String accountId, int assetId) async {
+    final followedAssets = await getFollowedArc200Assets(accountId);
+    followedAssets.remove(assetId);
+    await _prefs?.setStringList(
+      '${_arc200FollowedAssetsKey}_$accountId',
+      followedAssets.map((id) => id.toString()).toList(),
+    );
+  }
+
+  Future<List<int>> getFollowedArc200Assets(String accountId) async {
+    final followedAssets =
+        _prefs?.getStringList('${_arc200FollowedAssetsKey}_$accountId') ?? [];
+    return followedAssets.map((id) => int.parse(id)).toList();
   }
 }

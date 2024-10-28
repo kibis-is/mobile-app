@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
+import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/arc200_service.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import '../models/combined_asset.dart';
 
 final assetsProvider = StateNotifierProvider.family<AssetsNotifier,
@@ -39,7 +41,7 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
       final network = ref.read(networkProvider);
       final standardAssets =
           await algorandService.getAccountAssets(publicAddress);
-      List<CombinedAsset> standardCombinedAssets = standardAssets
+      final standardCombinedAssets = standardAssets
           .map((asset) => CombinedAsset(
                 index: asset.index,
                 params: asset.params,
@@ -53,11 +55,38 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
           .toList();
       _allAssets = standardCombinedAssets;
 
+      // Fetch ARC-0200 assets if on VOI network
       if (network?.value.startsWith('network-voi') ?? false) {
         final arc200Service = Arc200Service(ref);
-        final arc200Assets =
+        final activeArc200Assets =
             await arc200Service.fetchArc200Assets(publicAddress);
-        _allAssets = [...standardCombinedAssets, ...arc200Assets];
+
+        final accountId =
+            await ref.read(accountProvider.notifier).getAccountId();
+        if (accountId != null) {
+          final followedArc200AssetIds = await ref
+              .read(storageProvider)
+              .getFollowedArc200Assets(accountId);
+
+          final followedArc200Assets = <CombinedAsset>[];
+
+          for (final assetId in followedArc200AssetIds) {
+            if (!activeArc200Assets.any((asset) => asset.index == assetId)) {
+              final assetDetails =
+                  await arc200Service.fetchArc200TokenDetails(assetId);
+
+              followedArc200Assets.add(CombinedAsset(
+                index: assetDetails['contractId'] ?? assetId,
+                params: CombinedAssetParameters.fromArc200(assetDetails),
+                assetType: AssetType.arc200,
+                amount: 0,
+                isFrozen: false,
+              ));
+            }
+          }
+
+          _allAssets.addAll([...activeArc200Assets, ...followedArc200Assets]);
+        }
       }
 
       state = AsyncValue.data(_filteredAssets());

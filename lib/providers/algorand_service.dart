@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:kibisis/models/arc0200_contract.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/combined_asset.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/avm/sign_transaction.dart';
 
 class AlgorandService {
@@ -199,8 +200,6 @@ class AlgorandService {
 
   CombinedAsset _convertToCombinedAsset(
       Asset asset, int amount, bool isFrozen) {
-    debugPrint('Converting asset with id: ${asset.index}');
-
     final combinedAsset = CombinedAsset(
       index: asset.index,
       params: CombinedAssetParameters(
@@ -225,7 +224,6 @@ class AlgorandService {
       isFrozen: isFrozen,
     );
 
-    debugPrint('Conversion complete for asset with id: ${asset.index}');
     return combinedAsset;
   }
 
@@ -468,7 +466,34 @@ class AlgorandService {
     }
   }
 
-  Future<void> optInAsset(int assetId, String privateKey) async {
+  Future<void> optInAsset({
+    required int assetId,
+    required AssetType assetType,
+    required String privateKey,
+    required String accountId,
+    String? publicAddress,
+    StorageService? storageService,
+  }) async {
+    try {
+      if (assetType == AssetType.standard) {
+        await _optInToASA(assetId, privateKey);
+      } else if (assetType == AssetType.arc200) {
+        if (publicAddress == null || storageService == null) {
+          throw Exception(
+              "Public address and storage service are required for ARC-0200 opt-in.");
+        }
+        await _followArc200Asset(
+            assetId, publicAddress, storageService, accountId);
+      } else {
+        throw Exception('Unsupported asset type');
+      }
+    } catch (e) {
+      debugPrint("Failed to opt-in to asset: $e");
+      throw Exception("Failed to opt-in to asset: $e");
+    }
+  }
+
+  Future<void> _optInToASA(int assetId, String privateKey) async {
     try {
       if (privateKey.isEmpty) {
         throw Exception('Private key not found for the active account');
@@ -479,24 +504,25 @@ class AlgorandService {
         account: account,
       );
 
-      if (txId.isNotEmpty && txId != 'error') {
-        final transactionResponse =
-            await algorand.waitForConfirmation(txId, timeout: 4);
-        if (transactionResponse.confirmedRound != null &&
-            transactionResponse.confirmedRound! > 0) {
-        } else {
-          debugPrint(
-              "Asset opt-in failed to confirm within the expected rounds.");
-          throw Exception("Asset opt-in confirmation failed.");
-        }
+      final transactionResponse =
+          await algorand.waitForConfirmation(txId, timeout: 4);
+      if (transactionResponse.confirmedRound != null &&
+          transactionResponse.confirmedRound! > 0) {
+        debugPrint(
+            "ASA asset opt-in confirmed in round: ${transactionResponse.confirmedRound}");
+      } else {
+        throw Exception("Asset opt-in confirmation failed.");
       }
     } on AlgorandException catch (e) {
       debugPrint(e.message);
-      throw Exception("Failed to opt-in to asset: ${e.message}");
-    } catch (e) {
-      debugPrint("Failed to opt-in to asset: $e");
-      throw Exception("Failed to opt-in to asset: $e");
+      throw Exception("Failed to opt-in to ASA: ${e.message}");
     }
+  }
+
+  Future<void> _followArc200Asset(int assetId, String publicAddress,
+      StorageService storageService, String accountId) async {
+    await storageService.followArc200Asset(accountId, assetId);
+    debugPrint('Following ARC-0200 asset with ID: $assetId');
   }
 
   Future<void> transferAsset(

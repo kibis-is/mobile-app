@@ -109,19 +109,32 @@ class Arc200Service {
     final jsonResponse = json.decode(response.body);
     final List<dynamic> tokens = jsonResponse['tokens'] ?? [];
 
+    tokens[0].forEach((key, value) {
+      debugPrint("$key: $value");
+    });
+
     return tokens.where((data) {
       final contractIdMatches = data['contractId'].toString().contains(query);
       final metadata = data['metadata']?.toLowerCase() ?? '';
       final nameMatches = metadata.contains(query.toLowerCase());
 
-      return contractIdMatches || nameMatches;
+      // Check the name and symbol fields
+      final name = data['name']?.toLowerCase() ?? '';
+      final symbol = data['symbol']?.toLowerCase() ?? '';
+      final nameFieldMatches = name.contains(query.toLowerCase());
+      final symbolFieldMatches = symbol.contains(query.toLowerCase());
+
+      return contractIdMatches ||
+          nameMatches ||
+          nameFieldMatches ||
+          symbolFieldMatches;
     }).map<CombinedAsset>((data) {
       return CombinedAsset(
-        index: data['contractId'],
+        index: data['contractId'] ?? '',
         params: CombinedAssetParameters.fromArc200(data),
         assetType: AssetType.arc200,
-        amount: data['amount'],
-        isFrozen: data['isFrozen'],
+        amount: data['amount'] ?? 0,
+        isFrozen: data['isFrozen'] ?? false,
       );
     }).toList();
   }
