@@ -22,12 +22,16 @@ class SecurityScreen extends ConsumerStatefulWidget {
 }
 
 class _SecurityScreenState extends ConsumerState<SecurityScreen> {
-  late bool _enablePinLock;
+  bool? _enablePinLock;
 
   @override
   void initState() {
     super.initState();
-    _enablePinLock = ref.read(pinLockStateAdapter);
+    ref.read(pinLockStateAdapter.future).then((value) {
+      setState(() {
+        _enablePinLock = value;
+      });
+    });
   }
 
   @override
@@ -41,8 +45,10 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
         child: Column(
           children: [
             const SizedBox(height: kScreenPadding),
-            _buildSettingsToggle(),
-            if (_enablePinLock) ...[
+            _enablePinLock == null
+                ? const CircularProgressIndicator()
+                : _buildSettingsToggle(),
+            if (_enablePinLock ?? false) ...[
               const SizedBox(height: kScreenPadding),
               _buildTimeoutDropdown(),
             ],
@@ -57,7 +63,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
   Widget _buildSettingsToggle() {
     return SwitchListTile(
       title: const Text('Enable Password Lock'),
-      value: _enablePinLock,
+      value: _enablePinLock ?? false,
       onChanged: (newValue) async {
         if (!newValue) {
           final pinVerified = await _verifyPin();

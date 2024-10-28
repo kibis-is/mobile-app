@@ -1,8 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
-final pinLockStateAdapter = StateProvider<bool>((ref) {
-  return ref.watch(pinLockProvider);
+final pinLockStateAdapter = FutureProvider<bool>((ref) async {
+  final storageService = ref.read(storageProvider);
+  return storageService.getTimeoutEnabled() ?? true;
 });
 
 final pinLockProvider =
