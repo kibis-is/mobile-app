@@ -11,6 +11,7 @@ import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
+import 'package:kibisis/providers/algorand_service.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -279,8 +280,27 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     final activeAsset = ref.read(activeAssetProvider);
     final balanceState = ref.read(balanceProvider);
 
-    if (activeAsset == null) {
+    // Validate prerequisites and retrieve the non-nullable active asset
+    final asset = await _validatePrerequisites(activeAsset, balanceState);
+    if (asset == null) return; // Exit if validation fails
+
+    try {
+      final privateKey = await _retrievePrivateKey();
+      await _performOptIn(privateKey, asset, algorandService);
+      _onOptInSuccess();
+    } on AlgorandException catch (e) {
+      if (mounted) _handleAlgorandException(e, context);
+    } catch (e) {
+      if (mounted) _showErrorSnackBar(e.toString());
+    } finally {
       loadingNotifier.stopLoading();
+    }
+  }
+
+  Future<CombinedAsset?> _validatePrerequisites(
+      CombinedAsset? activeAsset, AsyncValue<double> balanceState) async {
+    if (activeAsset == null) {
+      ref.read(loadingProvider.notifier).stopLoading();
       throw Exception('Active asset is null');
     }
 
@@ -290,50 +310,69 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     );
 
     if (balance == 0) {
-      loadingNotifier.stopLoading();
+      ref.read(loadingProvider.notifier).stopLoading();
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
         message: 'Please fund your account to proceed.',
       );
-      return;
+      return null;
     }
 
-    try {
-      if (activeAsset.assetType == AssetType.arc200) {
-        throw Exception('Asset type not yet supported');
-      }
+    return activeAsset; // Return the non-nullable active asset
+  }
 
-      final privateKey =
-          await ref.read(accountProvider.notifier).getPrivateKey();
-
-      await algorandService.optInAsset(activeAsset.index, privateKey);
-
-      invalidateProviders(ref);
-
-      if (mounted) {
-        GoRouter.of(context).go('/');
-        showCustomSnackBar(
-          context: context,
-          snackType: SnackType.success,
-          message: 'Asset successfully opted in',
-        );
-      }
-    } on AlgorandException catch (e) {
-      if (mounted) {
-        _handleAlgorandException(e, context);
-      }
-    } catch (e) {
-      if (mounted) {
-        showCustomSnackBar(
-          context: context,
-          snackType: SnackType.error,
-          message: e.toString(),
-        );
-      }
-    } finally {
-      loadingNotifier.stopLoading();
+  Future<String> _retrievePrivateKey() async {
+    final privateKey = await ref.read(accountProvider.notifier).getPrivateKey();
+    if (privateKey.isEmpty) {
+      ref.read(loadingProvider.notifier).stopLoading();
+      throw Exception('Private key not found');
     }
+    return privateKey;
+  }
+
+  Future<void> _performOptIn(String privateKey, CombinedAsset activeAsset,
+      AlgorandService algorandService) async {
+    switch (activeAsset.assetType) {
+      case AssetType.standard:
+        await algorandService.optInAsset(activeAsset.index, privateKey);
+        break;
+      case AssetType.arc200:
+        final account = await algorandService.algorand
+            .loadAccountFromPrivateKey(privateKey);
+        final txId = await algorandService.sendARC0200Asset(
+          amount: BigInt.zero,
+          appID: BigInt.from(activeAsset.index),
+          receiverAddress: account.publicAddress,
+          senderAccount: account,
+        );
+        await algorandService.algorand.waitForConfirmation(txId);
+        break;
+      default:
+        throw Exception('Unsupported asset type');
+    }
+  }
+
+  void _onOptInSuccess() {
+    invalidateProviders(ref);
+
+    if (mounted) {
+      GoRouter.of(context).go('/');
+      showCustomSnackBar(
+        context: context,
+        snackType: SnackType.success,
+        showConfetti: true,
+        message: 'Asset successfully opted in',
+      );
+    }
+  }
+
+  void _showErrorSnackBar(String message) {
+    showCustomSnackBar(
+      context: context,
+      snackType: SnackType.error,
+      message: message,
+    );
   }
 
   void _handleAlgorandException(AlgorandException e, BuildContext context) {
