@@ -36,7 +36,7 @@ class CustomDropDown extends StatelessWidget {
   Widget _buildDropDownContainer(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(),
-      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
+      padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.transparent,
@@ -55,7 +55,9 @@ class CustomDropDown extends StatelessWidget {
               child: Row(
                 children: [
                   AppIcons.icon(
-                      icon: item.icon, color: context.colorScheme.onBackground),
+                      icon: item.icon,
+                      color: context.colorScheme.onBackground,
+                      size: AppIcons.medium),
                   const SizedBox(width: kScreenPadding / 2),
                   Flexible(
                     child: EllipsizedText(item.name,
