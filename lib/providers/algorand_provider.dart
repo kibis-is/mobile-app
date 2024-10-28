@@ -25,8 +25,8 @@ final Map<String, NetworkConfig> networkConfigs = {
     indexerUrl: "https://mainnet-idx.voi.nodely.dev",
   ),
   "network-voi-testnet": NetworkConfig(
-    algodUrl: "https://testnet-api.voi.nodly.io",
-    indexerUrl: "https://testnet-idx.voi.nodly.io",
+    algodUrl: "https://testnet-api.voi.nodely.dev",
+    indexerUrl: "https://testnet-idx.voi.nodely.dev",
   ),
 };
 
