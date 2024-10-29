@@ -8,6 +8,7 @@ import 'package:kibisis/common_widgets/transparent_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -27,11 +28,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(pinLockStateAdapter.future).then((value) {
-      setState(() {
-        _enablePinLock = value;
-      });
-    });
+    _enablePinLock = ref.read(pinLockStateAdapter); // Synchronous initial value
   }
 
   @override
@@ -150,6 +147,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
     });
     ref.read(pinLockProvider.notifier).setPasswordLock(newValue);
     ref.read(storageProvider).setTimeoutEnabled(newValue);
+    ref.read(isAuthenticatedProvider.notifier).state = newValue;
   }
 
   Future<void> _handlePinVerification(VoidCallback onPinVerified) async {
