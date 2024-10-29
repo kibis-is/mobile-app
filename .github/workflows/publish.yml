@@ -33,7 +33,7 @@ jobs:
   publish_android_apk:
     name: "Publish Android APK"
     permissions:
-      contents: write  # this is needed to upload assets to a release
+      contents: write  # to upload assets to a release
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:

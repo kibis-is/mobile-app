@@ -4,6 +4,9 @@ on:
   release:
     types: [prereleased] # triggered on beta branch releases
 
+permissions:
+  contents: write # to upload assets to a release
+
 jobs:
   deploy:
     name: "🚀 Publish"
