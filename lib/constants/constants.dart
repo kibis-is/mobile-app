@@ -7,7 +7,6 @@ const double kWidgetRadius = 16.0;
 const double kSizedBoxSpacing = 16.0;
 const double kInputHeight = 64.0;
 const int kPinLength = 6;
-const String kVersionNumber = '1.0.0-beta.15';
 const int kMaxAccountNameLength = 32;
 const double kDialogWidth = 0.75;
 const int kHapticButtonPressDuration = 5;
