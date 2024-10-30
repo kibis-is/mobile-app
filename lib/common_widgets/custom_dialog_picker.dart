@@ -35,11 +35,9 @@ class CustomAlertDialog extends StatelessWidget {
             curve: Curves.easeInOut,
           ),
           child: SizedBox(
-            width: MediaQuery.of(context).size.width *
-                0.9, // Take 90% of the screen width
+            width: MediaQuery.of(context).size.width * 0.9,
             child: Material(
-              type: MaterialType
-                  .transparency, // Make sure the dialog is transparent
+              type: MaterialType.transparency,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                     vertical: kScreenPadding, horizontal: 0),
@@ -48,8 +46,7 @@ class CustomAlertDialog extends StatelessWidget {
                   borderRadius: BorderRadius.circular(kWidgetRadius),
                 ),
                 child: Column(
-                  mainAxisSize:
-                      MainAxisSize.min, // Adjust height based on content
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(icon,
@@ -61,7 +58,9 @@ class CustomAlertDialog extends StatelessWidget {
                           horizontal: kScreenPadding, vertical: 0),
                       child: Text(
                         title,
-                        style: context.textTheme.titleSmall?.copyWith(color: context.colorScheme.onSurface, fontWeight: FontWeight.bold),
+                        style: context.textTheme.titleSmall?.copyWith(
+                            color: context.colorScheme.onSurface,
+                            fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -75,7 +74,9 @@ class CustomAlertDialog extends StatelessWidget {
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium
-                              ?.copyWith(color: context.colorScheme.secondary, fontWeight: FontWeight.bold),
+                              ?.copyWith(
+                                  color: context.colorScheme.secondary,
+                                  fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -92,13 +93,22 @@ class CustomAlertDialog extends StatelessWidget {
                                     item['accountName']!,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .displayMedium?.copyWith(color: context.colorScheme.onBackground, fontWeight: FontWeight.bold),
+                                        .displayMedium
+                                        ?.copyWith(
+                                            color: context
+                                                .colorScheme.onBackground,
+                                            fontWeight: FontWeight.bold),
                                   ),
                                   subtitle: EllipsizedText(
                                     item['publicKey']!,
                                     type: EllipsisType.middle,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colorScheme.onBackground, fontWeight: FontWeight.bold),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                            color: context
+                                                .colorScheme.onBackground,
+                                            fontWeight: FontWeight.bold),
                                   ),
                                   leading: Container(
                                       padding: const EdgeInsets.all(

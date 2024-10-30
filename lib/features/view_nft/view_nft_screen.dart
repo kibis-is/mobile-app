@@ -60,7 +60,6 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
           ),
           body: Stack(
             children: [
-              // Background Image with Blur
               Positioned.fill(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 500),
@@ -111,18 +110,14 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
                         onTap: () =>
                             ref.read(showNftInfoProvider.notifier).toggle(),
                         child: AspectRatio(
-                          aspectRatio: 1, // Ensure 1:1 aspect ratio
+                          aspectRatio: 1,
                           child: Stack(
-                            fit: StackFit
-                                .expand, // Fit overlay and image to the same bounds
+                            fit: StackFit.expand,
                             children: [
-                              // NFT Image
                               Image.network(
                                 nfts[index].imageUrl,
-                                fit: BoxFit
-                                    .contain, // Shrink image to fit the area
+                                fit: BoxFit.contain,
                               ),
-                              // Overlay with information
                               if (showNftInfo)
                                 Container(
                                   decoration: const BoxDecoration(
@@ -162,7 +157,6 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
                   },
                   itemCount: nfts.length,
                   loop: nfts.length > 1 ? true : false,
-                  // Let Swiper handle size as before
                   itemWidth:
                       MediaQuery.of(context).size.width - (kScreenPadding * 2),
                   itemHeight:

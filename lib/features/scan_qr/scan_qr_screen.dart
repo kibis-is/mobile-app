@@ -59,10 +59,8 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   void initState() {
     super.initState();
 
-    // Start the scanController manually
     scanController.start();
 
-    // Use a post-frame callback to safely reset providers after the first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         ref.read(multipartScanProvider.notifier).reset();
@@ -80,9 +78,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       walletConnectManager = WalletConnectManager(storageService);
       walletConnectManager!.initialize().then((_) {
         if (mounted) {
-          setState(() {
-            // Trigger a rebuild after WalletConnectManager is initialized
-          });
+          setState(() {});
         }
       });
     }
@@ -256,7 +252,6 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     } else if (scanResult is Uri) {
       await _handleWalletConnectResult(scanResult);
     } else if (scanResult is Map<String, dynamic>) {
-      // Handle paginated URI
       await _handlePaginatedScanResult(scanResult);
     } else {
       debugPrint('Invalid scan result: $scanResult');
@@ -371,7 +366,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           .where((account) =>
               account['privateKey'] != null &&
               account['privateKey']!.isNotEmpty)
-          .toList(); // Filter out watch accounts
+          .toList();
 
       if (accounts.isEmpty) {
         throw Exception('No accounts available to connect.');
@@ -408,14 +403,13 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       final Uint8List seed = account['seed'];
 
       try {
-        // Check if account already exists
         bool accountExists = await ref
             .read(temporaryAccountProvider.notifier)
             .accountAlreadyExists(seed.toString());
 
         if (accountExists) {
           debugPrint('Account already exists: $name');
-          continue; // Skip this account and proceed with others
+          continue;
         }
 
         await ref

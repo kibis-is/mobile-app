@@ -59,10 +59,8 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
       _triggerAnimation();
       ref.read(pinEntryStateNotifierProvider.notifier).reset();
 
-      // Preload hashed PIN
       await ref.read(pinProvider.notifier).preloadStoredHashedPin();
 
-      // Preload active account and account data
       final storageService = ref.read(storageProvider);
       _activeAccountId = await storageService.getActiveAccount();
 
@@ -411,7 +409,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         if (isConfirmingPin) {
           if (pinNotifier.getFirstPin() == pin) {
             await pinNotifier.pinComplete(
-                widget.mode, _activeAccountId, _accountName); // Pass variables
+                widget.mode, _activeAccountId, _accountName);
             if (mounted) {
               ref.read(isAuthenticatedProvider.notifier).state = true;
               isConfirmingPin = false;
@@ -437,8 +435,6 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         await _handleVerifyTransactionMode(pinNotifier, pin);
         break;
       case PinPadMode.changePin:
-        // handle change PIN logic here
-        break;
       default:
         debugPrint('Unhandled mode in _handlePinComplete');
         break;

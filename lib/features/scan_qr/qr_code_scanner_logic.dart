@@ -103,27 +103,21 @@ class QRCodeScannerLogic {
       throw Exception('Invalid URI format');
     }
 
-    // Extract query parameters
     List<MapEntry<String, String>> params =
         getOrderedQueryParameters(parsedUri.query);
 
-    // Check for modern URI format (contains 'privatekey' without 'encoding')
     bool isModernUri = params.any((param) => param.key == 'privatekey') &&
         !params.any((param) => param.key == 'encoding' && param.value == 'hex');
 
     if (isModernUri) {
-      // Check if the URI is paginated
       bool isPaginated = params.any((param) => param.key == 'page');
       if (isPaginated) {
-        // Handle multi-part URI
         return handlePaginatedUri(params);
       } else {
-        // Handle normal modern URI
         return handleModernUri(params);
       }
     } else if (params
         .any((param) => param.key == 'encoding' && param.value == 'hex')) {
-      // Handle legacy URI (with 'encoding=hex')
       return handleLegacyUri(params);
     } else {
       throw Exception('Unknown import account URI format');
@@ -135,7 +129,6 @@ class QRCodeScannerLogic {
     String? checksum;
     String? pageInfo;
 
-    // Extract checksum and page
     for (var param in params) {
       if (param.key == 'checksum') {
         checksum = param.value;
@@ -148,7 +141,6 @@ class QRCodeScannerLogic {
       throw Exception('Paginated URI missing checksum or page information');
     }
 
-    // Parse pageInfo
     List<String> pageParts = pageInfo.split(':');
     if (pageParts.length != 2) {
       throw Exception('Invalid page format in paginated URI');
@@ -156,12 +148,11 @@ class QRCodeScannerLogic {
     int currentPage = int.parse(pageParts[0]);
     int totalPages = int.parse(pageParts[1]);
 
-    // Return the params as a List<MapEntry<String, String>>
     return {
       'checksum': checksum,
       'currentPage': currentPage,
       'totalPages': totalPages,
-      'params': params, // Make sure this is a List<MapEntry<String, String>>
+      'params': params,
     };
   }
 

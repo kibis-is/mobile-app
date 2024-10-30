@@ -207,8 +207,8 @@ class ContactsDialog extends ConsumerWidget {
         ),
       ),
       onTap: () {
-        onTap(); // Trigger the function to handle the selection
-        Navigator.pop(context); // Close the dialog after selection
+        onTap();
+        Navigator.pop(context);
       },
     );
   }
