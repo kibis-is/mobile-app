@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/network_provider.dart';
-import '../models/combined_asset.dart';
 
 final arc200ServiceProvider = Provider<Arc200Service>((ref) {
   return Arc200Service(ref);
@@ -28,8 +28,6 @@ class Arc200Service {
         baseUrl = '';
         break;
     }
-
-    debugPrint('Selected network baseURL: $baseUrl');
   }
   Future<List<CombinedAsset>> fetchArc200Assets(String publicAddress) async {
     if (baseUrl.isEmpty) {
@@ -100,42 +98,38 @@ class Arc200Service {
     }
 
     final searchUrl = '$baseUrl/tokens?limit=100';
-    final response = await http.get(Uri.parse(searchUrl));
+    try {
+      final response = await http.get(Uri.parse(searchUrl));
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to search ARC200 assets');
+      if (response.statusCode != 200) {
+        throw Exception('Failed to search ARC200 assets');
+      }
+
+      final jsonResponse = json.decode(response.body);
+      final List<dynamic> tokens = jsonResponse['tokens'] ?? [];
+
+      final matchingAssets = tokens.where((data) {
+        final contractIdMatches = data['contractId'].toString().contains(query);
+        final nameMatches =
+            data['name']?.toLowerCase()?.contains(query.toLowerCase()) ?? false;
+        final symbolMatches =
+            data['symbol']?.toLowerCase()?.contains(query.toLowerCase()) ??
+                false;
+
+        return contractIdMatches || nameMatches || symbolMatches;
+      }).map<CombinedAsset>((data) {
+        return CombinedAsset(
+          index: data['contractId'] ?? '',
+          params: CombinedAssetParameters.fromArc200(data),
+          assetType: AssetType.arc200,
+          amount: data['amount'] ?? 0,
+          isFrozen: data['isFrozen'] ?? false,
+        );
+      }).toList();
+      return matchingAssets;
+    } catch (e) {
+      debugPrint('Error searching ARC-0200 assets: $e');
+      return [];
     }
-
-    final jsonResponse = json.decode(response.body);
-    final List<dynamic> tokens = jsonResponse['tokens'] ?? [];
-
-    tokens[0].forEach((key, value) {
-      debugPrint("$key: $value");
-    });
-
-    return tokens.where((data) {
-      final contractIdMatches = data['contractId'].toString().contains(query);
-      final metadata = data['metadata']?.toLowerCase() ?? '';
-      final nameMatches = metadata.contains(query.toLowerCase());
-
-      // Check the name and symbol fields
-      final name = data['name']?.toLowerCase() ?? '';
-      final symbol = data['symbol']?.toLowerCase() ?? '';
-      final nameFieldMatches = name.contains(query.toLowerCase());
-      final symbolFieldMatches = symbol.contains(query.toLowerCase());
-
-      return contractIdMatches ||
-          nameMatches ||
-          nameFieldMatches ||
-          symbolFieldMatches;
-    }).map<CombinedAsset>((data) {
-      return CombinedAsset(
-        index: data['contractId'] ?? '',
-        params: CombinedAssetParameters.fromArc200(data),
-        assetType: AssetType.arc200,
-        amount: data['amount'] ?? 0,
-        isFrozen: data['isFrozen'] ?? false,
-      );
-    }).toList();
   }
 }
