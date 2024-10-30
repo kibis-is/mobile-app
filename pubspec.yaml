@@ -43,6 +43,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   flutter_confetti: ^0.3.0
   reown_walletkit: ^1.0.1
+  package_info_plus: ^8.1.0
 dependency_overrides:
   win32: 5.5.0
 dev_dependencies:
