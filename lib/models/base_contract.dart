@@ -28,7 +28,7 @@ class BaseContract {
 
     if (algodToken != null) {
       _client.options.headers = {
-        ALGOD_API_TOKEN_HEADER_NAME: algodToken,
+        algodApiTokenHeaderName: algodToken,
       };
     }
   }
@@ -63,7 +63,7 @@ class BaseContract {
       {required String methodSignature,
       required List<Uint8List> appArgs,
       TransactionParams? suggestedParams}) async {
-    final _appArgs = [
+    final appArgs0 = [
       createMethodSelectorFromMethodSignature(methodSignature),
       ...appArgs,
     ];
@@ -72,7 +72,7 @@ class BaseContract {
               address:
                   await _getFeeSinkAddress()) // we need an address that contains a balance
           ..applicationId = appID.toInt()
-          ..arguments = _appArgs
+          ..arguments = appArgs0
           ..suggestedParams = suggestedParams ?? await _transactionParams())
         .build();
 
@@ -162,8 +162,8 @@ class BaseContract {
   /// final address = contract.address();
   /// print(address); // Output: I7F3LRWCPSKURPRQZ3RFEEI2KFJ4TYC7EKSL75YIWH7LJ4FD5DUMIIPRAU
   /// ```
-  String address() {
-    final prefix = utf8.encode(APP_ID_PREFIX);
+  String getAddress() {
+    final prefix = utf8.encode(appIdPrefix);
     final buffer = Uint8List.fromList([
       ...prefix,
       ...BigIntEncoder.encodeUint64(appID),
@@ -185,8 +185,8 @@ class BaseContract {
   /// print(accountInformation.address); // Output: I7F3LRWCPSKURPRQZ3RFEEI2KFJ4TYC7EKSL75YIWH7LJ4FD5DUMIIPRAU
   /// ```
   Future<AccountInformation> accountInformation() async {
-    final _address = address();
-    final result = await _client.get('/v2/accounts/$_address');
+    final address = getAddress();
+    final result = await _client.get('/v2/accounts/$address');
 
     return AccountInformation.fromJson(result.data!);
   }
@@ -198,14 +198,14 @@ class BaseContract {
       TransactionParams? suggestedParams,
       String? note,
       List<BoxReference>? boxNames}) async {
-    final _appArgs = [
+    final appArgs0 = [
       createMethodSelectorFromMethodSignature(methodSignature),
       ...appArgs,
     ];
     final transaction = await (ApplicationCallTransactionBuilder()
           ..sender = Address.fromAlgorandAddress(address: sender)
           ..applicationId = appID.toInt()
-          ..arguments = _appArgs
+          ..arguments = appArgs0
           ..suggestedParams = suggestedParams ?? await _transactionParams()
           ..noteText = note)
         .build();

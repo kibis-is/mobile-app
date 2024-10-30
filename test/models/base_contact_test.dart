@@ -10,7 +10,7 @@ void main() {
       final contract = BaseContract(
           appID: BigInt.from(6779767), algodURL: 'https://somewhre');
       // act
-      final result = contract.address();
+      final result = contract.getAddress();
 
       // assert
       expect(result, address);

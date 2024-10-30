@@ -23,7 +23,8 @@ Future<Map<String, dynamic>> signTransaction({
   final publicKey = await keyPair.extractPublicKey();
   final signature = await Ed25519().sign(
     Uint8List.fromList([
-      ...utf8.encode(TRANSACTION_PREFIX), // prefix the transaction bytes with "TX"
+      ...utf8
+          .encode(transactionPrefix), // prefix the transaction bytes with "TX"
       ...transaction,
     ]),
     keyPair: keyPair,

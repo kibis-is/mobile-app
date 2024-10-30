@@ -139,7 +139,7 @@ class ARC0200Contract extends BaseContract {
       payTransaction = (await (PaymentTransactionBuilder()
                 ..amount = boxStorageCost
                 ..sender = Address.fromAlgorandAddress(address: sender)
-                ..receiver = Address.fromAlgorandAddress(address: address())
+                ..receiver = Address.fromAlgorandAddress(address: getAddress())
                 ..noteText =
                     'Initial box storage funding for account "$receiver" for application "$appID"')
               .build())
