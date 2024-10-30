@@ -28,6 +28,8 @@ on:
         required: true
       GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY:
         required: true
+      READ_AND_WRITE_REPOS_TOKEN:
+        required: true
 
 jobs:
   publish_android_apk:
@@ -52,6 +54,8 @@ jobs:
         run: flutter build apk --release
       - name: "📤 Upload Release Asset"
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.READ_AND_WRITE_REPOS_TOKEN }}
         with:
           upload_url: ${{ inputs.release_upload_url }}
           asset_path: build/app/outputs/flutter-apk/app-release.apk
