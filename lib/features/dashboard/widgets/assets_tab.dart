@@ -76,7 +76,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     final assetsFilterController =
         ref.watch(assetsFilterControllerProvider.notifier);
 
-    // Watch the active asset from the provider
     final activeAsset = ref.watch(activeAssetProvider);
 
     return mediaQueryHelper.isWideScreen()
@@ -92,7 +91,6 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
               ),
               Expanded(
                 flex: mediaQueryHelper.getDynamicFlex()[1],
-                // Use the active asset from the provider
                 child: activeAsset != null
                     ? const ViewAssetScreen(
                         isPanelMode: true,

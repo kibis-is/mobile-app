@@ -2,8 +2,7 @@ class Contact {
   final String id;
   String name;
   final String publicKey;
-  DateTime?
-      lastUsedDate; // New field to store the date the contact was last used
+  DateTime? lastUsedDate;
 
   Contact({
     required this.id,
@@ -12,7 +11,6 @@ class Contact {
     this.lastUsedDate,
   });
 
-  // Add serialization and deserialization for lastUsedDate if you're storing in local storage
   factory Contact.fromJson(Map<String, dynamic> json) {
     return Contact(
       id: json['id'],

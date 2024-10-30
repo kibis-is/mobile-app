@@ -8,7 +8,6 @@ class NumberShortener {
       suffixIndex++;
     }
 
-    // Format number with up to two decimal places
     String formattedNumber =
         number % 1 == 0 ? number.toStringAsFixed(0) : number.toStringAsFixed(2);
 

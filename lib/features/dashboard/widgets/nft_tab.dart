@@ -36,7 +36,6 @@ class NftTabState extends ConsumerState<NftTab> {
       text: ref.read(nftNotifierProvider.notifier).filterText,
     );
 
-    // Load the saved view type from SharedPreferences
     _loadViewType();
 
     _scrollController.addListener(() {
@@ -141,7 +140,7 @@ class NftTabState extends ConsumerState<NftTab> {
           ),
           Expanded(
             child: CustomTextField(
-              controller: filterController, // Use the member variable
+              controller: filterController,
               labelText: 'Filter',
               onChanged: (value) {
                 ref.read(nftNotifierProvider.notifier).setFilter(value);
@@ -169,8 +168,8 @@ class NftTabState extends ConsumerState<NftTab> {
         childAspectRatio: 1.0,
       ),
       itemCount: 12,
-      shrinkWrap: true, // Prevents unbounded height error
-      physics: const NeverScrollableScrollPhysics(), // Parent handles scrolling
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => Shimmer.fromColors(
         baseColor: context.colorScheme.surface,
         highlightColor: context.colorScheme.onSurfaceVariant,
@@ -205,11 +204,10 @@ class NftTabState extends ConsumerState<NftTab> {
           TextButton(
             onPressed: isFilterActive
                 ? () {
-                    // Clear the filter when the button is pressed
                     ref.read(nftNotifierProvider.notifier).setFilter('');
-                    filterController.clear(); // Also clear the text field
+                    filterController.clear();
                   }
-                : _onRefresh, // Retry the API call if there's no filter
+                : _onRefresh,
             child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
           ),
         ],

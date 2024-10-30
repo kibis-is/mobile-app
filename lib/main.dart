@@ -70,8 +70,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
 
   Future<void> _initializeApp() async {
     final storageService = ref.read(storageProvider);
-    storageService
-        .getActiveAccount(); // Ensure account loading happens after prefs init
+    storageService.getActiveAccount();
     walletConnectManager = WalletConnectManager(storageService);
     await walletConnectManager.reconnectSessions();
     _lifecycleHandler = AppLifecycleHandler(
@@ -93,14 +92,11 @@ class _KibisisState extends ConsumerState<Kibisis> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, _) {
-        // setup watch on providers
         final sharedPreferences = ref.watch(sharedPreferencesProvider);
         final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
         final isConnected = ref.watch(connectivityProvider);
-
         return sharedPreferences.when(
           data: (_) {
-            // All initialization has completed, safe to read other providers
             final isDarkTheme = ref.watch(isDarkModeStateAdapter);
             final router = ref.watch(goRouterProvider);
             final loadingState = ref.watch(loadingProvider);

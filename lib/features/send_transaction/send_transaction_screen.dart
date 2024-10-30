@@ -262,13 +262,11 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         throw Exception("Unsupported asset type.");
       }
 
-      // Check if the public key exists in the contact list
       final existingContact = await ref
           .read(contactsListProvider.notifier)
           .getContactByPublicKey(recipientAddressController.text.trim());
 
       if (existingContact != null) {
-        // Update the contact name if it's different
         if (existingContact.name != contactNameController.text.trim()) {
           existingContact.name = contactNameController.text.trim();
           existingContact.lastUsedDate = DateTime.now();
@@ -285,8 +283,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       ref.invalidate(balanceProvider);
     } catch (e) {
       var errorMessage = e.toString();
-      debugPrint(
-          "Transaction failed with error: $errorMessage"); // For debugging
+      debugPrint("Transaction failed with error: $errorMessage");
       var friendlyErrorMessage = processTransactionError(errorMessage);
       _showErrorSnackbar(friendlyErrorMessage);
     } finally {
@@ -300,7 +297,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     } else if (errorMessage.toLowerCase().contains("confirm")) {
       return 'Transaction failed to confirm within the expected rounds.';
     } else {
-      return errorMessage; // Directly return the detailed error message
+      return errorMessage;
     }
   }
 

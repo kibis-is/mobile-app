@@ -106,16 +106,13 @@ String buildURI({
 }
 
 String buildURIParams(String name, String hexPrivateKey) {
-  // Convert hexPrivateKey to bytes
   final Uint8List bytes = Uint8List.fromList(List.generate(
     hexPrivateKey.length ~/ 2,
     (i) => int.parse(hexPrivateKey.substring(i * 2, i * 2 + 2), radix: 16),
   ));
 
-  // Encode to base64 URL-safe string
   final String base64PrivateKey = base64UrlEncode(bytes);
 
-  // Ensure the encoded key is the expected length
   assert(base64PrivateKey.length == 44,
       'The encoded key should be 44 characters long');
 

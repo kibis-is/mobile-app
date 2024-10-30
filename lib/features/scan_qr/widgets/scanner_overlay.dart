@@ -23,14 +23,11 @@ class ScannerOverlay extends StatelessWidget {
             ),
           ),
         ),
-        // Border around scan window
         Positioned.fromRect(
           rect: scanWindowRect,
           child: Container(
             decoration: BoxDecoration(
-
-              border:
-                  Border.all(color: context.colorScheme.primary, width: 4),
+              border: Border.all(color: context.colorScheme.primary, width: 4),
             ),
           ),
         ),

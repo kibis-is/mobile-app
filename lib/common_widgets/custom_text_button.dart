@@ -22,17 +22,14 @@ class CustomTextButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.transparent, // Transparent background
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kWidgetRadius),
-          side: BorderSide(
-              color: context.colorScheme.onBackground), // Colored border
-        ),
-        padding: const EdgeInsets.symmetric(
-            horizontal: kScreenPadding,
-            vertical: kScreenPadding / 2), // Padding inside the button
-      ),
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(kWidgetRadius),
+            side: BorderSide(color: context.colorScheme.onBackground),
+          ),
+          padding: const EdgeInsets.symmetric(
+              horizontal: kScreenPadding, vertical: kScreenPadding / 2)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

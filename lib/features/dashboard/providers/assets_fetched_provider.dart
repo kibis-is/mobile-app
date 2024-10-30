@@ -1,4 +1,3 @@
-// In a suitable provider file
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final accountDataFetchStatusProvider =

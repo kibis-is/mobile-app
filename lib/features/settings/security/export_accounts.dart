@@ -49,17 +49,15 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
   }
 
   void _startOrAdjustTimer() {
-    _timer?.cancel(); // Cancel any existing timer
+    _timer?.cancel();
 
-    // Start the timer to switch pages every 2 seconds
     _timer = Timer.periodic(const Duration(seconds: 2), (Timer timer) {
       final currentPage = ref.read(currentPageProvider);
-      final nextPage = (currentPage + 1) % qrKeys.length; // Seamless looping
+      final nextPage = (currentPage + 1) % qrKeys.length;
 
       ref.read(currentPageProvider.notifier).state = nextPage;
 
       if (_pageController.hasClients) {
-        // Jump to the next page instantly without animation
         _pageController.jumpToPage(nextPage);
       }
     });
@@ -128,7 +126,6 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
         _buildAccountDropDown(exportableAccounts, selectedAccountId),
         const SizedBox(height: kScreenPadding),
         Expanded(
-          // This ensures the QR code takes the remaining space without causing overflow
           child: _buildQrCodeDisplay(qrDataAsyncValue, selectedAccountId),
         ),
       ],
@@ -163,11 +160,10 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
         if (newValue != null) {
           ref.read(selectedAccountProvider.notifier).state = newValue.value;
 
-          // Automatically start/adjust the timer when "All Accounts" is selected
           if (newValue.value == 'all') {
             _startOrAdjustTimer();
           } else {
-            _timer?.cancel(); // Stop the timer for individual accounts
+            _timer?.cancel();
           }
         }
       },
@@ -180,7 +176,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
   ) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        const double padding = kScreenPadding + 16.0; // Adjust this for padding
+        const double padding = kScreenPadding + 16.0;
         final double availableHeight = constraints.maxHeight - padding;
         final double qrCodeSize = min(constraints.maxWidth, availableHeight);
 
@@ -190,11 +186,10 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
 
             if (selectedAccountId == 'all') {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                _startOrAdjustTimer(); // Start the timer if "All Accounts" is selected
+                _startOrAdjustTimer();
               });
             } else {
-              _timer
-                  ?.cancel(); // Ensure the timer stops if a single account is selected
+              _timer?.cancel();
             }
 
             return Align(
@@ -256,7 +251,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
         backgroundColor: ColorPalette.lightThemeBackground,
         data: qrData,
         version: QrVersions.auto,
-        size: qrCodeSize, // Make sure each page has the correct size
+        size: qrCodeSize,
       ),
     );
   }

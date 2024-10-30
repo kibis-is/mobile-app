@@ -1,3 +1,22 @@
+# [1.0.0-beta.16](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.15...v1.0.0-beta.16) (2024-10-30)
+
+
+### Bug Fixes
+
+* update the version number ([dbbf7fb](https://github.com/kibis-is/mobile-app/commit/dbbf7fb2d37aec90fda98673e2566e274c2e126d))
+
+# [1.0.0-beta.15](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.14...v1.0.0-beta.15) (2024-10-30)
+
+
+### Bug Fixes
+
+* update variable names to dart standards ([cac1f28](https://github.com/kibis-is/mobile-app/commit/cac1f28c365d280ac860f9bae6f4361a0b760b78))
+
+
+### Features
+
+* Now polling balance every 30 seconds ([f656987](https://github.com/kibis-is/mobile-app/commit/f656987e5bfae9ab3459fbba212cd51a93b2552f))
+
 # [1.0.0-beta.14](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.13...v1.0.0-beta.14) (2024-10-30)
 
 

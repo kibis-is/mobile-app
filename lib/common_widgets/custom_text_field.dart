@@ -115,9 +115,7 @@ class CustomTextField extends ConsumerWidget {
                     icon: AppIcons.icon(
                         icon: AppIcons.showPassword,
                         size: isSmall ? AppIcons.small : AppIcons.medium),
-                    onPressed: () {
-                      // Typically toggle password visibility
-                    },
+                    onPressed: () {},
                   )
                 : null,
         border: OutlineInputBorder(

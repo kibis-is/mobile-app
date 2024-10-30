@@ -67,10 +67,8 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     }
   }
 
-  // Method for creating a temporary watch account
   Future<void> createWatchAccount(String publicAddress) async {
     try {
-      // Validate the public address
       final isValid = _isValidAlgorandAddress(publicAddress);
       if (!isValid) {
         throw Exception('Invalid Algorand address.');
@@ -92,9 +90,9 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       );
 
       state = state.copyWith(
-        account: accountInfo, // Store as AccountInformation
-        privateKey: null, // No private key
-        seedPhrase: null, // No seed phrase
+        account: accountInfo,
+        privateKey: null,
+        seedPhrase: null,
       );
     } catch (e) {
       state = state.copyWith(account: null);

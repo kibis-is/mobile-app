@@ -69,7 +69,7 @@ class ConfirmationDialog extends StatelessWidget {
           Navigator.of(context).pop(true);
         },
         child: Text(
-          okText, // Use the okText parameter
+          okText,
           style: context.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),

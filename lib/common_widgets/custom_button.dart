@@ -78,7 +78,7 @@ class CustomButton extends StatelessWidget {
               : MaterialStateProperty.all(foregroundColor),
           side: isOutline
               ? MaterialStateProperty.all(BorderSide(
-                  color: backgroundColor, // Adjust as needed
+                  color: backgroundColor,
                   width: 2.0,
                   style: BorderStyle.solid,
                 ))

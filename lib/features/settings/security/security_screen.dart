@@ -28,7 +28,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
   @override
   void initState() {
     super.initState();
-    _enablePinLock = ref.read(pinLockStateAdapter); // Synchronous initial value
+    _enablePinLock = ref.read(pinLockStateAdapter);
   }
 
   @override
@@ -77,7 +77,6 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
   Widget _buildTimeoutDropdown() {
     final timeoutSeconds = ref.watch(lockTimeoutProvider);
 
-    // Find the currently selected timeout item
     final selectedItem = timeoutList.firstWhere(
       (item) => item.value == timeoutSeconds.toString(),
       orElse: () => timeoutList.first,
