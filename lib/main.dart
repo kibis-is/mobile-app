@@ -70,7 +70,8 @@ class _KibisisState extends ConsumerState<Kibisis> {
 
   Future<void> _initializeApp() async {
     final storageService = ref.read(storageProvider);
-    storageService.getActiveAccount();
+    storageService
+        .getActiveAccount(); // Ensure account loading happens after prefs init
     walletConnectManager = WalletConnectManager(storageService);
     await walletConnectManager.reconnectSessions();
     _lifecycleHandler = AppLifecycleHandler(
@@ -90,54 +91,74 @@ class _KibisisState extends ConsumerState<Kibisis> {
 
   @override
   Widget build(BuildContext context) {
-    final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
-    final isConnected = ref.watch(connectivityProvider);
-    final isDarkTheme = ref.watch(isDarkModeStateAdapter);
-    final router = ref.watch(goRouterProvider);
-    final loadingState = ref.watch(loadingProvider);
+    return Consumer(
+      builder: (context, ref, _) {
+        // Watch sharedPreferencesProvider to delay build until prefs are initialized
+        final sharedPreferences = ref.watch(sharedPreferencesProvider);
+        final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
+        final isConnected = ref.watch(connectivityProvider);
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: isDarkTheme ? Brightness.dark : Brightness.light,
-      systemNavigationBarColor: Colors.black,
-      systemNavigationBarIconBrightness: Brightness.light,
-    ));
+        return sharedPreferences.when(
+          data: (_) {
+            // All initialization has completed, safe to read other providers
+            final isDarkTheme = ref.watch(isDarkModeStateAdapter);
+            final router = ref.watch(goRouterProvider);
+            final loadingState = ref.watch(loadingProvider);
 
-    return MaterialApp.router(
-      scaffoldMessengerKey: rootScaffoldMessengerKey,
-      routerConfig: router,
-      title: 'Kibisis',
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-      builder: (context, widget) {
-        return ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: LoadingOverlay(
-            progressIndicator: CustomLoadingOverlay(
-              text: loadingState.message,
-              percent: loadingState.progress,
-            ),
-            isLoading: loadingState.isLoading,
-            color: context.colorScheme.surface,
-            opacity: 1.0,
-            child: DefaultColorInitializer(
-              child: Center(
-                child: Column(
-                  children: [
-                    Expanded(child: widget ?? const SizedBox.shrink()),
-                    Visibility(
-                      visible: isSplashScreenVisible,
-                      child: const SplashScreen(),
+            SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness:
+                  isDarkTheme ? Brightness.dark : Brightness.light,
+              systemNavigationBarColor: Colors.black,
+              systemNavigationBarIconBrightness: Brightness.light,
+            ));
+
+            return MaterialApp.router(
+              scaffoldMessengerKey: rootScaffoldMessengerKey,
+              routerConfig: router,
+              title: 'Kibisis',
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+              builder: (context, widget) {
+                return ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: LoadingOverlay(
+                    progressIndicator: CustomLoadingOverlay(
+                      text: loadingState.message,
+                      percent: loadingState.progress,
                     ),
-                    Visibility(
-                      visible: !isConnected,
-                      child: _buildConnectionWarning(context),
+                    isLoading: loadingState.isLoading,
+                    color: context.colorScheme.surface,
+                    opacity: 1.0,
+                    child: DefaultColorInitializer(
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Expanded(child: widget ?? const SizedBox.shrink()),
+                            Visibility(
+                              visible: isSplashScreenVisible,
+                              child: const SplashScreen(),
+                            ),
+                            Visibility(
+                              visible: !isConnected,
+                              child: _buildConnectionWarning(context),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
+                );
+              },
+            );
+          },
+          loading: () => const Material(
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, stack) => const Material(
+            child: Center(
+                child: Text('Initialization error, please restart the app.')),
           ),
         );
       },

@@ -2,8 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
 final pinLockStateAdapter = StateProvider<bool>((ref) {
-  final storageService = ref.read(storageProvider);
-  return storageService.getTimeoutEnabled() ?? true;
+  return ref.watch(pinLockProvider);
 });
 
 final pinLockProvider =
@@ -19,7 +18,7 @@ class PinLockStateNotifier extends StateNotifier<bool> {
 
   void loadInitialState() {
     final storageService = ref.read(storageProvider);
-    state = storageService.getTimeoutEnabled() ?? true;
+    state = storageService.getTimeoutEnabled();
   }
 
   void setPasswordLock(bool isEnabled) {
