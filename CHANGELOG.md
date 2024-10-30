@@ -1,3 +1,10 @@
+# [1.0.0-beta.17](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.16...v1.0.0-beta.17) (2024-10-30)
+
+
+### Features
+
+* use package version from pubspec ([#15](https://github.com/kibis-is/mobile-app/issues/15)) ([e41d456](https://github.com/kibis-is/mobile-app/commit/e41d45668043c9af2d4a9c438de212a63ba55998))
+
 # [1.0.0-beta.16](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.15...v1.0.0-beta.16) (2024-10-30)
 
 
