@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/kibis-is/mobile-app/compare/v1.0.0...v1.0.1) (2024-10-30)
+
+
+### Bug Fixes
+
+* release to beta track - open testing on play store ([#17](https://github.com/kibis-is/mobile-app/issues/17)) ([aba59b2](https://github.com/kibis-is/mobile-app/commit/aba59b2aa5b29538a87f0268d85256703554e704))
+
 # 1.0.0 (2024-10-30)
 
 
