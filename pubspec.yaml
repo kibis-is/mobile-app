@@ -5,45 +5,45 @@ version: 1.0.0+10000014
 environment:
   sdk: ">=3.3.1 <4.0.0"
 dependencies:
-  flutter:
-    sdk: flutter
-  equatable: ^2.0.5
-  flutter_riverpod: ^2.3.6
-  go_router: ^13.2.2
-  shared_preferences: ^2.2.3
-  flutter_svg: ^2.0.10+1
-  ellipsized_text: ^1.2.0
-  cupertino_icons: ^1.0.6
   algorand_dart: ^1.0.3
-  gradient_borders: ^1.0.0
-  flutter_secure_storage: ^9.0.0
+  base32: ^2.1.3
+  card_swiper: ^3.0.1
+  connectivity_plus: ^6.0.5
   convert: ^3.1.1
   crypto: ^3.0.1
-  flutter_native_splash: ^2.4.0
-  qr_flutter: ^4.1.0
-  top_snackbar_flutter: ^3.1.0
-  pull_to_refresh: ^2.0.0
-  shimmer: ^3.0.0
-  path_provider: ^2.1.3
-  image_gallery_saver: ^2.0.3
-  share_plus: ^9.0.0
-  permission_handler: ^11.3.1
-  infinite_carousel: ^1.1.1
-  vibration: ^1.8.4
-  percent_indicator: ^4.2.3
-  http: ^1.2.2
-  card_swiper: ^3.0.1
-  base32: ^2.1.3
-  connectivity_plus: ^6.0.5
-  flutter_expandable_fab: ^2.2.0
-  dio: ^4.0.6
   cryptography: ^2.7.0
-  mobile_scanner: ^5.1.1
-  intl: ^0.19.0
-  infinite_scroll_pagination: ^4.0.0
+  cupertino_icons: ^1.0.6
+  dio: ^4.0.6
+  ellipsized_text: ^1.2.0
+  equatable: ^2.0.5
+  flutter:
+    sdk: flutter
   flutter_confetti: ^0.3.0
-  reown_walletkit: ^1.0.1
+  flutter_expandable_fab: ^2.2.0
+  flutter_native_splash: ^2.4.0
+  flutter_riverpod: ^2.3.6
+  flutter_secure_storage: ^9.0.0
+  flutter_svg: ^2.0.10+1
+  go_router: ^13.2.2
+  gradient_borders: ^1.0.0
+  http: ^1.2.2
+  image_gallery_saver: ^2.0.3
+  infinite_carousel: ^1.1.1
+  infinite_scroll_pagination: ^4.0.0
+  intl: ^0.19.0
+  mobile_scanner: ^5.1.1
   package_info_plus: ^8.1.0
+  path_provider: ^2.1.3
+  percent_indicator: ^4.2.3
+  permission_handler: ^11.3.1
+  pull_to_refresh: ^2.0.0
+  qr_flutter: ^4.1.0
+  reown_walletkit: ^1.0.1
+  share_plus: ^9.0.0
+  shared_preferences: ^2.2.3
+  shimmer: ^3.0.0
+  top_snackbar_flutter: ^3.1.0
+  vibration: ^1.8.4
 dependency_overrides:
   win32: 5.5.0
 dev_dependencies:
