@@ -35,14 +35,16 @@ jobs:
         id: get_pr_title
         uses: actions/github-script@v7
         with:
+          result-encoding: string
           script: |
-            return await github.rest.pulls.get({
+            const { data } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number
             });
+            return data.title;
       - name: "✅ Validate"
-        run: echo ${{ steps.get_pr_title.outputs.title }} | dart run commitlint_cli
+        run: echo ${{ steps.get_pr_title.outputs.result }} | dart run commitlint_cli
 
   ##
   # build
