@@ -1,3 +1,10 @@
+# [1.0.0-beta.16](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.15...v1.0.0-beta.16) (2024-10-30)
+
+
+### Bug Fixes
+
+* update the version number ([dbbf7fb](https://github.com/kibis-is/mobile-app/commit/dbbf7fb2d37aec90fda98673e2566e274c2e126d))
+
 # [1.0.0-beta.15](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.14...v1.0.0-beta.15) (2024-10-30)
 
 
