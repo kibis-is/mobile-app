@@ -18,7 +18,7 @@ class PinLockStateNotifier extends StateNotifier<bool> {
 
   void loadInitialState() {
     final storageService = ref.read(storageProvider);
-    state = storageService.getTimeoutEnabled();
+    state = storageService.getTimeoutEnabled() ?? true;
   }
 
   void setPasswordLock(bool isEnabled) {
