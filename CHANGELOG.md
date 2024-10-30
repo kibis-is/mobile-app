@@ -1,3 +1,26 @@
+# [1.0.0-beta.14](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.13...v1.0.0-beta.14) (2024-10-30)
+
+
+### Bug Fixes
+
+* correct the testnet url ([9a5f265](https://github.com/kibis-is/mobile-app/commit/9a5f265f393c9fc821596db7b9d3f82add5a7b98))
+* corrected widget padding ([b6f771a](https://github.com/kibis-is/mobile-app/commit/b6f771a8a8afc95cccc65efe50ae0ec2417b9d84))
+* correctly process long integers for displaying balance ([d3d7366](https://github.com/kibis-is/mobile-app/commit/d3d736686b0146cb977d2c9e34d3745c5389aabc))
+* fixed bug where enable password switch and the provider were not in sync ([6865299](https://github.com/kibis-is/mobile-app/commit/68652993bb5a52f67ada18f438d2792b6788d467))
+* fixed bug where it would not remember the preference on asking for pin code ([1a603de](https://github.com/kibis-is/mobile-app/commit/1a603de35a6c71d22a5190a6b8ec7e59d2de9295))
+* fixed issue wjere user preferences were not being set correctly on startup ([05e9914](https://github.com/kibis-is/mobile-app/commit/05e991414c0600db7f87cd442b2946d011084705))
+* forgot to check in this file for previous fix. ([6642754](https://github.com/kibis-is/mobile-app/commit/66427541c048e966e0e6d84a68294871500a3c6c))
+* prefetch authentication details from storage on pinpad initialisation ([2adfe32](https://github.com/kibis-is/mobile-app/commit/2adfe327218b13fe54b895892638f07ba90524c6))
+* refactored app init functions ([b1cde4e](https://github.com/kibis-is/mobile-app/commit/b1cde4e86869cba843bf26461f5a52ba59b35a92))
+
+
+### Features
+
+* can now opt into arc-200 assets ([ce2b36c](https://github.com/kibis-is/mobile-app/commit/ce2b36ce3f7baec01b8b7c19f95d244644e7a7dc))
+* can now search for arc200 assets by name ([da178cc](https://github.com/kibis-is/mobile-app/commit/da178cc90a989bc15c1480230c9e20bae78ff1b9))
+* now correctly opting in to arc200 assets ([012228a](https://github.com/kibis-is/mobile-app/commit/012228ae6007ccff886853e87afeec4277d2a06b))
+* Now showing visual difference in watch accounts on account list screen ([c159c89](https://github.com/kibis-is/mobile-app/commit/c159c8977638d66dcfa3b539351322dbb9d8134e))
+
 # [1.0.0-beta.13](https://github.com/kibis-is/mobile-app/compare/v1.0.0-beta.12...v1.0.0-beta.13) (2024-10-24)
 
 
