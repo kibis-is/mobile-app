@@ -1,1 +1,1 @@
-const int LENGTH_ENCODE_BYTE_SIZE = 2;
+const int lengthEncodeByteSize = 2;

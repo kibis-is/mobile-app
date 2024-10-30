@@ -36,14 +36,11 @@ class MultipartScanState {
 class MultipartScanNotifier extends StateNotifier<MultipartScanState> {
   MultipartScanNotifier() : super(MultipartScanState());
 
-  // Getter for scanned parts
   Map<String, List<MapEntry<String, String>>> get scannedParts =>
       state.scannedParts;
 
-  // Getter for total parts
   int get totalParts => state.totalParts;
 
-  // Getter to check if the scanning is complete
   bool get isComplete => state.isComplete;
 
   void addPart(

@@ -32,7 +32,6 @@ class LoadingState {
 class LoadingStateNotifier extends StateNotifier<LoadingState> {
   Timer? _timer;
 
-  // Predefined follow-up messages
   final List<String> _followUpMessages = [
     "Almost there",
     "Hang in there",
@@ -50,7 +49,6 @@ class LoadingStateNotifier extends StateNotifier<LoadingState> {
     int duration = 5000,
     int totalTime = 30000,
   }) {
-    // Cancel any existing timers
     _cancelTimers();
 
     state = LoadingState(
@@ -74,7 +72,6 @@ class LoadingStateNotifier extends StateNotifier<LoadingState> {
         Timer.periodic(const Duration(milliseconds: stepDuration), (timer) {
       elapsedTime += stepDuration;
 
-      // Update progress if applicable
       if (withProgressBar && state.progress != null) {
         double newProgress = state.progress! + stepProgress;
         if (newProgress >= 1.0 || !state.isLoading) {
@@ -86,14 +83,12 @@ class LoadingStateNotifier extends StateNotifier<LoadingState> {
         }
       }
 
-      // Update message rotation
       if (elapsedTime % messageInterval == 0) {
         int messageIndex =
             (elapsedTime ~/ messageInterval) % _followUpMessages.length;
         state = state.copyWith(message: _followUpMessages[messageIndex]);
       }
 
-      // Stop timers after total time or if loading has stopped
       if (elapsedTime >= totalTime || !state.isLoading) {
         _cancelTimers();
       }

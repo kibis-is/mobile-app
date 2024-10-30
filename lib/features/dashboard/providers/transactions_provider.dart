@@ -110,11 +110,9 @@ class TransactionsNotifier
                 ''
             : transaction.sender;
 
-        // Check if otherPartyAddress exists in contacts
         final contact = contacts.firstWhereOrNull(
             (contact) => contact.publicKey == otherPartyAddress);
-        final displayAddress =
-            contact?.name ?? otherPartyAddress; // Use contact name if available
+        final displayAddress = contact?.name ?? otherPartyAddress;
 
         final note = utf8.decode(base64.decode(transaction.note ?? ''));
         final type = transaction.type;
@@ -134,7 +132,7 @@ class TransactionsNotifier
         transactionItems.add(TransactionItem(
           transaction: transaction,
           direction: direction,
-          otherPartyAddress: displayAddress, // Show contact name if exists
+          otherPartyAddress: displayAddress,
           amount: assetId != null
               ? assetAmount.toString()
               : amountInAlgos.toString(),
@@ -155,6 +153,5 @@ class TransactionsNotifier
 
   void reset() {
     state = const AsyncValue.data([]);
-    // No need to reset nextToken here
   }
 }

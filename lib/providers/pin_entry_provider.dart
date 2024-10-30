@@ -69,7 +69,6 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
               .read(loadingProvider.notifier)
               .startLoading(message: _getOverlayText(mode));
 
-          // Use passed variables directly
           if (activeAccountId == null) {
             throw Exception('No active account found.');
           }

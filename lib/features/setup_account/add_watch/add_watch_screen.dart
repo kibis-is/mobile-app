@@ -51,9 +51,7 @@ class AddWatchScreen extends ConsumerWidget {
               onTrailingPressed: () {
                 publicAddressController.clear();
               },
-              onChanged: (text) {
-                // Handle text change if needed
-              },
+              onChanged: (text) {},
             ),
             const SizedBox(height: kScreenPadding),
           ],
@@ -85,7 +83,6 @@ class AddWatchScreen extends ConsumerWidget {
   Future<void> _addWatchAccount(
       BuildContext context, WidgetRef ref, String publicAddress) async {
     try {
-      // Validate the public address
       final isValid = _isValidAlgorandAddress(publicAddress);
       if (!isValid) {
         showCustomSnackBar(
@@ -96,12 +93,10 @@ class AddWatchScreen extends ConsumerWidget {
         return;
       }
 
-      // Store the watch account's public address in the temporary account provider
       await ref
           .read(temporaryAccountProvider.notifier)
           .createWatchAccount(publicAddress);
 
-      // Navigate to the account name setup page
       if (!context.mounted) return;
       GoRouter.of(context).push(accountFlow == AccountFlow.setup
           ? '/setup/setupNameAccount'

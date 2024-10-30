@@ -27,8 +27,7 @@ Future<dynamic> customBottomSheet({
           final double maxHeight = constraints.maxHeight * 0.9;
           return Container(
             constraints: BoxConstraints(
-              maxHeight:
-                  maxHeight, // Prevent sheet from growing beyond 90% of screen
+              maxHeight: maxHeight,
             ),
             padding: const EdgeInsets.symmetric(
                 horizontal: kScreenPadding * 2, vertical: kScreenPadding),
@@ -81,13 +80,11 @@ Widget _buildItemList(
   double maxHeight,
 ) {
   return ConstrainedBox(
-    // Constrain the height to the available space to ensure scrolling if needed
     constraints: BoxConstraints(
-      maxHeight:
-          maxHeight * 0.7, // The list can take up 70% of the available height
+      maxHeight: maxHeight * 0.7,
     ),
     child: ListView.builder(
-      shrinkWrap: true, // Ensure the list shrinks when few items are present
+      shrinkWrap: true,
       itemCount: items.length,
       itemBuilder: (BuildContext context, int index) {
         return _buildListItem(context, items[index], onPressed);

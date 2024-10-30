@@ -89,7 +89,7 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
       }).toList();
     } catch (e) {
       debugPrint('Error fetching ARC-0200 assets: $e');
-      return []; // Return an empty list in case of errors
+      return [];
     }
   }
 }

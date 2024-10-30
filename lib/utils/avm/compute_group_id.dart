@@ -37,18 +37,20 @@ Uint8List? computeGroupID(List<Map<String, dynamic>> transactions) {
     return null;
   }
 
-  if (transactions.length > MAX_TRANSACTION_GROUP_SIZE) {
-    throw AVMMaxTransactionSizeException();
+  if (transactions.length > maxTransactionGroupSize) {
+    throw AvmMaxTransactionSizeException();
   }
 
   // compute the the transaction ids
-  transactionIDBytes = transactions.map((value) => Uint8List.fromList(sha512256.convert(Encoder.encodeMessagePack(value)).bytes)).toList();
+  transactionIDBytes = transactions
+      .map((value) => Uint8List.fromList(
+          sha512256.convert(Encoder.encodeMessagePack(value)).bytes))
+      .toList();
 
   return Uint8List.fromList(sha512256.convert([
-      ...utf8.encode(TRANSACTION_GROUP_PREFIX), // add the "TG" prefix as bytes
-      ...Encoder.encodeMessagePack({
-        'txlist': transactionIDBytes,
-      })
-    ]).bytes
-  );
+    ...utf8.encode(transactionGroupPrefix), // add the "TG" prefix as bytes
+    ...Encoder.encodeMessagePack({
+      'txlist': transactionIDBytes,
+    })
+  ]).bytes);
 }

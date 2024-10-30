@@ -11,7 +11,6 @@ import 'package:kibisis/theme/text_theme.dart';
 
 String fontFamily = 'Nunito';
 
-// Light Theme
 final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
   fontFamily: fontFamily,
@@ -54,7 +53,6 @@ final ThemeData lightTheme = ThemeData(
   ),
 );
 
-// Dark Theme
 final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   fontFamily: fontFamily,

@@ -215,7 +215,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
           childrenOffset: const Offset(5, 0),
           children: [
-            if (hasPrivateKey) // Show the send button if the account has a private key
+            if (hasPrivateKey)
               CustomFabChild(
                 icon: AppIcons.send,
                 backgroundColor: context.colorScheme.secondary,

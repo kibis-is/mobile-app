@@ -1,10 +1,10 @@
 import 'package:kibisis/constants/avm.dart';
 
-class AVMMaxTransactionSizeException implements Exception {
+class AvmMaxTransactionSizeException implements Exception {
   final String? message;
-  final String name = 'AVMMaxTransactionSizeException';
+  final String name = 'AvmMaxTransactionSizeException';
 
-  AVMMaxTransactionSizeException({this.message});
+  AvmMaxTransactionSizeException({this.message});
 
   @override
   String toString() {
@@ -12,6 +12,6 @@ class AVMMaxTransactionSizeException implements Exception {
       return '$name: $message';
     }
 
-    return '$name: transaction group size exceeds the maximum size of "$MAX_TRANSACTION_GROUP_SIZE"';
+    return '$name: transaction group size exceeds the maximum size of "$maxTransactionGroupSize"';
   }
 }

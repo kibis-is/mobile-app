@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
-import 'package:kibisis/providers/accounts_list_provider.dart'; // Ensure accounts provider is imported
+import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -114,7 +114,7 @@ class TransactionItem extends ConsumerWidget {
                           ),
                         ),
                         EllipsizedText(
-                          displayName, // Ensure we handle null safely
+                          displayName,
                           type: EllipsisType.middle,
                           ellipsis: '...',
                           style: context.textTheme.bodyMedium,

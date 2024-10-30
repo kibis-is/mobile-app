@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
@@ -11,13 +13,22 @@ final balanceProvider =
 class BalanceNotifier extends StateNotifier<AsyncValue<double>> {
   final Ref ref;
   final String publicAddress;
+  Timer? _timer;
 
   BalanceNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
+    _startOrResetTimer();
+  }
+
+  void _startOrResetTimer() {
+    _timer?.cancel();
+    _timer =
+        Timer.periodic(const Duration(seconds: 30), (_) => _fetchBalance());
     _fetchBalance();
   }
 
   Future<void> _fetchBalance() async {
+    debugPrint('Fetching balance...');
     try {
       final balanceStr = await ref
           .read(algorandServiceProvider)
@@ -31,6 +42,16 @@ class BalanceNotifier extends StateNotifier<AsyncValue<double>> {
         state = AsyncValue.error(e, stackTrace);
       }
     }
+  }
+
+  void manualFetchBalance() {
+    _startOrResetTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   void reset() {

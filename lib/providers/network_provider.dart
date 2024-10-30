@@ -35,7 +35,6 @@ final networkOptionsProvider = Provider<List<SelectItem>>((ref) {
   }).toList();
 });
 
-// Define a simple global function for handling network change messages
 void Function(String)? globalNetworkChangeHandler;
 
 final networkProvider =
