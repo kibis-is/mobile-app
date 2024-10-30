@@ -17,20 +17,32 @@ jobs:
       - name: "🔧 Setup"
         uses: ./.github/actions/use-flutter-dependencies
 
+
   ##
   # validation
   ##
 
   validate_pr_title:
     name: "Validate PR Title"
+    needs: [install]
     runs-on: ubuntu-latest
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
       - name: "🔧 Setup"
         uses: ./.github/actions/use-flutter-dependencies
+      - name: "📥 Get PR Title"
+        id: get_pr_title
+        uses: actions/github-script@v7
+        with:
+          script: |
+            return await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
       - name: "✅ Validate"
-        run: echo ${{ github.event.pull_request.title }} | dart run commitlint_cli
+        run: echo ${{ steps.get_pr_title.outputs.title }} | dart run commitlint_cli
 
   ##
   # build
