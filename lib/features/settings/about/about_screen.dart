@@ -30,7 +30,7 @@ class AboutScreen extends StatelessWidget {
                   width: kScreenPadding,
                 ),
                 Text(
-                  kVersionNumber,
+                  'v$kVersionNumber',
                   style: context.textTheme.displayMedium,
                 ),
               ],

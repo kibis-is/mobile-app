@@ -34,7 +34,7 @@ class WelcomeScreen extends ConsumerWidget {
                   style: context.textTheme.headlineMedium,
                 ),
                 Text(
-                  kVersionNumber,
+                  'v$kVersionNumber',
                   style: context.textTheme.bodySmall,
                 ),
               ],
