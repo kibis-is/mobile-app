@@ -14,6 +14,6 @@ lane :production do
         aab: File.expand_path('../..', __dir__) + '/build/app/outputs/bundle/release/app-release.aab',
         json_key: File.expand_path('../..', __dir__) + '/play_store_credentials.json',
         release_status: 'draft',
-        track: 'production'
+        track: 'open' # TODO: change to 'production' track when launching
     )
 end
