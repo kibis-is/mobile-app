@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/pin_pad/providers/pin_title_provider.dart';
+import 'package:kibisis/providers/platform_info/provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class WelcomeScreen extends ConsumerWidget {
@@ -16,6 +17,8 @@ class WelcomeScreen extends ConsumerWidget {
     String kibisisLogo = Theme.of(context).brightness == Brightness.dark
         ? 'assets/images/kibisis-logo-dark.svg'
         : 'assets/images/kibisis-logo-light.svg';
+    final platformInfo = ref.watch(platformInfoProvider);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(kScreenPadding * 2),
@@ -34,7 +37,7 @@ class WelcomeScreen extends ConsumerWidget {
                   style: context.textTheme.headlineMedium,
                 ),
                 Text(
-                  kVersionNumber,
+                  'v${platformInfo.version}',
                   style: context.textTheme.bodySmall,
                 ),
               ],
