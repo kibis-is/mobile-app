@@ -93,7 +93,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, _) {
-        // Watch sharedPreferencesProvider to delay build until prefs are initialized
+        // setup watch on providers
         final sharedPreferences = ref.watch(sharedPreferencesProvider);
         final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
         final isConnected = ref.watch(connectivityProvider);
