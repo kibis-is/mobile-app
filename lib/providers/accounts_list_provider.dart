@@ -73,7 +73,7 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
   Future<void> updateAccountName(String accountId, String accountName) async {
     final storageService = ref.read(storageProvider);
     await storageService.setAccountData(accountId, 'accountName', accountName);
-    await loadAccounts(); // Reload accounts to reflect the name change
+    await loadAccounts();
   }
 
   List<Map<String, String>> getAccountsExcludingActive(String? activeAccount) {

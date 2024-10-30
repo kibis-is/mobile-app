@@ -80,7 +80,6 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
 
         state = AsyncValue.data(_filteredNfts());
 
-        // Cache the NFTs locally
         final storageService = ref.read(storageProvider);
         await storageService.setNFTsForAccount(publicAddress, _allNfts);
       } else {
@@ -98,7 +97,7 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
 
   void loadMoreNFTs({int limit = 20}) async {
     if (_nextToken != null && !_isLoadingMore) {
-      await fetchNFTs(limit: limit); // Fetch more NFTs with limit
+      await fetchNFTs(limit: limit);
     }
   }
 

@@ -55,7 +55,6 @@ class AssetsNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
           .toList();
       _allAssets = standardCombinedAssets;
 
-      // Fetch ARC-0200 assets if on VOI network
       if (network?.value.startsWith('network-voi') ?? false) {
         final arc200Service = Arc200Service(ref);
         final activeArc200Assets =

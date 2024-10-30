@@ -1,4 +1,3 @@
-// Common ListTileThemeData
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
 

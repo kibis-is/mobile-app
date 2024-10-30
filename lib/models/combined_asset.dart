@@ -77,7 +77,6 @@ class CombinedAssetParameters {
       creator: tokenDetails['creator'] ?? 'Unknown',
       name: tokenDetails['name'] ?? 'Unknown',
       unitName: tokenDetails['symbol'] ?? 'Unknown',
-      // ARC200 tokens don't have some of these properties, so we set them to null or reasonable defaults.
       clawback: '0',
       defaultFrozen: false,
       freeze: null,

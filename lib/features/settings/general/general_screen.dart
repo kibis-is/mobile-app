@@ -11,7 +11,7 @@ import 'package:kibisis/utils/app_reset_util.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class GeneralScreen extends ConsumerWidget {
-  static const String title = 'General'; // Use const for compile-time constants
+  static const String title = 'General';
   const GeneralScreen({super.key});
 
   @override
