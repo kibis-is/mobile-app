@@ -1,0 +1,6 @@
+1.0.1 (2024-10-30)
+
+
+Bug Fixes
+
+* release to beta track - open testing on play store (#17) (aba59b2)
