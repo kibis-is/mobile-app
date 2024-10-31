@@ -13,13 +13,14 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "node ./scripts/update-version.mjs ${nextRelease.version}"
+        "prepareCmd": "node ./scripts/update-version.mjs ${nextRelease.version} && node ./scripts/create-store-release-notes.mjs ${nextRelease.version} ${nextRelease.notes}"
       }
     ],
     [
       "@semantic-release/git",
       {
         "assets": [
+          "android/fastlane/metadata/**",
           "CHANGELOG.md",
           "pubspec.yaml"
         ],

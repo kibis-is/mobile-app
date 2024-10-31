@@ -12,7 +12,7 @@
  * * patch: the minor version - X.X.<patch>
  * * pre_release_index: is the optional pre-release number that may proceed the version - X.X.X-beta.<pre_release_index>
  *
- * @param {string} version - The semantic version for the release. E.g. 1.0.0, 1.0.2-beta.2, 2.0.3-alpha.5.
+ * @param {string} version - The semantic version for the release. E.g. `1.0.0`, `1.0.2-beta.2`, `2.0.3-alpha.5`.
  * @returns {{buildNumber: number, version: string} | null} An object containing the build number and the base semantic
  * version. If no version is supplied or the version is invalid, null is returned.
  */

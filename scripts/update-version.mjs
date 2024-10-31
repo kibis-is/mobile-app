@@ -5,8 +5,14 @@ import { resolve } from 'node:path';
 import parseVersion from './parse-version.mjs';
 
 /**
- * Updates the pubspec.yaml "version" property with the supplied semantic version.
- * @param {string} version - The semantic version for the release. E.g. 1.0.0, 1.0.2-beta.2, 2.0.3-alpha.5.
+ * Updates the pubspec.yaml `version` property with the supplied semantic version.
+
+ * **Example:**
+ * ```
+ * // using semantic-release
+ * node update-version.mjs ${nextRelease.version}
+ * ```
+ * @param {string} version - The semantic version for the release. E.g. `1.0.0`, `1.0.2-beta.2`, `2.0.3-alpha.5`.
  */
 function main(version) {
   const _version = parseVersion(version);
