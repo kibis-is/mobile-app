@@ -27,7 +27,7 @@ jobs:
       - name: "🔧 Setup Node"
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '20.18.0'
       - name: "📦 Install"
         run: |
           yarn add semantic-release @semantic-release/{changelog,commit-analyzer,exec,git,github,release-notes-generator}

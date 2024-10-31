@@ -9,7 +9,7 @@
 </h1>
 
 <h4 align="center">
-  The wallet for your lifestyle.
+  A wallet for your lifestyle.
 </h4>
 
 <p align="center">
@@ -179,8 +179,8 @@ flutter build <apk|aab> --release
 ```
 
 3. The APK or AAB will use the signing keys from step 2 and add the file.
-   i. APK builds will be in: `build/app/outputs/apk/release/app-release.apk`
-   ii. AAB builds will be in: `build/app/outputs/bundle/release/app-release.aab`
+   1. APK builds will be in: `build/app/outputs/apk/release/app-release.apk`
+   2. AAB builds will be in: `build/app/outputs/bundle/release/app-release.aab`
 
 > 🚨 **WARNING:** The `dev` Doppler configs contain "dummy" upload signing keys and CANNOT be used to upload to the Play Store.
 
@@ -273,7 +273,7 @@ Coming soon...
 | `flutter run`                        | Runs the app locally.                                                                                                                                                                                     |
 | `flutter build <apk\|aab> --release` | Builds an Android APK/AAB to `build/app/outputs/bundle/release/app-release.<apk\|aab>`. NOTE: You will need a signing key, this can be acquired by following the steps in [4.4.1. Android](#441-android). |
 | `bundle exec fastlane <lane>`        | Uploads a mobile artifact to the Play Store/AppStore based on the lane, where `lane` is either `beta` or `production`.                                                                                    |
-| `dart run flutter_launcher_icons`     | Creates the launcher and store icons for all the apps (Android is excluded. See [](#)).                                                                                                                   |
+| `dart run flutter_launcher_icons`    | Creates the launcher and store icons for all the apps (Android is excluded.).                                                                                                                             |
 
 See the [Flutter CLI](https://docs.flutter.dev/reference/flutter-cli#flutter-commands) reference for a full list of available commands.
 
