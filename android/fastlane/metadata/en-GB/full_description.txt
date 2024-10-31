@@ -1,0 +1,23 @@
+Kibisis is more than just a wallet. It is your gateway to a secure and self-custodial lifestyle.
+
+Why Choose Kibisis?
+
+Your Security Is Important - Kibisis uses the best-in-class security techniques to insure your accounts are secure. We are firmly committed to empowering the individual, so Kibisis is a fully self-custodial wallet and will never transfer your private keys from your device.
+
+Your Assets In One Place - Kibisis supports a wide range of asset types and we believe accessing your assets should not be difficult. That is why Kibisis endeavors to make this process a rich and rewarding experience. We always strive to work with the latest dApps to achieve this rich experience.
+
+Your Payments Made Easy - Kibisis will always be there so you can make, or take, payments seamlessly.
+
+Your Online Identity - A wallet is more than just a place to keep your assets; it is your identity. We see your wallet as a way to prove your identity without having store your credentials in the cloud. You should own your identity.
+
+Continuous Innovation - The world of blockchain is dynamic, and so is Kibisis. Our team is dedicated to continuously improving and expanding the features offered, ensuring that you always have access to the latest advancements in the AVM space.
+
+Technical Features:
+* Algorand and Voi support.
+* Self-custodial - private keys are stored on your device.
+* AVM Standard Asset (ASA) support.
+* ARC-0200 asset support (smart contract based assets).
+* ARC-0072 support (smart contract based NFTs).
+* Reown (formerly WalletConnect) support.
+
+Empower your AVM journey with Kibisis – the lifestyle wallet that brings simplicity, security, and utility to your fingertips.
