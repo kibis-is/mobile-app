@@ -179,8 +179,8 @@ flutter build <apk|aab> --release
 ```
 
 3. The APK or AAB will use the signing keys from step 2 and add the file.
-   i. APK builds will be in: `build/app/outputs/apk/release/app-release.apk`
-   ii. AAB builds will be in: `build/app/outputs/bundle/release/app-release.aab`
+   1. APK builds will be in: `build/app/outputs/apk/release/app-release.apk`
+   2. AAB builds will be in: `build/app/outputs/bundle/release/app-release.aab`
 
 > 🚨 **WARNING:** The `dev` Doppler configs contain "dummy" upload signing keys and CANNOT be used to upload to the Play Store.
 
