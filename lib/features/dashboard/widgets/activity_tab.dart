@@ -6,9 +6,14 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
+import 'package:kibisis/providers/active_transaction_provider.dart';
+import 'package:kibisis/routing/named_routes.dart';
+import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:kibisis/features/view_transaction/view_transaction_screen.dart';
 
 class ActivityTab extends ConsumerStatefulWidget {
   const ActivityTab({super.key});
@@ -19,32 +24,63 @@ class ActivityTab extends ConsumerStatefulWidget {
 
 class _ActivityTabState extends ConsumerState<ActivityTab> {
   static const _pageSize = 5;
-  late final RefreshController _refreshController;
+  late RefreshController _wideScreenRefreshController;
+  late RefreshController _narrowScreenRefreshController;
   final PagingController<String?, TransactionItem> _pagingController =
       PagingController(firstPageKey: null);
   String? _previousPublicAddress;
+  bool? _isWideScreen;
 
   @override
   void initState() {
     super.initState();
-    _refreshController = RefreshController(initialRefresh: false);
+    _initializeControllers();
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
   }
 
+  void _initializeControllers() {
+    _wideScreenRefreshController = RefreshController(initialRefresh: false);
+    _narrowScreenRefreshController = RefreshController(initialRefresh: false);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final isWideScreen = MediaQuery.of(context).size.width > 600;
+
+    // Detect screen layout change and refresh the appropriate controller
+    if (_isWideScreen != isWideScreen) {
+      _isWideScreen = isWideScreen;
+
+      // Dispose old controllers and create new ones for fresh state
+      _disposeControllers();
+      _initializeControllers();
+    }
+  }
+
   @override
   void dispose() {
+    _disposeControllers();
     _pagingController.dispose();
-    _refreshController.dispose();
     super.dispose();
+  }
+
+  void _disposeControllers() {
+    _wideScreenRefreshController.dispose();
+    _narrowScreenRefreshController.dispose();
   }
 
   void _onRefresh() {
     final publicAddress = ref.read(accountProvider).account?.address ?? '';
     ref.invalidate(transactionsProvider(publicAddress));
     _pagingController.refresh();
-    _refreshController.refreshCompleted();
+    if (_isWideScreen == true) {
+      _wideScreenRefreshController.refreshCompleted();
+    } else {
+      _narrowScreenRefreshController.refreshCompleted();
+    }
   }
 
   Future<void> _fetchPage(String? pageKey) async {
@@ -70,6 +106,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQueryHelper = MediaQueryHelper(context);
     final publicAddress = ref.watch(accountProvider).account?.address ?? '';
     if (_previousPublicAddress != publicAddress) {
       _previousPublicAddress = publicAddress;
@@ -78,26 +115,80 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
 
     final transactionsAsync = ref.watch(transactionsProvider(publicAddress));
 
-    return CustomPullToRefresh(
-      refreshController: _refreshController,
-      onRefresh: _onRefresh,
-      child: transactionsAsync.when(
-        data: (transactions) => _buildTransactionList(),
-        loading: () => _buildShimmerLoading(context),
-        error: (error, _) => _buildCenteredMessage(
-          context,
-          title: 'Error loading transactions',
-          subtitle: error.toString(),
+    if (mediaQueryHelper.isWideScreen()) {
+      final activeTransaction = ref.watch(activeTransactionProvider);
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: mediaQueryHelper.getDynamicFlex()[0],
+            child: CustomPullToRefresh(
+              refreshController: _wideScreenRefreshController,
+              onRefresh: _onRefresh,
+              child: transactionsAsync.when(
+                data: (transactions) => _buildTransactionList(),
+                loading: () => _buildShimmerLoading(context),
+                error: (error, _) => _buildCenteredMessage(
+                  context,
+                  title: 'Error loading transactions',
+                  subtitle: error.toString(),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: mediaQueryHelper.getDynamicFlex()[1],
+            child: activeTransaction != null
+                ? const ViewTransactionScreen(
+                    isPanelMode: true,
+                  )
+                : const Center(
+                    child: Text('Select a transaction to view details'),
+                  ),
+          ),
+        ],
+      );
+    } else {
+      return CustomPullToRefresh(
+        refreshController: _narrowScreenRefreshController,
+        onRefresh: _onRefresh,
+        child: transactionsAsync.when(
+          data: (transactions) => _buildTransactionList(),
+          loading: () => _buildShimmerLoading(context),
+          error: (error, _) => _buildCenteredMessage(
+            context,
+            title: 'Error loading transactions',
+            subtitle: error.toString(),
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   Widget _buildTransactionList() {
     return PagedListView<String?, TransactionItem>(
       pagingController: _pagingController,
       builderDelegate: PagedChildBuilderDelegate<TransactionItem>(
-        itemBuilder: (context, item, index) => item,
+        itemBuilder: (context, item, index) {
+          final mediaQueryHelper = MediaQueryHelper(context);
+          return TransactionItem(
+            transaction: item.transaction,
+            direction: item.direction,
+            otherPartyAddress: item.otherPartyAddress,
+            amount: item.amount,
+            note: item.note,
+            type: item.type,
+            assetName: item.assetName,
+            onPressed: () {
+              ref
+                  .read(activeTransactionProvider.notifier)
+                  .setActiveTransaction(item.transaction);
+              if (!mediaQueryHelper.isWideScreen()) {
+                context.pushNamed(viewTransactionRouteName);
+              }
+            },
+          );
+        },
         firstPageErrorIndicatorBuilder: (context) => _buildCenteredMessage(
           context,
           title: 'No Transactions Found',

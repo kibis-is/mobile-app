@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -44,6 +45,8 @@ class ContactsListNotifier extends StateNotifier<ContactsListState> {
     try {
       final storageService = ref.read(storageProvider);
       final contacts = await storageService.getContacts();
+
+      debugPrint('loadContacts() length: ${contacts.length}');
 
       state = state.copyWith(contacts: contacts, isLoading: false);
     } catch (e) {

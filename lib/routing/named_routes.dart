@@ -21,6 +21,7 @@ const String accountListRouteName = 'accountList';
 const String sendTransactionRouteName = 'sendTransaction';
 const String addAssetRouteName = 'addAsset';
 const String viewAssetRouteName = 'viewAsset';
+const String viewTransactionRouteName = 'viewTransaction';
 const String sendTransactionQrScannerRouteName = 'sendTransactionQrScanner';
 const String qrScannerRouteName = 'qrScanner';
 const String viewNftRouteName = 'viewNft';

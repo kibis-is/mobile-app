@@ -19,6 +19,7 @@ class TransactionItem extends ConsumerWidget {
   final String note;
   final String type;
   final String? assetName;
+  final VoidCallback? onPressed;
 
   const TransactionItem({
     super.key,
@@ -29,26 +30,30 @@ class TransactionItem extends ConsumerWidget {
     required this.note,
     required this.type,
     this.assetName,
+    this.onPressed,
   });
   Widget _getTransactionIcon(
       BuildContext context, bool isDarkMode, String network) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: direction == TransactionDirection.outgoing
-            ? context.colorScheme.error
-            : direction == TransactionDirection.incoming
-                ? context.colorScheme.secondary
-                : context.colorScheme.primary,
-      ),
-      child: AppIcons.icon(
-        icon: direction == TransactionDirection.outgoing
-            ? AppIcons.outgoing
-            : direction == TransactionDirection.incoming
-                ? AppIcons.incoming
-                : AppIcons.sendToSelf,
-        size: AppIcons.xlarge,
-        color: Colors.white,
+    return Hero(
+      tag: '${transaction.id}',
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: direction == TransactionDirection.outgoing
+              ? context.colorScheme.error
+              : direction == TransactionDirection.incoming
+                  ? context.colorScheme.secondary
+                  : context.colorScheme.primary,
+        ),
+        child: AppIcons.icon(
+          icon: direction == TransactionDirection.outgoing
+              ? AppIcons.outgoing
+              : direction == TransactionDirection.incoming
+                  ? AppIcons.incoming
+                  : AppIcons.sendToSelf,
+          size: AppIcons.xlarge,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -85,7 +90,8 @@ class TransactionItem extends ConsumerWidget {
                     ),
                   ),
                   child: ListTile(
-                    onTap: () {
+                    onTap: onPressed,
+                    onLongPress: () {
                       Clipboard.setData(
                         ClipboardData(text: transaction.id ?? 'No ID'),
                       );
