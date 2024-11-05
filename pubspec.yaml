@@ -65,8 +65,9 @@ flutter_native_splash:
   web: true
   fullscreen: true
 flutter_launcher_icons:
-  android: false # custom made using android studio's image asset tool
-  ios: "assets/icons/icon@1024x1024.png"
+  android: true
+  ios: true
+  image_path: "assets/icons/icon@1024x1024.png"
   web:
     generate: true
     image_path: "assets/icons/icon@1024x1024.png"
@@ -75,7 +76,7 @@ flutter_launcher_icons:
   windows:
     generate: true
     image_path: "assets/icons/icon@1024x1024.png"
-    icon_size: 48 # min:48, max:256, default: 48
+    icon_size: 48
   macos:
     generate: true
     image_path: "assets/icons/icon@1024x1024.png"
