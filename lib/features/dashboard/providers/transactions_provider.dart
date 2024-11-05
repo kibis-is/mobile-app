@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'dart:convert';
@@ -25,6 +26,8 @@ class TransactionsNotifier
     extends StateNotifier<AsyncValue<List<Transaction>>> {
   final Ref ref;
   final String publicAddress;
+  String? _nextToken;
+  bool _isLoading = false;
 
   TransactionsNotifier(this.ref, this.publicAddress)
       : super(const AsyncValue.loading()) {
@@ -32,34 +35,44 @@ class TransactionsNotifier
   }
 
   Future<void> _init() async {
+    _nextToken = null;
     await getTransactions(isInitial: true);
   }
 
   Future<void> getTransactions({bool isInitial = false}) async {
-    if (publicAddress.isEmpty) {
-      state = const AsyncValue.data([]);
-      return;
-    }
+    if (publicAddress.isEmpty || _isLoading) return;
 
     try {
+      _isLoading = true;
       if (isInitial) {
+        _nextToken = null;
         state = const AsyncValue.loading();
       }
 
       final response = await ref.read(algorandServiceProvider).getTransactions(
             publicAddress,
-            limit: 5,
+            limit: 10,
+            nextToken: _nextToken,
           );
 
-      final transactions = response.transactions;
+      _nextToken = response.nextToken;
+      final newTransactions = response.transactions;
+
+      final currentTransactions = state.value ?? [];
+      final uniqueTransactions = [
+        ...currentTransactions,
+        ...newTransactions.where((t) => !currentTransactions.contains(t)),
+      ];
 
       if (mounted) {
-        state = AsyncValue.data(transactions);
+        state = AsyncValue.data(uniqueTransactions);
       }
     } catch (e) {
       if (mounted) {
         state = AsyncValue.error(e, StackTrace.current);
       }
+    } finally {
+      _isLoading = false;
     }
   }
 
@@ -76,82 +89,98 @@ class TransactionsNotifier
             nextToken: pageKey,
           );
 
-      final nextToken = response.nextToken;
-      final transactions = response.transactions;
-
-      List<TransactionItem> transactionItems = [];
-
       final contacts = ref.read(contactsListProvider).contacts;
-
-      for (final transaction in transactions) {
-        TransactionDirection direction;
-
-        if (transaction.type == 'pay' || transaction.type == 'axfer') {
-          final sender = transaction.sender;
-          final receiver =
-              transaction.paymentTransaction?.receiver.toString() ??
-                  transaction.assetTransferTransaction?.receiver.toString() ??
-                  '';
-
-          if (sender == publicAddress && receiver != publicAddress) {
-            direction = TransactionDirection.outgoing;
-          } else if (receiver == publicAddress && sender != publicAddress) {
-            direction = TransactionDirection.incoming;
-          } else {
-            direction = TransactionDirection.unknown;
-          }
-        } else {
-          direction = TransactionDirection.unknown;
-        }
-
-        final otherPartyAddress = direction == TransactionDirection.outgoing
-            ? transaction.paymentTransaction?.receiver.toString() ??
-                transaction.assetTransferTransaction?.receiver.toString() ??
-                ''
-            : transaction.sender;
-
-        final contact = contacts.firstWhereOrNull(
-            (contact) => contact.publicKey == otherPartyAddress);
-        final displayAddress = contact?.name ?? otherPartyAddress;
-
-        final note = utf8.decode(base64.decode(transaction.note ?? ''));
-        final type = transaction.type;
-        final amountInAlgos = transaction.paymentTransaction != null
-            ? Algo.fromMicroAlgos(transaction.paymentTransaction!.amount)
-            : 0.0;
-        final assetId = transaction.assetTransferTransaction?.assetId;
-        final assetAmount = transaction.assetTransferTransaction?.amount ?? 0;
-
-        String? assetName;
-        if (assetId != null) {
-          final asset =
-              await ref.read(algorandServiceProvider).getAssetById(assetId);
-          assetName = asset.params.name;
-        }
-
-        transactionItems.add(TransactionItem(
-          transaction: transaction,
-          direction: direction,
-          otherPartyAddress: displayAddress,
-          amount: assetId != null
-              ? assetAmount.toString()
-              : amountInAlgos.toString(),
-          note: note,
-          type: type,
-          assetName: assetName,
-        ));
-      }
+      final transactionItems =
+          await _buildTransactionItems(response.transactions, contacts);
 
       return PaginatedTransactionItems(
         items: transactionItems,
-        nextToken: nextToken,
+        nextToken: response.nextToken,
       );
-    } catch (e) {
+    } catch (_) {
       return PaginatedTransactionItems(items: [], nextToken: null);
     }
   }
 
+  Future<List<TransactionItem>> _buildTransactionItems(
+      List<Transaction> transactions, List<Contact> contacts) async {
+    List<TransactionItem> transactionItems = [];
+
+    for (final transaction in transactions) {
+      final direction = _getTransactionDirection(transaction);
+      final otherPartyAddress = _getOtherPartyAddress(transaction, direction);
+      final displayAddress = _getDisplayAddress(contacts, otherPartyAddress);
+
+      final note = utf8.decode(base64.decode(transaction.note ?? ''));
+      final amount = _getTransactionAmount(transaction);
+      final assetName = await _getAssetName(transaction);
+
+      transactionItems.add(TransactionItem(
+        transaction: transaction,
+        direction: direction,
+        otherPartyAddress: displayAddress,
+        amount: amount,
+        note: note,
+        type: transaction.type,
+        assetName: assetName,
+      ));
+    }
+
+    return transactionItems;
+  }
+
+  TransactionDirection _getTransactionDirection(Transaction transaction) {
+    if (transaction.type == 'pay' || transaction.type == 'axfer') {
+      final sender = transaction.sender;
+      final receiver = transaction.paymentTransaction?.receiver.toString() ??
+          transaction.assetTransferTransaction?.receiver.toString() ??
+          '';
+
+      if (sender == publicAddress && receiver != publicAddress) {
+        return TransactionDirection.outgoing;
+      } else if (receiver == publicAddress && sender != publicAddress) {
+        return TransactionDirection.incoming;
+      }
+    }
+    return TransactionDirection.unknown;
+  }
+
+  String _getOtherPartyAddress(
+      Transaction transaction, TransactionDirection direction) {
+    return direction == TransactionDirection.outgoing
+        ? transaction.paymentTransaction?.receiver.toString() ??
+            transaction.assetTransferTransaction?.receiver.toString() ??
+            ''
+        : transaction.sender;
+  }
+
+  String _getDisplayAddress(List<Contact> contacts, String address) {
+    return contacts
+            .firstWhereOrNull((contact) => contact.publicKey == address)
+            ?.name ??
+        address;
+  }
+
+  String _getTransactionAmount(Transaction transaction) {
+    return transaction.assetTransferTransaction != null
+        ? transaction.assetTransferTransaction!.amount.toString()
+        : Algo.fromMicroAlgos(transaction.paymentTransaction?.amount ?? 0)
+            .toString();
+  }
+
+  Future<String?> _getAssetName(Transaction transaction) async {
+    final assetId = transaction.assetTransferTransaction?.assetId;
+    if (assetId != null) {
+      final asset =
+          await ref.read(algorandServiceProvider).getAssetById(assetId);
+      return asset.params.name;
+    }
+    return null;
+  }
+
   void reset() {
+    _nextToken = null;
+    _isLoading = false;
     state = const AsyncValue.data([]);
   }
 }
