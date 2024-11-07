@@ -29,6 +29,7 @@ class Arc200Service {
         break;
     }
   }
+
   Future<List<CombinedAsset>> fetchArc200Assets(String publicAddress) async {
     if (baseUrl.isEmpty) {
       debugPrint('No ARC200 assets available for the selected network.');
@@ -40,7 +41,6 @@ class Arc200Service {
       final balancesResponse = await http.get(Uri.parse(balancesUrl));
 
       if (balancesResponse.statusCode != 200) {
-        debugPrint('Failed to load ARC200 balances');
         throw Exception('Failed to load ARC200 balances');
       }
 
@@ -85,7 +85,12 @@ class Arc200Service {
     }
 
     final tokenJson = json.decode(tokenResponse.body);
-    final token = tokenJson['tokens'][0];
+    final token = tokenJson['tokens']?[0];
+
+    if (token == null) {
+      throw Exception('Token details not found for contractId $contractId');
+    }
+
     return token;
   }
 
@@ -130,6 +135,38 @@ class Arc200Service {
     } catch (e) {
       debugPrint('Error searching ARC-0200 assets: $e');
       return [];
+    }
+  }
+
+  Future<BigInt> getArc200Balance({
+    required int contractId,
+    required String publicAddress,
+  }) async {
+    if (baseUrl.isEmpty) {
+      throw Exception('Network not configured for ARC200 operations.');
+    }
+
+    try {
+      final balanceUrl =
+          '$baseUrl/balances?accountId=$publicAddress&contractId=$contractId';
+
+      final response = await http.get(Uri.parse(balanceUrl));
+      if (response.statusCode != 200) {
+        throw Exception(
+            'Failed to fetch ARC200 balance for contract $contractId');
+      }
+
+      final balanceJson = json.decode(response.body);
+      final balanceList = balanceJson['balances'];
+
+      if (balanceList == null || balanceList.isEmpty) {
+        throw Exception('Asset not found for contract $contractId');
+      }
+
+      return BigInt.parse(balanceList[0]['balance']);
+    } catch (e) {
+      debugPrint('Error fetching ARC200 balance for contract $contractId: $e');
+      throw Exception('Failed to fetch balance for ARC200 asset $contractId');
     }
   }
 }

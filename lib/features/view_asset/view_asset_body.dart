@@ -108,12 +108,11 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     final publicAddress = ref.watch(accountProvider).account?.address ?? '';
     final assetsState = ref.watch(assetsProvider(publicAddress));
 
-    bool isOwned = false;
-
-    if (assetsState is AsyncData<List<CombinedAsset>> && assetsState.hasValue) {
-      isOwned =
-          assetsState.value.any((asset) => asset.index == widget.asset.index);
-    }
+    bool isOwned = assetsState.maybeWhen(
+      data: (assets) =>
+          assets.any((asset) => asset.index == widget.asset.index),
+      orElse: () => false,
+    );
 
     return SingleChildScrollView(
       child: Padding(
@@ -333,38 +332,26 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
 
   Future<void> _performOptIn(String privateKey, CombinedAsset activeAsset,
       AlgorandService algorandService) async {
-    final accountId = await ref.read(accountProvider.notifier).getAccountId();
-    final publicAddress =
-        await ref.read(accountProvider.notifier).getPublicAddress();
+    final accountNotifier = ref.read(accountProvider.notifier);
+    final accountId = await accountNotifier.getAccountId();
+    final publicAddress = await accountNotifier.getPublicAddress();
     final storageService = ref.read(storageProvider);
 
     if (accountId == null || publicAddress.isEmpty) {
       throw Exception('Account ID or Public Address is not available');
     }
 
-    switch (activeAsset.assetType) {
-      case AssetType.standard:
-        await algorandService.optInAsset(
-          assetId: activeAsset.index,
-          assetType: AssetType.standard,
-          privateKey: privateKey,
-          accountId: accountId,
-        );
-        break;
-
-      case AssetType.arc200:
-        await algorandService.optInAsset(
-          assetId: activeAsset.index,
-          assetType: AssetType.arc200,
-          privateKey: privateKey,
-          publicAddress: publicAddress,
-          storageService: storageService,
-          accountId: accountId,
-        );
-        break;
-
-      default:
-        throw Exception('Unsupported asset type');
+    try {
+      await algorandService.optInAsset(
+        asset: activeAsset,
+        privateKey: privateKey,
+        accountId: accountId,
+        publicAddress: publicAddress,
+        storageService: storageService,
+      );
+    } catch (e) {
+      debugPrint('Error during opt-in: $e');
+      throw Exception('Failed to opt-in to asset');
     }
   }
 

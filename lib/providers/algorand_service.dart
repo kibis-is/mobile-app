@@ -2,10 +2,13 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/models/arc0200_contract.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/models/arc200_asset_data.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/arc200_service.dart';
 import 'package:kibisis/utils/avm/sign_transaction.dart';
 
 class AlgorandService {
@@ -467,29 +470,56 @@ class AlgorandService {
   }
 
   Future<void> optInAsset({
-    required int assetId,
-    required AssetType assetType,
+    required CombinedAsset asset,
     required String privateKey,
     required String accountId,
-    String? publicAddress,
-    StorageService? storageService,
+    required String publicAddress,
+    required StorageService storageService,
   }) async {
     try {
-      if (assetType == AssetType.standard) {
-        await _optInToASA(assetId, privateKey);
-      } else if (assetType == AssetType.arc200) {
-        if (publicAddress == null || storageService == null) {
-          throw Exception(
-              "Public address and storage service are required for ARC-0200 opt-in.");
-        }
-        await _followArc200Asset(
-            assetId, publicAddress, storageService, accountId);
-      } else {
-        throw Exception('Unsupported asset type');
+      switch (asset.assetType) {
+        case AssetType.standard:
+          await _optInToASA(asset.index, privateKey);
+          break;
+        case AssetType.arc200:
+          await _followArc200Asset(
+            accountId: accountId,
+            asset: asset,
+            storageService: storageService,
+          );
+          break;
+        default:
+          throw UnsupportedError('Unsupported asset type: ${asset.assetType}');
       }
+    } on AlgorandException catch (e) {
+      debugPrint("Algorand-specific error: ${e.message}");
+      rethrow;
     } catch (e) {
-      debugPrint("Failed to opt-in to asset: $e");
-      throw Exception("Failed to opt-in to asset: $e");
+      debugPrint("General error during opt-in: $e");
+      throw Exception("Failed to opt-in to asset");
+    }
+  }
+
+  Future<Arc200AssetData> fetchArc200AssetDetails(
+      int assetId, String publicAddress, Ref ref) async {
+    try {
+      final arc200Service = ref.read(arc200ServiceProvider);
+      final tokenDetails = await arc200Service.fetchArc200TokenDetails(assetId);
+      final balance = await arc200Service.getArc200Balance(
+        contractId: assetId,
+        publicAddress: publicAddress,
+      );
+
+      return Arc200AssetData(
+        contractId: assetId,
+        balance: balance,
+        name: tokenDetails['name'] ?? 'Unknown',
+        symbol: tokenDetails['symbol'] ?? 'N/A',
+        decimals: tokenDetails['decimals'] ?? 0,
+      );
+    } catch (e) {
+      debugPrint('Error fetching ARC-0200 asset details for $assetId: $e');
+      throw Exception('Failed to fetch ARC-0200 asset details');
     }
   }
 
@@ -519,10 +549,29 @@ class AlgorandService {
     }
   }
 
-  Future<void> _followArc200Asset(int assetId, String publicAddress,
-      StorageService storageService, String accountId) async {
-    await storageService.followArc200Asset(accountId, assetId);
-    debugPrint('Following ARC-0200 asset with ID: $assetId');
+  Future<void> _followArc200Asset({
+    required String accountId,
+    required CombinedAsset asset,
+    required StorageService storageService,
+  }) async {
+    try {
+      if (asset.params.name == null || asset.params.unitName == null) {
+        throw ArgumentError('Asset name or unit name is missing');
+      }
+
+      final assetData = Arc200AssetData(
+        contractId: asset.index,
+        balance: BigInt.from(asset.amount),
+        name: asset.params.name!,
+        symbol: asset.params.unitName!,
+        decimals: asset.params.decimals,
+      );
+
+      await storageService.followArc200Asset(accountId, assetData);
+    } catch (e) {
+      debugPrint('Error following ARC-0200 asset: $e');
+      throw Exception('Failed to follow ARC-0200 asset');
+    }
   }
 
   Future<void> transferAsset(
@@ -543,8 +592,6 @@ class AlgorandService {
             await algorand.waitForConfirmation(txId, timeout: 4);
         if (transactionResponse.confirmedRound != null &&
             transactionResponse.confirmedRound! > 0) {
-          debugPrint(
-              "Asset transfer confirmed in round: ${transactionResponse.confirmedRound}");
         } else {
           debugPrint(
               "Asset transfer failed to confirm within the expected rounds.");

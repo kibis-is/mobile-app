@@ -21,6 +21,28 @@ class CombinedAsset {
     required this.amount,
     required this.isFrozen,
   });
+
+  CombinedAsset copyWith({
+    int? index,
+    CombinedAssetParameters? params,
+    int? createdAtRound,
+    bool? deleted,
+    int? destroyedAtRound,
+    AssetType? assetType,
+    int? amount,
+    bool? isFrozen,
+  }) {
+    return CombinedAsset(
+      index: index ?? this.index,
+      params: params ?? this.params,
+      createdAtRound: createdAtRound ?? this.createdAtRound,
+      deleted: deleted ?? this.deleted,
+      destroyedAtRound: destroyedAtRound ?? this.destroyedAtRound,
+      assetType: assetType ?? this.assetType,
+      amount: amount ?? this.amount,
+      isFrozen: isFrozen ?? this.isFrozen,
+    );
+  }
 }
 
 class CombinedAssetParameters {
@@ -84,6 +106,36 @@ class CombinedAssetParameters {
       reserve: null,
       url: null,
       metadataHash: null,
+    );
+  }
+
+  CombinedAssetParameters copyWith({
+    int? total,
+    int? decimals,
+    String? creator,
+    String? clawback,
+    bool? defaultFrozen,
+    String? freeze,
+    String? manager,
+    String? name,
+    String? reserve,
+    String? unitName,
+    String? url,
+    String? metadataHash,
+  }) {
+    return CombinedAssetParameters(
+      total: total ?? this.total,
+      decimals: decimals ?? this.decimals,
+      creator: creator ?? this.creator,
+      clawback: clawback ?? this.clawback,
+      defaultFrozen: defaultFrozen ?? this.defaultFrozen,
+      freeze: freeze ?? this.freeze,
+      manager: manager ?? this.manager,
+      name: name ?? this.name,
+      reserve: reserve ?? this.reserve,
+      unitName: unitName ?? this.unitName,
+      url: url ?? this.url,
+      metadataHash: metadataHash ?? this.metadataHash,
     );
   }
 }

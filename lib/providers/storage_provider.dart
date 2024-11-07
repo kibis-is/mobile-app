@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/models/arc200_asset_data.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/nft.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -235,11 +236,6 @@ class StorageService {
     return _prefs?.getBool('showFrozenAssets');
   }
 
-  Future<void> initialize() async {
-    await SharedPreferences.getInstance();
-    await const FlutterSecureStorage().readAll();
-  }
-
   Future<void> setTransactionLastFetchTime(
       String accountId, int lastFetchTime) async {
     await _prefs?.setInt('lastTransactionFetchTime$accountId', lastFetchTime);
@@ -355,29 +351,60 @@ class StorageService {
     return _prefs?.getBool(_showTestNetworksKey) ?? false;
   }
 
-  Future<void> followArc200Asset(String accountId, int assetId) async {
+  Future<void> followArc200Asset(
+      String accountId, Arc200AssetData assetData) async {
     final followedAssets = await getFollowedArc200Assets(accountId);
-    if (!followedAssets.contains(assetId)) {
-      followedAssets.add(assetId);
+
+    if (!followedAssets
+        .any((asset) => asset.contractId == assetData.contractId)) {
+      followedAssets.add(assetData);
+
       await _prefs?.setStringList(
         '${_arc200FollowedAssetsKey}_$accountId',
-        followedAssets.map((id) => id.toString()).toList(),
+        followedAssets.map((asset) => jsonEncode(asset.toJson())).toList(),
       );
+
+      debugPrint('Added new ARC200 asset: ${assetData.contractId}');
+    } else {
+      debugPrint('ARC200 asset already followed: ${assetData.contractId}');
     }
   }
 
-  Future<void> unfollowArc200Asset(String accountId, int assetId) async {
+  Future<void> unfollowArc200Asset(String accountId, int contractId) async {
     final followedAssets = await getFollowedArc200Assets(accountId);
-    followedAssets.remove(assetId);
-    await _prefs?.setStringList(
-      '${_arc200FollowedAssetsKey}_$accountId',
-      followedAssets.map((id) => id.toString()).toList(),
-    );
+
+    final initialCount = followedAssets.length;
+    followedAssets.removeWhere((asset) => asset.contractId == contractId);
+
+    if (followedAssets.length < initialCount) {
+      await _prefs?.setStringList(
+        '${_arc200FollowedAssetsKey}_$accountId',
+        followedAssets.map((asset) => jsonEncode(asset.toJson())).toList(),
+      );
+      debugPrint('Unfollowed ARC200 asset: $contractId');
+    } else {
+      debugPrint('ARC200 asset not found: $contractId');
+    }
   }
 
-  Future<List<int>> getFollowedArc200Assets(String accountId) async {
-    final followedAssets =
-        _prefs?.getStringList('${_arc200FollowedAssetsKey}_$accountId') ?? [];
-    return followedAssets.map((id) => int.parse(id)).toList();
+  Future<List<Arc200AssetData>> getFollowedArc200Assets(
+      String accountId) async {
+    final storageKey = '${_arc200FollowedAssetsKey}_$accountId';
+    final rawAssets = _prefs?.getStringList(storageKey) ?? [];
+
+    final followedAssets = rawAssets
+        .map((asset) => Arc200AssetData.fromJson(jsonDecode(asset)))
+        .toList();
+    return followedAssets;
+  }
+
+  Future<void> clearAllArc200Assets(String accountId) async {
+    final storageKey = '${_arc200FollowedAssetsKey}_$accountId';
+
+    if (_prefs?.containsKey(storageKey) ?? false) {
+      await _prefs?.remove(storageKey);
+    } else {
+      debugPrint('No ARC-0200 assets to clear for account: $accountId');
+    }
   }
 }
