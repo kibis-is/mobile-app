@@ -236,15 +236,15 @@ class StorageService {
     return _prefs?.getBool('showFrozenAssets');
   }
 
-  Future<void> setTransactionLastFetchTime(
-      String accountId, int lastFetchTime) async {
-    await _prefs?.setInt('lastTransactionFetchTime$accountId', lastFetchTime);
+  Future<void> setTransactionLastViewedTime(String accountId, int time) async {
+    await _prefs?.setInt('lastViewedTime_$accountId', time);
+    final readableTime = DateTime.fromMillisecondsSinceEpoch(time).toLocal();
+    debugPrint('Transaction last viewed time set to: $readableTime');
   }
 
-  Future<int> getTransactionLastFetchTime(String accountId) async {
-    final lastFetchTime =
-        _prefs?.getInt('lastTransactionFetchTime$accountId') ?? 0;
-    return lastFetchTime;
+  Future<int> getTransactionLastViewedTime(String accountId) async {
+    final timestamp = _prefs?.getInt('lastViewedTime_$accountId') ?? 0;
+    return timestamp;
   }
 
   Future<void> setApplicationId(String accountId, String applicationId) async {

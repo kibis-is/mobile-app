@@ -7,6 +7,7 @@ import 'package:kibisis/features/dashboard/providers/transactions_provider.dart'
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_transaction_provider.dart';
+import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/number_shortener.dart';
@@ -87,18 +88,61 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
   Future<void> _fetchPage(String? pageKey) async {
     try {
       final publicAddress = _previousPublicAddress ?? '';
-      final result = await ref
-          .read(transactionsProvider(publicAddress).notifier)
-          .getPaginatedTransactions(pageKey, _pageSize);
-      if (!mounted) return;
-      final newItems = result.items;
-      final nextPageKey = result.nextToken;
+      final storageService = ref.read(storageProvider);
 
-      final isLastPage = nextPageKey == null || newItems.length < _pageSize;
-      if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
+      if (pageKey == null) {
+        final lastViewedTimestamp =
+            await storageService.getTransactionLastViewedTime(publicAddress);
+        final lastViewedTime =
+            DateTime.fromMillisecondsSinceEpoch(lastViewedTimestamp);
+
+        debugPrint('Last viewed time: $lastViewedTime');
+
+        final result = await ref
+            .read(transactionsProvider(publicAddress).notifier)
+            .getPaginatedTransactions(pageKey, _pageSize);
+        if (!mounted) return;
+
+        final newItems = result.items.map((item) {
+          final transactionTime = DateTime.fromMillisecondsSinceEpoch(
+              (item.transaction.roundTime ?? 0) * 1000);
+
+          debugPrint(
+              'Transaction time: $transactionTime | Is new: ${transactionTime.isAfter(lastViewedTime)}');
+
+          final isNew = transactionTime.isAfter(lastViewedTime);
+          return item.copyWith(isNew: isNew);
+        }).toList();
+
+        final nextPageKey = result.nextToken;
+        final isLastPage = nextPageKey == null || newItems.length < _pageSize;
+
+        if (isLastPage) {
+          _pagingController.appendLastPage(newItems);
+        } else {
+          _pagingController.appendPage(newItems, nextPageKey);
+        }
+
+        await storageService.setTransactionLastViewedTime(
+          publicAddress,
+          DateTime.now().millisecondsSinceEpoch,
+        );
       } else {
-        _pagingController.appendPage(newItems, nextPageKey);
+        final result = await ref
+            .read(transactionsProvider(publicAddress).notifier)
+            .getPaginatedTransactions(pageKey, _pageSize);
+        if (!mounted) return;
+
+        final newItems = result.items;
+
+        final nextPageKey = result.nextToken;
+        final isLastPage = nextPageKey == null || newItems.length < _pageSize;
+
+        if (isLastPage) {
+          _pagingController.appendLastPage(newItems);
+        } else {
+          _pagingController.appendPage(newItems, nextPageKey);
+        }
       }
     } catch (error) {
       _pagingController.error = error;
@@ -181,6 +225,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
                 : '0',
             note: item.note,
             type: item.type,
+            isNew: item.isNew,
             assetName: item.assetName,
             onPressed: () {
               ref
