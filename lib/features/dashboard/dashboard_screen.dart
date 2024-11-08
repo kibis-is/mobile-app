@@ -309,7 +309,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           data: (balance) => Row(
             children: [
               EllipsizedText(
-                NumberShortener.shortenNumber(balance),
+                NumberFormatter.shortenNumber(balance),
                 style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: balance > 0

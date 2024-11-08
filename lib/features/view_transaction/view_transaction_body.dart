@@ -8,6 +8,7 @@ import 'package:kibisis/providers/contacts_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
@@ -142,7 +143,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  amountInAlgos.toString(),
+                  NumberFormatter.formatWithCommas(amountInAlgos.toString()),
                   style: context.textTheme.displayMedium?.copyWith(
                     color: avatarColor,
                     fontWeight: FontWeight.bold,

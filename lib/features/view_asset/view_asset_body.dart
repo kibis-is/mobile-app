@@ -169,7 +169,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                         condition: !mediaQueryHelper.isWideScreen(),
                         tag: '${widget.asset.index}-amount',
                         child: Text(
-                          NumberShortener.shortenNumber(userBalance.toDouble()),
+                          NumberFormatter.shortenNumber(userBalance.toDouble()),
                           style: context.textTheme.displayMedium?.copyWith(
                             color: context.colorScheme.secondary,
                             fontWeight: FontWeight.bold,
@@ -253,7 +253,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                     CustomTextField(
                       leadingIcon: AppIcons.totalSupply,
                       controller: TextEditingController(
-                        text: NumberShortener.shortenNumber(totalSupply),
+                        text: NumberFormatter.shortenNumber(totalSupply),
                       ),
                       labelText: 'Total Supply',
                       isEnabled: false,
