@@ -9,6 +9,7 @@ import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_transaction_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/media_query_helper.dart';
+import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -175,7 +176,9 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
             transaction: item.transaction,
             direction: item.direction,
             otherPartyAddress: item.otherPartyAddress,
-            amount: item.amount,
+            amount: item.amount != null && double.tryParse(item.amount!) != null
+                ? NumberFormatter.shortenNumber(double.parse(item.amount!))
+                : '0',
             note: item.note,
             type: item.type,
             assetName: item.assetName,
