@@ -4,7 +4,6 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
@@ -303,6 +302,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
     final balanceAsync = ref.watch(balanceProvider);
+    SelectItem? currentNetwork = ref.watch(networkProvider);
     return Row(
       children: [
         balanceAsync.when(
@@ -316,15 +316,12 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ? context.colorScheme.secondary
                         : context.colorScheme.onBackground),
               ),
-              SvgPicture.asset(
-                'assets/images/${networks[0].icon}.svg',
-                semanticsLabel: networks[0].name,
-                height: 12,
-                colorFilter: ColorFilter.mode(
-                    balance > 0
-                        ? context.colorScheme.secondary
-                        : context.colorScheme.onBackground,
-                    BlendMode.srcATop),
+              AppIcons.icon(
+                icon: currentNetwork?.icon,
+                size: AppIcons.small,
+                color: balance > 0
+                    ? context.colorScheme.secondary
+                    : context.colorScheme.onBackground,
               ),
               IconButton(
                 icon: AppIcons.icon(
