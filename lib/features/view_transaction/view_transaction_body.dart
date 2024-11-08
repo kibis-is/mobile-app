@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/contact.dart';
+import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/contacts_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
+import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
@@ -74,6 +76,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
     final receiver = widget.transaction.paymentTransaction?.receiver;
     final transactionType = widget.transaction.type;
     final note = _decodeNote();
+    SelectItem? currentNetwork = ref.watch(networkProvider);
 
     final senderDisplayName = _getDisplayName(sender);
     final receiverDisplayName = _getDisplayName(receiver ?? '');
@@ -135,12 +138,22 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: kScreenPadding / 2),
-            Text(
-              amountInAlgos.toString(),
-              style: context.textTheme.displayMedium?.copyWith(
-                color: avatarColor,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  amountInAlgos.toString(),
+                  style: context.textTheme.displayMedium?.copyWith(
+                    color: avatarColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                AppIcons.icon(
+                  icon: currentNetwork?.icon,
+                  size: AppIcons.medium,
+                  color: avatarColor,
+                ),
+              ],
             ),
             const SizedBox(height: kScreenPadding),
             _buildToggleableField(
@@ -224,6 +237,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
     required IconData icon,
   }) {
     final isToggled = ref.watch(toggleProvider);
+    final hasSavedContact = displayName != publicKey;
 
     return Row(
       children: [
@@ -237,18 +251,19 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
             isEnabled: false,
           ),
         ),
-        IconButton(
-          icon: Icon(
-            isToggled ? Icons.visibility : Icons.visibility_off,
+        if (hasSavedContact)
+          IconButton(
+            icon: Icon(
+              isToggled ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: () {
+              ref.read(toggleProvider.notifier).state = !isToggled;
+            },
           ),
-          onPressed: () {
-            ref.read(toggleProvider.notifier).state = !isToggled;
-          },
-        ),
         IconButton(
           icon: const Icon(AppIcons.copy),
           onPressed: () {
-            copyToClipboard(context, isToggled ? publicKey : displayName);
+            copyToClipboard(context, publicKey);
           },
         ),
       ],
