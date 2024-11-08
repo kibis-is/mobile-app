@@ -221,7 +221,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
                 ),
                 labelText: 'Note',
                 isEnabled: false,
-                maxLines: 3,
+                maxLines: 7,
               ),
             ]
           ],

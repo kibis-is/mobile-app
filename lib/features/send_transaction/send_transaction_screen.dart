@@ -729,7 +729,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       labelText: 'Note (Optional)',
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.done,
-      maxLines: 3,
+      maxLines: 7,
       controller: noteController,
       validator: _validateNote,
       leadingIcon: AppIcons.about,
