@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/generated/l10n.dart'; // Import localization
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -90,11 +91,16 @@ class AssetListItem extends ConsumerWidget {
     final titleStyle =
         context.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold);
     return mediaQueryHelper.isWideScreen()
-        ? EllipsizedText(asset.params.name ?? 'Unknown', style: titleStyle)
+        ? EllipsizedText(
+            asset.params.name ?? S.of(context).unknown,
+            style: titleStyle,
+          )
         : Hero(
             tag: '${asset.index}-name',
-            child: EllipsizedText(asset.params.name ?? 'Unknown',
-                style: titleStyle),
+            child: EllipsizedText(
+              asset.params.name ?? S.of(context).unknown,
+              style: titleStyle,
+            ),
           );
   }
 
@@ -113,7 +119,7 @@ class AssetListItem extends ConsumerWidget {
   Widget _buildTrailing(BuildContext context) {
     return mode == AssetScreenMode.view
         ? Text(
-            'Already\nadded',
+            S.of(context).alreadyAdded,
             style: context.textTheme.bodySmall,
             textAlign: TextAlign.right,
           )

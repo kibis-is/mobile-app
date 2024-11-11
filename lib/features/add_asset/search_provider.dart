@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/utils/arc200_service.dart';
@@ -75,8 +76,8 @@ class SearchNotifier extends StateNotifier<AsyncValue<List<CombinedAsset>>> {
         return CombinedAsset(
           index: asset.index,
           params: CombinedAssetParameters(
-            name: asset.params.name ?? 'Unknown',
-            unitName: asset.params.unitName ?? 'N/A',
+            name: asset.params.name ?? S.current.unknown,
+            unitName: asset.params.unitName ?? S.current.notAvailable,
             decimals: asset.params.decimals,
             total: asset.params.total,
             defaultFrozen: asset.params.defaultFrozen ?? false,

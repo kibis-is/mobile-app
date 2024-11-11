@@ -1,0 +1,1916 @@
+{
+  "@@locale": "en",
+  
+  "noInternetConnection": "No Internet Connection",
+  "@noInternetConnection": {
+    "description": "Shown in the banner when the device has no internet connectivity."
+  },
+  
+  "initializationError": "Initialization error, please restart the app.",
+  "@initializationError": {
+    "description": "Error message displayed when app initialization fails."
+  },
+  
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Displayed when the asset name is unknown."
+  },
+  
+  "alreadyAdded": "Already\nadded",
+  "@alreadyAdded": {
+    "description": "Displayed when an asset is already added to the user's list."
+  },
+
+  "defaultConfirmationTitle": "Are you sure?",
+  "@defaultConfirmationTitle": {
+    "description": "Default title for confirmation dialogs."
+  },
+  
+  "defaultConfirmationContent": "Do you want to proceed with this action?",
+  "@defaultConfirmationContent": {
+    "description": "Default content for confirmation dialogs."
+  },
+  
+  "yes": "Yes",
+  "@yes": {
+    "description": "Label for the confirmation button."
+  },
+  
+  "no": "No",
+  "@no": {
+    "description": "Label for the cancel button in confirmation dialogs."
+  },
+  
+  "ok": "OK",
+  "@ok": {
+    "description": "Label for the OK button in dialogs."
+  },
+
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Default text for confirmation button on bottom sheets."
+  },
+
+
+
+  "pullToRefresh": "Pull down to refresh",
+  "@pullToRefresh": {
+    "description": "Shown when the user can pull down to refresh the content."
+  },
+  "releaseToRefresh": "Release to refresh",
+  "@releaseToRefresh": {
+    "description": "Shown when the user should release to trigger refresh."
+  },
+  "refreshing": "Refreshing...",
+  "@refreshing": {
+    "description": "Shown when the refresh action is in progress."
+  },
+
+  "initializing": "Init",
+  "@initializing": {
+    "description": "Prefix text shown during initialization with animated dots."
+  },
+
+  "reset": "Reset",
+  "@reset": {
+    "description": "Text for the reset confirmation button."
+  },
+  "resetConfirmationMessage": "Are you sure you want to reset this device? This will remove all accounts, settings, and security information.",
+  "@resetConfirmationMessage": {
+    "description": "Confirmation message displayed when resetting the app."
+  },
+  "pinMismatchError": "PIN does not match.",
+  "@pinMismatchError": {
+    "description": "Error message shown when PINs do not match during setup."
+  },
+  "incorrectPinError": "Incorrect PIN. Try again.",
+  "@incorrectPinError": {
+    "description": "Error message shown when an incorrect PIN is entered."
+  },
+
+  "timeout1Minute": "1 minute",
+  "@timeout1Minute": {
+    "description": "Timeout duration of 1 minute."
+  },
+  "timeout2Minutes": "2 minutes",
+  "@timeout2Minutes": {
+    "description": "Timeout duration of 2 minutes."
+  },
+  "timeout5Minutes": "5 minutes",
+  "@timeout5Minutes": {
+    "description": "Timeout duration of 5 minutes."
+  },
+  "timeout10Minutes": "10 minutes",
+  "@timeout10Minutes": {
+    "description": "Timeout duration of 10 minutes."
+  },
+  "timeout15Minutes": "15 minutes",
+  "@timeout15Minutes": {
+    "description": "Timeout duration of 15 minutes."
+  },
+
+  
+    "transactionGroupSizeExceeded": "Transaction group size exceeds the maximum size of \"{maxSize}\"",
+    "@transactionGroupSizeExceeded": {
+      "description": "Error message when the transaction group size exceeds the maximum allowed.",
+      "placeholders": {
+        "maxSize": {
+          "type": "int",
+          "description": "The maximum transaction group size."
+        }
+      }
+    },
+    "searchPrompt": "Enter an assetID, name, asset, or symbol ID (for ARC-200).",
+  "@searchPrompt": {
+    "description": "Prompt text shown above the search input."
+  },
+  "searchQueryLabel": "Search Query",
+  "@searchQueryLabel": {
+    "description": "Label for the search input field."
+  },
+  "noAssetsFound": "No assets found.",
+  "@noAssetsFound": {
+    "description": "Displayed when no assets match the search query."
+  },
+  "genericErrorMessage": "Sorry, there was an error.",
+  "@genericErrorMessage": {
+    "description": "Generic error message displayed when an unexpected error occurs."
+  },
+
+
+    "notAvailable": "N/A",
+    "@notAvailable": {
+      "description": "Default value for asset unit name when it's not available."
+    },
+  
+    "contactsTab": "Contacts",
+  "@contactsTab": {
+    "description": "Tab title for the contacts list."
+  },
+  "myAccountsTab": "My Accounts",
+  "@myAccountsTab": {
+    "description": "Tab title for the user's accounts list."
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Label for cancel buttons."
+  },
+  "deleteContactTitle": "Delete Contact",
+  "@deleteContactTitle": {
+    "description": "Title for the delete contact confirmation dialog."
+  },
+  "deleteContactMessage": "Are you sure you want to delete {contactName}?",
+  "@deleteContactMessage": {
+    "description": "Message shown when confirming contact deletion.",
+    "placeholders": {
+      "contactName": {
+        "type": "String",
+        "description": "Name of the contact to delete."
+      }
+    }
+  },
+  "selectAccountTitle": "Select Account",
+  "@selectAccountTitle": {
+    "description": "Title for the select account screen."
+  },
+  "errorMessage": "Error: {error}",
+  "@errorMessage": {
+    "description": "Error message displayed when an error occurs.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message to display."
+      }
+    }
+  },
+  "noAccountsFound": "No accounts found",
+  "@noAccountsFound": {
+    "description": "Message displayed when no accounts are available."
+  },
+
+  "noPublicKey": "No Public Key",
+  "@noPublicKey": {
+    "description": "Fallback message when an account has no public key."
+  },
+
+  "assetsTab": "Assets",
+"@assetsTab": {
+  "description": "Label for the Assets tab in the dashboard."
+},
+"nftsTab": "NFTs",
+"@nftsTab": {
+  "description": "Label for the NFTs tab in the dashboard."
+},
+"activityTab": "Activity",
+"@activityTab": {
+  "description": "Label for the Activity tab in the dashboard."
+},
+"selectNetworkHeader": "Select Network",
+"@selectNetworkHeader": {
+  "description": "Header for the network selection bottom sheet."
+},
+"networkSwitchSuccess": "Switched to {networkName}",
+"@networkSwitchSuccess": {
+  "description": "Message shown when switching networks succeeds.",
+  "placeholders": {
+    "networkName": {
+      "type": "String",
+      "description": "Name of the network to which the user switched."
+    }
+  }
+},
+"networkSwitchFailure": "Failed to switch to {networkName}",
+"@networkSwitchFailure": {
+  "description": "Message shown when switching networks fails.",
+  "placeholders": {
+    "networkName": {
+      "type": "String",
+      "description": "Name of the network to which the switch failed."
+    }
+  }
+},
+"minimumBalanceInfo": "Minimum balance is {balance} VOI. Based on the account configuration, this is the minimum balance needed to keep the account open.",
+"@minimumBalanceInfo": {
+  "description": "Message explaining the minimum balance required for an account.",
+  "placeholders": {
+    "balance": {
+      "type": "String",
+      "description": "Minimum balance value."
+    }
+  }
+},
+"infoHeader": "Info",
+"@infoHeader": {
+  "description": "Header for the info bottom sheet."
+},
+"loadingAccount": "Loading Account",
+"@loadingAccount": {
+  "description": "Text shown when account details are loading."
+},
+"pleaseWait": "Please wait",
+"@pleaseWait": {
+  "description": "Text shown while waiting for account details to load."
+},
+"genericError": "Error",
+"@genericError": {
+  "description": "Generic error message displayed when an error occurs."
+},
+"errorLoadingTransactions": "Error loading transactions",
+"@errorLoadingTransactions": {
+  "description": "Displayed when transactions fail to load."
+},
+"selectTransactionPrompt": "Select a transaction to view details",
+"@selectTransactionPrompt": {
+  "description": "Prompt displayed in wide screen mode to select a transaction."
+},
+"noTransactionsFound": "No Transactions Found",
+"@noTransactionsFound": {
+  "description": "Displayed when no transactions exist."
+},
+"noTransactionsMade": "You have not made any transactions.",
+"@noTransactionsMade": {
+  "description": "Displayed when the user hasn't made any transactions."
+},
+"noMoreTransactions": "No more transactions.",
+"@noMoreTransactions": {
+  "description": "Displayed when there are no more transactions to load."
+},
+"noAssets": "No Assets Found",
+"@noAssets": {
+  "description": "Displayed when no assets are available."
+},
+"noAssetsForFilter": "No Assets Found for the Filter",
+"@noAssetsForFilter": {
+  "description": "Displayed when filtered assets yield no results."
+},
+"tryClearingFilter": "Try clearing the filter to see all assets.",
+"@tryClearingFilter": {
+  "description": "Subtitle prompting to clear the filter."
+},
+"noAssetsAdded": "You have not added any assets.",
+"@noAssetsAdded": {
+  "description": "Subtitle displayed when no assets have been added yet."
+},
+"clearFilter": "Clear Filter",
+"@clearFilter": {
+  "description": "Label for the button to clear filter."
+},
+"retry": "Retry",
+"@retry": {
+  "description": "Label for the button to retry fetching assets."
+},
+"errorLoadingAssets": "Error loading assets",
+"@errorLoadingAssets": {
+  "description": "Displayed when assets fail to load."
+},
+"sortAndFilter": "Sort and Filter Assets",
+"@sortAndFilter": {
+  "description": "Dialog header for sorting and filtering assets."
+},
+"showFrozenAssets": "Show Frozen Assets",
+"@showFrozenAssets": {
+  "description": "Checkbox label to toggle visibility of frozen assets."
+},
+"copyAddress": "Copy Address",
+"@copyAddress": {
+  "description": "Displayed as an action to copy the account's address."
+},
+"shareAddress": "Share Address",
+"@shareAddress": {
+  "description": "Displayed as an action to share the account's address."
+},
+"editAccount": "Edit",
+"@editAccount": {
+  "description": "Displayed as an action to edit the account details."
+},
+"refreshAccount": "Refresh",
+"@refreshAccount": {
+  "description": "Displayed as an action to refresh the account data."
+},
+"noAccountName": "No Account Name",
+"@noAccountName": {
+  "description": "Displayed when the account does not have a name."
+},
+"options": "Options",
+"@options": {
+  "description": "Header for the bottom sheet with account options."
+},
+"noNftsFound": "No NFTs Found",
+"@noNftsFound": {
+  "description": "Displayed when no NFTs are available."
+},
+"noNftsForFilter": "No NFTs Found for the Filter",
+"@noNftsForFilter": {
+  "description": "Displayed when no NFTs match the filter criteria."
+},
+"noNftsAdded": "You have not added any NFTs.",
+"@noNftsAdded": {
+  "description": "Displayed when the user has not added any NFTs."
+},
+"filter": "Filter",
+"@filter": {
+  "description": "Label text for the filter input field."
+},
+"scanQrCode": "Scan QR Code",
+"@scanQrCode": {
+  "description": "Title displayed in the QR dialog."
+},
+"shareQr": "Share QR",
+"@shareQr": {
+  "description": "Tooltip for sharing the QR code."
+},
+"copyUri": "Copy URI",
+"@copyUri": {
+  "description": "Tooltip for copying the QR data to the clipboard."
+},
+"downloadQrImage": "Download QR Image",
+"@downloadQrImage": {
+  "description": "Tooltip for downloading the QR code as an image."
+},
+"close": "Close",
+"@close": {
+  "description": "Button text to close the dialog."
+},
+"transactionIdCopied": "Transaction ID Copied",
+"@transactionIdCopied": {
+  "description": "Snackbar message displayed when a transaction ID is copied."
+},
+
+"payment": "Payment",
+"@payment": {
+  "description": "Label for payment-type transactions."
+},
+
+"assetTransfer": "Asset Transfer",
+"@assetTransfer": {
+  "description": "Label for asset transfers involving tokens."
+},
+"errorTitle": "Error",
+"@errorTitle": {
+  "description": "Title displayed on the error screen."
+},
+"defaultErrorMessage": "There was an error. No further details provided.",
+"@defaultErrorMessage": {
+  "description": "Default error message displayed when no details are provided."
+},
+"back": "Back",
+"@back": {
+  "description": "Label for the button that navigates back to the home screen."
+},
+"createPin": "Create Pin",
+"@createPin": {
+  "description": "Title for the screen where the user creates a PIN."
+},
+"confirmPin": "Confirm Pin",
+"@confirmPin": {
+  "description": "Title for the screen where the user confirms the PIN."
+},
+"unlock": "Unlock",
+"@unlock": {
+  "description": "Title for the screen where the user unlocks the app."
+},
+"verifyPin": "Verify Pin",
+"@verifyPin": {
+  "description": "Title for the screen where the user verifies their PIN."
+},
+"resettingApp": "Resetting App",
+"@resettingApp": {
+  "description": "Message shown when the app is resetting."
+},
+"invalidQrCodeData": "Invalid QR code data",
+"@invalidQrCodeData": {
+  "description": "Error message shown when a scanned QR code contains no data."
+},
+"expectedPrivateKeyQr": "Expected a private key QR code but found a public key.",
+"@expectedPrivateKeyQr": {
+  "description": "Error message when a public key is scanned in private key mode."
+},
+"expectedWalletConnectUri": "Expected a private key QR code but found a WalletConnect URI.",
+"@expectedWalletConnectUri": {
+  "description": "Error message when a WalletConnect URI is scanned in private key mode."
+},
+"expectedPublicKeyQr": "Expected a public key QR code but found something else.",
+"@expectedPublicKeyQr": {
+  "description": "Error message when a non-public key QR code is scanned in public key mode."
+},
+"expectedWalletConnectSessionQr": "Expected a WalletConnect session QR code but found something else.",
+"@expectedWalletConnectSessionQr": {
+  "description": "Error message when a non-WalletConnect QR code is scanned in session mode."
+},
+"unknownQrCodeType": "Unknown QR Code type",
+"@unknownQrCodeType": {
+  "description": "Error message shown when the QR code type is not recognized."
+},
+"walletConnectV1NotSupported": "WalletConnect V1 URIs are not supported.",
+"@walletConnectV1NotSupported": {
+  "description": "Error message shown when a WalletConnect V1 URI is scanned."
+},
+"invalidWalletConnectUri": "Invalid WalletConnect URI format.",
+"@invalidWalletConnectUri": {
+  "description": "Error message shown when a WalletConnect URI has an invalid format."
+},
+"failedToParseWalletConnectUri": "Failed to parse WalletConnect URI: {error}",
+"@failedToParseWalletConnectUri": {
+  "description": "Error message shown when a WalletConnect URI parsing fails.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message returned during parsing."
+    }
+  }
+},
+"unknownImportAccountUriFormat": "Unknown import account URI format",
+"@unknownImportAccountUriFormat": {
+  "description": "Error message shown when an account import URI format is not recognized."
+},
+"paginatedUriMissingInfo": "Paginated URI missing checksum or page information",
+"@paginatedUriMissingInfo": {
+  "description": "Error message for paginated URIs missing checksum or page data."
+},
+"invalidPageFormatInUri": "Invalid page format in paginated URI",
+"@invalidPageFormatInUri": {
+  "description": "Error message shown when the page parameter in a paginated URI is invalid."
+},
+"invalidPublicKeyFormat": "Invalid Public Key Format",
+"@invalidPublicKeyFormat": {
+  "description": "Error message shown when the provided public key format is invalid."
+},
+"invalidUriFormat": "Invalid URI format",
+"@invalidUriFormat": {
+  "description": "Error message shown when a URI cannot be parsed."
+},
+"invalidPrivateKey": "Invalid private key",
+"@invalidPrivateKey": {
+  "description": "Error message shown when the private key fails validation."
+},
+"missingPrivateKeyInLegacyUri": "Missing private key in legacy URI",
+"@missingPrivateKeyInLegacyUri": {
+  "description": "Error message for legacy import URIs without a private key."
+},
+"keyNeitherBase64NorHex": "Key is neither valid Base64 nor valid Hex: {key}",
+"@keyNeitherBase64NorHex": {
+  "description": "Debug message when a private key is neither valid Base64 nor Hex.",
+  "placeholders": {
+    "key": {
+      "type": "String",
+      "description": "The invalid key provided."
+    }
+  }
+},
+"failedToDecodePrivateKey": "Failed to decode private key: {error}",
+"@failedToDecodePrivateKey": {
+  "description": "Debug message for private key decoding failures.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the decoding process."
+    }
+  }
+},
+"unknownWalletConnectVersion": "Unknown WalletConnect version. Unable to pair.",
+"@unknownWalletConnectVersion": {
+  "description": "Error message when an unknown WalletConnect version is encountered."
+},
+"invalidPrivateKeyLength": "Invalid private key length.",
+"@invalidPrivateKeyLength": {
+  "description": "Error message for invalid private key length."
+},
+"importedAccount": "Imported Account",
+"@importedAccount": {
+  "description": "Default account name for imported accounts."
+},
+"importedAccountWithCounter": "Imported Account {counter}",
+"@importedAccountWithCounter": {
+  "description": "Default account name with a counter for imported accounts.",
+  "placeholders": {
+    "counter": {
+      "type": "int",
+      "example": "1"
+    }
+  }
+},
+"connectToTitle": "Connect to:",
+"@connectToTitle": {
+  "description": "Dialog title for connecting to a WalletConnect session."
+},
+
+"failedFinalizeAccountImport": "Failed to finalize account import.",
+"@failedFinalizeAccountImport": {
+  "description": "Error message when account import could not be completed."
+},
+
+"errorProcessingPublicKey": "Error processing public key",
+"@errorProcessingPublicKey": {
+  "description": "Error message when a public key fails to process."
+},
+
+"successfullyConnected": "Successfully connected",
+"@successfullyConnected": {
+  "description": "Message displayed after a successful WalletConnect connection."
+},
+
+"nextQrCode": "Next QR:",
+"@nextQrCode": {
+  "description": "Label for indicating the next QR code part to scan."
+},
+
+"partNumber": "Part {partNumber}",
+"@partNumber": {
+  "description": "Label for indicating the current QR code part being scanned.",
+  "placeholders": {
+    "partNumber": {
+      "type": "int",
+      "example": "2"
+    }
+  }
+},
+
+
+"expectedPrivateKeyButPublic": "Expected a private key QR code but found a public key.",
+"@expectedPrivateKeyButPublic": {
+  "description": "Error message for mismatched QR code type when expecting private key but received public key."
+},
+
+"expectedPrivateKeyButWalletConnect": "Expected a private key QR code but found a WalletConnect URI.",
+"@expectedPrivateKeyButWalletConnect": {
+  "description": "Error message for mismatched QR code type when expecting private key but received WalletConnect URI."
+},
+
+"expectedPublicKey": "Expected a public key QR code but found something else.",
+"@expectedPublicKey": {
+  "description": "Error message when expecting public key but received a different type of QR code."
+},
+
+"failedParseWalletConnectUri": "Failed to parse WalletConnect URI",
+"@failedParseWalletConnectUri": {
+  "description": "Error message for failure to parse a WalletConnect URI."
+},
+
+"invalidPageFormat": "Invalid page format in paginated URI",
+"@invalidPageFormat": {
+  "description": "Error message for an invalid page parameter format in a paginated URI."
+},
+
+"missingPrivateKeyLegacy": "Missing privatekey in legacy URI",
+"@missingPrivateKeyLegacy": {
+  "description": "Error message when a legacy URI is missing the private key."
+},
+
+"unknownImportUriFormat": "Unknown import account URI format",
+"@unknownImportUriFormat": {
+  "description": "Error message when the import account URI format is unrecognized."
+},
+"importAccountTitle": "Import Account",
+"@importAccountTitle": {
+  "description": "Title for the screen when scanning a private key to import an account."
+},
+
+"scanAddressTitle": "Scan Address",
+"@scanAddressTitle": {
+  "description": "Title for the screen when scanning a public key address."
+},
+
+"connectTitle": "Connect",
+"@connectTitle": {
+  "description": "Title for the screen when scanning to connect a WalletConnect session."
+},
+
+"qrCodeScannerTitle": "QR Code Scanner",
+"@qrCodeScannerTitle": {
+  "description": "Default title for the QR code scanner screen."
+},
+
+"processingQrCode": "Processing QR Code",
+"@processingQrCode": {
+  "description": "Loading message displayed while processing the scanned QR code."
+},
+"invalidScanResult": "Invalid scan result",
+"@invalidScanResult": {
+  "description": "Error message when the QR scan result is invalid."
+},
+
+"noAccountsAvailableToConnect": "No accounts available to connect.",
+"@noAccountsAvailableToConnect": {
+  "description": "Error message displayed when there are no accounts available for WalletConnect."
+},
+"errorLoadingAccounts": "Error loading accounts",
+"@errorLoadingAccounts": {
+  "description": "Error message displayed when the account list fails to load."
+},
+"unnamedAsset": "Unnamed Asset",
+"@unnamedAsset": {
+  "description": "Label used when an asset does not have a name."
+},
+"noNetwork": "No Network",
+"@noNetwork": {
+  "description": "Label displayed when there is no network selected."
+},
+"pleaseEnterValidAmount": "Please enter a valid amount",
+"@pleaseEnterValidAmount": {
+  "description": "Error message when the entered amount is invalid."
+},
+"pleaseEnterValidAlgorandAddress": "Please enter a valid Algorand address",
+"@pleaseEnterValidAlgorandAddress": {
+  "description": "Error message when the entered Algorand address is invalid."
+},
+"insufficientFunds": "Insufficient funds",
+"@insufficientFunds": {
+  "description": "Error message when there are not enough funds to complete the transaction."
+},
+"transactionSuccessful": "Transaction successful",
+"@transactionSuccessful": {
+  "description": "Message displayed when a transaction is successful."
+},
+"noActiveAccountIdFound": "No active account ID found",
+"@noActiveAccountIdFound": {
+  "description": "Exception message when there is no active account ID."
+},
+"privateKeyNotFoundInStorage": "Private key not found in storage",
+"@privateKeyNotFoundInStorage": {
+  "description": "Exception message when the private key is not found in storage."
+},
+"noItemSelectedForTransaction": "No item selected for the transaction.",
+"@noItemSelectedForTransaction": {
+  "description": "Exception message when no item is selected for the transaction."
+},
+"standardAssetTransferSuccessful": "Standard Asset transfer successful.",
+"@standardAssetTransferSuccessful": {
+  "description": "Message displayed when a standard asset transfer is successful."
+},
+"arc0200AssetTransferSuccessful": "ARC-0200 Asset transfer successful.",
+"@arc0200AssetTransferSuccessful": {
+  "description": "Message displayed when an ARC-0200 asset transfer is successful."
+},
+"unsupportedAssetType": "Unsupported asset type: {assetType}",
+"@unsupportedAssetType": {
+  "description": "Error message for unsupported asset type.",
+  "placeholders": {
+    "assetType": {
+      "type": "String",
+      "description": "The unsupported asset type."
+    }
+  }
+},
+"insufficientFundsError": "Insufficient funds.",
+"@insufficientFundsError": {
+  "description": "Error message when there are insufficient funds."
+},
+
+"transactionFailedToConfirm": "Transaction failed to confirm within the expected rounds.",
+"@transactionFailedToConfirm": {
+  "description": "Error message when a transaction fails to confirm within expected rounds."
+},
+"sendingPayment": "Sending Payment",
+"@sendingPayment": {
+  "description": "Message displayed when sending a payment."
+},
+"sendingAsset": "Sending Asset",
+"@sendingAsset": {
+  "description": "Message displayed when sending an asset."
+},
+"contactNameUpdatedSuccessfully": "Contact name updated successfully.",
+"@contactNameUpdatedSuccessfully": {
+  "description": "Message displayed when a contact name is successfully updated."
+},
+"contactSavedSuccessfully": "Contact saved successfully.",
+"@contactSavedSuccessfully": {
+  "description": "Message displayed when a contact is successfully saved."
+},
+"failedToSaveContact": "Failed to save contact: {error}",
+"@failedToSaveContact": {
+  "description": "Error message when saving a contact fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"max": "Max",
+"@max": {
+  "description": "Label for maximum amount."
+},
+"error": "Error",
+"@error": {
+  "description": "Label for error messages."
+},
+"calculating": "Calculating...",
+"@calculating": {
+  "description": "Message displayed when a calculation is in progress."
+},
+"maxVoiAmountCalculation": "The maximum VOI amount is calculated by: the balance ({balance}), minus the minimum balance needed to keep the account open ({minimumBalance}), minus the minimum transaction fee (0.001)",
+"@maxVoiAmountCalculation": {
+  "description": "Explanation of how the maximum VOI amount is calculated.",
+  "placeholders": {
+    "balance": {},
+    "minimumBalance": {}
+  }
+},
+"info": "Info",
+"@info": {
+  "description": "Header label for information."
+},
+"account": "Account",
+"@account": {
+  "description": "Label for the account field."
+},
+"asset": "Asset",
+"@asset": {
+  "description": "Label for the asset field."
+},
+"amount": "Amount",
+"@amount": {
+  "description": "Label for the amount field."
+},
+"contactNameOptional": "Contact Name (Optional)",
+"@contactNameOptional": {
+  "description": "Label for the contact name field, optional."
+},
+"noteOptional": "Note (Optional)",
+"@noteOptional": {
+  "description": "Label for the note field, optional."
+},
+"send": "Send",
+"@send": {
+  "description": "Text for the send button."
+},
+"selectAsset": "Select Asset",
+"@selectAsset": {
+  "description": "Header for the select asset dialog."
+},
+"transactionFailed": "Transaction failed",
+"@transactionFailed": {
+  "description": "Exception message when a transaction fails."
+},
+"noAccount": "No account",
+"@noAccount": {
+  "description": "Text displayed when there is no active account."
+},
+"noteTooLarge": "Note is too large.",
+"@noteTooLarge": {
+  "description": "Error message displayed when the note exceeds the maximum allowed byte size."
+},
+"sendTransactionTitle": "Send Transaction",
+"@sendTransactionTitle": {
+  "description": "Title displayed on the send transaction screen."
+},
+"loading": "Loading...",
+"@loading": {
+  "description": "Text displayed during loading states."
+},
+"failedToLoad": "Failed to load",
+"@failedToLoad": {
+  "description": "Text displayed when data fails to load."
+},
+"recipientAddress": "Recipient Address",
+"@recipientAddress": {
+  "description": "Label for the recipient address input field."
+},
+"noItems": "No Items",
+"@noItems": {
+  "description": "Text displayed when there are no items available."
+},
+"about": "About",
+"@about": {
+  "description": "Title for the About screen."
+},
+"version": "Version:",
+"@version": {
+  "description": "Label for the app version."
+},
+"build": "Build:",
+"@build": {
+  "description": "Label for the app build version."
+},
+"buildNumber": "Build Number:",
+"@buildNumber": {
+  "description": "Label for the app build number."
+},
+"advanced": "Advanced",
+"@advanced": {
+  "description": "Title for the Advanced screen."
+},
+"networkSwitched": "Network switched to {networkName}",
+"@networkSwitched": {
+  "description": "Message displayed when the network is switched.",
+  "placeholders": {
+    "networkName": {}
+  }
+},
+"allowTestNetworks": "Allow Test Networks",
+"@allowTestNetworks": {
+  "description": "Label for the test network toggle."
+},
+"toggleTestNetworksDescription": "Toggle to include test networks in the network list.",
+"@toggleTestNetworksDescription": {
+  "description": "Description for the test network toggle."
+},
+"appearance": "Appearance",
+"@appearance": {
+  "description": "Title for the Appearance screen."
+},
+"darkMode": "Dark Mode",
+"@darkMode": {
+  "description": "Label for the dark mode toggle."
+},
+"general": "General",
+"@general": {
+  "description": "Title for the General screen."
+},
+"dangerZone": "Danger Zone",
+"@dangerZone": {
+  "description": "Title for the danger zone section."
+},
+"dangerZoneDescription": "This will remove all accounts, settings, and security information.",
+"@dangerZoneDescription": {
+  "description": "Description of the danger zone section."
+},
+"confirmReset": "Confirm Reset",
+"@confirmReset": {
+  "description": "Title for the pin pad dialog to confirm reset."
+},
+"exportAccounts": "Export Accounts",
+"@exportAccounts": {
+  "description": "Title for the Export Accounts screen."
+},
+"noAccountsForExport": "No accounts available for export.",
+"@noAccountsForExport": {
+  "description": "Message displayed when no accounts are available for export."
+},
+"unnamedAccount": "Unnamed Account",
+"@unnamedAccount": {
+  "description": "Label for an account with no name."
+},
+"accountCannotBeExported": "This account cannot be exported, as it has no private key.",
+"@accountCannotBeExported": {
+  "description": "Message displayed when an account without a private key cannot be exported."
+},
+"allAccounts": "All Accounts",
+"@allAccounts": {
+  "description": "Label for selecting all accounts in the dropdown."
+},
+"security": "Security",
+"@security": {
+  "description": "Title for the Security screen."
+},
+"enablePasswordLock": "Enable Password Lock",
+"@enablePasswordLock": {
+  "description": "Label for the switch to enable or disable password lock."
+},
+"selectTimeout": "Select Timeout",
+"@selectTimeout": {
+  "description": "Header for the timeout selection dialog."
+},
+"timeout": "Timeout",
+"@timeout": {
+  "description": "Label for the timeout dropdown."
+},
+"changePin": "Change Pin",
+"@changePin": {
+  "description": "Title for the change pin option."
+},
+"sessions": "Sessions",
+"@sessions": {
+  "description": "Title for the Sessions screen."
+},
+"disconnectAllSessions": "Disconnect All Sessions?",
+"@disconnectAllSessions": {
+  "description": "Tooltip for disconnecting all sessions."
+},
+"disconnectAllSessionsPrompt": "Disconnect all sessions?",
+"@disconnectAllSessionsPrompt": {
+  "description": "Prompt message to confirm disconnecting all sessions."
+},
+"noActiveSessions": "No active sessions.",
+"@noActiveSessions": {
+  "description": "Message displayed when there are no active sessions."
+},
+"disconnectAllSessionsForAccountPrompt": "Disconnect all sessions for this account?",
+"@disconnectAllSessionsForAccountPrompt": {
+  "description": "Prompt message to confirm disconnecting all sessions for a specific account."
+},
+"disconnectAll": "Disconnect All",
+"@disconnectAll": {
+  "description": "Label for the button to disconnect all sessions for an account."
+},
+"expires": "Expires:",
+"@expires": {
+  "description": "Label for the session expiration date."
+},
+"failedToDisconnect": "Failed to disconnect {sessionName}. Please try again.",
+"@failedToDisconnect": {
+  "description": "Error message when failing to disconnect a session.",
+  "placeholders": {
+    "sessionName": {}
+  }
+},
+"sessionDisconnected": "{sessionName} disconnected successfully.",
+"@sessionDisconnected": {
+  "description": "Message displayed when a session is successfully disconnected.",
+  "placeholders": {
+    "sessionName": {}
+  }
+},
+"allSessions": "All sessions",
+"@allSessions": {
+  "description": "Label for all sessions."
+},
+"allSessionsFor": "All sessions for {publicKey}",
+"@allSessionsFor": {
+  "description": "Label for all sessions associated with a specific account.",
+  "placeholders": {
+    "publicKey": {}
+  }
+},
+"disconnect": "Disconnect",
+"@disconnect": {
+  "description": "Label for the disconnect button."
+},
+"settings": "Settings",
+"@settings": {
+  "description": "Label for the Settings screen."
+},
+"createNewAccount": "Create New Account",
+"@createNewAccount": {
+  "description": "Title for creating a new account."
+},
+"createNewAccountSubtitle": "You will be prompted to save a seed.",
+"@createNewAccountSubtitle": {
+  "description": "Subtitle for creating a new account."
+},
+"importViaSeed": "Import Via Seed",
+"@importViaSeed": {
+  "description": "Title for importing an account via seed."
+},
+"importViaSeedSubtitle": "Import an existing account via seed phrase.",
+"@importViaSeedSubtitle": {
+  "description": "Subtitle for importing an account via seed."
+},
+"importViaQrCode": "Import Via QR Code",
+"@importViaQrCode": {
+  "description": "Title for importing an account via QR code."
+},
+"importViaQrCodeSubtitle": "Scan a QR code to import an existing account.",
+"@importViaQrCodeSubtitle": {
+  "description": "Subtitle for importing an account via QR code."
+},
+"importViaPrivateKey": "Import via Private Key",
+"@importViaPrivateKey": {
+  "description": "Title for importing an account via private key."
+},
+"importViaPrivateKeySubtitle": "Import accounts from a private key.",
+"@importViaPrivateKeySubtitle": {
+  "description": "Subtitle for importing an account via private key."
+},
+"addWatch": "Add Watch",
+"@addWatch": {
+  "description": "Title for adding a watch account."
+},
+"addWatchSubtitle": "Add watch account to watch via public address.",
+"@addWatchSubtitle": {
+  "description": "Subtitle for adding a watch account."
+},
+"addAccountTitle": "Add Account",
+"@addAccountTitle": {
+  "description": "Title for Add Account screen."
+},
+"importPublicAddress": "Import Public Address",
+"@importPublicAddress": {
+  "description": "Title for the Add Watch screen."
+},
+"publicAddress": "Public Address",
+"@publicAddress": {
+  "description": "Label for the public address text field."
+},
+"import": "Import",
+"@import": {
+  "description": "Text for the import button."
+},
+"pleaseEnterPublicAddress": "Please enter a public address.",
+"@pleaseEnterPublicAddress": {
+  "description": "Error message displayed when the public address is empty."
+},
+"invalidAlgorandAddress": "Invalid Algorand address.",
+"@invalidAlgorandAddress": {
+  "description": "Error message displayed when an invalid Algorand address is entered."
+},
+"copySeed": "Copy Seed",
+"@copySeed": {
+  "description": "Title for the Copy Seed screen."
+},
+"generateSeedPhrase": "Generate seed phrase",
+"@generateSeedPhrase": {
+  "description": "Label for generating a seed phrase."
+},
+"seedPhraseDescription": "Here is your 25 word mnemonic seed phrase. Make sure you save this in a secure place.",
+"@seedPhraseDescription": {
+  "description": "Description for displaying the mnemonic seed phrase."
+},
+"copySeedPhrase": "Copy seed phrase",
+"@copySeedPhrase": {
+  "description": "Tooltip for copying the seed phrase."
+},
+"noSeedPhraseAvailable": "No seed phrase available.",
+"@noSeedPhraseAvailable": {
+  "description": "Message when no seed phrase is available."
+},
+"backupConfirmationRequired": "You must confirm you have made a backup of your seed phrase.",
+"@backupConfirmationRequired": {
+  "description": "Validation error message when backup is not confirmed."
+},
+"backupConfirmationPrompt": "Please confirm you have stored a backup of your seed phrase in a secure location.",
+"@backupConfirmationPrompt": {
+  "description": "Prompt for users to confirm they have backed up their seed phrase."
+},
+"next": "Next",
+"@next": {
+  "description": "Label for the next button."
+},
+"importPrivateKey": "Import Private Key",
+"@importPrivateKey": {
+  "description": "Title for the Import Private Key screen."
+},
+"privateKey": "Private Key",
+"@privateKey": {
+  "description": "Label for the private key text field."
+},
+"importSeed": "Import Seed",
+"@importSeed": {
+  "description": "Title for the Import Seed screen."
+},
+"enterSeedPhrasePrompt": "Enter your seed phrase to import your account.",
+"@enterSeedPhrasePrompt": {
+  "description": "Prompt asking the user to enter their seed phrase."
+},
+"enterWord": "Enter word {index}",
+"@enterWord": {
+  "description": "Error message for an empty word input in the seed phrase.",
+  "placeholders": {
+    "index": {
+      "type": "int",
+      "description": "The position of the word in the seed phrase."
+    }
+  }
+},
+"nameAccount": "Name Account",
+"@nameAccount": {
+  "description": "Title for naming an account."
+},
+"delete": "Delete",
+"@delete": {
+  "description": "Label for the delete button."
+},
+
+"confirmDeleteAccount": "Are you sure you want to delete this account?",
+"@confirmDeleteAccount": {
+  "description": "Confirmation message for deleting an account."
+},
+"editAccountNamePrompt": "Edit your account name",
+"@editAccountNamePrompt": {
+  "description": "Prompt for editing the account name."
+},
+"nameAccountPrompt": "Name your account",
+"@nameAccountPrompt": {
+  "description": "Prompt for naming an account."
+},
+"editAccountDescription": "You can change your account name below.",
+"@editAccountDescription": {
+  "description": "Description for editing an account."
+},
+"nameAccountDescription": "Give your account a nickname. Don’t worry, you can change this later.",
+"@nameAccountDescription": {
+  "description": "Description for naming an account."
+},
+"accountName": "Account Name",
+"@accountName": {
+  "description": "Label for the account name text field."
+},
+"pleaseEnterText": "Please enter some text",
+"@pleaseEnterText": {
+  "description": "Validation error message for empty input fields."
+},
+"save": "Save",
+"@save": {
+  "description": "Label for the save button."
+},
+"create": "Create",
+"@create": {
+  "description": "Label for the create button."
+},
+"updatingAccount": "Updating Account",
+"@updatingAccount": {
+  "description": "Message displayed while updating an account."
+},
+"creatingAccount": "Creating Account",
+"@creatingAccount": {
+  "description": "Message displayed while creating an account."
+},
+"welcomeTitle": "Welcome",
+"@welcomeTitle": {
+  "description": "Title for the Welcome screen."
+},
+"welcomeMessage": "Welcome. First, let’s create a new pincode to secure this device.",
+"@welcomeMessage": {
+  "description": "Welcome message for the user, prompting them to create a pincode."
+},
+"algorandStandardAsset": "Algorand Standard Asset",
+"@algorandStandardAsset": {
+  "description": "Label for ASA assets."
+},
+"insufficientBalance": "Insufficient balance.",
+"@insufficientBalance": {
+  "description": "Error message when the user does not have enough funds."
+},
+"assetOptInSuccess": "Asset successfully opted in",
+"@assetOptInSuccess": {
+  "description": "Success message displayed when asset opt-in completes."
+},
+"applicationId": "Application ID",
+"@applicationId": {
+  "description": "Label for the application ID field."
+},
+"type": "Type",
+"@type": {
+  "description": "Label for the type field."
+},
+"decimals": "Decimals",
+"@decimals": {
+  "description": "Label for the decimals field."
+},
+"totalSupply": "Total Supply",
+"@totalSupply": {
+  "description": "Label for the total supply field."
+},
+"sendAsset": "Send Asset",
+"@sendAsset": {
+  "description": "Button text to send an asset."
+},
+"addAsset": "Add Asset",
+"@addAsset": {
+  "description": "Button text to add an asset."
+},
+"optingInMessage": "Opting in...",
+"@optingInMessage": {
+  "description": "Message displayed during the asset opt-in process."
+},
+"activeAssetNullError": "Active asset is null",
+"@activeAssetNullError": {
+  "description": "Error message when no active asset is found."
+},
+"fundAccountError": "Please fund your account to proceed.",
+"@fundAccountError": {
+  "description": "Error message when the user's account balance is insufficient."
+},
+"privateKeyNotFoundError": "Private key not found",
+"@privateKeyNotFoundError": {
+  "description": "Error message when the private key is unavailable."
+},
+"accountIdOrAddressNotAvailable": "Account ID or Public Address is not available",
+"@accountIdOrAddressNotAvailable": {
+  "description": "Error message when account ID or public address is missing."
+},
+"failedToOptInError": "Failed to opt-in to asset",
+"@failedToOptInError": {
+  "description": "Error message when asset opt-in fails."
+},
+"algorandServiceError": "An error occurred with Algorand service",
+"@algorandServiceError": {
+  "description": "General error message for Algorand service failures."
+},
+"viewAssetTitle": "View Asset",
+"@viewAssetTitle": {
+  "description": "Title for the View Asset screen."
+},
+"addAssetTitle": "Add Asset",
+"@addAssetTitle": {
+  "description": "Title for the Add Asset screen."
+},
+"noAssetAvailableMessage": "No asset available to display.",
+"@noAssetAvailableMessage": {
+  "description": "Message displayed when no asset is available to view."
+},
+"optOutTooltip": "Opt-out",
+"@optOutTooltip": {
+  "description": "Tooltip for the opt-out action button."
+},
+"optOutAssetTitle": "Opt Out of Asset?",
+"@optOutAssetTitle": {
+  "description": "Title for the opt-out confirmation dialog."
+},
+"optOutAssetContent": "Are you sure you want to opt out of this ARC-0200 asset?",
+"@optOutAssetContent": {
+  "description": "Content for the opt-out confirmation dialog."
+},
+"optOutButton": "Opt Out",
+"@optOutButton": {
+  "description": "Label for the Opt-Out button in the confirmation dialog."
+},
+"cancelButton": "Cancel",
+"@cancelButton": {
+  "description": "Label for the Cancel button in dialogs."
+},
+"nftViewerTitle": "NFT Viewer",
+"@nftViewerTitle": {
+  "description": "Title for the NFT Viewer screen."
+},
+"sentTransactionTitle": "Sent Transaction",
+"@sentTransactionTitle": {
+  "description": "Title for transactions where assets are sent."
+},
+"transactionType": "Transaction Type",
+"@transactionType": {
+  "description": "Label for transaction type field."
+},
+"fromField": "From",
+"@fromField": {
+  "description": "Label for sender field."
+},
+"toField": "To",
+"@toField": {
+  "description": "Label for recipient field."
+},
+"fee": "Fee",
+"@fee": {
+  "description": "Label for transaction fee."
+},
+"date": "Date",
+"@date": {
+  "description": "Label for transaction date field."
+},
+"transactionId": "Transaction ID",
+"@transactionId": {
+  "description": "Label for transaction ID field."
+},
+"note": "Note",
+"@note": {
+  "description": "Label for transaction note field."
+},
+"receivedTransactionTitle": "Received Transaction",
+"@receivedTransactionTitle": {
+  "description": "Title for transactions where assets are received."
+},
+"selfTransferTitle": "Self Transfer",
+"@selfTransferTitle": {
+  "description": "Title for transactions where assets are sent to self."
+},
+"viewTransactionTitle": "View Transaction",
+"@viewTransactionTitle": {
+  "description": "Title for the view transaction screen."
+},
+"noTransactionAvailable": "No transaction available to display.",
+"@noTransactionAvailable": {
+  "description": "Message displayed when no transaction is available."
+},
+"invalidAddressSupplied": "The supplied value \"{value}\" is not a valid address.",
+"@invalidAddressSupplied": {
+  "description": "Error message for invalid Algorand address.",
+  "placeholders": {
+    "value": {
+      "type": "String",
+      "example": "INVALID_ADDRESS"
+    }
+  }
+},
+"invalidAddressByteLength": "Byte string must be {expected} bytes long for a valid address, found \"{found}\" length.",
+"@invalidAddressByteLength": {
+  "description": "Error message for incorrect byte length for an address.",
+  "placeholders": {
+    "expected": {
+      "type": "int",
+      "example": "32"
+    },
+    "found": {
+      "type": "int",
+      "example": "24"
+    }
+  }
+},
+"addressType": "address",
+"@addressType": {
+  "description": "String representation of the ABI address type."
+},
+
+  "noActiveAccountFound": "No active account found.",
+  "@noActiveAccountFound": {
+    "description": "Error message displayed when no active account is found in storage."
+  },
+  "failedToInitializeAccount": "Failed to initialize account: {error}",
+  "@failedToInitializeAccount": {
+    "description": "Error message when account initialization fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "publicKeyNotFoundInStorage": "Public key not found in storage.",
+  "@publicKeyNotFoundInStorage": {
+    "description": "Error message when the public key is not found in storage."
+  },
+  "accountNotFundedPleaseFundToSeeDetails": "This account has not been funded yet. Please fund it to see details.",
+  "@accountNotFundedPleaseFundToSeeDetails": {
+    "description": "Error message displayed when an account has not been funded yet."
+  },
+  "accountNameIsTooLong": "Account name is too long.",
+  "@accountNameIsTooLong": {
+    "description": "Error message displayed when the account name exceeds the maximum length."
+  },
+  "failedToCreateAccountName": "Failed to create account name: {error}",
+  "@failedToCreateAccountName": {
+    "description": "Error message displayed when creating account name fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToCreateAccount": "Failed to create account: {error}",
+  "@failedToCreateAccount": {
+    "description": "Error message displayed when account creation fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "noActiveAccountToUpdate": "No active account to update.",
+  "@noActiveAccountToUpdate": {
+    "description": "Error message when there is no active account to update."
+  },
+  "accountNotFound": "Account not found.",
+  "@accountNotFound": {
+    "description": "Error message when the specified account is not found."
+  },
+  "failedToDeleteAccount": "Failed to delete account: {error}",
+  "@failedToDeleteAccount": {
+    "description": "Error message displayed when account deletion fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToRestoreAccount": "Failed to restore account: {error}",
+  "@failedToRestoreAccount": {
+    "description": "Error message displayed when account restoration fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "noActiveAccount": "No active account.",
+  "@noActiveAccount": {
+    "description": "Error message when there is no active account."
+  },
+  "seedPhraseNotFoundInStorage": "Seed phrase not found in storage.",
+  "@seedPhraseNotFoundInStorage": {
+    "description": "Error message when the seed phrase is not found in storage."
+  },
+  "publicAddressNotAvailable": "Public address is not available.",
+  "@publicAddressNotAvailable": {
+    "description": "Error message when the public address is not available."
+  },
+  "accountMissingInTemporaryData": "Account is missing in temporary account data.",
+  "@accountMissingInTemporaryData": {
+    "description": "Error message when the account is missing in temporary data."
+  },
+  "incompleteTemporaryAccountData": "Incomplete temporary account data for regular account.",
+  "@incompleteTemporaryAccountData": {
+    "description": "Error message when the temporary account data is incomplete."
+  },
+  "publicKeyIsMissing": "Public key is missing.",
+  "@publicKeyIsMissing": {
+    "description": "Error message when the public key is missing."
+  },
+  "unsupportedAccountType": "Unsupported account type.",
+  "@unsupportedAccountType": {
+    "description": "Error message when an unsupported account type is encountered."
+  },
+  "failedToFinalizeAccountCreation": "Failed to finalize account creation: {error}",
+  "@failedToFinalizeAccountCreation": {
+    "description": "Error message displayed when finalizing account creation fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+"failedToCreateUnsignedTransactions": "Failed to create unsigned transfer transactions: {error}",
+"@failedToCreateUnsignedTransactions": {
+  "description": "Error message when creating unsigned transactions fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"transactionIdInvalid": "Transaction failed: Transaction ID invalid or marked as 'error'.",
+"@transactionIdInvalid": {
+  "description": "Error message when a transaction ID is invalid or marked as 'error'."
+},
+"failedToSendPayment": "Failed to send payment: {error}",
+"@failedToSendPayment": {
+  "description": "Error message when a payment fails to send.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"getAccountAssetsFailed": "Failed to fetch assets: {error}",
+"@getAccountAssetsFailed": {
+  "description": "Error message when fetching account assets fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"assetDetailsFetchFailed": "Failed to fetch asset details: {error}",
+"@assetDetailsFetchFailed": {
+  "description": "Error message when fetching asset details fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"assetIdInvalidFormat": "Invalid asset ID format. Asset ID must be a valid integer.",
+"@assetIdInvalidFormat": {
+  "description": "Error message when an asset ID is invalid."
+},
+"assetOptInFailed": "Failed to opt-in to asset: {error}",
+"@assetOptInFailed": {
+  "description": "Error message when opting into an asset fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"arc200AssetFetchFailed": "Failed to fetch ARC-0200 asset details",
+"@arc200AssetFetchFailed": {
+  "description": "Error message when fetching ARC-0200 asset details fails."
+},
+"failedToTransferAsset": "Failed to transfer asset: {error}",
+"@failedToTransferAsset": {
+  "description": "Error message when transferring an asset fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"failedToToggleFreeze": "Failed to {action} asset: {error}",
+"@failedToToggleFreeze": {
+  "description": "Error message when freezing/unfreezing an asset fails.",
+  "placeholders": {
+    "action": {},
+    "error": {}
+  }
+},
+"failedToRevokeAsset": "Failed to revoke asset: {error}",
+"@failedToRevokeAsset": {
+  "description": "Error message when revoking an asset fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"failedToFetchTransactions": "Failed to fetch transactions: {error}",
+"@failedToFetchTransactions": {
+  "description": "Error message when fetching transactions fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"contractOptInFailed": "Failed to opt-in to contract: {error}",
+"@contractOptInFailed": {
+  "description": "Error message when opting into a contract fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"contractCallFailed": "Failed to call contract: {error}",
+"@contractCallFailed": {
+  "description": "Error message when calling a contract fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"transactionError": "Transaction error: {error}",
+"@transactionError": {
+  "description": "Error message for transaction error.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"searchQueryTooShort": "Search query is too short.",
+"@searchQueryTooShort": {
+  "description": "Error message when the search query is too short."
+},
+"failedToFetchAssets": "Failed to fetch assets: {error}",
+"@failedToFetchAssets": {
+  "description": "Error message when fetching assets fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"failedToGetAccountBalance": "Failed to get account balance: {error}",
+"@failedToGetAccountBalance": {
+  "description": "Error message when getting the account balance fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"assetEditConfirmationFailed": "Asset edit confirmation failed.",
+"@assetEditConfirmationFailed": {
+  "description": "Error message when asset edit confirmation fails."
+},
+"failedToEditAsset": "Failed to edit asset: {error}",
+"@failedToEditAsset": {
+  "description": "Error message when editing an asset fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"failedToDestroyAsset": "Failed to destroy asset: {error}",
+"@failedToDestroyAsset": {
+  "description": "Error message when destroying an asset fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"assetDestructionConfirmationFailed": "Asset destruction confirmation failed.",
+"@assetDestructionConfirmationFailed": {
+  "description": "Error message when the confirmation of asset destruction fails."
+},
+"failedToOptInAsset": "Failed to opt-in to asset.",
+"@failedToOptInAsset": {
+  "description": "Error message when opting in to an asset fails."
+},
+"privateKeyNotFound": "Private key not found for the active account.",
+"@privateKeyNotFound": {
+  "description": "Error message when private key for the active account is not found."
+},
+"assetOptInConfirmationFailed": "Asset opt-in confirmation failed.",
+"@assetOptInConfirmationFailed": {
+  "description": "Error message when asset opt-in confirmation fails."
+},
+"failedToOptInToASA": "Failed to opt-in to ASA: {error}",
+"@failedToOptInToASA": {
+  "description": "Error message when opting in to an ASA asset fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"assetNameOrUnitMissing": "Asset name or unit name is missing.",
+"@assetNameOrUnitMissing": {
+  "description": "Error message when the asset name or unit name is missing."
+},
+"failedToFollowArc200Asset": "Failed to follow ARC-0200 asset.",
+"@failedToFollowArc200Asset": {
+  "description": "Error message when following an ARC-0200 asset fails."
+},
+"assetTransferConfirmationFailed": "Asset transfer confirmation failed.",
+"@assetTransferConfirmationFailed": {
+  "description": "Error message when asset transfer confirmation fails."
+},
+"assetIsFrozen": "Asset is frozen.",
+"@assetIsFrozen": {
+  "description": "Error message indicating an asset is frozen."
+},
+"privateKeyNotFoundForAccount": "Private key not found for account ID: {accountId}",
+"@privateKeyNotFoundForAccount": {
+  "description": "Error message when the private key is not found for a specific account.",
+  "placeholders": {
+    "accountId": {
+      "type": "String",
+      "description": "The ID of the account for which the private key was not found."
+    }
+  }
+},
+"invalidEncodedKeyLength": "The encoded key should be 44 characters long.",
+"@invalidEncodedKeyLength": {
+  "description": "Error message when the encoded key length is not 44 characters."
+},
+"contactNotFound": "Contact not found.",
+"@contactNotFound": {
+  "description": "Error message when a requested contact cannot be found."
+},
+"almostThere": "Almost there",
+"@almostThere": {
+  "description": "Follow-up message to show when loading is almost complete."
+},
+"hangInThere": "Hang in there",
+"@hangInThere": {
+  "description": "Encouraging follow-up message during loading."
+},
+"justABitMore": "Just a bit more",
+"@justABitMore": {
+  "description": "Message to indicate loading is nearly done."
+},
+"youreDoingGreat": "You're doing great",
+"@youreDoingGreat": {
+  "description": "Encouraging message shown during loading."
+},
+"nearlyDone": "Nearly done",
+"@nearlyDone": {
+  "description": "Message indicating the loading process is nearly finished."
+},
+"thanksForWaiting": "Thanks for waiting",
+"@thanksForWaiting": {
+  "description": "Message thanking the user for their patience during loading."
+},
+"checksumMismatch": "Checksum does not match. The scanned QR codes are not from the same set.",
+"@checksumMismatch": {
+  "description": "Error message when the checksum of scanned QR codes does not match, indicating they are not from the same set."
+},
+"networkChangedTo": "Network changed to {networkName}",
+"@networkChangedTo": {
+  "description": "Message displayed when the network is successfully changed.",
+  "placeholders": {
+    "networkName": {
+      "type": "String",
+      "description": "The name of the new network."
+    }
+  }
+},
+"failedToLoadNFTs": "Failed to load NFTs with status code: {statusCode}",
+"@failedToLoadNFTs": {
+  "description": "Error message when the app fails to load NFTs, showing the HTTP status code.",
+  "placeholders": {
+    "statusCode": {
+      "type": "int",
+      "description": "The HTTP status code returned from the server."
+    }
+  }
+},
+"settingUp": "Setting Up",
+"@settingUp": {
+  "description": "Overlay text shown during PIN setup."
+},
+"authenticating": "Authenticating",
+"@authenticating": {
+  "description": "Overlay text shown during authentication."
+},
+"verifying": "Verifying",
+"@verifying": {
+  "description": "Overlay text shown during transaction verification."
+},
+"settingNewPin": "Setting New PIN",
+"@settingNewPin": {
+  "description": "Overlay text shown during PIN change process."
+},
+
+"accountNameNotFound": "Account name not found for activeAccountId: {activeAccountId}",
+"@accountNameNotFound": {
+  "description": "Error message when the account name for a specific ID is not found.",
+  "placeholders": {
+    "activeAccountId": {
+      "type": "String",
+      "description": "The ID of the active account."
+    }
+  }
+},
+"incorrectPin": "Incorrect PIN",
+"@incorrectPin": {
+  "description": "Error message when the user enters an incorrect PIN."
+},
+"invalidPinTryAgain": "Invalid PIN. Try again.",
+"@invalidPinTryAgain": {
+  "description": "Error message when the entered PIN is invalid."
+},
+"failedToSetPin": "Failed to set PIN: {error}",
+"@failedToSetPin": {
+  "description": "Error message when setting the PIN fails.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the exception."
+    }
+  }
+},
+"errorReadingPinHash": "Error reading pin hash.",
+"@errorReadingPinHash": {
+  "description": "Error message when reading the pin hash from secure storage fails."
+},
+"failedToReadAccountsData": "Failed to read accounts data: {error}",
+"@failedToReadAccountsData": {
+  "description": "Error message when reading accounts data fails.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the exception."
+    }
+  }
+},
+"sharedPreferencesNotInitialized": "SharedPreferences is not initialized.",
+"@sharedPreferencesNotInitialized": {
+  "description": "Error message when SharedPreferences is accessed before initialization."
+},
+"failedToSaveSessions": "Failed to save sessions.",
+"@failedToSaveSessions": {
+  "description": "Error message when saving sessions fails."
+},
+"failedToRetrieveSessions": "Failed to retrieve sessions.",
+"@failedToRetrieveSessions": {
+  "description": "Error message when retrieving sessions fails."
+},
+"failedToRemoveSessions": "Failed to remove sessions.",
+"@failedToRemoveSessions": {
+  "description": "Error message when removing all sessions fails."
+},
+
+"failedToCreateWatchAccount": "Failed to create watch account: {error}",
+"@failedToCreateWatchAccount": {
+  "description": "Error message when creating a watch account fails.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the exception."
+    }
+  }
+},
+"accountAlreadyAdded": "Account already added.",
+"@accountAlreadyAdded": {
+  "description": "Error message when attempting to add an already existing account."
+},
+
+"seedPhraseNotAvailable": "Seed phrase is not available.",
+"@seedPhraseNotAvailable": {
+  "description": "Error message when attempting to access a seed phrase that is not available."
+},
+"somethingWentWrong": "Something went wrong.",
+"@somethingWentWrong": {
+  "description": "A generic error message."
+},
+"accountNameNotFoundForId": "Account name not found for accountId: {accountId}",
+"@accountNameNotFoundForId": {
+  "description": "Error message when the account name for a specific account ID is not found.",
+  "placeholders": {
+    "accountId": {
+      "type": "String",
+      "description": "The ID of the account."
+    }
+  }
+},
+"failedToSelectAccount": "Failed to select account: {error}",
+"@failedToSelectAccount": {
+  "description": "Error message when the app fails to select an account.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the exception."
+    }
+  }
+},
+"failedToCompleteAccountSetup": "Failed to complete account setup: {error}",
+"@failedToCompleteAccountSetup": {
+  "description": "Error message when account setup fails to complete.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the exception."
+    }
+  }
+},
+"invalidIconType": "Icon must be either IconData or a String path to SVG.",
+"@invalidIconType": {
+  "description": "Error message when an invalid icon type is provided."
+},
+"resetAppFailed": "Reset app failed: {error}",
+"@resetAppFailed": {
+  "description": "Error message when the app reset process fails.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the exception."
+    }
+  }
+},
+"failedToDisconnectWalletConnectSessions": "Failed to disconnect WalletConnect sessions: {error}",
+"@failedToDisconnectWalletConnectSessions": {
+  "description": "Error message when disconnecting WalletConnect sessions fails.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the exception."
+    }
+  }
+},
+"failedToClearStorage": "Failed to clear storage: {error}",
+"@failedToClearStorage": {
+  "description": "Error message when clearing secure storage fails.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "The error message from the exception."
+    }
+  }
+},
+"failedToLoadArc200Balances": "Failed to load ARC200 balances.",
+"@failedToLoadArc200Balances": {
+  "description": "Error message when loading ARC200 balances fails."
+},
+"noArc200TokenDetailsForNetwork": "No ARC200 token details available for the selected network.",
+"@noArc200TokenDetailsForNetwork": {
+  "description": "Error message when ARC200 token details are unavailable for the selected network."
+},
+"failedToLoadArc200TokenDetails": "Failed to load ARC200 token details.",
+"@failedToLoadArc200TokenDetails": {
+  "description": "Error message when loading ARC200 token details fails."
+},
+"tokenDetailsNotFound": "Token details not found for contractId {contractId}.",
+"@tokenDetailsNotFound": {
+  "description": "Error message when token details for a specific contract ID are not found.",
+  "placeholders": {
+    "contractId": {
+      "type": "String",
+      "description": "The contract ID for which token details were not found."
+    }
+  }
+},
+"failedToSearchArc200Assets": "Failed to search ARC200 assets.",
+"@failedToSearchArc200Assets": {
+  "description": "Error message when searching for ARC200 assets fails."
+},
+"networkNotConfiguredForArc200": "Network not configured for ARC200 operations.",
+"@networkNotConfiguredForArc200": {
+  "description": "Error message when the selected network is not configured for ARC200 operations."
+},
+"failedToFetchArc200Balance": "Failed to fetch ARC200 balance for contract {contractId}.",
+"@failedToFetchArc200Balance": {
+  "description": "Error message when fetching the ARC200 balance for a specific contract fails.",
+  "placeholders": {
+    "contractId": {
+      "type": "String",
+      "description": "The contract ID for which the balance could not be fetched."
+    }
+  }
+},
+"assetNotFoundForContract": "Asset not found for contract {contractId}.",
+"@assetNotFoundForContract": {
+  "description": "Error message when an asset for a specific contract ID is not found.",
+  "placeholders": {
+    "contractId": {
+      "type": "String",
+      "description": "The contract ID for which the asset was not found."
+    }
+  }
+},
+"copiedToClipboard": "Copied to clipboard",
+"@copiedToClipboard": {
+  "description": "Message displayed when an item is successfully copied to the clipboard."
+},
+"unsupportedEncodingOrInvalidFormat": "Unsupported encoding or invalid string format.",
+"@unsupportedEncodingOrInvalidFormat": {
+  "description": "Error message when the input string has an unsupported encoding or an invalid format."
+},
+"privateKeyMissingInUri": "Private key is missing in the URI.",
+"@privateKeyMissingInUri": {
+  "description": "Error message when a private key is missing from a URI input."
+},
+"unsupportedEncodingInUri": "Unsupported encoding in the URI.",
+"@unsupportedEncodingInUri": {
+  "description": "Error message when an unsupported encoding is specified in a URI."
+},
+"invalidHexStringLength": "Invalid hex string length.",
+"@invalidHexStringLength": {
+  "description": "Error message when a hex string has an invalid length."
+},
+"invalidBase64String": "Invalid Base64 string.",
+"@invalidBase64String": {
+  "description": "Error message when a Base64 string is invalid."
+},
+"invalidBase32String": "Invalid Base32 string.",
+"@invalidBase32String": {
+  "description": "Error message when a Base32 string is invalid."
+},
+"hereIsMyQRCode": "Here is my QR Code!",
+"@hereIsMyQRCode": {
+  "description": "Text accompanying the shared QR code."
+},
+"failedToApproveSession": "Failed to approve session.",
+"@failedToApproveSession": {
+  "description": "Error message when approving a WalletConnect session fails."
+},
+"failedToDisconnectSession": "Failed to disconnect session.",
+"@failedToDisconnectSession": {
+  "description": "Error message when disconnecting a WalletConnect session fails."
+}
+
+}

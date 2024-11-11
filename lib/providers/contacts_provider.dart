@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/first_or_where_null.dart';
@@ -79,7 +80,7 @@ class ContactsListNotifier extends StateNotifier<ContactsListState> {
     if (index != -1) {
       contacts[index] = updatedContact;
     } else {
-      throw Exception('Contact not found.');
+      throw Exception(S.current.contactNotFound);
     }
 
     await storageService.saveContacts(contacts);

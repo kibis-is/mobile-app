@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/widgets/qr_dialog.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
@@ -25,31 +26,30 @@ class DashboardInfoPanel extends ConsumerWidget {
   final AccountState accountState;
   final String publicKey;
 
-  List<SelectItem> get items => [
-        SelectItem(
-          name: "Copy Address",
-          value: 'copy',
-          icon: AppIcons.copy,
-        ),
-        SelectItem(
-          name: "Share Address",
-          value: 'share',
-          icon: AppIcons.share,
-        ),
-        SelectItem(
-          name: "Edit",
-          value: 'edit',
-          icon: AppIcons.edit,
-        ),
-        SelectItem(
-          name: "Refresh",
-          value: 'refresh',
-          icon: AppIcons.refresh,
-        ),
-      ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    List<SelectItem> items = [
+      SelectItem(
+        name: S.of(context).copyAddress,
+        value: 'copy',
+        icon: AppIcons.copy,
+      ),
+      SelectItem(
+        name: S.of(context).shareAddress,
+        value: 'share',
+        icon: AppIcons.share,
+      ),
+      SelectItem(
+        name: S.of(context).editAccount,
+        value: 'edit',
+        icon: AppIcons.edit,
+      ),
+      SelectItem(
+        name: S.of(context).refreshAccount,
+        value: 'refresh',
+        icon: AppIcons.refresh,
+      ),
+    ];
     final accountId =
         ref.watch(activeAccountProvider.notifier).getActiveAccountId();
     return Padding(
@@ -61,7 +61,7 @@ class DashboardInfoPanel extends ConsumerWidget {
           Hero(
             tag: 'account-name-$accountId',
             child: EllipsizedText(
-              accountState.accountName ?? 'No Account Name',
+              accountState.accountName ?? S.of(context).noAccountName,
               type: EllipsisType.end,
               textAlign: TextAlign.start,
               style: context.textTheme.titleLarge?.copyWith(
@@ -94,7 +94,7 @@ class DashboardInfoPanel extends ConsumerWidget {
                   customBottomSheet(
                     context: context,
                     items: items,
-                    header: "Options",
+                    header: S.of(context).options,
                     onPressed: (SelectItem item) {},
                   ).then((value) {
                     if (value == "Copy Address") {

@@ -6,18 +6,19 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class GeneralScreen extends ConsumerWidget {
-  static const String title = 'General';
+  static String title = S.current.general;
   const GeneralScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text(title)),
+      appBar: AppBar(title: Text(S.of(context).general)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
@@ -37,7 +38,7 @@ class GeneralScreen extends ConsumerWidget {
 
   Widget _buildDangerZoneTitle(BuildContext context) {
     return Text(
-      'Danger Zone',
+      S.of(context).dangerZone,
       style: context.textTheme.bodyMedium?.copyWith(
         color: context.colorScheme.error,
         fontWeight: FontWeight.bold,
@@ -47,14 +48,14 @@ class GeneralScreen extends ConsumerWidget {
 
   Widget _buildDangerZoneDescription(BuildContext context) {
     return Text(
-      'This will remove all accounts, settings, and security information.',
+      S.of(context).dangerZoneDescription,
       style: context.textTheme.bodySmall,
     );
   }
 
   Widget _buildResetButton(BuildContext context, WidgetRef ref) {
     return CustomButton(
-      text: 'Reset',
+      text: S.of(context).reset,
       isFullWidth: true,
       buttonType: ButtonType.warning,
       onPressed: () => _handleResetPressed(context, ref),
@@ -64,11 +65,10 @@ class GeneralScreen extends ConsumerWidget {
   Future<void> _handleResetPressed(BuildContext context, WidgetRef ref) async {
     bool confirm = await showDialog<bool>(
           context: context,
-          builder: (BuildContext context) => const ConfirmationDialog(
-            yesText: 'Reset',
-            noText: 'Cancel',
-            content:
-                'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
+          builder: (BuildContext context) => ConfirmationDialog(
+            yesText: S.of(context).reset,
+            noText: S.of(context).cancel,
+            content: S.of(context).resetConfirmationMessage,
           ),
         ) ??
         false;
@@ -81,7 +81,9 @@ class GeneralScreen extends ConsumerWidget {
 
   void _handleResetApp(WidgetRef ref, BuildContext context) async {
     try {
-      ref.read(loadingProvider.notifier).startLoading(message: 'Resetting App');
+      ref.read(loadingProvider.notifier).startLoading(
+            message: S.of(context).resettingApp,
+          );
 
       await AppResetUtil.resetApp(ref);
 
@@ -101,7 +103,7 @@ class GeneralScreen extends ConsumerWidget {
     await showDialog(
       context: context,
       builder: (context) => PinPadDialog(
-        title: 'Confirm Reset',
+        title: S.of(context).confirmReset,
         onPinVerified: () async {
           _handleResetApp(ref, context);
         },

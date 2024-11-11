@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_loading_overlay.dart';
@@ -7,6 +8,7 @@ import 'package:kibisis/common_widgets/loading_overlay.dart';
 import 'package:kibisis/common_widgets/splash_screen.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/connectivity_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
@@ -110,6 +112,14 @@ class _KibisisState extends ConsumerState<Kibisis> {
             ));
 
             return MaterialApp.router(
+              locale: const Locale('en'),
+              supportedLocales: S.delegate.supportedLocales,
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
               scaffoldMessengerKey: rootScaffoldMessengerKey,
               routerConfig: router,
               title: 'Kibisis',
@@ -152,9 +162,12 @@ class _KibisisState extends ConsumerState<Kibisis> {
           loading: () => const Material(
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (error, stack) => const Material(
+          error: (error, stack) => Material(
             child: Center(
-                child: Text('Initialization error, please restart the app.')),
+              child: Text(
+                S.current.initializationError,
+              ),
+            ),
           ),
         );
       },
@@ -171,7 +184,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
           Icon(Icons.warning, color: context.colorScheme.onError),
           const SizedBox(width: kScreenPadding / 2),
           Text(
-            'No Internet Connection',
+            S.of(context).noInternetConnection,
             style: context.textTheme.displaySmall
                 ?.copyWith(color: context.colorScheme.onError),
           ),

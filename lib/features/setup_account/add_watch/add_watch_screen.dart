@@ -7,11 +7,12 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
 class AddWatchScreen extends ConsumerWidget {
-  static String title = 'Import Public Address';
+  static String title = S.current.importPublicAddress;
   final AccountFlow accountFlow;
 
   const AddWatchScreen({super.key, required this.accountFlow});
@@ -44,7 +45,7 @@ class AddWatchScreen extends ConsumerWidget {
             const SizedBox(height: kScreenPadding),
             CustomTextField(
               controller: publicAddressController,
-              labelText: 'Public Address',
+              labelText: S.of(context).publicAddress,
               suffixIcon: isSuffixIconVisible ? AppIcons.cross : null,
               leadingIcon: AppIcons.importAccount,
               autoCorrect: false,
@@ -59,14 +60,14 @@ class AddWatchScreen extends ConsumerWidget {
       ),
       bottomNavigationBar: CustomButton(
         isBottomNavigationPosition: true,
-        text: 'Import',
+        text: S.of(context).import,
         isFullWidth: true,
         onPressed: () {
           if (publicAddressController.text.isEmpty) {
             showCustomSnackBar(
               context: context,
               snackType: SnackType.error,
-              message: 'Please enter a public address.',
+              message: S.of(context).pleaseEnterPublicAddress,
             );
           } else {
             _addWatchAccount(
@@ -88,7 +89,7 @@ class AddWatchScreen extends ConsumerWidget {
         showCustomSnackBar(
           context: context,
           snackType: SnackType.error,
-          message: 'Invalid Algorand address.',
+          message: S.of(context).invalidAlgorandAddress,
         );
         return;
       }

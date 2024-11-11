@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/pin_state.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/crypto_utils.dart';
@@ -25,7 +26,7 @@ class PinStateNotifier extends StateNotifier<PinState> {
       await storageService.setPinHash(hashedPin);
       _storedHashedPin = hashedPin;
     } catch (e) {
-      state = state.copyWith(error: 'Failed to set PIN: $e');
+      state = state.copyWith(error: S.current.failedToSetPin(e.toString()));
     }
   }
 
@@ -42,7 +43,7 @@ class PinStateNotifier extends StateNotifier<PinState> {
       String enteredHashedPin = CryptoUtils.hashPin(enteredPin);
       return storedHashedPin == enteredHashedPin;
     } catch (e) {
-      state = state.copyWith(error: 'Failed to verify PIN: $e');
+      state = state.copyWith(error: S.current.failedToSetPin(e.toString()));
       return false;
     }
   }
@@ -59,7 +60,7 @@ class PinStateNotifier extends StateNotifier<PinState> {
         return false;
       }
     } catch (e) {
-      state = state.copyWith(error: 'Failed to change PIN: $e');
+      state = state.copyWith(error: S.current.failedToSetPin(e.toString()));
       return false;
     }
   }

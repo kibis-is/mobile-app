@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/contacts_provider.dart';
@@ -100,10 +101,10 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
             : AppIcons.sendToSelf;
 
     final title = direction == TransactionDirection.outgoing
-        ? 'Sent Transaction'
+        ? S.current.sentTransactionTitle
         : direction == TransactionDirection.incoming
-            ? 'Received Transaction'
-            : 'Self Transfer';
+            ? S.current.receivedTransactionTitle
+            : S.current.selfTransferTitle;
 
     return SingleChildScrollView(
       child: Padding(
@@ -158,7 +159,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
             ),
             const SizedBox(height: kScreenPadding),
             _buildToggleableField(
-                labelText: 'From',
+                labelText: S.current.fromField,
                 displayName: senderDisplayName,
                 publicKey: sender,
                 toggleProvider: fromFieldToggleProvider,
@@ -166,7 +167,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
             const SizedBox(height: kScreenPadding / 2),
             if (receiver != null && receiver.isNotEmpty)
               _buildToggleableField(
-                  labelText: 'To',
+                  labelText: S.current.toField,
                   displayName: receiverDisplayName,
                   publicKey: receiver,
                   toggleProvider: toFieldToggleProvider,
@@ -177,7 +178,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
               controller: TextEditingController(
                 text: feeInAlgos.toString(),
               ),
-              labelText: 'Fee',
+              labelText: S.current.fee,
               isEnabled: false,
             ),
             const SizedBox(height: kScreenPadding / 2),
@@ -188,7 +189,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
                         widget.transaction.roundTime! * 1000)
                     .toString(),
               ),
-              labelText: 'Date',
+              labelText: S.current.date,
               isEnabled: false,
             ),
             const SizedBox(height: kScreenPadding / 2),
@@ -198,9 +199,9 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
                   child: CustomTextField(
                     leadingIcon: AppIcons.info,
                     controller: TextEditingController(
-                      text: widget.transaction.id ?? 'Not available',
+                      text: widget.transaction.id ?? S.of(context).unknown,
                     ),
-                    labelText: 'Transaction ID',
+                    labelText: S.current.transactionId,
                     isEnabled: false,
                   ),
                 ),
@@ -219,7 +220,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
                 controller: TextEditingController(
                   text: note,
                 ),
-                labelText: 'Note',
+                labelText: S.current.note,
                 isEnabled: false,
                 maxLines: 7,
               ),

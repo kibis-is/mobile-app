@@ -2,6 +2,7 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/providers/contacts_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -69,8 +70,8 @@ class ContactsDialog extends ConsumerWidget {
       labelColor: context.colorScheme.primary,
       unselectedLabelColor: context.colorScheme.onBackground,
       tabs: [
-        if (contacts.isNotEmpty) const Tab(text: 'Contacts'),
-        const Tab(text: 'My Accounts'),
+        if (contacts.isNotEmpty) Tab(text: S.of(context).contactsTab),
+        Tab(text: S.of(context).myAccountsTab),
       ],
     );
   }
@@ -174,7 +175,7 @@ class ContactsDialog extends ConsumerWidget {
       child: TextButton(
         onPressed: onCancel,
         child: Text(
-          'Cancel',
+          S.of(context).cancel,
           style: context.textTheme.displayMedium
               ?.copyWith(color: context.colorScheme.onBackground),
         ),
@@ -224,8 +225,8 @@ class ContactsDialog extends ConsumerWidget {
       context: context,
       builder: (BuildContext context) {
         return ConfirmationDialog(
-          title: 'Delete Contact',
-          content: 'Are you sure you want to delete ${contact.name}?',
+          title: S.of(context).deleteContactTitle,
+          content: S.of(context).deleteContactMessage(contact.name),
         );
       },
     );

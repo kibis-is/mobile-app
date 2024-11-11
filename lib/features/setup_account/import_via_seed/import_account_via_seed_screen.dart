@@ -6,12 +6,13 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/media_query_helper.dart';
 
 class ImportSeedScreen extends ConsumerStatefulWidget {
-  static String title = 'Import Seed';
+  static String title = S.current.importSeed;
   final AccountFlow accountFlow;
 
   const ImportSeedScreen({super.key, required this.accountFlow});
@@ -91,9 +92,9 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Enter your seed phrase to import your account.',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  S.of(context).enterSeedPhrasePrompt,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: kScreenPadding),
                 LayoutBuilder(
@@ -125,7 +126,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
                             labelText: '${index + 1}',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Enter word ${index + 1}';
+                                return S.of(context).enterWord(index + 1);
                               }
                               return null;
                             },
@@ -147,7 +148,7 @@ class ImportSeedScreenState extends ConsumerState<ImportSeedScreen> {
                 ),
                 const SizedBox(height: kScreenPadding * 2),
                 CustomButton(
-                  text: 'Next',
+                  text: S.of(context).next,
                   isFullWidth: true,
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {

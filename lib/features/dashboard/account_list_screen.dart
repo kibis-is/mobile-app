@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_body.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
@@ -35,8 +36,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Account'),
-        automaticallyImplyLeading: false,
+        title: Text(S.of(context).selectAccountTitle),
       ),
       body: mediaQueryHelper.isWideScreen()
           ? Row(
@@ -79,9 +79,11 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
     if (accountsListState.isLoading) {
       return const Center(child: CircularProgressIndicator());
     } else if (accountsListState.error != null) {
-      return Center(child: Text('Error: ${accountsListState.error}'));
+      return Center(
+          child: Text(
+              S.of(context).errorMessage(accountsListState.error.toString())));
     } else if (accountsListState.accounts.isEmpty) {
-      return const Center(child: Text('No accounts found'));
+      return Center(child: Text(S.of(context).noAccountsFound));
     } else {
       return _buildAccountsList(context, accountsListState.accounts);
     }
@@ -102,17 +104,15 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
   }
 
   Widget _buildAccountItem(BuildContext context, Map<String, dynamic> account) {
-    final accountName = account['accountName'] ?? 'Unnamed Account';
-    final publicKey = account['publicKey'] ?? 'No Public Key';
+    final accountName = account['accountName'] ?? S.of(context).unknown;
+    final publicKey = account['publicKey'] ?? S.of(context).unknown;
+
     final privateKeyAccounts = ref.watch(privateKeyAccountsProvider);
 
     return privateKeyAccounts.when(
       data: (accountsWithPrivateKey) {
         final isWatchAccount = !accountsWithPrivateKey.any((privateAccount) =>
             privateAccount['accountId'] == account['accountId']);
-
-        debugPrint(
-            'Account ID: ${account['accountId']}, isWatchAccount: $isWatchAccount');
 
         return InkWell(
           child: Material(
@@ -191,7 +191,8 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
           onTap: () {
             ref
                 .read(loadingProvider.notifier)
-                .startLoading(message: 'Loading Account');
+                .startLoading(message: S.of(context).loadingAccount);
+
             final accountHandler = AccountHandler(ref);
 
             accountHandler
@@ -206,7 +207,8 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, stack) => const Center(child: Text('Error loading accounts')),
+      error: (e, stack) =>
+          Center(child: Text(S.of(context).errorLoadingAccounts)),
     );
   }
 

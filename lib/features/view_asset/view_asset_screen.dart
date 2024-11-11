@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -31,11 +32,12 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen> {
     if (activeAsset == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(
-              widget.mode == AssetScreenMode.view ? 'View Asset' : 'Add Asset'),
+          title: Text(widget.mode == AssetScreenMode.view
+              ? S.current.viewAssetTitle
+              : S.current.addAssetTitle),
         ),
-        body: const Center(
-          child: Text('No asset available to display.'),
+        body: Center(
+          child: Text(S.current.noAssetAvailableMessage),
         ),
       );
     }
@@ -47,16 +49,15 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen> {
       if (isArc200FromStorage)
         IconButton(
           icon: AppIcons.icon(icon: AppIcons.delete),
-          tooltip: 'Opt-out',
+          tooltip: S.current.optOutTooltip,
           onPressed: () async {
             final confirmed = await showDialog<bool>(
               context: context,
-              builder: (context) => const ConfirmationDialog(
-                title: 'Opt Out of Asset?',
-                content:
-                    'Are you sure you want to opt out of this ARC-0200 asset?',
-                yesText: 'Opt Out',
-                noText: 'Cancel',
+              builder: (context) => ConfirmationDialog(
+                title: S.current.optOutAssetTitle,
+                content: S.current.optOutAssetContent,
+                yesText: S.current.optOutButton,
+                noText: S.current.cancelButton,
               ),
             );
 
@@ -80,8 +81,9 @@ class ViewAssetScreenState extends ConsumerState<ViewAssetScreen> {
     if (!widget.isPanelMode) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(
-              widget.mode == AssetScreenMode.view ? 'View Asset' : 'Add Asset'),
+          title: Text(widget.mode == AssetScreenMode.view
+              ? S.current.viewAssetTitle
+              : S.current.addAssetTitle),
           actions: actions,
         ),
         body: ViewAssetBody(asset: activeAsset),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:convert/convert.dart';
 import 'package:base32/base32.dart';
+import 'package:kibisis/generated/l10n.dart';
 
 class HexConverter {
   static String convertToHex(String input) {
@@ -20,7 +21,7 @@ class HexConverter {
       return _handleBase32(input);
     }
 
-    throw Exception('Unsupported encoding or invalid string format.');
+    throw Exception(S.current.unsupportedEncodingOrInvalidFormat);
   }
 
   static bool _isUri(String input) {
@@ -33,7 +34,7 @@ class HexConverter {
     final encoding = uri.queryParameters['encoding'] ?? '';
 
     if (privateKey.isEmpty) {
-      throw Exception('Private key is missing in the URI.');
+      throw Exception(S.current.privateKeyMissingInUri);
     }
 
     switch (encoding.toLowerCase()) {
@@ -44,7 +45,7 @@ class HexConverter {
       case 'base32':
         return _handleBase32(privateKey);
       default:
-        throw Exception('Unsupported encoding in the URI.');
+        throw Exception(S.current.unsupportedEncodingInUri);
     }
   }
 
@@ -58,7 +59,7 @@ class HexConverter {
     } else if (input.length == 128) {
       return input.substring(0, 64).toLowerCase();
     } else {
-      throw Exception('Invalid hex string length.');
+      throw Exception(S.current.invalidHexStringLength);
     }
   }
 
@@ -71,7 +72,7 @@ class HexConverter {
       final bytes = base64Decode(input);
       return hex.encode(bytes);
     } catch (e) {
-      throw Exception('Invalid Base64 string.');
+      throw Exception(S.current.invalidBase64String);
     }
   }
 
@@ -84,7 +85,7 @@ class HexConverter {
       final bytes = base32.decode(input);
       return hex.encode(bytes);
     } catch (e) {
-      throw Exception('Invalid Base32 string.');
+      throw Exception(S.current.invalidBase32String);
     }
   }
 }

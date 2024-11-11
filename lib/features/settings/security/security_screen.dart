@@ -7,6 +7,7 @@ import 'package:kibisis/common_widgets/pin_pad_dialog.dart';
 import 'package:kibisis/common_widgets/transparent_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/providers/pin_lock_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/lock_timeout_provider.dart';
@@ -15,7 +16,7 @@ import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
 class SecurityScreen extends ConsumerStatefulWidget {
-  static const String title = 'Security';
+  static String title = S.current.security;
   const SecurityScreen({super.key});
 
   @override
@@ -36,7 +37,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
     ref.watch(lockTimeoutProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text(SecurityScreen.title)),
+      appBar: AppBar(title: Text(SecurityScreen.title)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
@@ -59,7 +60,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
 
   Widget _buildSettingsToggle() {
     return SwitchListTile(
-      title: const Text('Enable Password Lock'),
+      title: Text(S.of(context).enablePasswordLock),
       value: _enablePinLock ?? false,
       onChanged: (newValue) async {
         if (!newValue) {
@@ -76,7 +77,26 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
 
   Widget _buildTimeoutDropdown() {
     final timeoutSeconds = ref.watch(lockTimeoutProvider);
-
+    List<SelectItem> timeoutList = [
+      SelectItem(
+          name: S.of(context).timeout1Minute, value: "60", icon: AppIcons.time),
+      SelectItem(
+          name: S.of(context).timeout2Minutes,
+          value: "120",
+          icon: AppIcons.time),
+      SelectItem(
+          name: S.of(context).timeout5Minutes,
+          value: "300",
+          icon: AppIcons.time),
+      SelectItem(
+          name: S.of(context).timeout10Minutes,
+          value: "600",
+          icon: AppIcons.time),
+      SelectItem(
+          name: S.of(context).timeout15Minutes,
+          value: "900",
+          icon: AppIcons.time),
+    ];
     final selectedItem = timeoutList.firstWhere(
       (item) => item.value == timeoutSeconds.toString(),
       orElse: () => timeoutList.first,
@@ -87,7 +107,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
         customBottomSheet(
           context: context,
           items: timeoutList,
-          header: 'Select Timeout',
+          header: S.of(context).selectTimeout,
           onPressed: (SelectItem selectedItem) {
             final int timeoutSeconds = int.parse(selectedItem.value);
             ref.read(lockTimeoutProvider.notifier).setTimeout(timeoutSeconds);
@@ -98,7 +118,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
       child: AbsorbPointer(
         absorbing: true,
         child: CustomDropDown(
-          label: 'Timeout',
+          label: S.of(context).timeout,
           items: timeoutList,
           selectedValue: selectedItem,
           onChanged: null,
@@ -112,7 +132,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
       children: [
         TransparentListTile(
           icon: AppIcons.importAccount,
-          title: 'Export Accounts',
+          title: S.of(context).exportAccounts,
           onTap: () => _handlePinVerification(() {
             GoRouter.of(context).pushNamed(exportAccountsRouteName);
           }),
@@ -120,7 +140,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
         const SizedBox(height: kScreenPadding),
         TransparentListTile(
           icon: AppIcons.importAccount,
-          title: 'Change Pin',
+          title: S.of(context).changePin,
           onTap: () => _handlePinVerification(() {
             GoRouter.of(context).pushNamed(pinPadChangePinRouteName);
           }),
@@ -133,7 +153,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
     final pinVerified = await showDialog<bool>(
       context: context,
       builder: (context) => PinPadDialog(
-        title: 'Verify Pin',
+        title: S.of(context).verifyPin,
         onPinVerified: () {},
       ),
     );

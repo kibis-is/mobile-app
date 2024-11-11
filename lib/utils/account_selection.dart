@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
@@ -22,7 +23,7 @@ class AccountHandler {
           await ref.read(storageProvider).getAccountName(accountId);
 
       if (accountName == null || accountName.isEmpty) {
-        throw Exception('Account name not found for accountId: $accountId');
+        throw Exception(S.current.accountNameNotFoundForId(accountId));
       }
 
       ref.invalidate(accountProvider);
@@ -33,7 +34,8 @@ class AccountHandler {
       invalidateProviders(ref);
     } catch (e) {
       debugPrint('Handle Account Selection Error: ${e.toString()}');
-      ref.read(errorProvider.notifier).state = 'Failed to select account: $e';
+      ref.read(errorProvider.notifier).state =
+          S.current.failedToSelectAccount(e.toString());
     }
   }
 }

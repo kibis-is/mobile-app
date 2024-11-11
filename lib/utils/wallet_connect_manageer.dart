@@ -1,3 +1,4 @@
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -99,7 +100,7 @@ class WalletConnectManager {
       debugPrint('Session approved successfully!');
     } catch (e) {
       debugPrint('Failed to approve session: $e');
-      throw Exception('Failed to approve session');
+      throw Exception(S.current.failedToApproveSession);
     }
   }
 
@@ -122,7 +123,7 @@ class WalletConnectManager {
       debugPrint('Session $topic disconnected successfully.');
     } catch (e) {
       debugPrint('Failed to disconnect session $topic: $e');
-      throw Exception('Failed to disconnect session');
+      throw Exception(S.current.failedToDisconnectSession);
     }
   }
 

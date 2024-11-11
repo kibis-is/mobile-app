@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart'; // Import localization
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class ConfirmationDialog extends StatelessWidget {
@@ -12,11 +13,11 @@ class ConfirmationDialog extends StatelessWidget {
 
   const ConfirmationDialog({
     super.key,
-    this.title = 'Are you sure?',
-    this.content = 'Do you want to proceed with this action?',
-    this.yesText = 'Yes',
-    this.noText = 'No',
-    this.okText = 'OK',
+    this.title = '',
+    this.content = '',
+    this.yesText = '',
+    this.noText = '',
+    this.okText = '',
     this.isConfirmDialog = true,
   });
 
@@ -25,11 +26,14 @@ class ConfirmationDialog extends StatelessWidget {
     return AlertDialog(
       contentPadding: const EdgeInsets.all(kScreenPadding),
       title: Text(
-        title,
+        title.isNotEmpty ? title : S.of(context).defaultConfirmationTitle,
         style: context.textTheme.titleMedium,
         textAlign: TextAlign.center,
       ),
-      content: Text(content, style: context.textTheme.bodySmall),
+      content: Text(
+        content.isNotEmpty ? content : S.of(context).defaultConfirmationContent,
+        style: context.textTheme.bodySmall,
+      ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: isConfirmDialog
           ? _buildConfirmActions(context)
@@ -44,7 +48,7 @@ class ConfirmationDialog extends StatelessWidget {
           Navigator.of(context).pop(true);
         },
         child: Text(
-          yesText,
+          yesText.isNotEmpty ? yesText : S.of(context).yes,
           style: context.textTheme.bodyMedium?.copyWith(),
         ),
       ),
@@ -53,7 +57,7 @@ class ConfirmationDialog extends StatelessWidget {
           Navigator.of(context).pop(false);
         },
         child: Text(
-          noText,
+          noText.isNotEmpty ? noText : S.of(context).no,
           style: context.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: context.colorScheme.secondary),
@@ -69,7 +73,7 @@ class ConfirmationDialog extends StatelessWidget {
           Navigator.of(context).pop(true);
         },
         child: Text(
-          okText,
+          okText.isNotEmpty ? okText : S.of(context).ok,
           style: context.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),

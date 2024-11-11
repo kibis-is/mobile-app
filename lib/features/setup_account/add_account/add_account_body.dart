@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -21,16 +22,16 @@ class AddAccountBody extends ConsumerWidget {
         children: [
           const SizedBox(height: kScreenPadding),
           CustomListTile(
-            title: "Create New Account",
-            subtitle: 'You will be prompted to save a seed.',
+            title: S.current.createNewAccount,
+            subtitle: S.current.createNewAccountSubtitle,
             leadingIcon: AppIcons.addAccount,
             trailingIcon: AppIcons.arrowRight,
             onTap: () => _onCreateAccount(context, ref),
           ),
           const SizedBox(height: kScreenPadding),
           CustomListTile(
-            title: "Import Via Seed",
-            subtitle: 'Import an existing account via seed phrase.',
+            title: S.current.importViaSeed,
+            subtitle: S.current.importViaSeedSubtitle,
             leadingIcon: AppIcons.importAccount,
             trailingIcon: AppIcons.arrowRight,
             onTap: () {
@@ -47,8 +48,8 @@ class AddAccountBody extends ConsumerWidget {
               children: [
                 const SizedBox(height: kScreenPadding),
                 CustomListTile(
-                  title: "Import Via QR Code",
-                  subtitle: 'Scan a QR code to import an existing account.',
+                  title: S.current.importViaQrCode,
+                  subtitle: S.current.importViaQrCodeSubtitle,
                   leadingIcon: AppIcons.scan,
                   trailingIcon: AppIcons.arrowRight,
                   onTap: () => _navigateToImportViaQr(context),
@@ -59,8 +60,8 @@ class AddAccountBody extends ConsumerWidget {
             children: [
               const SizedBox(height: kScreenPadding),
               CustomListTile(
-                title: "Import via Private Key",
-                subtitle: 'Import accounts from a private key.',
+                title: S.current.importViaPrivateKey,
+                subtitle: S.current.importViaPrivateKeySubtitle,
                 leadingIcon: AppIcons.key,
                 trailingIcon: AppIcons.arrowRight,
                 onTap: () => _importViaPrivateKey(context),
@@ -68,8 +69,8 @@ class AddAccountBody extends ConsumerWidget {
             ],
           ),
           CustomListTile(
-            title: "Add Watch",
-            subtitle: "Add watch account to watch via public address.",
+            title: S.current.addWatch,
+            subtitle: S.current.addWatchSubtitle,
             leadingIcon: AppIcons.watch,
             trailingIcon: AppIcons.arrowRight,
             onTap: () => _addWatchAccount(context),

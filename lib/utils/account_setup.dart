@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
@@ -25,7 +26,7 @@ class AccountSetupUtility {
       await _handleCleanUp(ref, accountFlow, setFinalState);
     } catch (e) {
       debugPrint('Failed to complete account setup: $e');
-      throw Exception('Failed to complete account setup: ${e.toString()}');
+      throw Exception(S.current.failedToCompleteAccountSetup(e.toString()));
     }
   }
 

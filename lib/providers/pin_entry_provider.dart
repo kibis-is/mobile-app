@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/pin_state.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
@@ -45,13 +46,13 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
   String _getOverlayText(PinPadMode mode) {
     switch (mode) {
       case PinPadMode.setup:
-        return 'Setting Up';
+        return S.current.settingUp;
       case PinPadMode.unlock:
-        return 'Authenticating';
+        return S.current.authenticating;
       case PinPadMode.verifyTransaction:
-        return 'Verifying';
+        return S.current.verifying;
       case PinPadMode.changePin:
-        return 'Setting New PIN';
+        return S.current.settingNewPin;
       default:
         return '';
     }
@@ -70,12 +71,11 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
               .startLoading(message: _getOverlayText(mode));
 
           if (activeAccountId == null) {
-            throw Exception('No active account found.');
+            throw Exception(S.current.noActiveAccountFound);
           }
 
           if (accountName == null || accountName.isEmpty) {
-            throw Exception(
-                'Account name not found for activeAccountId: $activeAccountId');
+            throw Exception(S.current.accountNameNotFound(activeAccountId));
           }
 
           await ref
@@ -84,11 +84,11 @@ class PinEntryStateNotifier extends StateNotifier<PinState> {
           ref.read(isAuthenticatedProvider.notifier).state = true;
           clearError();
         } else {
-          throw Exception('Incorrect PIN');
+          throw Exception(S.current.incorrectPin);
         }
       }
     } catch (e) {
-      state = state.copyWith(error: 'Invalid PIN. Try again.', pin: '');
+      state = state.copyWith(error: S.current.invalidPinTryAgain, pin: '');
       ref.read(loadingProvider.notifier).stopLoading();
       debugPrint('Error in pinComplete: ${e.toString()}');
     }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/arc200_asset_data.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/nft.dart';
@@ -92,7 +93,7 @@ class StorageService {
         if (attempt < _maxRetries - 1) {
           await Future.delayed(_retryDelay);
         } else {
-          throw Exception('Failed to read accounts data: $e');
+          throw Exception(S.current.failedToReadAccountsData(e.toString()));
         }
       }
     }
@@ -143,7 +144,7 @@ class StorageService {
   Future<void> clearAll() async {
     await _retryOnException(() async {
       if (_prefs == null) {
-        throw UnimplementedError("SharedPreferences is not yet initialized");
+        throw Exception(S.current.sharedPreferencesNotInitialized);
       }
       await _prefs.clear();
       await _secureStorage.deleteAll();
@@ -168,19 +169,19 @@ class StorageService {
   Future<void> setPinHash(String pinHash) async {
     await _retryOnException(() async {
       await _secureStorage.write(key: 'pinHash', value: pinHash);
-    }, 'Error storing pin hash');
+    }, S.current.errorReadingPinHash);
   }
 
   Future<String?> getPinHash() async {
     return await _retryOnException(() async {
       return await _secureStorage.read(key: 'pinHash');
-    }, 'Error reading pin hash', returnOnError: null);
+    }, S.current.errorReadingPinHash, returnOnError: null);
   }
 
   Future<void> clearPin() async {
     await _retryOnException(() async {
       await _secureStorage.delete(key: 'pinHash');
-    }, 'Error clearing pin hash');
+    }, S.current.errorReadingPinHash);
   }
 
   Future<bool> accountExists() async {
@@ -260,14 +261,14 @@ class StorageService {
         sessions.map((session) => jsonEncode(session)).toList();
     await _retryOnException(
       () async => _prefs?.setStringList(_sessionsKey, sessionsJson),
-      'Failed to save sessions',
+      S.current.failedToSaveSessions,
     );
   }
 
   Future<List<Map<String, dynamic>>> getSessions() async {
     final sessionsJson = await _retryOnException(
       () async => _prefs?.getStringList(_sessionsKey),
-      'Failed to retrieve sessions',
+      S.current.failedToRetrieveSessions,
     );
     if (sessionsJson == null) {
       return [];
@@ -279,10 +280,8 @@ class StorageService {
   }
 
   Future<void> removeSessions() async {
-    await _retryOnException(
-      () async => _prefs?.remove(_sessionsKey),
-      'Failed to remove sessions',
-    );
+    await _retryOnException(() async => _prefs?.remove(_sessionsKey),
+        S.current.failedToRemoveSessions);
   }
 
   Future<void> removeSessionByTopic(String topic) async {
@@ -342,7 +341,7 @@ class StorageService {
 
   Future<void> setShowTestNetworks(bool show) async {
     if (_prefs == null) {
-      throw Exception("SharedPreferences is not initialized");
+      throw Exception(S.current.sharedPreferencesNotInitialized);
     }
     await _prefs.setBool(_showTestNetworksKey, show);
   }

@@ -3,9 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/transparent_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/menu.dart';
+import 'package:kibisis/generated/l10n.dart';
 
 class SettingsScreen extends StatelessWidget {
-  static String title = 'Settings';
+  static String title = S.current.settings;
   const SettingsScreen({super.key});
 
   @override

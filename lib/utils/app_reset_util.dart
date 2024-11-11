@@ -8,6 +8,7 @@ import 'package:kibisis/features/scan_qr/widgets/progress_bar.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
 import 'package:kibisis/features/send_transaction/send_transaction_screen.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
@@ -38,7 +39,7 @@ class AppResetUtil {
     } catch (e, stackTrace) {
       debugPrint('Error during reset process: $e');
       debugPrint('Stack trace: $stackTrace');
-      throw Exception('Reset app failed: $e');
+      throw Exception(S.current.resetAppFailed(e.toString()));
     }
   }
 
@@ -51,7 +52,8 @@ class AppResetUtil {
       debugPrint('All WalletConnect sessions disconnected.');
     } catch (e) {
       debugPrint('Error disconnecting WalletConnect sessions: $e');
-      throw Exception('Failed to disconnect WalletConnect sessions: $e');
+      throw Exception(
+          S.current.failedToDisconnectWalletConnectSessions(e.toString()));
     }
   }
 
@@ -63,7 +65,7 @@ class AppResetUtil {
       debugPrint('Storage cleared successfully.');
     } catch (e) {
       debugPrint('Error clearing storage: $e');
-      throw Exception('Failed to clear storage: $e');
+      throw Exception(S.current.failedToClearStorage(e.toString()));
     }
 
     ref.invalidate(storageProvider);

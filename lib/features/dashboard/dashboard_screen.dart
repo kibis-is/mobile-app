@@ -17,6 +17,7 @@ import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/features/dashboard/widgets/nft_tab.dart';
 import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
@@ -136,7 +137,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                       : AppIcons.algorandIcon,
                   color: context.colorScheme.onSurfaceVariant,
                   size: AppIcons.small),
-              label: 'Assets',
+              label: S.of(context).assetsTab,
               selectedIcon: AppIcons.icon(
                   icon: network?.startsWith('network-voi') ?? false
                       ? AppIcons.voiIcon
@@ -149,7 +150,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                   icon: AppIcons.nft,
                   color: context.colorScheme.onSurfaceVariant,
                   size: AppIcons.small),
-              label: 'NFTs',
+              label: S.of(context).nftsTab,
               selectedIcon: AppIcons.icon(
                   icon: AppIcons.nft,
                   color: context.colorScheme.primary,
@@ -160,7 +161,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                   icon: AppIcons.send,
                   color: context.colorScheme.onSurfaceVariant,
                   size: AppIcons.small),
-              label: 'Activity',
+              label: S.of(context).activityTab,
               selectedIcon: AppIcons.icon(
                   icon: AppIcons.send,
                   color: context.colorScheme.primary,
@@ -333,18 +334,20 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                   customBottomSheet(
                       context: context,
                       singleWidget: Text(
-                        'Minimum balance is ${ref.watch(minimumBalanceProvider).toStringAsFixed(2)} VOI. Based on the account configuration, this is the minimum balance needed to keep the account open.',
+                        S.of(context).minimumBalanceInfo(ref
+                            .watch(minimumBalanceProvider)
+                            .toStringAsFixed(2)),
                         softWrap: true,
                         style: context.textTheme.bodyMedium,
                       ),
-                      header: "Info",
+                      header: S.of(context).infoHeader,
                       onPressed: (SelectItem item) {});
                 },
               ),
             ],
           ),
           loading: () => const AnimatedDots(),
-          error: (error, stack) => const Text('Error'),
+          error: (error, stack) => Text(S.of(context).genericError),
         ),
       ],
     );
@@ -361,7 +364,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       onPressed: () {
         customBottomSheet(
           context: context,
-          header: "Select Network",
+          header: S.of(context).selectNetworkHeader,
           items: networks,
           hasButton: false,
           onPressed: (SelectItem selectedNetwork) async {
@@ -377,14 +380,16 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               showCustomSnackBar(
                 context: context,
                 snackType: SnackType.success,
-                message: "Switched to ${selectedNetwork.name}",
+                message:
+                    S.of(context).networkSwitchSuccess(selectedNetwork.name),
               );
             } else {
               if (!context.mounted) return;
               showCustomSnackBar(
                 context: context,
                 snackType: SnackType.error,
-                message: "Failed to switch to ${selectedNetwork.name}",
+                message:
+                    S.of(context).networkSwitchFailure(selectedNetwork.name),
               );
             }
           },
@@ -408,7 +413,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               EllipsizedText(
-                'Loading Account',
+                S.of(context).loadingAccount,
                 type: EllipsisType.end,
                 textAlign: TextAlign.start,
                 style: context.textTheme.titleLarge?.copyWith(
@@ -418,7 +423,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
               const SizedBox(height: kScreenPadding / 2),
               EllipsizedText(
-                'Please wait',
+                S.of(context).pleaseWait,
                 type: EllipsisType.end,
                 textAlign: TextAlign.start,
                 style: context.textTheme.bodySmall

@@ -6,6 +6,7 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/active_account_provider.dart';
@@ -83,8 +84,8 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
 
   String _getAppBarTitle() {
     return widget.accountFlow == AccountFlow.edit
-        ? 'Edit Account'
-        : 'Name Account';
+        ? S.current.editAccount
+        : S.current.nameAccount;
   }
 
   Widget _buildDeleteAction() {
@@ -105,10 +106,10 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
       bool confirm = await showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const ConfirmationDialog(
-                yesText: 'Delete',
-                noText: 'Cancel',
-                content: 'Are you sure you want to delete this account?',
+              return ConfirmationDialog(
+                yesText: S.of(context).delete,
+                noText: S.of(context).cancel,
+                content: S.of(context).confirmDeleteAccount,
               );
             },
           ) ??
@@ -123,8 +124,8 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   Widget _buildHeader(BuildContext context) {
     return Text(
       widget.accountFlow == AccountFlow.edit
-          ? 'Edit your account name'
-          : 'Name your account',
+          ? S.of(context).editAccountNamePrompt
+          : S.of(context).nameAccountPrompt,
       style: context.textTheme.bodyMedium?.copyWith(
         color: context.colorScheme.onSecondary,
         fontWeight: FontWeight.bold,
@@ -135,8 +136,8 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
   Widget _buildDescription(BuildContext context) {
     return Text(
       widget.accountFlow == AccountFlow.edit
-          ? 'You can change your account name below.'
-          : 'Give your account a nickname. Don’t worry, you can change this later.',
+          ? S.of(context).editAccountDescription
+          : S.of(context).nameAccountDescription,
       style: context.textTheme.bodySmall,
     );
   }
@@ -145,10 +146,10 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
     return CustomTextField(
       maxLength: kMaxAccountNameLength,
       controller: accountNameController,
-      labelText: 'Account Name',
+      labelText: S.of(context).accountName,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter some text';
+          return S.of(context).pleaseEnterText;
         }
         return null;
       },
@@ -162,7 +163,9 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
     return Padding(
       padding: const EdgeInsets.all(kScreenPadding),
       child: CustomButton(
-        text: widget.accountFlow == AccountFlow.edit ? 'Save' : 'Create',
+        text: widget.accountFlow == AccountFlow.edit
+            ? S.of(context).save
+            : S.of(context).create,
         isFullWidth: true,
         onPressed: isLoading || hasSubmitted ? null : _handleSubmit,
       ),
@@ -188,8 +191,8 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
     final ref = this.ref;
     ref.read(loadingProvider.notifier).startLoading(
           message: widget.accountFlow == AccountFlow.edit
-              ? 'Updating Account'
-              : 'Creating Account',
+              ? S.current.updatingAccount
+              : S.current.creatingAccount,
           withProgressBar: widget.accountFlow != AccountFlow.edit,
         );
 

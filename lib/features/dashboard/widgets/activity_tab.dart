@@ -5,6 +5,7 @@ import 'package:kibisis/common_widgets/custom_pull_to_refresh.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/transaction_item.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_transaction_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -52,11 +53,8 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
     super.didChangeDependencies();
     final isWideScreen = MediaQuery.of(context).size.width > 600;
 
-    // Detect screen layout change and refresh the appropriate controller
     if (_isWideScreen != isWideScreen) {
       _isWideScreen = isWideScreen;
-
-      // Dispose old controllers and create new ones for fresh state
       _disposeControllers();
       _initializeControllers();
     }
@@ -96,8 +94,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
         final lastViewedTime =
             DateTime.fromMillisecondsSinceEpoch(lastViewedTimestamp);
 
-        debugPrint('Last viewed time: $lastViewedTime');
-
         final result = await ref
             .read(transactionsProvider(publicAddress).notifier)
             .getPaginatedTransactions(pageKey, _pageSize);
@@ -106,9 +102,6 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
         final newItems = result.items.map((item) {
           final transactionTime = DateTime.fromMillisecondsSinceEpoch(
               (item.transaction.roundTime ?? 0) * 1000);
-
-          debugPrint(
-              'Transaction time: $transactionTime | Is new: ${transactionTime.isAfter(lastViewedTime)}');
 
           final isNew = transactionTime.isAfter(lastViewedTime);
           return item.copyWith(isNew: isNew);
@@ -175,7 +168,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
                 loading: () => _buildShimmerLoading(context),
                 error: (error, _) => _buildCenteredMessage(
                   context,
-                  title: 'Error loading transactions',
+                  title: S.of(context).errorLoadingTransactions,
                   subtitle: error.toString(),
                 ),
               ),
@@ -187,8 +180,8 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
                 ? const ViewTransactionScreen(
                     isPanelMode: true,
                   )
-                : const Center(
-                    child: Text('Select a transaction to view details'),
+                : Center(
+                    child: Text(S.of(context).selectTransactionPrompt),
                   ),
           ),
         ],
@@ -202,7 +195,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
           loading: () => _buildShimmerLoading(context),
           error: (error, _) => _buildCenteredMessage(
             context,
-            title: 'Error loading transactions',
+            title: S.of(context).errorLoadingTransactions,
             subtitle: error.toString(),
           ),
         ),
@@ -239,8 +232,8 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
         },
         firstPageErrorIndicatorBuilder: (context) => _buildCenteredMessage(
           context,
-          title: 'No Transactions Found',
-          subtitle: 'You have not made any transactions.',
+          title: S.of(context).noTransactionsFound,
+          subtitle: S.of(context).noTransactionsMade,
           showRetryButton: true,
         ),
         newPageErrorIndicatorBuilder: (context) =>
@@ -251,15 +244,15 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
             _buildShimmerLoading(context),
         noItemsFoundIndicatorBuilder: (context) => _buildCenteredMessage(
           context,
-          title: 'No Transactions Found',
-          subtitle: 'You have not made any transactions.',
+          title: S.of(context).noTransactionsFound,
+          subtitle: S.of(context).noTransactionsMade,
           showRetryButton: true,
         ),
         noMoreItemsIndicatorBuilder: (context) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: Center(
             child: Text(
-              'No more transactions.',
+              S.of(context).noMoreTransactions,
               style: context.textTheme.bodyMedium,
             ),
           ),
@@ -292,7 +285,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
             const SizedBox(height: kScreenPadding),
             TextButton(
               onPressed: _onRefresh,
-              child: const Text('Retry'),
+              child: Text(S.of(context).retry),
             ),
           ],
         ],

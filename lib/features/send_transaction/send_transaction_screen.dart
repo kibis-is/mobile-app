@@ -13,6 +13,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/contacts/contacts_dialog.dart';
 import 'package:kibisis/features/dashboard/providers/transactions_provider.dart';
 import 'package:kibisis/features/send_transaction/providers/selected_asset_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/select_item.dart';
@@ -78,7 +79,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final accountName = ref.read(accountProvider).accountName;
-      activeAccountController.text = accountName ?? 'No Account';
+      activeAccountController.text = accountName ?? S.of(context).noAccount;
     });
 
     if (widget.address != null) {
@@ -137,7 +138,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
     List<SelectItem> combinedList = assets.map((asset) {
       return SelectItem(
-        name: asset.params.name ?? 'Unnamed Asset',
+        name: asset.params.name ?? S.of(context).unnamedAsset,
         value: asset.index.toString(),
         icon: AppIcons.asset,
         assetType: asset.assetType,
@@ -147,7 +148,8 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     combinedList.insert(
       0,
       network ??
-          SelectItem(name: 'No Network', value: "-1", icon: AppIcons.error),
+          SelectItem(
+              name: S.of(context).noNetwork, value: "-1", icon: AppIcons.error),
     );
 
     return combinedList;
@@ -175,14 +177,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   String? _validateAmount(String? value) {
     if (value == null || !_isValidAmount(value)) {
-      return 'Please enter a valid amount';
+      return S.of(context).pleaseEnterValidAmount;
     }
     return null;
   }
 
   String? _validateAlgorandAddress(String? value) {
     if (value == null || !_isValidAlgorandAddress(value)) {
-      return 'Please enter a valid Algorand address';
+      return S.of(context).pleaseEnterValidAlgorandAddress;
     }
     return null;
   }
@@ -191,7 +193,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     if (value == null) return null;
     final bytes = utf8.encode(value).length;
     if (bytes > 1000) {
-      return 'Note exceeds the maximum size of 1000 bytes';
+      return S.of(context).noteTooLarge;
     }
     return null;
   }
@@ -201,8 +203,8 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final publicAddress = ref.read(accountProvider).account?.address ?? '';
     final amount = amountController.text;
 
-    if (!await hasSufficientFunds(publicAddress, amount)) {
-      _showErrorSnackbar('Insufficient funds');
+    if (!await hasSufficientFunds(publicAddress, amount) && mounted) {
+      _showErrorSnackbar(S.of(context).insufficientFunds);
       return false;
     }
 
@@ -213,53 +215,60 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     try {
       final accountId = ref.read(accountProvider).accountId;
       if (accountId == null) {
-        throw Exception("No active account ID found");
+        throw Exception(S.of(context).noActiveAccountIdFound);
       }
 
       final privateKey = await ref
           .read(storageProvider)
           .getAccountData(accountId, 'privateKey');
-      if (privateKey == null || privateKey.isEmpty) {
-        throw Exception("Private key not found in storage");
+      if ((privateKey == null || privateKey.isEmpty) && mounted) {
+        throw Exception(S.of(context).privateKeyNotFoundInStorage);
       }
 
       final algorand = ref.read(algorandProvider);
-      final account = await algorand.loadAccountFromPrivateKey(privateKey);
+      final account =
+          await algorand.loadAccountFromPrivateKey(privateKey ?? '');
 
       final selectedItem = ref.read(selectedAssetProvider);
-      if (selectedItem == null) {
-        throw Exception("No item selected for the transaction.");
+      if (selectedItem == null && mounted) {
+        throw Exception(S.of(context).noItemSelectedForTransaction);
       }
 
-      if (selectedItem.assetType == AssetType.standard) {
+      if (selectedItem?.assetType == AssetType.standard) {
         await ref.read(algorandServiceProvider).transferAsset(
-              assetId: int.parse(selectedItem.value),
+              assetId: int.parse(selectedItem?.value ?? '0'),
               senderAccount: account,
               receiverAddress: recipientAddressController.text,
               amount: int.parse(amountController.text),
             );
-        _showSuccessSnackbar("Standard Asset transfer successful.");
-      } else if (selectedItem.assetType == AssetType.arc200) {
+        if (mounted) {
+          _showSuccessSnackbar(S.of(context).standardAssetTransferSuccessful);
+        }
+      } else if (selectedItem?.assetType == AssetType.arc200) {
         await ref.read(algorandServiceProvider).sendARC0200Asset(
               amount: BigInt.parse(amountController.text),
-              appID: BigInt.parse(selectedItem.value),
+              appID: BigInt.parse(selectedItem?.value ?? '0'),
               receiverAddress: recipientAddressController.text,
               senderAccount: account,
             );
-        _showSuccessSnackbar("ARC-0200 Asset transfer successful.");
-      } else if (selectedItem.value.startsWith("network")) {
+        if (mounted) {
+          _showSuccessSnackbar(S.of(context).arc0200AssetTransferSuccessful);
+        }
+      } else if (selectedItem?.value.startsWith("network") ?? false) {
         final txId = await ref.read(algorandServiceProvider).sendPayment(
               account,
               recipientAddressController.text,
               double.parse(amountController.text),
               noteController.text,
             );
-        if (txId.isEmpty || txId == 'error') {
-          throw Exception('Transaction failed');
+        if ((txId.isEmpty || txId == 'error') && mounted) {
+          throw Exception(S.of(context).transactionFailed);
         }
         _showSuccessSnackbar(txId);
       } else {
-        throw Exception("Unsupported asset type.");
+        if (mounted) {
+          throw Exception(S.of(context).unsupportedAssetType);
+        }
       }
 
       final existingContact = await ref
@@ -273,7 +282,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           await ref
               .read(contactsListProvider.notifier)
               .updateContact(existingContact);
-          _showSuccessSnackbar("Contact name updated successfully.");
+          if (mounted) {
+            _showSuccessSnackbar(S.of(context).contactNameUpdatedSuccessfully);
+          }
         }
       } else {
         _saveContact();
@@ -293,9 +304,9 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   String processTransactionError(String errorMessage) {
     if (errorMessage.contains("overspend")) {
-      return 'Insufficient funds.';
+      return S.of(context).insufficientFundsError;
     } else if (errorMessage.toLowerCase().contains("confirm")) {
-      return 'Transaction failed to confirm within the expected rounds.';
+      return S.of(context).transactionFailedToConfirm;
     } else {
       return errorMessage;
     }
@@ -319,9 +330,13 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         await ref
             .read(contactsListProvider.notifier)
             .addOrUpdateContact(newContact);
-        _showSuccessSnackbar('Contact saved successfully.');
+        if (mounted) {
+          _showSuccessSnackbar(S.of(context).contactSavedSuccessfully);
+        }
       } catch (e) {
-        _showErrorSnackbar('Failed to save contact: ${e.toString()}');
+        if (mounted) {
+          _showErrorSnackbar(S.of(context).failedToSaveContact(e.toString()));
+        }
       }
     }
   }
@@ -332,7 +347,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         context: context,
         snackType: SnackType.success,
         showConfetti: true,
-        message: 'Transaction successful',
+        message: S.of(context).transactionSuccessful,
       );
     }
   }
@@ -353,12 +368,12 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         showDialog(
           context: context,
           builder: (context) => PinPadDialog(
-            title: 'Verify PIN',
+            title: S.of(context).verifyPin,
             onPinVerified: () async {
               ref.read(loadingProvider.notifier).startLoading(
                     message: widget.mode == SendTransactionScreenMode.payment
-                        ? 'Sending Payment'
-                        : 'Sending Asset',
+                        ? S.of(context).sendingPayment
+                        : S.of(context).sendingAsset,
                     withProgressBar: true,
                   );
 
@@ -408,12 +423,13 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              return Text('Max: ${snapshot.data?.toStringAsFixed(2)}');
+              return Text(
+                  '${S.of(context).max}: ${snapshot.data?.toStringAsFixed(2)}');
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return Text('${S.of(context).error}: ${snapshot.error}');
             }
           }
-          return const Text('Calculating...');
+          return Text(S.of(context).calculating);
         },
       );
     } else {
@@ -429,7 +445,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Send"),
+        title: Text(S.of(context).sendTransactionTitle),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -451,7 +467,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                     _buildRecipientAddressTextField(context, ref),
                     const SizedBox(height: kScreenPadding),
                     CustomTextField(
-                      labelText: 'Contact Name (Optional)',
+                      labelText: S.of(context).contactNameOptional,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.done,
                       controller: contactNameController,
@@ -485,7 +501,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           return CustomButton(
             isBottomNavigationPosition: true,
             isFullWidth: true,
-            text: "Send",
+            text: S.of(context).send,
             onPressed: () => _showPinPadDialog(ref),
           );
         },
@@ -514,13 +530,14 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                   customBottomSheet(
                     context: context,
                     singleWidget: Text(
-                      'The maximum VOI amount is calculated by: the balance (${ref.watch(balanceProvider)}), '
-                      'minus the minimum balance needed to keep the account open (${ref.watch(minimumBalanceProvider)}), '
-                      'minus the minimum transaction fee (0.001)',
+                      S.of(context).maxVoiAmountCalculation(
+                            ref.watch(balanceProvider).toString(),
+                            ref.watch(minimumBalanceProvider).toString(),
+                          ),
                       softWrap: true,
                       style: context.textTheme.bodyMedium,
                     ),
-                    header: "Info",
+                    header: S.of(context).info,
                     onPressed: (SelectItem item) {},
                   );
                 },
@@ -534,7 +551,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Widget _buildActiveAccountTextField() {
     return CustomTextField(
-      labelText: 'Account',
+      labelText: S.of(context).account,
       isEnabled: false,
       leadingIcon: AppIcons.wallet,
       controller: activeAccountController,
@@ -547,10 +564,10 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
     final network = ref.watch(networkProvider)?.value;
     return dropdownItemsAsync.when(
       loading: () => CustomDropDown(
-        label: 'Asset',
+        label: S.of(context).asset,
         items: [
           SelectItem(
-            name: 'Loading...',
+            name: S.of(context).loading,
             value: 'loading',
             icon: network?.startsWith('network-voi') ?? false
                 ? AppIcons.voiIcon
@@ -561,10 +578,10 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
         onChanged: null,
       ),
       error: (err, stack) => CustomDropDown(
-        label: 'Asset',
+        label: S.of(context).asset,
         items: [
           SelectItem(
-            name: 'Failed to load',
+            name: S.of(context).failedToLoad,
             value: 'error',
             icon: AppIcons.error,
           ),
@@ -587,7 +604,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                   customBottomSheet(
                     context: context,
                     items: dropdownItems,
-                    header: 'Select Asset',
+                    header: S.of(context).selectAsset,
                     onPressed: (SelectItem selectedItem) {
                       ref
                           .read(selectedAssetProvider.notifier)
@@ -598,12 +615,12 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
           child: AbsorbPointer(
             absorbing: isDisabled,
             child: CustomDropDown(
-              label: 'Asset',
+              label: S.of(context).asset,
               items: dropdownItems.isNotEmpty
                   ? dropdownItems
                   : [
                       SelectItem(
-                        name: 'No Assets Found',
+                        name: S.of(context).noAssetsFound,
                         value: 'no_assets',
                         icon: AppIcons.error,
                       ),
@@ -619,7 +636,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Widget _buildAmountTextField() {
     return CustomTextField(
-      labelText: 'Amount',
+      labelText: S.of(context).amount,
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.done,
       textAlign: TextAlign.right,
@@ -643,7 +660,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
       children: [
         Expanded(
           child: CustomTextField(
-            labelText: 'Recipient Address',
+            labelText: S.of(context).recipientAddress,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
             controller: recipientAddressController,
@@ -726,7 +743,7 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
 
   Widget _buildNoteTextField() {
     return CustomTextField(
-      labelText: 'Note (Optional)',
+      labelText: S.of(context).noteOptional,
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.done,
       maxLines: 7,

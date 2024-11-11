@@ -1,25 +1,42 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
+
+final pinTitleProvider = StateNotifierProvider<PinTitleNotifier, String>((ref) {
+  final s = S.current;
+  return PinTitleNotifier(
+    createPinTitle: s.createPin,
+    confirmPinTitle: s.confirmPin,
+    unlockTitle: s.unlock,
+    verifyPinTitle: s.verifyPin,
+  );
+});
 
 class PinTitleNotifier extends StateNotifier<String> {
-  PinTitleNotifier() : super('Create Pin');
+  final String createPinTitle;
+  final String confirmPinTitle;
+  final String unlockTitle;
+  final String verifyPinTitle;
+
+  PinTitleNotifier({
+    required this.createPinTitle,
+    required this.confirmPinTitle,
+    required this.unlockTitle,
+    required this.verifyPinTitle,
+  }) : super(createPinTitle);
 
   void setCreatePinTitle() {
-    state = 'Create Pin';
+    state = createPinTitle;
   }
 
   void setConfirmPinTitle() {
-    state = 'Confirm Pin';
+    state = confirmPinTitle;
   }
 
   void setUnlockTitle() {
-    state = 'Unlock';
+    state = unlockTitle;
   }
 
   void setVerifyPinTitle() {
-    state = 'Verify Pin';
+    state = verifyPinTitle;
   }
 }
-
-final pinTitleProvider = StateNotifierProvider<PinTitleNotifier, String>((ref) {
-  return PinTitleNotifier();
-});

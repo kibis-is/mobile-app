@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -40,7 +41,7 @@ class QRCodeUtils {
 
       final xFile = XFile(imgFile.path);
       final result =
-          await Share.shareXFiles([xFile], text: 'Here is my QR Code!');
+          await Share.shareXFiles([xFile], text: S.current.hereIsMyQRCode);
 
       if (result.status == ShareResultStatus.success) {
         debugPrint('Thank you for sharing my QR code!');

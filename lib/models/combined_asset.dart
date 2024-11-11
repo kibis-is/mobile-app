@@ -1,5 +1,6 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 
 class CombinedAsset {
   final int index;
@@ -96,9 +97,9 @@ class CombinedAssetParameters {
     return CombinedAssetParameters(
       total: int.parse(tokenDetails['totalSupply'] ?? '0'),
       decimals: tokenDetails['decimals'] ?? 0,
-      creator: tokenDetails['creator'] ?? 'Unknown',
+      creator: tokenDetails['creator'] ?? S.current.unknown,
       name: tokenDetails['name'] ?? 'Unknown',
-      unitName: tokenDetails['symbol'] ?? 'Unknown',
+      unitName: tokenDetails['symbol'] ?? S.current.unknown,
       clawback: '0',
       defaultFrozen: false,
       freeze: null,

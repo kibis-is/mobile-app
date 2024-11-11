@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_body.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/media_query_helper.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
-  static String title = "Add Account";
+  static String title = S.current.addAccountTitle;
   final AccountFlow accountFlow;
 
   const AddAccountScreen({super.key, required this.accountFlow});

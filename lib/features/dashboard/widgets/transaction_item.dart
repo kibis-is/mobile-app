@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -103,7 +104,7 @@ class TransactionItem extends ConsumerWidget {
                     showCustomSnackBar(
                       context: context,
                       snackType: SnackType.neutral,
-                      message: 'Transaction ID Copied',
+                      message: S.of(context).transactionIdCopied,
                     );
                   },
                   leading: _getTransactionIcon(context, isDarkMode, network),
@@ -112,8 +113,8 @@ class TransactionItem extends ConsumerWidget {
                     children: [
                       EllipsizedText(
                         type == 'pay'
-                            ? 'Payment'
-                            : assetName ?? 'Asset Transfer',
+                            ? S.of(context).payment
+                            : assetName ?? S.of(context).assetTransfer,
                         ellipsis: '...',
                         style: context.textTheme.displaySmall?.copyWith(
                           fontWeight: FontWeight.bold,

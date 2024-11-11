@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
@@ -147,7 +148,6 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                             '${AppIcons.svgBasePath}$networkIcon.svg',
                             width: 80,
                             height: 80,
-                            semanticsLabel: 'Asset Icon',
                             colorFilter: const ColorFilter.mode(
                                 Colors.white, BlendMode.srcATop),
                           ),
@@ -158,7 +158,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                         condition: !mediaQueryHelper.isWideScreen(),
                         tag: '${widget.asset.index}-name',
                         child: Text(
-                          widget.asset.params.name ?? 'Unnamed Asset',
+                          widget.asset.params.name ?? S.of(context).unknown,
                           textAlign: TextAlign.center,
                           style: context.textTheme.displayMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
@@ -190,9 +190,10 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                     CustomTextField(
                       leadingIcon: AppIcons.unitName,
                       controller: TextEditingController(
-                        text: widget.asset.params.unitName ?? 'Not available',
+                        text: widget.asset.params.unitName ??
+                            S.of(context).notAvailable,
                       ),
-                      labelText: 'Unit Name',
+                      labelText: S.current.notAvailable,
                       isEnabled: false,
                     ),
                   ),
@@ -207,7 +208,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                             controller: TextEditingController(
                               text: widget.asset.index.toString(),
                             ),
-                            labelText: 'Application ID',
+                            labelText: S.current.applicationId,
                             isEnabled: false,
                           ),
                         ),
@@ -229,9 +230,9 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                       controller: TextEditingController(
                         text: widget.asset.assetType == AssetType.arc200
                             ? 'ARC-0200'
-                            : 'Algorand Standard Asset',
+                            : S.current.algorandStandardAsset,
                       ),
-                      labelText: 'Type',
+                      labelText: S.current.type,
                       isEnabled: false,
                     ),
                   ),
@@ -243,7 +244,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                       controller: TextEditingController(
                         text: widget.asset.params.decimals.toString(),
                       ),
-                      labelText: 'Decimals',
+                      labelText: S.current.decimals,
                       isEnabled: false,
                     ),
                   ),
@@ -255,7 +256,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                       controller: TextEditingController(
                         text: NumberFormatter.shortenNumber(totalSupply),
                       ),
-                      labelText: 'Total Supply',
+                      labelText: S.current.totalSupply,
                       isEnabled: false,
                     ),
                   ),
@@ -265,7 +266,8 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                     Align(
                       alignment: Alignment.centerLeft,
                       child: CustomButton(
-                        text: isOwned ? 'Send Asset' : 'Add Asset',
+                        text:
+                            isOwned ? S.current.sendAsset : S.current.addAsset,
                         isFullWidth: !mediaQueryHelper.isWideScreen(),
                         buttonType: ButtonType.secondary,
                         onPressed: () async {
@@ -293,7 +295,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
 
   Future<void> _optInAsset() async {
     final loadingNotifier = ref.read(loadingProvider.notifier);
-    loadingNotifier.startLoading(message: 'Opting in...');
+    loadingNotifier.startLoading(message: S.current.optingInMessage);
 
     final algorandService = ref.read(algorandServiceProvider);
     final activeAsset = ref.read(activeAssetProvider);
@@ -319,7 +321,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
       CombinedAsset? activeAsset, AsyncValue<double> balanceState) async {
     if (activeAsset == null) {
       ref.read(loadingProvider.notifier).stopLoading();
-      throw Exception('Active asset is null');
+      throw Exception(S.current.activeAssetNullError);
     }
 
     final balance = balanceState.maybeWhen(
@@ -332,7 +334,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
-        message: 'Please fund your account to proceed.',
+        message: S.current.fundAccountError,
       );
       return null;
     }
@@ -344,7 +346,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     final privateKey = await ref.read(accountProvider.notifier).getPrivateKey();
     if (privateKey.isEmpty) {
       ref.read(loadingProvider.notifier).stopLoading();
-      throw Exception('Private key not found');
+      throw Exception(S.current.privateKeyNotFoundError);
     }
     return privateKey;
   }
@@ -357,7 +359,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     final storageService = ref.read(storageProvider);
 
     if (accountId == null || publicAddress.isEmpty) {
-      throw Exception('Account ID or Public Address is not available');
+      throw Exception(S.current.accountIdOrAddressNotAvailable);
     }
 
     try {
@@ -370,7 +372,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
       );
     } catch (e) {
       debugPrint('Error during opt-in: $e');
-      throw Exception('Failed to opt-in to asset');
+      throw Exception(S.current.failedToOptInError);
     }
   }
 
@@ -383,7 +385,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
         context: context,
         snackType: SnackType.success,
         showConfetti: false,
-        message: 'Asset successfully opted in',
+        message: S.current.assetOptInSuccess,
       );
     }
   }
@@ -397,10 +399,10 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
   }
 
   void _handleAlgorandException(AlgorandException e, BuildContext context) {
-    String userFriendlyMessage = 'An error occurred with Algorand service';
+    String userFriendlyMessage = S.current.algorandServiceError;
 
     if (e.message.contains('overspend')) {
-      userFriendlyMessage = 'Insufficient balance.';
+      userFriendlyMessage = S.current.insufficientBalance;
     }
 
     debugPrint(e.message);

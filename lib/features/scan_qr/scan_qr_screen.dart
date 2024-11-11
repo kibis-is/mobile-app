@@ -9,6 +9,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
 import 'package:kibisis/features/scan_qr/widgets/progress_bar.dart';
 import 'package:kibisis/features/scan_qr/widgets/scanner_overlay.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
@@ -28,7 +29,6 @@ final isPaginatedScanProvider = StateProvider<bool>((ref) => false);
 final isTorchEnabledProvider = StateProvider<bool>((ref) => false);
 
 class QrCodeScannerScreen extends ConsumerStatefulWidget {
-  static const String title = 'Scan QR Code';
   final AccountFlow? accountFlow;
   final ScanMode scanMode;
   final void Function(String)? onScanned;
@@ -45,6 +45,7 @@ class QrCodeScannerScreen extends ConsumerStatefulWidget {
 }
 
 class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
+  String get title => S.of(context).selectAccountTitle;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   MobileScannerController scanController = MobileScannerController(
@@ -136,7 +137,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             top: scanWindowTop + scanWindowHeight + kScreenPadding,
             child: Center(
               child: isPaginatedScan
-                  ? _buildNextQrCodeText()
+                  ? _buildNextQrCodeText(context)
                   : const SizedBox.shrink(),
             ),
           ),
@@ -151,7 +152,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       title: Text(
-        _getAppBarTitle(),
+        _getAppBarTitle(context),
         style: const TextStyle(color: Colors.white),
       ),
       leading: IconButton(
@@ -175,17 +176,17 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
     );
   }
 
-  String _getAppBarTitle() {
+  String _getAppBarTitle(BuildContext context) {
     switch (widget.scanMode) {
       case ScanMode.privateKey:
-        return 'Import Account';
+        return S.of(context).importAccountTitle;
       case ScanMode.publicKey:
-        return 'Scan Address';
+        return S.of(context).scanAddressTitle;
       case ScanMode.session:
-        return 'Connect';
+        return S.of(context).connectTitle;
       case ScanMode.catchAll:
       default:
-        return QrCodeScannerScreen.title;
+        return S.of(context).qrCodeScannerTitle;
     }
   }
 
@@ -203,7 +204,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         }
         ref
             .read(loadingProvider.notifier)
-            .startLoading(message: 'Processing QR Code');
+            .startLoading(message: S.of(context).processingQrCode);
         isProcessing = true;
         scanController.stop();
 
@@ -217,7 +218,9 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
             scanMode: widget.scanMode,
           );
           try {
-            dynamic scanResult = await scannerLogic.handleBarcode(capture);
+            if (!mounted) return;
+            dynamic scanResult =
+                await scannerLogic.handleBarcode(capture, context);
             await _handleScanResult(scanResult);
           } catch (e) {
             !scanController.value.isRunning;
@@ -255,7 +258,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       await _handlePaginatedScanResult(scanResult);
     } else {
       debugPrint('Invalid scan result: $scanResult');
-      throw Exception('Invalid scan result');
+      throw Exception(S.of(context).invalidScanResult);
     }
   }
 
@@ -286,7 +289,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
         allParams.addAll(partParams);
       }
 
-      final accounts = QRCodeScannerLogic().handleModernUri(allParams);
+      final accounts = QRCodeScannerLogic().handleModernUri(allParams, context);
 
       await _handleAccountImportResult(accounts);
 
@@ -301,11 +304,8 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
 
   Future<void> _handleWalletConnectResult(Uri uri) async {
     try {
-      debugPrint('Starting WalletConnect process...');
-
       if (!walletConnectManager!.isInitialized) {
         await walletConnectManager!.initialize();
-        debugPrint('WalletConnectManager initialized');
       }
 
       final PairingInfo pairingInfo = await walletConnectManager!.pair(uri);
@@ -369,14 +369,14 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
           .toList();
 
       if (accounts.isEmpty) {
-        throw Exception('No accounts available to connect.');
+        throw Exception(S.of(context).noAccountsAvailableToConnect);
       }
 
       final selectedAccount = await showDialog<Map<String, String>>(
         context: context,
         builder: (context) {
           return CustomAlertDialog(
-            title: 'Connect to:',
+            title: S.of(context).connectToTitle,
             subtitle: '${proposal.params.proposer.metadata.name}?',
             icon: AppIcons.connect,
             items: accounts,
@@ -433,7 +433,8 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       _navigateToAccountPage(accounts.length);
     } catch (e) {
       debugPrint('Error invalidating providers: $e');
-      throw Exception('Failed to finalize account import.');
+      if (!mounted) return;
+      throw Exception(S.of(context).failedFinalizeAccountImport);
     }
   }
 
@@ -445,7 +446,7 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       Navigator.of(context).pop(result);
     } catch (e) {
       debugPrint('Error handling public key: $e');
-      throw Exception('Error processing public key');
+      throw Exception(S.of(context).errorProcessingPublicKey);
     }
   }
 
@@ -466,21 +467,25 @@ class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
       context: context,
       snackType: SnackType.success,
       showConfetti: true,
-      message: 'Successfully connected',
+      message: S.of(context).successfullyConnected,
     );
     GoRouter.of(context).goNamed(sessionsRouteName);
   }
 
-  Widget _buildNextQrCodeText() {
-    final nextQrCodeNumber =
+  Widget _buildNextQrCodeText(BuildContext context) {
+    final nextQrCodeNumbers =
         ref.watch(multipartScanProvider.notifier).getRemainingParts();
-    debugPrint('Next QR: $nextQrCodeNumber');
+
+    // Extract the first part (or any specific part you want)
+    final nextQrCodeNumber =
+        nextQrCodeNumbers.isNotEmpty ? nextQrCodeNumbers.first : 1;
+
     return Column(
       children: [
-        Text('Next QR:', style: context.textTheme.displaySmall),
+        Text(S.of(context).nextQrCode, style: context.textTheme.displaySmall),
         Chip(
           label: Text(
-            'Part $nextQrCodeNumber',
+            S.of(context).partNumber(nextQrCodeNumber),
             style: context.textTheme.displayMedium
                 ?.copyWith(color: context.colorScheme.onSecondary),
           ),

@@ -1,6 +1,3 @@
-import 'package:kibisis/models/select_item.dart';
-import 'package:kibisis/utils/app_icons.dart';
-
 const double kScreenPadding = 16.0;
 const double kButtonPadding = 16.0;
 const double kWidgetRadius = 16.0;
@@ -27,30 +24,6 @@ enum SendTransactionScreenMode {
   asset,
   payment,
 }
-
-List<SelectItem> timeoutList = [
-  SelectItem(name: '1 minute', value: "60", icon: AppIcons.time),
-  SelectItem(
-    name: '2 minutes',
-    value: "120",
-    icon: AppIcons.time,
-  ),
-  SelectItem(
-    name: '5 minutes',
-    value: "300",
-    icon: AppIcons.time,
-  ),
-  SelectItem(
-    name: '10 minutes',
-    value: "600",
-    icon: AppIcons.time,
-  ),
-  SelectItem(
-    name: '15 minutes',
-    value: "900",
-    icon: AppIcons.time,
-  ),
-];
 
 enum ScanMode {
   privateKey,

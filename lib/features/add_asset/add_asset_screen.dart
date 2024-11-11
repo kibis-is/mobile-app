@@ -5,6 +5,7 @@ import 'package:kibisis/common_widgets/asset_list_item.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/add_asset/search_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
 import 'package:kibisis/providers/assets_provider.dart';
@@ -32,7 +33,7 @@ class AddAssetScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
             child: Text(
-              "Enter an assetID, name, asset, or symbol ID (for ARC-200).",
+              S.of(context).searchPrompt,
               style: context.textTheme.bodyMedium,
             ),
           ),
@@ -42,7 +43,7 @@ class AddAssetScreen extends ConsumerWidget {
             child: CustomTextField(
               controller: accountController,
               leadingIcon: AppIcons.search,
-              labelText: 'Search Query',
+              labelText: S.of(context).searchQueryLabel,
               onChanged: (value) {
                 searchNotifier.searchAssets(value);
               },
@@ -70,8 +71,8 @@ class AssetList extends ConsumerWidget {
       child: searchState.when(
         data: (searchedAssets) {
           if (searchedAssets.isEmpty) {
-            return const Center(
-              child: Text('No assets found.'),
+            return Center(
+              child: Text(S.of(context).noAssetsFound),
             );
           }
 
@@ -107,7 +108,9 @@ class AssetList extends ConsumerWidget {
           return _buildLoadingAssets(context);
         },
         error: (e, stack) {
-          return const Center(child: Text('Sorry, there was an error.'));
+          return Center(
+            child: Text(S.of(context).genericErrorMessage),
+          );
         },
       ),
     );

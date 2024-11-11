@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/view_transaction/view_transaction_body.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/active_transaction_provider.dart';
 
 class ViewTransactionScreen extends ConsumerStatefulWidget {
@@ -23,10 +24,10 @@ class ViewTransactionScreenState extends ConsumerState<ViewTransactionScreen> {
     if (activeTransaction == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('View Transaction'),
+          title: Text(S.current.viewTransactionTitle),
         ),
-        body: const Center(
-          child: Text('No transaction available to display.'),
+        body: Center(
+          child: Text(S.current.noTransactionAvailable),
         ),
       );
     }
@@ -34,7 +35,7 @@ class ViewTransactionScreenState extends ConsumerState<ViewTransactionScreen> {
     if (!widget.isPanelMode) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('View Transaction'),
+          title: Text(S.current.viewTransactionTitle),
         ),
         body: ViewTransactionBody(transaction: activeTransaction),
       );

@@ -2,6 +2,7 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart'; // Import localization
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -44,7 +45,7 @@ Future<dynamic> customBottomSheet({
                   Padding(
                     padding: const EdgeInsets.only(top: kScreenPadding),
                     child: CustomButton(
-                      text: buttonText ?? "Confirm",
+                      text: buttonText ?? S.of(context).confirm,
                       onPressed: () {
                         if (buttonOnPressed != null) {
                           buttonOnPressed();
@@ -67,9 +68,11 @@ Future<dynamic> customBottomSheet({
 Widget _buildHeader(BuildContext context, String header) {
   return Padding(
     padding: const EdgeInsets.all(kSizedBoxSpacing),
-    child: EllipsizedText(header,
-        style: context.textTheme.titleMedium
-            ?.copyWith(fontWeight: FontWeight.bold)),
+    child: EllipsizedText(
+      header,
+      style:
+          context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+    ),
   );
 }
 

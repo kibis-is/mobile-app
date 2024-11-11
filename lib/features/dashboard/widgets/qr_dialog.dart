@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
@@ -13,12 +14,13 @@ class QrDialog extends StatelessWidget {
   const QrDialog({
     super.key,
     required this.qrData,
-    this.title = 'Scan QR Code',
+    this.title,
   });
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey qrKey = GlobalKey();
+    final dialogTitle = title ?? S.of(context).scanQrCode;
 
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
@@ -26,7 +28,7 @@ class QrDialog extends StatelessWidget {
       title: SizedBox(
         width: double.infinity,
         child: Text(
-          title!,
+          dialogTitle,
           textAlign: TextAlign.center,
           style: context.textTheme.titleMedium,
         ),
@@ -55,7 +57,7 @@ class QrDialog extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(kScreenPadding / 2),
               child: Text(
-                'Close',
+                S.of(context).close,
                 style: context.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.secondary,
@@ -75,19 +77,19 @@ class QrDialog extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.share),
           onPressed: () => QRCodeUtils.shareQrImage(qrKey),
-          tooltip: 'Share QR',
+          tooltip: S.of(context).shareQr,
         ),
         const SizedBox(width: kScreenPadding),
         IconButton(
           icon: const Icon(Icons.copy),
           onPressed: () => copyToClipboard(context, qrData),
-          tooltip: 'Copy URI',
+          tooltip: S.of(context).copyUri,
         ),
         if (Platform.isAndroid || Platform.isIOS)
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: () => QRCodeUtils.saveQrImage(qrKey),
-            tooltip: 'Download QR Image',
+            tooltip: S.of(context).downloadQrImage,
           ),
       ],
     );

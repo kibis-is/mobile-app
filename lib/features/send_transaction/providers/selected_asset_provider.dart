@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart'; // Import localization
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
@@ -18,7 +19,7 @@ class SelectedAssetNotifier extends StateNotifier<SelectItem?> {
   }) {
     if (items.isEmpty) {
       state = SelectItem(
-        name: 'No Items',
+        name: S.current.noItems,
         value: "-1",
         icon: AppIcons.error,
       );

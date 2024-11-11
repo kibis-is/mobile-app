@@ -5,6 +5,7 @@ import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/copy_seed_screen/widgets/custom_seed_chip.dart';
 import 'package:kibisis/features/setup_account/name_account/providers/checkbox_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/copy_to_clipboard.dart';
@@ -34,7 +35,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Copy Seed"),
+        title: Text(S.current.copySeed),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -44,13 +45,12 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Generate seed phrase',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  S.of(context).generateSeedPhrase,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: kScreenPadding),
-                const Text(
-                    'Here is your 25 word mnemonic seed phrase. Make sure you save this in a secure place.'),
+                Text(S.of(context).seedPhraseDescription),
                 const SizedBox(height: kScreenPadding),
                 Consumer(
                   builder: (context, ref, child) {
@@ -64,7 +64,8 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                           return const Center(
                               child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
+                          return Text(
+                              '${S.of(context).error}: ${snapshot.error}');
                         } else if (snapshot.hasData) {
                           return Container(
                             width: double.infinity,
@@ -77,7 +78,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                             ),
                           );
                         } else {
-                          return const Text('No seed phrase available.');
+                          return Text(S.of(context).noSeedPhraseAvailable);
                         }
                       },
                     );
@@ -95,7 +96,8 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                           return const Center(
                               child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
+                          return Text(
+                              '${S.of(context).error} : ${snapshot.error}');
                         } else if (snapshot.hasData) {
                           return Wrap(
                             spacing: kScreenPadding / 2,
@@ -109,7 +111,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                             }).toList(),
                           );
                         } else {
-                          return const Text('No seed phrase available.');
+                          return Text(S.of(context).noSeedPhraseAvailable);
                         }
                       },
                     );
@@ -130,7 +132,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                             initialValue: checkboxValue,
                             validator: (value) {
                               if (value == false) {
-                                return 'You must confirm you have made a backup of your seed phrase.';
+                                return S.of(context).backupConfirmationRequired;
                               }
                               return null;
                             },
@@ -154,7 +156,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        'Please confirm you have stored a backup of your seed phrase in a secure location.',
+                        S.of(context).backupConfirmationPrompt,
                         style: context.textTheme.bodySmall,
                       ),
                     ),
@@ -167,7 +169,7 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                   builder: (context, ref, child) {
                     final checkboxValue = ref.watch(checkboxProvider);
                     return CustomButton(
-                      text: 'Next',
+                      text: S.of(context).next,
                       isFullWidth: true,
                       buttonType: checkboxValue
                           ? ButtonType.secondary

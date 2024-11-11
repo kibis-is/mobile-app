@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/dashboard/widgets/assets_tab.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/nft.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -83,8 +84,7 @@ class NFTNotifier extends StateNotifier<AsyncValue<List<NFT>>> {
         final storageService = ref.read(storageProvider);
         await storageService.setNFTsForAccount(publicAddress, _allNfts);
       } else {
-        throw Exception(
-            'Failed to load NFTs with status code: ${response.statusCode}');
+        throw Exception(S.current.failedToLoadNFTs(response.statusCode));
       }
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);

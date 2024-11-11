@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 
 class LoadingState {
   final bool isLoading;
@@ -31,17 +32,20 @@ class LoadingState {
 
 class LoadingStateNotifier extends StateNotifier<LoadingState> {
   Timer? _timer;
-
-  final List<String> _followUpMessages = [
-    "Almost there",
-    "Hang in there",
-    "Just a bit more",
-    "You're doing great",
-    "Nearly done",
-    "Thanks for waiting",
-  ];
+  List<String> _followUpMessages = [];
 
   LoadingStateNotifier() : super(LoadingState(isLoading: false, message: ''));
+
+  void _initializeFollowUpMessages() {
+    _followUpMessages = [
+      S.current.almostThere,
+      S.current.hangInThere,
+      S.current.justABitMore,
+      S.current.youreDoingGreat,
+      S.current.nearlyDone,
+      S.current.thanksForWaiting,
+    ];
+  }
 
   void startLoading({
     required String message,
@@ -50,6 +54,7 @@ class LoadingStateNotifier extends StateNotifier<LoadingState> {
     int totalTime = 30000,
   }) {
     _cancelTimers();
+    _initializeFollowUpMessages();
 
     state = LoadingState(
       isLoading: true,

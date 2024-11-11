@@ -3,6 +3,7 @@ import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
@@ -62,7 +63,8 @@ class AccountNotifier extends StateNotifier<AccountState> {
   Future<void> _initializeAccountFromStorage() async {
     final activeAccountId = await storageService.getActiveAccount();
     if (activeAccountId == null || activeAccountId.isEmpty) {
-      state = state.copyWith(error: 'No active account found');
+      state = state.copyWith(error: S.current.noActiveAccountFound);
+
       return;
     }
 
@@ -78,7 +80,8 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
       state = state.copyWith(applicationId: applicationId);
     } catch (e) {
-      state = state.copyWith(error: 'Failed to initialize account: $e');
+      state = state.copyWith(
+          error: S.current.failedToInitializeAccount(e.toString()));
     }
   }
 
@@ -87,7 +90,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
     try {
       final publicKey = await storageService.getPublicKey(activeAccountId);
       if (publicKey == null || publicKey.isEmpty) {
-        state = state.copyWith(error: 'Public key not found in storage');
+        state = state.copyWith(error: S.current.publicKeyNotFoundInStorage);
         return;
       }
 
@@ -110,8 +113,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
             createdApps: [],
             createdAssets: [],
           ),
-          error:
-              'This account has not been funded yet. Please fund it to see details.',
+          error: S.current.accountNotFundedPleaseFundToSeeDetails,
         );
         return;
       }
@@ -129,7 +131,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
       );
     } catch (e) {
       state = state.copyWith(
-          error: 'Failed to initialize account: ${e.toString()}');
+          error: S.current.failedToInitializeAccount(e.toString()));
       debugPrint(e.toString());
     }
   }
@@ -147,12 +149,12 @@ class AccountNotifier extends StateNotifier<AccountState> {
   Future<void> setAccountName(String accountName) async {
     try {
       if (accountName.length > kMaxAccountNameLength) {
-        ref.read(errorProvider.notifier).state = 'Account name is too long';
+        ref.read(errorProvider.notifier).state = S.current.accountNameIsTooLong;
       }
       state = state.copyWith(accountName: accountName);
     } catch (e) {
       ref.read(errorProvider.notifier).state =
-          'Failed to create account name: $e';
+          S.current.failedToCreateAccountName(e.toString());
     }
   }
 
@@ -174,7 +176,9 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
       await initialiseFromPublicKey('New Account', accountId);
     } catch (e) {
-      ref.read(errorProvider.notifier).state = 'Failed to create account: $e';
+      ref.read(errorProvider.notifier).state =
+          S.current.failedToCreateAccount(e.toString());
+
       debugPrint('Error creating account: $e');
     }
   }
@@ -182,7 +186,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
   Future<void> updateAccountName(String newAccountName) async {
     final activeAccountId = state.accountId;
     if (activeAccountId == null) {
-      throw Exception('No active account to update');
+      throw Exception(S.current.noActiveAccountToUpdate);
     }
 
     await storageService.setAccountData(
@@ -194,7 +198,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
     try {
       final accounts = await storageService.getAccounts();
       if (accounts == null || !accounts.containsKey(accountId)) {
-        throw Exception('Account not found');
+        throw Exception(S.current.accountNotFound);
       }
 
       if (state.accountId == accountId) {
@@ -219,7 +223,8 @@ class AccountNotifier extends StateNotifier<AccountState> {
       await storageService.deleteAccount(accountId);
       await ref.read(accountsListProvider.notifier).loadAccounts();
     } catch (e) {
-      state = state.copyWith(error: 'Failed to delete account: $e');
+      state =
+          state.copyWith(error: S.current.failedToDeleteAccount(e.toString()));
     }
   }
 
@@ -247,22 +252,24 @@ class AccountNotifier extends StateNotifier<AccountState> {
         error: null,
       );
     } catch (e) {
-      state = state.copyWith(error: 'Failed to restore account: $e');
-      throw Exception('Failed to restore account: $e');
+      state =
+          state.copyWith(error: S.current.failedToRestoreAccount(e.toString()));
+
+      throw Exception(S.current.failedToRestoreAccount(e.toString()));
     }
   }
 
   Future<String> getPrivateKey() async {
     final accountId = state.accountId;
     if (accountId == null) {
-      ref.read(errorProvider.notifier).state = 'No active account';
+      ref.read(errorProvider.notifier).state = S.current.noActiveAccount;
       return '';
     }
     final privateKey =
         await storageService.getAccountData(accountId, 'privateKey');
     if (privateKey == null) {
       ref.read(errorProvider.notifier).state =
-          'Private key not found in storage';
+          S.current.privateKeyNotFoundInStorage;
       return '';
     }
     return privateKey;
@@ -271,7 +278,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
   Future<String> getPublicAddress() async {
     if (state.account == null) {
       Future.microtask(() => ref.read(errorProvider.notifier).state =
-          'Public address is not available.');
+          S.current.publicAddressNotAvailable);
       return '';
     }
     return state.account?.address ?? '';
@@ -280,14 +287,15 @@ class AccountNotifier extends StateNotifier<AccountState> {
   Future<String> getSeedPhraseAsString() async {
     final accountId = state.accountId;
     if (accountId == null) {
-      ref.read(errorProvider.notifier).state = 'No active account';
+      ref.read(errorProvider.notifier).state = S.current.noActiveAccountIdFound;
       return '';
     }
     final seedPhrase =
         await storageService.getAccountData(accountId, 'seedPhrase');
     if (seedPhrase == null) {
       ref.read(errorProvider.notifier).state =
-          'Seed phrase not found in storage';
+          S.current.seedPhraseNotFoundInStorage;
+
       return '';
     }
     return seedPhrase;
@@ -302,7 +310,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
       final tempAccountState = ref.read(temporaryAccountProvider);
 
       if (tempAccountState.account == null) {
-        throw Exception('Account is missing in temporary account data');
+        throw Exception(S.current.accountMissingInTemporaryData);
       }
 
       final accountId = await storageService.generateNextAccountId();
@@ -310,8 +318,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
       if (tempAccountState.account is Account) {
         if (tempAccountState.privateKey == null ||
             tempAccountState.seedPhrase == null) {
-          throw Exception(
-              'Incomplete temporary account data for regular account');
+          throw Exception(S.current.incompleteTemporaryAccountData);
         }
 
         ref.read(isAuthenticatedProvider.notifier).state = true;
@@ -325,7 +332,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
         final publicKey = (tempAccountState.account as Account).publicAddress;
         if (publicKey.isEmpty) {
-          throw Exception('Public key is missing.');
+          throw Exception(S.current.publicKeyIsMissing);
         }
         await storageService.setAccountData(accountId, 'publicKey', publicKey);
 
@@ -335,7 +342,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
             (tempAccountState.account as AccountInformation).address;
 
         if (publicKey.isEmpty) {
-          throw Exception('Public key is missing.');
+          throw Exception(S.current.noPublicKey);
         }
 
         await storageService.setAccountData(
@@ -347,7 +354,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
         await storageService.setActiveAccount(accountId);
       } else {
-        throw Exception('Unsupported account type');
+        throw Exception(S.current.unsupportedAccountType);
       }
 
       state = state.copyWith(
@@ -359,7 +366,8 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
       ref.read(temporaryAccountProvider.notifier).reset();
     } catch (e) {
-      state = state.copyWith(error: 'Failed to finalize account creation: $e');
+      state = state.copyWith(
+          error: S.current.failedToFinalizeAccountCreation(e.toString()));
     }
   }
 

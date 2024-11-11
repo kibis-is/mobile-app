@@ -8,6 +8,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/asset_filter_provider.dart';
 import 'package:kibisis/features/dashboard/providers/show_frozen_assets.dart';
 import 'package:kibisis/features/view_asset/view_asset_screen.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
@@ -121,8 +122,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
             child: assetsAsync.when(
               data: (assets) => _buildAssetsList(assets),
               loading: _buildLoadingAssets,
-              error: (_, __) =>
-                  const Center(child: Text('Error loading assets')),
+              error: (_, __) => Center(
+                child: Text(S.of(context).errorLoadingAssets),
+              ),
             ),
           ),
         ),
@@ -244,7 +246,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
   void _showFilterDialog() {
     customBottomSheet(
       context: context,
-      header: "Sort and Filter Assets",
+      header: S.of(context).sortAndFilter,
       items: sortOptions,
       onPressed: (SelectItem item) {
         final newSorting = Sorting.values.firstWhere(
@@ -257,7 +259,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         builder: (context, ref, _) {
           final showFrozen = ref.watch(showFrozenAssetsProvider);
           return CheckboxListTile(
-            title: const Text("Show Frozen Assets"),
+            title: Text(S.of(context).showFrozenAssets),
             tileColor: Colors.transparent,
             value: showFrozen,
             checkboxShape: const CircleBorder(),
@@ -340,15 +342,15 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
         children: [
           Text(
             isFilterActive
-                ? 'No Assets Found for the Filter'
-                : 'No Assets Found',
+                ? S.of(context).noAssetsForFilter
+                : S.of(context).noAssets,
             style: context.textTheme.titleSmall,
           ),
           const SizedBox(height: kScreenPadding / 2),
           Text(
             isFilterActive
-                ? 'Try clearing the filter to see all assets.'
-                : 'You have not added any assets.',
+                ? S.of(context).tryClearingFilter
+                : S.of(context).noAssetsAdded,
             style: context.textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
@@ -356,7 +358,9 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
           TextButton(
             onPressed:
                 isFilterActive ? _clearFilter : () => _onRefresh(isWideScreen),
-            child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
+            child: Text(isFilterActive
+                ? S.of(context).clearFilter
+                : S.of(context).retry),
           ),
         ],
       ),

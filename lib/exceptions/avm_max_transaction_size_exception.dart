@@ -1,4 +1,5 @@
 import 'package:kibisis/constants/avm.dart';
+import 'package:kibisis/generated/l10n.dart'; // Import localization
 
 class AvmMaxTransactionSizeException implements Exception {
   final String? message;
@@ -12,6 +13,6 @@ class AvmMaxTransactionSizeException implements Exception {
       return '$name: $message';
     }
 
-    return '$name: transaction group size exceeds the maximum size of "$maxTransactionGroupSize"';
+    return '$name: ${S.current.transactionGroupSizeExceeded(maxTransactionGroupSize)}';
   }
 }

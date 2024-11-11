@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/arc0200_contract.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/models/arc200_asset_data.dart';
@@ -126,18 +127,16 @@ class AlgorandService {
               "Transaction confirmed in round: ${transactionResponse.confirmedRound}");
           return txId;
         } else {
-          throw Exception(
-              "Transaction failed to confirm within the expected rounds.");
+          throw Exception(S.current.transactionFailedToConfirm);
         }
       }
-      throw Exception(
-          "Transaction failed: Transaction ID invalid or marked as 'error'.");
+      throw Exception(S.current.transactionIdInvalid);
     } on AlgorandException catch (e) {
       debugPrint(e.message);
-      throw Exception("Transaction error: ${e.message}");
+      throw Exception(S.current.transactionError(e.message));
     } catch (e) {
       debugPrint("Failed to send payment: $e");
-      throw Exception("Failed to send payment: $e");
+      throw Exception(S.current.failedToSendPayment(e.toString()));
     }
   }
 
@@ -233,8 +232,6 @@ class AlgorandService {
   List<CombinedAsset> _filterValidAssets(List<CombinedAsset?> assets) {
     final validAssets =
         assets.where((asset) => asset != null).cast<CombinedAsset>().toList();
-    debugPrint(
-        'Filtered valid assets: ${validAssets.length} out of ${assets.length}');
     return validAssets;
   }
 
@@ -287,11 +284,10 @@ class AlgorandService {
       );
     } on FormatException {
       debugPrint('Invalid asset ID format. Asset ID must be a valid integer.');
-      throw Exception(
-          'Invalid asset ID format. Asset ID must be a valid integer.');
+      throw Exception(S.current.assetIdInvalidFormat);
     } catch (e) {
       debugPrint('Failed to fetch asset details: $e');
-      throw Exception('Failed to fetch asset details: $e');
+      throw Exception(S.current.assetDetailsFetchFailed(e.toString()));
     }
   }
 
@@ -319,7 +315,7 @@ class AlgorandService {
         assetsQuery = assetsQuery.whereUnitName(searchQuery).whereAssetName(
             searchQuery); // <-- Add this line to search by asset name
       } else {
-        throw Exception('Search query is too short.');
+        throw Exception(S.current.searchQueryTooShort);
       }
 
       final SearchAssetsResponse assets =
@@ -327,10 +323,10 @@ class AlgorandService {
       return assets;
     } on AlgorandException catch (e) {
       debugPrint('Search Assets AlgorandException: ${e.message}');
-      throw Exception('Failed to fetch assets: ${e.message}');
+      throw Exception(S.current.getAccountAssetsFailed(e.message));
     } catch (e) {
       debugPrint('General Exception: $e');
-      throw Exception('Failed to fetch assets: $e');
+      throw Exception(S.current.failedToFetchAssets(e.toString()));
     }
   }
 
@@ -362,7 +358,7 @@ class AlgorandService {
         return '0';
       } else {
         debugPrint('General Exception: $e');
-        throw Exception('Failed to get account balance: $e');
+        throw Exception(S.current.failedToGetAccountBalance(e.toString()));
       }
     }
   }
@@ -433,12 +429,12 @@ class AlgorandService {
         } else {
           debugPrint(
               "Asset edit failed to confirm within the expected rounds.");
-          throw Exception("Asset edit confirmation failed.");
+          throw Exception(S.current.assetEditConfirmationFailed);
         }
       }
     } catch (e) {
       debugPrint("Failed to edit asset: $e");
-      throw Exception("Failed to edit asset: $e");
+      throw Exception(S.current.failedToEditAsset(e.toString()));
     }
   }
 
@@ -460,12 +456,12 @@ class AlgorandService {
         } else {
           debugPrint(
               "Asset destruction failed to confirm within the expected rounds.");
-          throw Exception("Asset destruction confirmation failed.");
+          throw Exception(S.current.assetDestructionConfirmationFailed);
         }
       }
     } catch (e) {
       debugPrint("Failed to destroy asset: $e");
-      throw Exception("Failed to destroy asset: $e");
+      throw Exception(S.current.failedToDestroyAsset(e.toString()));
     }
   }
 
@@ -489,14 +485,15 @@ class AlgorandService {
           );
           break;
         default:
-          throw UnsupportedError('Unsupported asset type: ${asset.assetType}');
+          throw UnsupportedError(
+              S.current.unsupportedAssetType(asset.assetType.toString()));
       }
     } on AlgorandException catch (e) {
       debugPrint("Algorand-specific error: ${e.message}");
       rethrow;
     } catch (e) {
       debugPrint("General error during opt-in: $e");
-      throw Exception("Failed to opt-in to asset");
+      throw Exception(S.current.failedToOptInAsset);
     }
   }
 
@@ -519,14 +516,14 @@ class AlgorandService {
       );
     } catch (e) {
       debugPrint('Error fetching ARC-0200 asset details for $assetId: $e');
-      throw Exception('Failed to fetch ARC-0200 asset details');
+      throw Exception(S.current.arc200AssetFetchFailed);
     }
   }
 
   Future<void> _optInToASA(int assetId, String privateKey) async {
     try {
       if (privateKey.isEmpty) {
-        throw Exception('Private key not found for the active account');
+        throw Exception(S.current.privateKeyNotFound);
       }
       final account = await Account.fromPrivateKey(privateKey);
       final txId = await algorand.assetManager.optIn(
@@ -541,11 +538,11 @@ class AlgorandService {
         debugPrint(
             "ASA asset opt-in confirmed in round: ${transactionResponse.confirmedRound}");
       } else {
-        throw Exception("Asset opt-in confirmation failed.");
+        throw Exception(S.current.assetOptInConfirmationFailed);
       }
     } on AlgorandException catch (e) {
       debugPrint(e.message);
-      throw Exception("Failed to opt-in to ASA: ${e.message}");
+      throw Exception(S.current.failedToOptInToASA(e.message));
     }
   }
 
@@ -556,7 +553,7 @@ class AlgorandService {
   }) async {
     try {
       if (asset.params.name == null || asset.params.unitName == null) {
-        throw ArgumentError('Asset name or unit name is missing');
+        throw ArgumentError(S.current.assetNameOrUnitMissing);
       }
 
       final assetData = Arc200AssetData(
@@ -570,7 +567,7 @@ class AlgorandService {
       await storageService.followArc200Asset(accountId, assetData);
     } catch (e) {
       debugPrint('Error following ARC-0200 asset: $e');
-      throw Exception('Failed to follow ARC-0200 asset');
+      throw Exception(S.current.failedToFollowArc200Asset);
     }
   }
 
@@ -595,18 +592,18 @@ class AlgorandService {
         } else {
           debugPrint(
               "Asset transfer failed to confirm within the expected rounds.");
-          throw Exception("Asset transfer confirmation failed.");
+          throw Exception(S.current.assetTransferConfirmationFailed);
         }
       }
     } catch (e) {
       debugPrint("Failed to transfer asset: ${e.toString()}");
-      throw Exception("Failed to transfer asset: ${e.toString()}");
+      throw Exception(S.current.failedToTransferAsset(e.toString()));
     }
   }
 
   String parseAlgorandException(AlgorandException e) {
     if (e.message.contains('frozen')) {
-      return 'Asset is frozen';
+      return S.current.assetIsFrozen;
     }
     return e.message;
   }
@@ -632,7 +629,8 @@ class AlgorandService {
       debugPrint(
           "Failed to ${freeze ? 'freeze' : 'unfreeze'} asset with ID: $assetId: $e");
       throw AlgorandException(
-        message: "Failed to ${freeze ? 'freeze' : 'unfreeze'} asset: $e",
+        message: S.current
+            .failedToToggleFreeze(freeze ? 'freeze' : 'unfreeze', e.toString()),
         cause: e,
       );
     }
@@ -649,7 +647,7 @@ class AlgorandService {
       );
     } catch (e) {
       debugPrint("Failed to revoke asset: $e");
-      throw Exception("Failed to revoke asset: $e");
+      throw Exception(S.current.failedToRevokeAsset(e.toString()));
     }
   }
 
@@ -728,7 +726,7 @@ class AlgorandService {
       debugPrint('Opted into contract with transaction ID: $txId');
     } catch (e) {
       debugPrint("Failed to opt-in to contract: $e");
-      throw Exception("Failed to opt-in to contract: $e");
+      throw Exception(S.current.contractOptInFailed(e.toString()));
     }
   }
 
@@ -754,7 +752,7 @@ class AlgorandService {
       debugPrint('Contract call made with transaction ID: $txId');
     } catch (e) {
       debugPrint("Failed to call contract: $e");
-      throw Exception("Failed to call contract: $e");
+      throw Exception(S.current.contractCallFailed(e.toString()));
     }
   }
 }

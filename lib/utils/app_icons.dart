@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kibisis/generated/l10n.dart';
 
 class AppIcons {
   static const double small = 16.0;
@@ -109,8 +110,7 @@ class AppIcons {
         return Icon(Icons.error, size: size, color: effectiveColor);
       }
     } else {
-      throw ArgumentError(
-          'Icon must be either IconData or a String path to SVG.');
+      throw ArgumentError(S.current.invalidIconType);
     }
   }
 }

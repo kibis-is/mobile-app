@@ -9,11 +9,12 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/import_via_private_key/providers/private_key_error_provider.dart';
 import 'package:kibisis/features/setup_account/import_via_private_key/providers/private_key_provider.dart';
 import 'package:kibisis/features/setup_account/import_via_private_key/providers/suxxif_icon_visibility_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
 class ImportPrivateKeyScreen extends ConsumerWidget {
-  static String title = 'Import Private Key';
+  static String title = S.current.importPrivateKey;
   final AccountFlow accountFlow;
 
   const ImportPrivateKeyScreen({super.key, required this.accountFlow});
@@ -51,8 +52,8 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
             ),
             CustomTextField(
               controller: privateKeyController,
-              labelText: 'Private Key',
-              errorText: showError ? 'Invalid Private Key' : null,
+              labelText: S.of(context).privateKey,
+              errorText: showError ? S.of(context).invalidPrivateKey : null,
               suffixIcon: isSuffixIconVisible ? AppIcons.cross : null,
               leadingIcon: AppIcons.importAccount,
               autoCorrect: false,
@@ -77,7 +78,7 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
       ),
       bottomNavigationBar: CustomButton(
         isBottomNavigationPosition: true,
-        text: 'Import',
+        text: S.of(context).import,
         isFullWidth: true,
         onPressed: () {
           if (privateKeyController.text.isEmpty) {
