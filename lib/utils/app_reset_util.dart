@@ -16,6 +16,7 @@ import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
 import 'package:kibisis/providers/contacts_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
+import 'package:kibisis/providers/locale_provider.dart';
 import 'package:kibisis/providers/multipart_scan_provider.dart';
 import 'package:kibisis/providers/pin_entry_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
@@ -89,6 +90,7 @@ class AppResetUtil {
     ref.invalidate(dropdownItemsProvider);
     ref.invalidate(contactsListProvider);
     ref.invalidate(sendTransactionScreenModeProvider);
+    ref.invalidate(localeProvider);
   }
 
   static void _resetExplicitProviders(WidgetRef ref) {

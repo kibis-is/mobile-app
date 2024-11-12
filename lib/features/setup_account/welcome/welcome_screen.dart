@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
+import 'package:kibisis/common_widgets/language_picker.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/pin_pad/providers/pin_title_provider.dart';
 import 'package:kibisis/generated/l10n.dart';
@@ -23,9 +24,10 @@ class WelcomeScreen extends ConsumerWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(kScreenPadding * 2),
-        child: Stack(
-          alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            const LanguagePicker(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
