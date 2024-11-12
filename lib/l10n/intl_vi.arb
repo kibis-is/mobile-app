@@ -1,0 +1,1963 @@
+{
+"@@locale": "vi",
+"noInternetConnection": "Không có kết nối Internet",
+"@noInternetConnection": {
+  "description": "Hiển thị trong biểu ngữ khi thiết bị không có kết nối internet."
+},
+"initializationError": "Lỗi khởi tạo, vui lòng khởi động lại ứng dụng.",
+"@initializationError": {
+  "description": "Thông báo lỗi hiển thị khi khởi tạo ứng dụng thất bại."
+},
+"unknown": "Không xác định",
+"@unknown": {
+  "description": "Hiển thị khi tên tài sản không được biết."
+},
+"alreadyAdded": "Đã\nthêm",
+"@alreadyAdded": {
+  "description": "Hiển thị khi tài sản đã được thêm vào danh sách của người dùng."
+},
+"defaultConfirmationTitle": "Bạn có chắc chắn không?",
+"@defaultConfirmationTitle": {
+  "description": "Tiêu đề mặc định cho các hộp thoại xác nhận."
+},
+"defaultConfirmationContent": "Bạn có muốn tiếp tục thực hiện hành động này không?",
+"@defaultConfirmationContent": {
+  "description": "Nội dung mặc định cho các hộp thoại xác nhận."
+},
+"yes": "Có",
+"@yes": {
+  "description": "Nhãn cho nút xác nhận."
+},
+"no": "Không",
+"@no": {
+  "description": "Nhãn cho nút hủy trong hộp thoại xác nhận."
+},
+"ok": "OK",
+"@ok": {
+  "description": "Nhãn cho nút OK trong hộp thoại."
+},
+"confirm": "Xác nhận",
+"@confirm": {
+  "description": "Văn bản mặc định cho nút xác nhận trên các tờ dưới cùng."
+},
+"pullToRefresh": "Kéo xuống để làm mới",
+"@pullToRefresh": {
+  "description": "Hiển thị khi người dùng có thể kéo xuống để làm mới nội dung."
+},
+"releaseToRefresh": "Thả ra để làm mới",
+"@releaseToRefresh": {
+  "description": "Hiển thị khi người dùng nên thả để kích hoạt làm mới."
+},
+"refreshing": "Đang làm mới...",
+"@refreshing": {
+  "description": "Hiển thị khi hành động làm mới đang diễn ra."
+},
+"initializing": "Khởi tạo",
+"@initializing": {
+  "description": "Văn bản tiền tố hiển thị trong quá trình khởi tạo với dấu chấm động."
+},
+"reset": "Đặt lại",
+"@reset": {
+  "description": "Văn bản cho nút xác nhận đặt lại."
+},
+"resetConfirmationMessage": "Bạn có chắc chắn muốn đặt lại thiết bị này không? Điều này sẽ xóa tất cả tài khoản, cài đặt và thông tin bảo mật.",
+"@resetConfirmationMessage": {
+  "description": "Thông báo xác nhận hiển thị khi đặt lại ứng dụng."
+},
+"pinMismatchError": "Mã PIN không khớp.",
+"@pinMismatchError": {
+  "description": "Thông báo lỗi hiển thị khi mã PIN không khớp trong quá trình thiết lập."
+},
+"incorrectPinError": "Mã PIN không đúng. Thử lại.",
+"@incorrectPinError": {
+  "description": "Thông báo lỗi hiển thị khi nhập mã PIN không đúng."
+},
+"timeout1Minute": "1 phút",
+"@timeout1Minute": {
+  "description": "Thời gian chờ 1 phút."
+},
+"timeout2Minutes": "2 phút",
+"@timeout2Minutes": {
+  "description": "Thời gian chờ 2 phút."
+},
+"timeout5Minutes": "5 phút",
+"@timeout5Minutes": {
+  "description": "Thời gian chờ 5 phút."
+},
+"timeout10Minutes": "10 phút",
+"@timeout10Minutes": {
+  "description": "Thời gian chờ 10 phút."
+},
+"timeout15Minutes": "15 phút",
+"@timeout15Minutes": {
+  "description": "Thời gian chờ 15 phút."
+},
+"transactionGroupSizeExceeded": "Kích thước nhóm giao dịch vượt quá kích thước tối đa là \"{maxSize}\"",
+"@transactionGroupSizeExceeded": {
+  "description": "Thông báo lỗi khi kích thước nhóm giao dịch vượt quá mức cho phép.",
+  "placeholders": {
+    "maxSize": {
+      "type": "int",
+      "description": "Kích thước nhóm giao dịch tối đa."
+    }
+  }
+},
+"searchPrompt": "Nhập ID tài sản, tên, tài sản hoặc ID ký hiệu (cho ARC-200).",
+"@searchPrompt": {
+  "description": "Văn bản nhắc hiển thị trên đầu ô tìm kiếm."
+},
+"searchQueryLabel": "Truy vấn Tìm kiếm",
+"@searchQueryLabel": {
+  "description": "Nhãn cho ô nhập truy vấn tìm kiếm."
+},
+"noAssetsFound": "Không tìm thấy tài sản.",
+"@noAssetsFound": {
+  "description": "Hiển thị khi không có tài sản nào phù hợp với truy vấn tìm kiếm."
+},
+"genericErrorMessage": "Rất tiếc, đã xảy ra lỗi.",
+"@genericErrorMessage": {
+  "description": "Thông báo lỗi chung hiển thị khi xảy ra lỗi bất ngờ."
+},
+"notAvailable": "N/A",
+"@notAvailable": {
+  "description": "Giá trị mặc định cho tên đơn vị tài sản khi không có sẵn."
+},
+"contactsTab": "Danh bạ",
+"@contactsTab": {
+  "description": "Tiêu đề tab cho danh sách liên hệ."
+},
+"myAccountsTab": "Tài khoản của tôi",
+"@myAccountsTab": {
+  "description": "Tiêu đề tab cho danh sách tài khoản của người dùng."
+},
+"cancel": "Hủy",
+"@cancel": {
+  "description": "Nhãn cho các nút hủy."
+},
+"deleteContactTitle": "Xóa liên hệ",
+"@deleteContactTitle": {
+  "description": "Tiêu đề cho hộp thoại xác nhận xóa liên hệ."
+},
+"deleteContactMessage": "Bạn có chắc chắn muốn xóa {contactName}?",
+"@deleteContactMessage": {
+  "description": "Thông báo hiển thị khi xác nhận xóa liên hệ.",
+  "placeholders": {
+    "contactName": {
+      "type": "String",
+      "description": "Tên của liên hệ cần xóa."
+    }
+  }
+},
+"selectAccountTitle": "Chọn tài khoản",
+"@selectAccountTitle": {
+  "description": "Tiêu đề cho màn hình chọn tài khoản."
+},
+"errorMessage": "Lỗi: {error}",
+"@errorMessage": {
+  "description": "Thông báo lỗi hiển thị khi xảy ra lỗi.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi cần hiển thị."
+    }
+  }
+},
+"noAccountsFound": "Không tìm thấy tài khoản",
+"@noAccountsFound": {
+  "description": "Thông báo hiển thị khi không có tài khoản nào khả dụng."
+},
+"noPublicKey": "Không có khóa công khai",
+"@noPublicKey": {
+  "description": "Thông báo dự phòng khi tài khoản không có khóa công khai."
+},
+"assetsTab": "Tài sản",
+"@assetsTab": {
+  "description": "Nhãn cho tab Tài sản trong bảng điều khiển."
+},
+"nftsTab": "NFTs",
+"@nftsTab": {
+  "description": "Nhãn cho tab NFTs trong bảng điều khiển."
+},
+"activityTab": "Hoạt động",
+"@activityTab": {
+  "description": "Nhãn cho tab Hoạt động trong bảng điều khiển."
+},
+"selectNetworkHeader": "Chọn Mạng",
+"@selectNetworkHeader": {
+  "description": "Tiêu đề cho bảng chọn mạng."
+},
+"networkSwitchSuccess": "Đã chuyển sang {networkName}",
+"@networkSwitchSuccess": {
+  "description": "Thông báo hiển thị khi chuyển mạng thành công.",
+  "placeholders": {
+    "networkName": {
+      "type": "String",
+      "description": "Tên của mạng mà người dùng đã chuyển sang."
+    }
+  }
+},
+"networkSwitchFailure": "Không thể chuyển sang {networkName}",
+"@networkSwitchFailure": {
+  "description": "Thông báo hiển thị khi chuyển mạng thất bại.",
+  "placeholders": {
+    "networkName": {
+      "type": "String",
+      "description": "Tên của mạng mà việc chuyển đổi thất bại."
+    }
+  }
+},
+"minimumBalanceInfo": "Số dư tối thiểu là {balance} VOI. Dựa trên cấu hình tài khoản, đây là số dư tối thiểu cần thiết để giữ tài khoản hoạt động.",
+"@minimumBalanceInfo": {
+  "description": "Thông báo giải thích số dư tối thiểu cần thiết cho một tài khoản.",
+  "placeholders": {
+    "balance": {
+      "type": "String",
+      "description": "Giá trị số dư tối thiểu."
+    }
+  }
+},
+"infoHeader": "Thông tin",
+"@infoHeader": {
+  "description": "Tiêu đề cho bảng thông tin."
+},
+"loadingAccount": "Đang tải tài khoản",
+"@loadingAccount": {
+  "description": "Văn bản hiển thị khi chi tiết tài khoản đang được tải."
+},
+"pleaseWait": "Vui lòng chờ",
+"@pleaseWait": {
+  "description": "Văn bản hiển thị khi đang chờ tải chi tiết tài khoản."
+},
+"genericError": "Lỗi",
+"@genericError": {
+  "description": "Thông báo lỗi chung hiển thị khi có lỗi xảy ra."
+},
+"errorLoadingTransactions": "Lỗi tải giao dịch",
+"@errorLoadingTransactions": {
+  "description": "Hiển thị khi không thể tải danh sách giao dịch."
+},
+"selectTransactionPrompt": "Chọn một giao dịch để xem chi tiết",
+"@selectTransactionPrompt": {
+  "description": "Thông báo nhắc chọn giao dịch trong chế độ màn hình rộng."
+},
+"noTransactionsFound": "Không tìm thấy giao dịch nào",
+"@noTransactionsFound": {
+  "description": "Hiển thị khi không có giao dịch nào tồn tại."
+},
+"noTransactionsMade": "Bạn chưa thực hiện giao dịch nào.",
+"@noTransactionsMade": {
+  "description": "Hiển thị khi người dùng chưa thực hiện giao dịch nào."
+},
+"noMoreTransactions": "Không còn giao dịch nào.",
+"@noMoreTransactions": {
+  "description": "Hiển thị khi không còn giao dịch nào để tải thêm."
+},
+"noAssets": "Không tìm thấy tài sản",
+"@noAssets": {
+  "description": "Hiển thị khi không có tài sản nào khả dụng."
+},
+"noAssetsForFilter": "Không tìm thấy tài sản cho bộ lọc",
+"@noAssetsForFilter": {
+  "description": "Hiển thị khi không có tài sản nào phù hợp với tiêu chí lọc."
+},
+"tryClearingFilter": "Hãy thử xóa bộ lọc để xem tất cả tài sản.",
+"@tryClearingFilter": {
+  "description": "Gợi ý xóa bộ lọc để xem tất cả tài sản."
+},
+"noAssetsAdded": "Bạn chưa thêm tài sản nào.",
+"@noAssetsAdded": {
+  "description": "Hiển thị khi chưa có tài sản nào được thêm."
+},
+"clearFilter": "Xóa bộ lọc",
+"@clearFilter": {
+  "description": "Nhãn cho nút xóa bộ lọc."
+},
+"retry": "Thử lại",
+"@retry": {
+  "description": "Nhãn cho nút thử lại khi tải tài sản không thành công."
+},
+"errorLoadingAssets": "Lỗi tải tài sản",
+"@errorLoadingAssets": {
+  "description": "Hiển thị khi không thể tải tài sản."
+},
+"sortAndFilter": "Sắp xếp và lọc tài sản",
+"@sortAndFilter": {
+  "description": "Tiêu đề cho hộp thoại sắp xếp và lọc tài sản."
+},
+"showFrozenAssets": "Hiển thị tài sản bị đóng băng",
+"@showFrozenAssets": {
+  "description": "Nhãn cho ô chọn để hiển thị tài sản bị đóng băng."
+},
+"copyAddress": "Sao chép địa chỉ",
+"@copyAddress": {
+  "description": "Hiển thị dưới dạng hành động để sao chép địa chỉ tài khoản."
+},
+"shareAddress": "Chia sẻ địa chỉ",
+"@shareAddress": {
+  "description": "Hiển thị dưới dạng hành động để chia sẻ địa chỉ tài khoản."
+},
+"editAccount": "Chỉnh sửa",
+"@editAccount": {
+  "description": "Hiển thị dưới dạng hành động để chỉnh sửa chi tiết tài khoản."
+},
+"refreshAccount": "Làm mới",
+"@refreshAccount": {
+  "description": "Hiển thị dưới dạng hành động để làm mới dữ liệu tài khoản."
+},
+"noAccountName": "Không có tên tài khoản",
+"@noAccountName": {
+  "description": "Hiển thị khi tài khoản không có tên."
+},
+"options": "Tùy chọn",
+"@options": {
+  "description": "Tiêu đề cho bảng tùy chọn tài khoản."
+},
+"noNftsFound": "Không tìm thấy NFT nào",
+"@noNftsFound": {
+  "description": "Hiển thị khi không có NFT nào khả dụng."
+},
+"noNftsForFilter": "Không tìm thấy NFT cho bộ lọc",
+"@noNftsForFilter": {
+  "description": "Hiển thị khi không có NFT nào phù hợp với tiêu chí lọc."
+},
+"noNftsAdded": "Bạn chưa thêm NFT nào.",
+"@noNftsAdded": {
+  "description": "Hiển thị khi người dùng chưa thêm bất kỳ NFT nào."
+},
+"filter": "Lọc",
+"@filter": {
+  "description": "Nhãn văn bản cho trường nhập bộ lọc."
+},
+"scanQrCode": "Quét mã QR",
+"@scanQrCode": {
+  "description": "Tiêu đề hiển thị trong hộp thoại mã QR."
+},
+"shareQr": "Chia sẻ mã QR",
+"@shareQr": {
+  "description": "Tooltip để chia sẻ mã QR."
+},
+"copyUri": "Sao chép URI",
+"@copyUri": {
+  "description": "Tooltip để sao chép dữ liệu mã QR vào bộ nhớ tạm."
+},
+"downloadQrImage": "Tải xuống hình ảnh mã QR",
+"@downloadQrImage": {
+  "description": "Tooltip để tải xuống hình ảnh mã QR."
+},
+"close": "Đóng",
+"@close": {
+  "description": "Văn bản nút để đóng hộp thoại."
+},
+"transactionIdCopied": "ID giao dịch đã được sao chép",
+"@transactionIdCopied": {
+  "description": "Thông báo Snackbar hiển thị khi ID giao dịch được sao chép."
+},
+"payment": "Thanh toán",
+"@payment": {
+  "description": "Nhãn cho các giao dịch loại thanh toán."
+},
+"assetTransfer": "Chuyển tài sản",
+"@assetTransfer": {
+  "description": "Nhãn cho các giao dịch chuyển tài sản liên quan đến token."
+},
+"errorTitle": "Lỗi",
+"@errorTitle": {
+  "description": "Tiêu đề hiển thị trên màn hình lỗi."
+},
+"defaultErrorMessage": "Đã xảy ra lỗi. Không có thông tin chi tiết nào khác.",
+"@defaultErrorMessage": {
+  "description": "Thông báo lỗi mặc định hiển thị khi không có chi tiết nào được cung cấp."
+},
+"back": "Quay lại",
+"@back": {
+  "description": "Nhãn cho nút quay lại màn hình chính."
+},
+"createPin": "Tạo mã PIN",
+"@createPin": {
+  "description": "Tiêu đề cho màn hình nơi người dùng tạo mã PIN."
+},
+"confirmPin": "Xác nhận mã PIN",
+"@confirmPin": {
+  "description": "Tiêu đề cho màn hình nơi người dùng xác nhận mã PIN."
+},
+"unlock": "Mở khóa",
+"@unlock": {
+  "description": "Tiêu đề cho màn hình nơi người dùng mở khóa ứng dụng."
+},
+"verifyPin": "Xác minh mã PIN",
+"@verifyPin": {
+  "description": "Tiêu đề cho màn hình nơi người dùng xác minh mã PIN."
+},
+"resettingApp": "Đang đặt lại ứng dụng",
+"@resettingApp": {
+  "description": "Thông báo hiển thị khi ứng dụng đang được đặt lại."
+},
+"invalidQrCodeData": "Dữ liệu mã QR không hợp lệ",
+"@invalidQrCodeData": {
+  "description": "Thông báo lỗi hiển thị khi mã QR đã quét không chứa dữ liệu hợp lệ."
+},
+"expectedPrivateKeyQr": "Dự kiến mã QR khóa riêng tư nhưng lại nhận được khóa công khai.",
+"@expectedPrivateKeyQr": {
+  "description": "Thông báo lỗi khi quét mã công khai trong chế độ quét khóa riêng tư."
+},
+"expectedWalletConnectUri": "Dự kiến mã QR khóa riêng tư nhưng lại nhận được URI WalletConnect.",
+"@expectedWalletConnectUri": {
+  "description": "Thông báo lỗi khi quét URI WalletConnect trong chế độ quét khóa riêng tư."
+},
+"expectedPublicKeyQr": "Dự kiến mã QR khóa công khai nhưng lại nhận được loại khác.",
+"@expectedPublicKeyQr": {
+  "description": "Thông báo lỗi khi quét mã không phải khóa công khai trong chế độ quét khóa công khai."
+},
+"expectedWalletConnectSessionQr": "Dự kiến mã QR phiên WalletConnect nhưng lại nhận được loại khác.",
+"@expectedWalletConnectSessionQr": {
+  "description": "Thông báo lỗi khi quét mã không phải mã phiên WalletConnect trong chế độ phiên."
+},
+"unknownQrCodeType": "Loại mã QR không xác định",
+"@unknownQrCodeType": {
+  "description": "Thông báo lỗi khi loại mã QR không được nhận dạng."
+},
+"walletConnectV1NotSupported": "Không hỗ trợ URI WalletConnect V1.",
+"@walletConnectV1NotSupported": {
+  "description": "Thông báo lỗi khi quét URI WalletConnect V1."
+},
+"invalidWalletConnectUri": "Định dạng URI WalletConnect không hợp lệ.",
+"@invalidWalletConnectUri": {
+  "description": "Thông báo lỗi khi URI WalletConnect có định dạng không hợp lệ."
+},
+"failedToParseWalletConnectUri": "Không thể phân tích URI WalletConnect: {error}",
+"@failedToParseWalletConnectUri": {
+  "description": "Thông báo lỗi hiển thị khi phân tích URI WalletConnect thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi trả về trong quá trình phân tích."
+    }
+  }
+},
+"unknownImportAccountUriFormat": "Định dạng URI nhập tài khoản không xác định",
+"@unknownImportAccountUriFormat": {
+  "description": "Thông báo lỗi hiển thị khi định dạng URI nhập tài khoản không được nhận dạng."
+},
+"paginatedUriMissingInfo": "URI phân trang thiếu thông tin checksum hoặc trang",
+"@paginatedUriMissingInfo": {
+  "description": "Thông báo lỗi cho URI phân trang thiếu dữ liệu checksum hoặc trang."
+},
+"invalidPageFormatInUri": "Định dạng trang không hợp lệ trong URI phân trang",
+"@invalidPageFormatInUri": {
+  "description": "Thông báo lỗi hiển thị khi tham số trang trong URI phân trang không hợp lệ."
+},
+"invalidPublicKeyFormat": "Định dạng khóa công khai không hợp lệ",
+"@invalidPublicKeyFormat": {
+  "description": "Thông báo lỗi hiển thị khi định dạng khóa công khai được cung cấp không hợp lệ."
+},
+"invalidUriFormat": "Định dạng URI không hợp lệ",
+"@invalidUriFormat": {
+  "description": "Thông báo lỗi hiển thị khi URI không thể phân tích."
+},
+"invalidPrivateKey": "Khóa riêng tư không hợp lệ",
+"@invalidPrivateKey": {
+  "description": "Thông báo lỗi hiển thị khi khóa riêng tư không hợp lệ."
+},
+"missingPrivateKeyInLegacyUri": "Thiếu khóa riêng tư trong URI kế thừa",
+"@missingPrivateKeyInLegacyUri": {
+  "description": "Thông báo lỗi cho URI nhập kế thừa không có khóa riêng tư."
+},
+"keyNeitherBase64NorHex": "Khóa không phải Base64 hợp lệ cũng không phải Hex hợp lệ: {key}",
+"@keyNeitherBase64NorHex": {
+  "description": "Thông báo gỡ lỗi khi khóa riêng tư không phải Base64 hoặc Hex hợp lệ.",
+  "placeholders": {
+    "key": {
+      "type": "String",
+      "description": "Khóa không hợp lệ được cung cấp."
+    }
+  }
+},
+"failedToDecodePrivateKey": "Không thể giải mã khóa riêng tư: {error}",
+"@failedToDecodePrivateKey": {
+  "description": "Thông báo gỡ lỗi cho lỗi giải mã khóa riêng tư.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ quá trình giải mã."
+    }
+  }
+},
+"unknownWalletConnectVersion": "Phiên bản WalletConnect không xác định. Không thể ghép đôi.",
+"@unknownWalletConnectVersion": {
+  "description": "Thông báo lỗi khi gặp phiên bản WalletConnect không xác định."
+},
+"invalidPrivateKeyLength": "Chiều dài khóa riêng tư không hợp lệ.",
+"@invalidPrivateKeyLength": {
+  "description": "Thông báo lỗi cho chiều dài khóa riêng tư không hợp lệ."
+},
+"importedAccount": "Tài khoản đã nhập",
+"@importedAccount": {
+  "description": "Tên tài khoản mặc định cho tài khoản đã nhập."
+},
+"importedAccountWithCounter": "Tài khoản đã nhập {counter}",
+"@importedAccountWithCounter": {
+  "description": "Tên tài khoản mặc định với bộ đếm cho tài khoản đã nhập.",
+  "placeholders": {
+    "counter": {
+      "type": "int",
+      "example": "1"
+    }
+  }
+},
+"connectToTitle": "Kết nối với:",
+"@connectToTitle": {
+  "description": "Tiêu đề hộp thoại để kết nối phiên WalletConnect."
+},
+"failedFinalizeAccountImport": "Không thể hoàn tất nhập tài khoản.",
+"@failedFinalizeAccountImport": {
+  "description": "Thông báo lỗi khi nhập tài khoản không thành công."
+},
+"errorProcessingPublicKey": "Lỗi xử lý khóa công khai",
+"@errorProcessingPublicKey": {
+  "description": "Thông báo lỗi khi khóa công khai không được xử lý thành công."
+},
+"successfullyConnected": "Đã kết nối thành công",
+"@successfullyConnected": {
+  "description": "Thông báo hiển thị sau khi kết nối WalletConnect thành công."
+},
+"nextQrCode": "Mã QR tiếp theo:",
+"@nextQrCode": {
+  "description": "Nhãn hiển thị chỉ báo phần mã QR tiếp theo cần quét."
+},
+"partNumber": "Phần {partNumber}",
+"@partNumber": {
+  "description": "Nhãn chỉ báo phần mã QR hiện tại đang quét.",
+  "placeholders": {
+    "partNumber": {
+      "type": "int",
+      "example": "2"
+    }
+  }
+},
+"expectedPrivateKeyButPublic": "Dự kiến mã QR khóa riêng tư nhưng lại nhận được khóa công khai.",
+"@expectedPrivateKeyButPublic": {
+  "description": "Thông báo lỗi cho loại mã QR không khớp khi dự kiến nhận khóa riêng tư nhưng lại nhận được khóa công khai."
+},
+"expectedPrivateKeyButWalletConnect": "Dự kiến mã QR khóa riêng tư nhưng lại nhận được URI WalletConnect.",
+"@expectedPrivateKeyButWalletConnect": {
+  "description": "Thông báo lỗi cho loại mã QR không khớp khi dự kiến nhận khóa riêng tư nhưng lại nhận được URI WalletConnect."
+},
+"expectedPublicKey": "Dự kiến mã QR khóa công khai nhưng lại nhận được loại khác.",
+"@expectedPublicKey": {
+  "description": "Thông báo lỗi khi dự kiến nhận khóa công khai nhưng lại nhận được loại mã QR khác."
+},
+"failedParseWalletConnectUri": "Không thể phân tích URI WalletConnect",
+"@failedParseWalletConnectUri": {
+  "description": "Thông báo lỗi khi không thể phân tích URI WalletConnect."
+},
+"invalidPageFormat": "Định dạng trang không hợp lệ trong URI phân trang",
+"@invalidPageFormat": {
+  "description": "Thông báo lỗi cho định dạng tham số trang không hợp lệ trong URI phân trang."
+},
+"missingPrivateKeyLegacy": "Thiếu khóa riêng tư trong URI kế thừa",
+"@missingPrivateKeyLegacy": {
+  "description": "Thông báo lỗi khi URI kế thừa bị thiếu khóa riêng tư."
+},
+"unknownImportUriFormat": "Định dạng URI nhập tài khoản không xác định",
+"@unknownImportUriFormat": {
+  "description": "Thông báo lỗi khi định dạng URI nhập tài khoản không được nhận dạng."
+},
+"importAccountTitle": "Nhập tài khoản",
+"@importAccountTitle": {
+  "description": "Tiêu đề cho màn hình khi quét khóa riêng tư để nhập tài khoản."
+},
+"scanAddressTitle": "Quét địa chỉ",
+"@scanAddressTitle": {
+  "description": "Tiêu đề cho màn hình quét địa chỉ khóa công khai."
+},
+"connectTitle": "Kết nối",
+"@connectTitle": {
+  "description": "Tiêu đề cho màn hình quét để kết nối phiên WalletConnect."
+},
+"qrCodeScannerTitle": "Máy quét mã QR",
+"@qrCodeScannerTitle": {
+  "description": "Tiêu đề mặc định cho màn hình quét mã QR."
+},
+"processingQrCode": "Đang xử lý mã QR",
+"@processingQrCode": {
+  "description": "Thông báo tải hiển thị khi đang xử lý mã QR đã quét."
+},
+"invalidScanResult": "Kết quả quét không hợp lệ",
+"@invalidScanResult": {
+  "description": "Thông báo lỗi khi kết quả quét mã QR không hợp lệ."
+},
+"noAccountsAvailableToConnect": "Không có tài khoản nào khả dụng để kết nối.",
+"@noAccountsAvailableToConnect": {
+  "description": "Thông báo lỗi hiển thị khi không có tài khoản nào khả dụng cho WalletConnect."
+},
+"errorLoadingAccounts": "Lỗi tải tài khoản",
+"@errorLoadingAccounts": {
+  "description": "Thông báo lỗi hiển thị khi không thể tải danh sách tài khoản."
+},
+"unnamedAsset": "Tài sản chưa đặt tên",
+"@unnamedAsset": {
+  "description": "Nhãn được sử dụng khi một tài sản không có tên."
+},
+"noNetwork": "Không có mạng",
+"@noNetwork": {
+  "description": "Nhãn hiển thị khi không có mạng nào được chọn."
+},
+"pleaseEnterValidAmount": "Vui lòng nhập một số tiền hợp lệ",
+"@pleaseEnterValidAmount": {
+  "description": "Thông báo lỗi khi số tiền nhập vào không hợp lệ."
+},
+"pleaseEnterValidAlgorandAddress": "Vui lòng nhập một địa chỉ Algorand hợp lệ",
+"@pleaseEnterValidAlgorandAddress": {
+  "description": "Thông báo lỗi khi địa chỉ Algorand nhập vào không hợp lệ."
+},
+"insufficientFunds": "Số dư không đủ",
+"@insufficientFunds": {
+  "description": "Thông báo lỗi khi số dư không đủ để thực hiện giao dịch."
+},
+"transactionSuccessful": "Giao dịch thành công",
+"@transactionSuccessful": {
+  "description": "Thông báo hiển thị khi giao dịch thành công."
+},
+"noActiveAccountIdFound": "Không tìm thấy ID tài khoản đang hoạt động",
+"@noActiveAccountIdFound": {
+  "description": "Thông báo lỗi hiển thị khi không tìm thấy ID tài khoản đang hoạt động."
+},
+"privateKeyNotFoundInStorage": "Không tìm thấy khóa riêng tư trong bộ nhớ",
+"@privateKeyNotFoundInStorage": {
+  "description": "Thông báo lỗi hiển thị khi khóa riêng tư không được tìm thấy trong bộ nhớ."
+},
+"noItemSelectedForTransaction": "Không có mục nào được chọn cho giao dịch.",
+"@noItemSelectedForTransaction": {
+  "description": "Thông báo lỗi khi không có mục nào được chọn để thực hiện giao dịch."
+},
+"standardAssetTransferSuccessful": "Chuyển tài sản tiêu chuẩn thành công.",
+"@standardAssetTransferSuccessful": {
+  "description": "Thông báo hiển thị khi chuyển tài sản tiêu chuẩn thành công."
+},
+"arc0200AssetTransferSuccessful": "Chuyển tài sản ARC-0200 thành công.",
+"@arc0200AssetTransferSuccessful": {
+  "description": "Thông báo hiển thị khi chuyển tài sản ARC-0200 thành công."
+},
+"unsupportedAssetType": "Loại tài sản không được hỗ trợ: {assetType}",
+"@unsupportedAssetType": {
+  "description": "Thông báo lỗi cho loại tài sản không được hỗ trợ.",
+  "placeholders": {
+    "assetType": {
+      "type": "String",
+      "description": "Loại tài sản không được hỗ trợ."
+    }
+  }
+},
+"insufficientFundsError": "Số dư không đủ.",
+"@insufficientFundsError": {
+  "description": "Thông báo lỗi khi số dư không đủ."
+},
+"transactionFailedToConfirm": "Giao dịch không thể xác nhận trong các vòng dự kiến.",
+"@transactionFailedToConfirm": {
+  "description": "Thông báo lỗi khi giao dịch không thể xác nhận trong các vòng dự kiến."
+},
+"sendingPayment": "Đang gửi thanh toán",
+"@sendingPayment": {
+  "description": "Thông báo hiển thị khi đang gửi thanh toán."
+},
+"sendingAsset": "Đang gửi tài sản",
+"@sendingAsset": {
+  "description": "Thông báo hiển thị khi đang gửi tài sản."
+},
+"contactNameUpdatedSuccessfully": "Tên liên hệ đã được cập nhật thành công.",
+"@contactNameUpdatedSuccessfully": {
+  "description": "Thông báo hiển thị khi tên liên hệ được cập nhật thành công."
+},
+"contactSavedSuccessfully": "Liên hệ đã được lưu thành công.",
+"@contactSavedSuccessfully": {
+  "description": "Thông báo hiển thị khi liên hệ được lưu thành công."
+},
+"failedToSaveContact": "Không thể lưu liên hệ: {error}",
+"@failedToSaveContact": {
+  "description": "Thông báo lỗi khi lưu liên hệ thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"max": "Tối đa",
+"@max": {
+  "description": "Nhãn cho số tiền tối đa."
+},
+"error": "Lỗi",
+"@error": {
+  "description": "Nhãn cho thông báo lỗi."
+},
+"calculating": "Đang tính toán...",
+"@calculating": {
+  "description": "Thông báo hiển thị khi một phép tính đang được thực hiện."
+},
+"maxVoiAmountCalculation": "Số tiền VOI tối đa được tính bằng: số dư ({balance}), trừ số dư tối thiểu cần thiết để giữ tài khoản hoạt động ({minimumBalance}), trừ phí giao dịch tối thiểu (0.001)",
+"@maxVoiAmountCalculation": {
+  "description": "Giải thích cách tính số tiền VOI tối đa.",
+  "placeholders": {
+    "balance": {
+      "type": "String",
+      "description": "Số dư tài khoản hiện tại."
+    },
+    "minimumBalance": {
+      "type": "String",
+      "description": "Số dư tối thiểu cần thiết."
+    }
+  }
+},
+"info": "Thông tin",
+"@info": {
+  "description": "Tiêu đề nhãn thông tin."
+},
+"account": "Tài khoản",
+"@account": {
+  "description": "Nhãn cho trường tài khoản."
+},
+"asset": "Tài sản",
+"@asset": {
+  "description": "Nhãn cho trường tài sản."
+},
+"amount": "Số tiền",
+"@amount": {
+  "description": "Nhãn cho trường số tiền."
+},
+"contactNameOptional": "Tên liên hệ (Tùy chọn)",
+"@contactNameOptional": {
+  "description": "Nhãn cho trường tên liên hệ, tùy chọn."
+},
+"noteOptional": "Ghi chú (Tùy chọn)",
+"@noteOptional": {
+  "description": "Nhãn cho trường ghi chú, tùy chọn."
+},
+"send": "Gửi",
+"@send": {
+  "description": "Văn bản cho nút gửi."
+},
+"selectAsset": "Chọn tài sản",
+"@selectAsset": {
+  "description": "Tiêu đề cho hộp thoại chọn tài sản."
+},
+"transactionFailed": "Giao dịch thất bại",
+"@transactionFailed": {
+  "description": "Thông báo lỗi khi một giao dịch thất bại."
+},
+"noAccount": "Không có tài khoản",
+"@noAccount": {
+  "description": "Hiển thị khi không có tài khoản hoạt động."
+},
+"noteTooLarge": "Ghi chú quá lớn.",
+"@noteTooLarge": {
+  "description": "Thông báo lỗi khi ghi chú vượt quá kích thước byte tối đa."
+},
+"sendTransactionTitle": "Gửi giao dịch",
+"@sendTransactionTitle": {
+  "description": "Tiêu đề hiển thị trên màn hình gửi giao dịch."
+},
+"loading": "Đang tải...",
+"@loading": {
+  "description": "Văn bản hiển thị trong các trạng thái tải."
+},
+"failedToLoad": "Không thể tải",
+"@failedToLoad": {
+  "description": "Văn bản hiển thị khi dữ liệu không tải được."
+},
+"recipientAddress": "Địa chỉ người nhận",
+"@recipientAddress": {
+  "description": "Nhãn cho trường nhập địa chỉ người nhận."
+},
+"noItems": "Không có mục nào",
+"@noItems": {
+  "description": "Văn bản hiển thị khi không có mục nào khả dụng."
+},
+"about": "Giới thiệu",
+"@about": {
+  "description": "Tiêu đề cho màn hình Giới thiệu."
+},
+"version": "Phiên bản:",
+"@version": {
+  "description": "Nhãn cho phiên bản ứng dụng."
+},
+"build": "Bản dựng:",
+"@build": {
+  "description": "Nhãn cho phiên bản bản dựng ứng dụng."
+},
+"buildNumber": "Số bản dựng:",
+"@buildNumber": {
+  "description": "Nhãn cho số bản dựng ứng dụng."
+},
+"advanced": "Nâng cao",
+"@advanced": {
+  "description": "Tiêu đề cho màn hình Nâng cao."
+},
+"networkSwitched": "Mạng đã được chuyển sang {networkName}",
+"@networkSwitched": {
+  "description": "Thông báo hiển thị khi mạng được chuyển đổi thành công.",
+  "placeholders": {
+    "networkName": {
+      "type": "String",
+      "description": "Tên của mạng mới."
+    }
+  }
+},
+"allowTestNetworks": "Cho phép mạng thử nghiệm",
+"@allowTestNetworks": {
+  "description": "Nhãn cho công tắc bật/tắt mạng thử nghiệm."
+},
+"toggleTestNetworksDescription": "Chuyển đổi để bao gồm mạng thử nghiệm trong danh sách mạng.",
+"@toggleTestNetworksDescription": {
+  "description": "Mô tả cho công tắc bật/tắt mạng thử nghiệm."
+},
+"appearance": "Giao diện",
+"@appearance": {
+  "description": "Tiêu đề cho màn hình Giao diện."
+},
+"darkMode": "Chế độ tối",
+"@darkMode": {
+  "description": "Nhãn cho công tắc bật/tắt chế độ tối."
+},
+"general": "Chung",
+"@general": {
+  "description": "Tiêu đề cho màn hình Chung."
+},
+"dangerZone": "Vùng nguy hiểm",
+"@dangerZone": {
+  "description": "Tiêu đề cho phần vùng nguy hiểm."
+},
+"dangerZoneDescription": "Điều này sẽ xóa tất cả tài khoản, cài đặt và thông tin bảo mật.",
+"@dangerZoneDescription": {
+  "description": "Mô tả cho phần vùng nguy hiểm."
+},
+"confirmReset": "Xác nhận đặt lại",
+"@confirmReset": {
+  "description": "Tiêu đề cho hộp thoại bàn phím PIN xác nhận đặt lại."
+},
+"exportAccounts": "Xuất tài khoản",
+"@exportAccounts": {
+  "description": "Tiêu đề cho màn hình Xuất tài khoản."
+},
+"noAccountsForExport": "Không có tài khoản nào khả dụng để xuất.",
+"@noAccountsForExport": {
+  "description": "Thông báo hiển thị khi không có tài khoản nào khả dụng để xuất."
+},
+"unnamedAccount": "Tài khoản chưa đặt tên",
+"@unnamedAccount": {
+  "description": "Nhãn cho tài khoản không có tên."
+},
+"accountCannotBeExported": "Tài khoản này không thể xuất được vì không có khóa riêng tư.",
+"@accountCannotBeExported": {
+  "description": "Thông báo hiển thị khi tài khoản không có khóa riêng tư không thể xuất được."
+},
+"allAccounts": "Tất cả tài khoản",
+"@allAccounts": {
+  "description": "Nhãn cho việc chọn tất cả tài khoản trong danh sách thả xuống."
+},
+"security": "Bảo mật",
+"@security": {
+  "description": "Tiêu đề cho màn hình Bảo mật."
+},
+"enablePasswordLock": "Bật khóa bằng mật khẩu",
+"@enablePasswordLock": {
+  "description": "Nhãn cho công tắc bật/tắt khóa bằng mật khẩu."
+},
+"selectTimeout": "Chọn thời gian chờ",
+"@selectTimeout": {
+  "description": "Tiêu đề cho hộp thoại chọn thời gian chờ."
+},
+"timeout": "Thời gian chờ",
+"@timeout": {
+  "description": "Nhãn cho danh sách thả xuống thời gian chờ."
+},
+"changePin": "Đổi mã PIN",
+"@changePin": {
+  "description": "Tiêu đề cho tùy chọn đổi mã PIN."
+},
+"sessions": "Phiên",
+"@sessions": {
+  "description": "Tiêu đề cho màn hình Phiên."
+},
+"disconnectAllSessions": "Ngắt kết nối tất cả các phiên?",
+"@disconnectAllSessions": {
+  "description": "Tooltip để ngắt kết nối tất cả các phiên."
+},
+"disconnectAllSessionsPrompt": "Ngắt kết nối tất cả các phiên?",
+"@disconnectAllSessionsPrompt": {
+  "description": "Thông báo nhắc xác nhận ngắt kết nối tất cả các phiên."
+},
+"noActiveSessions": "Không có phiên nào đang hoạt động.",
+"@noActiveSessions": {
+  "description": "Thông báo hiển thị khi không có phiên nào đang hoạt động."
+},
+"disconnectAllSessionsForAccountPrompt": "Ngắt kết nối tất cả các phiên cho tài khoản này?",
+"@disconnectAllSessionsForAccountPrompt": {
+  "description": "Thông báo nhắc xác nhận ngắt kết nối tất cả các phiên cho tài khoản cụ thể."
+},
+"disconnectAll": "Ngắt kết nối tất cả",
+"@disconnectAll": {
+  "description": "Nhãn cho nút ngắt kết nối tất cả các phiên của tài khoản."
+},
+"expires": "Hết hạn:",
+"@expires": {
+  "description": "Nhãn cho ngày hết hạn của phiên."
+},
+"failedToDisconnect": "Không thể ngắt kết nối {sessionName}. Vui lòng thử lại.",
+"@failedToDisconnect": {
+  "description": "Thông báo lỗi khi không thể ngắt kết nối một phiên.",
+  "placeholders": {
+    "sessionName": {
+      "type": "String",
+      "description": "Tên của phiên bị lỗi."
+    }
+  }
+},
+"sessionDisconnected": "{sessionName} đã ngắt kết nối thành công.",
+"@sessionDisconnected": {
+  "description": "Thông báo hiển thị khi một phiên được ngắt kết nối thành công.",
+  "placeholders": {
+    "sessionName": {
+      "type": "String",
+      "description": "Tên của phiên đã ngắt kết nối."
+    }
+  }
+},
+"allSessions": "Tất cả các phiên",
+"@allSessions": {
+  "description": "Nhãn cho tất cả các phiên."
+},
+"allSessionsFor": "Tất cả các phiên cho {publicKey}",
+"@allSessionsFor": {
+  "description": "Nhãn cho tất cả các phiên liên kết với tài khoản cụ thể.",
+  "placeholders": {
+    "publicKey": {
+      "type": "String",
+      "description": "Khóa công khai của tài khoản."
+    }
+  }
+},
+"disconnect": "Ngắt kết nối",
+"@disconnect": {
+  "description": "Nhãn cho nút ngắt kết nối."
+},
+"settings": "Cài đặt",
+"@settings": {
+  "description": "Nhãn cho màn hình Cài đặt."
+},
+"createNewAccount": "Tạo tài khoản mới",
+"@createNewAccount": {
+  "description": "Tiêu đề cho tùy chọn tạo tài khoản mới."
+},
+"createNewAccountSubtitle": "Bạn sẽ được nhắc lưu lại cụm từ khóa.",
+"@createNewAccountSubtitle": {
+  "description": "Phụ đề cho tùy chọn tạo tài khoản mới."
+},
+"importViaSeed": "Nhập qua cụm từ khóa",
+"@importViaSeed": {
+  "description": "Tiêu đề cho tùy chọn nhập tài khoản qua cụm từ khóa."
+},
+"importViaSeedSubtitle": "Nhập tài khoản hiện có qua cụm từ khóa.",
+"@importViaSeedSubtitle": {
+  "description": "Phụ đề cho tùy chọn nhập tài khoản qua cụm từ khóa."
+},
+"importViaQrCode": "Nhập qua mã QR",
+"@importViaQrCode": {
+  "description": "Tiêu đề cho tùy chọn nhập tài khoản qua mã QR."
+},
+"importViaQrCodeSubtitle": "Quét mã QR để nhập tài khoản hiện có.",
+"@importViaQrCodeSubtitle": {
+  "description": "Phụ đề cho tùy chọn nhập tài khoản qua mã QR."
+},
+"importViaPrivateKey": "Nhập qua khóa riêng tư",
+"@importViaPrivateKey": {
+  "description": "Tiêu đề cho tùy chọn nhập tài khoản qua khóa riêng tư."
+},
+"importViaPrivateKeySubtitle": "Nhập tài khoản từ khóa riêng tư.",
+"@importViaPrivateKeySubtitle": {
+  "description": "Phụ đề cho tùy chọn nhập tài khoản qua khóa riêng tư."
+},
+"addWatch": "Thêm tài khoản giám sát",
+"@addWatch": {
+  "description": "Tiêu đề cho tùy chọn thêm tài khoản giám sát."
+},
+"addWatchSubtitle": "Thêm tài khoản giám sát để xem qua địa chỉ công khai.",
+"@addWatchSubtitle": {
+  "description": "Phụ đề cho tùy chọn thêm tài khoản giám sát."
+},
+"addAccountTitle": "Thêm tài khoản",
+"@addAccountTitle": {
+  "description": "Tiêu đề cho màn hình Thêm tài khoản."
+},
+"importPublicAddress": "Nhập địa chỉ công khai",
+"@importPublicAddress": {
+  "description": "Tiêu đề cho màn hình Thêm tài khoản giám sát."
+},
+"publicAddress": "Địa chỉ công khai",
+"@publicAddress": {
+  "description": "Nhãn cho trường nhập địa chỉ công khai."
+},
+"import": "Nhập",
+"@import": {
+  "description": "Văn bản cho nút Nhập."
+},
+"pleaseEnterPublicAddress": "Vui lòng nhập địa chỉ công khai.",
+"@pleaseEnterPublicAddress": {
+  "description": "Thông báo lỗi hiển thị khi địa chỉ công khai bị bỏ trống."
+},
+"invalidAlgorandAddress": "Địa chỉ Algorand không hợp lệ.",
+"@invalidAlgorandAddress": {
+  "description": "Thông báo lỗi hiển thị khi địa chỉ Algorand không hợp lệ."
+},
+"copySeed": "Sao chép cụm từ khóa",
+"@copySeed": {
+  "description": "Tiêu đề cho màn hình Sao chép cụm từ khóa."
+},
+"generateSeedPhrase": "Tạo cụm từ khóa",
+"@generateSeedPhrase": {
+  "description": "Nhãn cho tùy chọn tạo cụm từ khóa."
+},
+"seedPhraseDescription": "Đây là cụm từ khóa gồm 25 từ của bạn. Hãy chắc chắn lưu lại nó ở nơi an toàn.",
+"@seedPhraseDescription": {
+  "description": "Mô tả hiển thị cụm từ khóa."
+},
+"copySeedPhrase": "Sao chép cụm từ khóa",
+"@copySeedPhrase": {
+  "description": "Tooltip để sao chép cụm từ khóa."
+},
+"noSeedPhraseAvailable": "Không có cụm từ khóa khả dụng.",
+"@noSeedPhraseAvailable": {
+  "description": "Thông báo khi không có cụm từ khóa khả dụng."
+},
+"backupConfirmationRequired": "Bạn phải xác nhận rằng bạn đã sao lưu cụm từ khóa của mình.",
+"@backupConfirmationRequired": {
+  "description": "Thông báo lỗi xác nhận khi chưa sao lưu cụm từ khóa."
+},
+"backupConfirmationPrompt": "Vui lòng xác nhận rằng bạn đã lưu trữ sao lưu cụm từ khóa của mình ở nơi an toàn.",
+"@backupConfirmationPrompt": {
+  "description": "Nhắc nhở người dùng xác nhận rằng họ đã sao lưu cụm từ khóa."
+},
+"next": "Tiếp theo",
+"@next": {
+  "description": "Nhãn cho nút Tiếp theo."
+},
+"importPrivateKey": "Nhập khóa riêng tư",
+"@importPrivateKey": {
+  "description": "Tiêu đề cho màn hình Nhập khóa riêng tư."
+},
+"privateKey": "Khóa riêng tư",
+"@privateKey": {
+  "description": "Nhãn cho trường nhập khóa riêng tư."
+},
+"importSeed": "Nhập cụm từ khóa",
+"@importSeed": {
+  "description": "Tiêu đề cho màn hình Nhập cụm từ khóa."
+},
+"enterSeedPhrasePrompt": "Nhập cụm từ khóa của bạn để nhập tài khoản.",
+"@enterSeedPhrasePrompt": {
+  "description": "Nhắc người dùng nhập cụm từ khóa để nhập tài khoản."
+},
+"enterWord": "Nhập từ {index}",
+"@enterWord": {
+  "description": "Thông báo lỗi khi trường từ trong cụm từ khóa bị bỏ trống.",
+  "placeholders": {
+    "index": {
+      "type": "int",
+      "description": "Vị trí của từ trong cụm từ khóa."
+    }
+  }
+},
+"nameAccount": "Đặt tên tài khoản",
+"@nameAccount": {
+  "description": "Tiêu đề cho màn hình đặt tên tài khoản."
+},
+"delete": "Xóa",
+"@delete": {
+  "description": "Nhãn cho nút Xóa."
+},
+"confirmDeleteAccount": "Bạn có chắc chắn muốn xóa tài khoản này không?",
+"@confirmDeleteAccount": {
+  "description": "Thông báo xác nhận khi xóa tài khoản."
+},
+"editAccountNamePrompt": "Chỉnh sửa tên tài khoản của bạn",
+"@editAccountNamePrompt": {
+  "description": "Nhắc nhở chỉnh sửa tên tài khoản."
+},
+"nameAccountPrompt": "Đặt tên cho tài khoản của bạn",
+"@nameAccountPrompt": {
+  "description": "Nhắc nhở đặt tên cho tài khoản."
+},
+"editAccountDescription": "Bạn có thể thay đổi tên tài khoản của mình bên dưới.",
+"@editAccountDescription": {
+  "description": "Mô tả cho việc chỉnh sửa tên tài khoản."
+},
+"nameAccountDescription": "Đặt biệt danh cho tài khoản của bạn. Đừng lo, bạn có thể thay đổi sau này.",
+"@nameAccountDescription": {
+  "description": "Mô tả cho việc đặt tên tài khoản."
+},
+"accountName": "Tên tài khoản",
+"@accountName": {
+  "description": "Nhãn cho trường nhập tên tài khoản."
+},
+"pleaseEnterText": "Vui lòng nhập một số văn bản",
+"@pleaseEnterText": {
+  "description": "Thông báo lỗi khi trường nhập bị bỏ trống."
+},
+"save": "Lưu",
+"@save": {
+  "description": "Nhãn cho nút Lưu."
+},
+"create": "Tạo",
+"@create": {
+  "description": "Nhãn cho nút Tạo."
+},
+"updatingAccount": "Đang cập nhật tài khoản",
+"@updatingAccount": {
+  "description": "Thông báo hiển thị khi tài khoản đang được cập nhật."
+},
+"creatingAccount": "Đang tạo tài khoản",
+"@creatingAccount": {
+  "description": "Thông báo hiển thị khi tài khoản đang được tạo."
+},
+"welcomeTitle": "Chào mừng",
+"@welcomeTitle": {
+  "description": "Tiêu đề cho màn hình Chào mừng."
+},
+"welcomeMessage": "Chào mừng bạn. Đầu tiên, hãy tạo một mã PIN để bảo vệ thiết bị này.",
+"@welcomeMessage": {
+  "description": "Thông báo chào mừng người dùng và nhắc họ tạo mã PIN."
+},
+"algorandStandardAsset": "Tài sản tiêu chuẩn Algorand",
+"@algorandStandardAsset": {
+  "description": "Nhãn cho tài sản ASA."
+},
+"insufficientBalance": "Số dư không đủ.",
+"@insufficientBalance": {
+  "description": "Thông báo lỗi khi người dùng không có đủ số dư."
+},
+"assetOptInSuccess": "Đăng ký tài sản thành công",
+"@assetOptInSuccess": {
+  "description": "Thông báo hiển thị khi đăng ký tài sản thành công."
+},
+"applicationId": "ID ứng dụng",
+"@applicationId": {
+  "description": "Nhãn cho trường ID ứng dụng."
+},
+"type": "Loại",
+"@type": {
+  "description": "Nhãn cho trường loại."
+},
+"decimals": "Số thập phân",
+"@decimals": {
+  "description": "Nhãn cho trường số thập phân."
+},
+"totalSupply": "Tổng cung",
+"@totalSupply": {
+  "description": "Nhãn cho trường tổng cung."
+},
+"sendAsset": "Gửi tài sản",
+"@sendAsset": {
+  "description": "Nhãn cho nút gửi tài sản."
+},
+"addAsset": "Thêm tài sản",
+"@addAsset": {
+  "description": "Nhãn cho nút thêm tài sản."
+},
+"optingInMessage": "Đang đăng ký...",
+"@optingInMessage": {
+  "description": "Thông báo hiển thị trong quá trình đăng ký tài sản."
+},
+"activeAssetNullError": "Tài sản đang hoạt động là null",
+"@activeAssetNullError": {
+  "description": "Thông báo lỗi khi không có tài sản nào đang hoạt động."
+},
+"fundAccountError": "Vui lòng nạp tiền vào tài khoản của bạn để tiếp tục.",
+"@fundAccountError": {
+  "description": "Thông báo lỗi khi số dư tài khoản không đủ."
+},
+"privateKeyNotFoundError": "Không tìm thấy khóa riêng tư",
+"@privateKeyNotFoundError": {
+  "description": "Thông báo lỗi khi không tìm thấy khóa riêng tư."
+},
+"accountIdOrAddressNotAvailable": "ID tài khoản hoặc Địa chỉ công khai không khả dụng",
+"@accountIdOrAddressNotAvailable": {
+  "description": "Thông báo lỗi khi ID tài khoản hoặc địa chỉ công khai bị thiếu."
+},
+"failedToOptInError": "Không thể đăng ký tài sản",
+"@failedToOptInError": {
+  "description": "Thông báo lỗi khi đăng ký tài sản thất bại."
+},
+"algorandServiceError": "Đã xảy ra lỗi với dịch vụ Algorand",
+"@algorandServiceError": {
+  "description": "Thông báo lỗi chung cho các lỗi liên quan đến dịch vụ Algorand."
+},
+"viewAssetTitle": "Xem tài sản",
+"@viewAssetTitle": {
+  "description": "Tiêu đề cho màn hình Xem tài sản."
+},
+"addAssetTitle": "Thêm tài sản",
+"@addAssetTitle": {
+  "description": "Tiêu đề cho màn hình Thêm tài sản."
+},
+"noAssetAvailableMessage": "Không có tài sản nào để hiển thị.",
+"@noAssetAvailableMessage": {
+  "description": "Thông báo hiển thị khi không có tài sản nào khả dụng để xem."
+},
+"optOutTooltip": "Hủy đăng ký",
+"@optOutTooltip": {
+  "description": "Tooltip cho nút hủy đăng ký tài sản."
+},
+"optOutAssetTitle": "Hủy đăng ký tài sản?",
+"@optOutAssetTitle": {
+  "description": "Tiêu đề cho hộp thoại xác nhận hủy đăng ký tài sản."
+},
+"optOutAssetContent": "Bạn có chắc chắn muốn hủy đăng ký tài sản ARC-0200 này không?",
+"@optOutAssetContent": {
+  "description": "Nội dung cho hộp thoại xác nhận hủy đăng ký tài sản."
+},
+"optOutButton": "Hủy đăng ký",
+"@optOutButton": {
+  "description": "Nhãn cho nút Hủy đăng ký trong hộp thoại xác nhận."
+},
+"cancelButton": "Hủy",
+"@cancelButton": {
+  "description": "Nhãn cho nút Hủy trong các hộp thoại."
+},
+"nftViewerTitle": "Trình xem NFT",
+"@nftViewerTitle": {
+  "description": "Tiêu đề cho màn hình Trình xem NFT."
+},
+"sentTransactionTitle": "Giao dịch đã gửi",
+"@sentTransactionTitle": {
+  "description": "Tiêu đề cho các giao dịch mà tài sản được gửi đi."
+},
+"transactionType": "Loại giao dịch",
+"@transactionType": {
+  "description": "Nhãn cho trường loại giao dịch."
+},
+"fromField": "Từ",
+"@fromField": {
+  "description": "Nhãn cho trường người gửi."
+},
+"toField": "Đến",
+"@toField": {
+  "description": "Nhãn cho trường người nhận."
+},
+"fee": "Phí",
+"@fee": {
+  "description": "Nhãn cho trường phí giao dịch."
+},
+"date": "Ngày",
+"@date": {
+  "description": "Nhãn cho trường ngày giao dịch."
+},
+"transactionId": "ID giao dịch",
+"@transactionId": {
+  "description": "Nhãn cho trường ID giao dịch."
+},
+"note": "Ghi chú",
+"@note": {
+  "description": "Nhãn cho trường ghi chú giao dịch."
+},
+"receivedTransactionTitle": "Giao dịch đã nhận",
+"@receivedTransactionTitle": {
+  "description": "Tiêu đề cho các giao dịch mà tài sản được nhận."
+},
+"selfTransferTitle": "Chuyển khoản cho chính mình",
+"@selfTransferTitle": {
+  "description": "Tiêu đề cho các giao dịch mà tài sản được gửi đến chính mình."
+},
+"viewTransactionTitle": "Xem giao dịch",
+"@viewTransactionTitle": {
+  "description": "Tiêu đề cho màn hình Xem giao dịch."
+},
+"noTransactionAvailable": "Không có giao dịch nào để hiển thị.",
+"@noTransactionAvailable": {
+  "description": "Thông báo hiển thị khi không có giao dịch nào khả dụng."
+},
+"invalidAddressSupplied": "Giá trị được cung cấp \"{value}\" không phải là địa chỉ hợp lệ.",
+"@invalidAddressSupplied": {
+  "description": "Thông báo lỗi cho địa chỉ Algorand không hợp lệ.",
+  "placeholders": {
+    "value": {
+      "type": "String",
+      "example": "INVALID_ADDRESS"
+    }
+  }
+},
+"invalidAddressByteLength": "Chuỗi byte phải dài {expected} byte để trở thành địa chỉ hợp lệ, tìm thấy độ dài \"{found}\".",
+"@invalidAddressByteLength": {
+  "description": "Thông báo lỗi cho độ dài byte không đúng của địa chỉ.",
+  "placeholders": {
+    "expected": {
+      "type": "int",
+      "example": "32"
+    },
+    "found": {
+      "type": "int",
+      "example": "24"
+    }
+  }
+},
+"addressType": "địa chỉ",
+"@addressType": {
+  "description": "Chuỗi đại diện cho loại địa chỉ ABI."
+},
+"noActiveAccountFound": "Không tìm thấy tài khoản đang hoạt động.",
+"@noActiveAccountFound": {
+  "description": "Thông báo lỗi hiển thị khi không tìm thấy tài khoản đang hoạt động trong bộ nhớ."
+},
+"failedToInitializeAccount": "Không thể khởi tạo tài khoản: {error}",
+"@failedToInitializeAccount": {
+  "description": "Thông báo lỗi khi khởi tạo tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"publicKeyNotFoundInStorage": "Không tìm thấy khóa công khai trong bộ nhớ.",
+"@publicKeyNotFoundInStorage": {
+  "description": "Thông báo lỗi khi không tìm thấy khóa công khai trong bộ nhớ."
+},
+"accountNotFundedPleaseFundToSeeDetails": "Tài khoản này chưa được cấp tiền. Vui lòng cấp tiền để xem chi tiết.",
+"@accountNotFundedPleaseFundToSeeDetails": {
+  "description": "Thông báo lỗi hiển thị khi tài khoản chưa được cấp tiền."
+},
+"accountNameIsTooLong": "Tên tài khoản quá dài.",
+"@accountNameIsTooLong": {
+  "description": "Thông báo lỗi khi tên tài khoản vượt quá độ dài tối đa."
+},
+"failedToCreateAccountName": "Không thể tạo tên tài khoản: {error}",
+"@failedToCreateAccountName": {
+  "description": "Thông báo lỗi khi tạo tên tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToCreateAccount": "Không thể tạo tài khoản: {error}",
+"@failedToCreateAccount": {
+  "description": "Thông báo lỗi khi tạo tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"noActiveAccountToUpdate": "Không có tài khoản đang hoạt động để cập nhật.",
+"@noActiveAccountToUpdate": {
+  "description": "Thông báo lỗi khi không có tài khoản đang hoạt động để cập nhật."
+},
+"accountNotFound": "Không tìm thấy tài khoản.",
+"@accountNotFound": {
+  "description": "Thông báo lỗi khi tài khoản được chỉ định không được tìm thấy."
+},
+"failedToDeleteAccount": "Không thể xóa tài khoản: {error}",
+"@failedToDeleteAccount": {
+  "description": "Thông báo lỗi khi xóa tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToRestoreAccount": "Không thể khôi phục tài khoản: {error}",
+"@failedToRestoreAccount": {
+  "description": "Thông báo lỗi khi khôi phục tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"noActiveAccount": "Không có tài khoản đang hoạt động.",
+"@noActiveAccount": {
+  "description": "Thông báo lỗi khi không có tài khoản đang hoạt động."
+},
+"seedPhraseNotFoundInStorage": "Không tìm thấy cụm từ khóa trong bộ nhớ.",
+"@seedPhraseNotFoundInStorage": {
+  "description": "Thông báo lỗi khi không tìm thấy cụm từ khóa trong bộ nhớ."
+},
+"publicAddressNotAvailable": "Địa chỉ công khai không khả dụng.",
+"@publicAddressNotAvailable": {
+  "description": "Thông báo lỗi khi địa chỉ công khai không khả dụng."
+},
+"accountMissingInTemporaryData": "Tài khoản bị thiếu trong dữ liệu tạm thời.",
+"@accountMissingInTemporaryData": {
+  "description": "Thông báo lỗi khi tài khoản bị thiếu trong dữ liệu tạm thời."
+},
+"incompleteTemporaryAccountData": "Dữ liệu tài khoản tạm thời không đầy đủ cho tài khoản thông thường.",
+"@incompleteTemporaryAccountData": {
+  "description": "Thông báo lỗi khi dữ liệu tài khoản tạm thời không đầy đủ."
+},
+"publicKeyIsMissing": "Khóa công khai bị thiếu.",
+"@publicKeyIsMissing": {
+  "description": "Thông báo lỗi khi khóa công khai bị thiếu."
+},
+"unsupportedAccountType": "Loại tài khoản không được hỗ trợ.",
+"@unsupportedAccountType": {
+  "description": "Thông báo lỗi khi gặp loại tài khoản không được hỗ trợ."
+},
+"failedToFinalizeAccountCreation": "Không thể hoàn tất tạo tài khoản: {error}",
+"@failedToFinalizeAccountCreation": {
+  "description": "Thông báo lỗi khi hoàn tất tạo tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToCreateUnsignedTransactions": "Không thể tạo giao dịch chuyển khoản chưa ký: {error}",
+"@failedToCreateUnsignedTransactions": {
+  "description": "Thông báo lỗi khi tạo giao dịch chưa ký thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"transactionIdInvalid": "Giao dịch thất bại: ID giao dịch không hợp lệ hoặc được đánh dấu là 'lỗi'.",
+"@transactionIdInvalid": {
+  "description": "Thông báo lỗi khi ID giao dịch không hợp lệ hoặc bị đánh dấu là 'lỗi'."
+},
+"failedToSendPayment": "Không thể gửi thanh toán: {error}",
+"@failedToSendPayment": {
+  "description": "Thông báo lỗi khi việc gửi thanh toán thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"getAccountAssetsFailed": "Không thể lấy danh sách tài sản: {error}",
+"@getAccountAssetsFailed": {
+  "description": "Thông báo lỗi khi lấy danh sách tài sản của tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"assetDetailsFetchFailed": "Không thể lấy thông tin chi tiết tài sản: {error}",
+"@assetDetailsFetchFailed": {
+  "description": "Thông báo lỗi khi lấy thông tin chi tiết tài sản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"assetIdInvalidFormat": "Định dạng ID tài sản không hợp lệ. ID tài sản phải là một số nguyên hợp lệ.",
+"@assetIdInvalidFormat": {
+  "description": "Thông báo lỗi khi định dạng ID tài sản không hợp lệ."
+},
+"assetOptInFailed": "Không thể đăng ký tài sản: {error}",
+"@assetOptInFailed": {
+  "description": "Thông báo lỗi khi đăng ký tài sản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"arc200AssetFetchFailed": "Không thể lấy thông tin chi tiết tài sản ARC-0200.",
+"@arc200AssetFetchFailed": {
+  "description": "Thông báo lỗi khi lấy thông tin chi tiết tài sản ARC-0200 thất bại."
+},
+"failedToTransferAsset": "Không thể chuyển tài sản: {error}",
+"@failedToTransferAsset": {
+  "description": "Thông báo lỗi khi việc chuyển tài sản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToToggleFreeze": "Không thể {action} tài sản: {error}",
+"@failedToToggleFreeze": {
+  "description": "Thông báo lỗi khi đóng băng hoặc mở khóa tài sản thất bại.",
+  "placeholders": {
+    "action": {
+      "type": "String",
+      "description": "Hành động đóng băng hoặc mở khóa."
+    },
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToRevokeAsset": "Không thể thu hồi tài sản: {error}",
+"@failedToRevokeAsset": {
+  "description": "Thông báo lỗi khi việc thu hồi tài sản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToFetchTransactions": "Không thể lấy danh sách giao dịch: {error}",
+"@failedToFetchTransactions": {
+  "description": "Thông báo lỗi khi việc lấy danh sách giao dịch thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"contractOptInFailed": "Không thể đăng ký hợp đồng: {error}",
+"@contractOptInFailed": {
+  "description": "Thông báo lỗi khi đăng ký hợp đồng thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"contractCallFailed": "Không thể gọi hợp đồng: {error}",
+"@contractCallFailed": {
+  "description": "Thông báo lỗi khi gọi hợp đồng thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"transactionError": "Lỗi giao dịch: {error}",
+"@transactionError": {
+  "description": "Thông báo lỗi cho lỗi giao dịch.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"searchQueryTooShort": "Truy vấn tìm kiếm quá ngắn.",
+"@searchQueryTooShort": {
+  "description": "Thông báo lỗi khi truy vấn tìm kiếm quá ngắn."
+},
+"failedToFetchAssets": "Không thể lấy danh sách tài sản: {error}",
+"@failedToFetchAssets": {
+  "description": "Thông báo lỗi khi lấy danh sách tài sản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToGetAccountBalance": "Không thể lấy số dư tài khoản: {error}",
+"@failedToGetAccountBalance": {
+  "description": "Thông báo lỗi khi lấy số dư tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"assetEditConfirmationFailed": "Xác nhận chỉnh sửa tài sản thất bại.",
+"@assetEditConfirmationFailed": {
+  "description": "Thông báo lỗi khi xác nhận chỉnh sửa tài sản thất bại."
+},
+"failedToEditAsset": "Không thể chỉnh sửa tài sản: {error}",
+"@failedToEditAsset": {
+  "description": "Thông báo lỗi khi chỉnh sửa tài sản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToDestroyAsset": "Không thể hủy tài sản: {error}",
+"@failedToDestroyAsset": {
+  "description": "Thông báo lỗi khi hủy tài sản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"assetDestructionConfirmationFailed": "Xác nhận hủy tài sản thất bại.",
+"@assetDestructionConfirmationFailed": {
+  "description": "Thông báo lỗi khi xác nhận hủy tài sản thất bại."
+},
+"failedToOptInAsset": "Không thể đăng ký tài sản.",
+"@failedToOptInAsset": {
+  "description": "Thông báo lỗi khi đăng ký tài sản thất bại."
+},
+"privateKeyNotFound": "Không tìm thấy khóa riêng tư cho tài khoản đang hoạt động.",
+"@privateKeyNotFound": {
+  "description": "Thông báo lỗi khi không tìm thấy khóa riêng tư cho tài khoản đang hoạt động."
+},
+"assetOptInConfirmationFailed": "Xác nhận đăng ký tài sản thất bại.",
+"@assetOptInConfirmationFailed": {
+  "description": "Thông báo lỗi khi xác nhận đăng ký tài sản thất bại."
+},
+"failedToOptInToASA": "Không thể đăng ký tài sản ASA: {error}",
+"@failedToOptInToASA": {
+  "description": "Thông báo lỗi khi đăng ký tài sản ASA thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"assetNameOrUnitMissing": "Thiếu tên tài sản hoặc đơn vị tài sản.",
+"@assetNameOrUnitMissing": {
+  "description": "Thông báo lỗi khi thiếu tên hoặc đơn vị tài sản."
+},
+"failedToFollowArc200Asset": "Không thể theo dõi tài sản ARC-0200.",
+"@failedToFollowArc200Asset": {
+  "description": "Thông báo lỗi khi theo dõi tài sản ARC-0200 thất bại."
+},
+"assetTransferConfirmationFailed": "Xác nhận chuyển tài sản thất bại.",
+"@assetTransferConfirmationFailed": {
+  "description": "Thông báo lỗi khi xác nhận chuyển tài sản thất bại."
+},
+"assetIsFrozen": "Tài sản đã bị đóng băng.",
+"@assetIsFrozen": {
+  "description": "Thông báo lỗi khi tài sản đã bị đóng băng."
+},
+"privateKeyNotFoundForAccount": "Không tìm thấy khóa riêng tư cho tài khoản ID: {accountId}",
+"@privateKeyNotFoundForAccount": {
+  "description": "Thông báo lỗi khi không tìm thấy khóa riêng tư cho một tài khoản cụ thể.",
+  "placeholders": {
+    "accountId": {
+      "type": "String",
+      "description": "ID của tài khoản không tìm thấy khóa riêng tư."
+    }
+  }
+},
+"invalidEncodedKeyLength": "Chuỗi khóa mã hóa phải dài 44 ký tự.",
+"@invalidEncodedKeyLength": {
+  "description": "Thông báo lỗi khi chuỗi khóa mã hóa không dài 44 ký tự."
+},
+"contactNotFound": "Không tìm thấy liên hệ.",
+"@contactNotFound": {
+  "description": "Thông báo lỗi khi không tìm thấy liên hệ được yêu cầu."
+},
+"almostThere": "Sắp xong rồi",
+"@almostThere": {
+  "description": "Thông báo động viên khi tải gần xong."
+},
+"hangInThere": "Hãy kiên nhẫn",
+"@hangInThere": {
+  "description": "Thông báo động viên trong quá trình tải."
+},
+"justABitMore": "Chỉ còn một chút nữa",
+"@justABitMore": {
+  "description": "Thông báo gần hoàn thành tải."
+},
+"youreDoingGreat": "Bạn đang làm rất tốt",
+"@youreDoingGreat": {
+  "description": "Thông báo khích lệ trong quá trình tải."
+},
+"nearlyDone": "Sắp xong",
+"@nearlyDone": {
+  "description": "Thông báo tải gần hoàn thành."
+},
+"thanksForWaiting": "Cảm ơn bạn đã chờ đợi",
+"@thanksForWaiting": {
+  "description": "Thông báo cảm ơn người dùng vì sự kiên nhẫn trong quá trình tải."
+},
+"checksumMismatch": "Mã kiểm tra không khớp. Các mã QR được quét không thuộc cùng một tập.",
+"@checksumMismatch": {
+  "description": "Thông báo lỗi khi mã kiểm tra của các mã QR được quét không khớp, cho biết chúng không thuộc cùng một tập."
+},
+"networkChangedTo": "Mạng đã được chuyển sang {networkName}",
+"@networkChangedTo": {
+  "description": "Thông báo hiển thị khi mạng được chuyển thành công.",
+  "placeholders": {
+    "networkName": {
+      "type": "String",
+      "description": "Tên của mạng mới."
+    }
+  }
+},
+"failedToLoadNFTs": "Không thể tải NFTs với mã trạng thái: {statusCode}",
+"@failedToLoadNFTs": {
+  "description": "Thông báo lỗi khi ứng dụng không thể tải NFTs, hiển thị mã trạng thái HTTP.",
+  "placeholders": {
+    "statusCode": {
+      "type": "int",
+      "description": "Mã trạng thái HTTP trả về từ máy chủ."
+    }
+  }
+},
+"settingUp": "Đang thiết lập",
+"@settingUp": {
+  "description": "Văn bản phủ hiển thị trong quá trình thiết lập mã PIN."
+},
+"authenticating": "Đang xác thực",
+"@authenticating": {
+  "description": "Văn bản phủ hiển thị trong quá trình xác thực."
+},
+"verifying": "Đang xác minh",
+"@verifying": {
+  "description": "Văn bản phủ hiển thị trong quá trình xác minh giao dịch."
+},
+"settingNewPin": "Đang thiết lập mã PIN mới",
+"@settingNewPin": {
+  "description": "Văn bản phủ hiển thị trong quá trình thay đổi mã PIN."
+},
+"accountNameNotFound": "Không tìm thấy tên tài khoản cho activeAccountId: {activeAccountId}",
+"@accountNameNotFound": {
+  "description": "Thông báo lỗi khi không tìm thấy tên tài khoản cho một ID cụ thể.",
+  "placeholders": {
+    "activeAccountId": {
+      "type": "String",
+      "description": "ID của tài khoản đang hoạt động."
+    }
+  }
+},
+"incorrectPin": "Mã PIN không chính xác",
+"@incorrectPin": {
+  "description": "Thông báo lỗi khi người dùng nhập sai mã PIN."
+},
+"invalidPinTryAgain": "Mã PIN không hợp lệ. Vui lòng thử lại.",
+"@invalidPinTryAgain": {
+  "description": "Thông báo lỗi khi mã PIN nhập vào không hợp lệ."
+},
+"failedToSetPin": "Không thể thiết lập mã PIN: {error}",
+"@failedToSetPin": {
+  "description": "Thông báo lỗi khi thiết lập mã PIN thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"errorReadingPinHash": "Lỗi khi đọc mã băm của mã PIN.",
+"@errorReadingPinHash": {
+  "description": "Thông báo lỗi khi đọc mã băm của mã PIN từ bộ nhớ bảo mật thất bại."
+},
+"failedToReadAccountsData": "Không thể đọc dữ liệu tài khoản: {error}",
+"@failedToReadAccountsData": {
+  "description": "Thông báo lỗi khi đọc dữ liệu tài khoản thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"sharedPreferencesNotInitialized": "SharedPreferences chưa được khởi tạo.",
+"@sharedPreferencesNotInitialized": {
+  "description": "Thông báo lỗi khi truy cập SharedPreferences trước khi khởi tạo."
+},
+"failedToSaveSessions": "Không thể lưu các phiên.",
+"@failedToSaveSessions": {
+  "description": "Thông báo lỗi khi lưu các phiên thất bại."
+},
+"failedToRetrieveSessions": "Không thể lấy các phiên.",
+"@failedToRetrieveSessions": {
+  "description": "Thông báo lỗi khi lấy các phiên thất bại."
+},
+"failedToRemoveSessions": "Không thể xóa các phiên.",
+"@failedToRemoveSessions": {
+  "description": "Thông báo lỗi khi xóa tất cả các phiên thất bại."
+},
+"failedToCreateWatchAccount": "Không thể tạo tài khoản giám sát: {error}",
+"@failedToCreateWatchAccount": {
+  "description": "Thông báo lỗi khi tạo tài khoản giám sát thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"accountAlreadyAdded": "Tài khoản đã được thêm.",
+"@accountAlreadyAdded": {
+  "description": "Thông báo lỗi khi cố gắng thêm một tài khoản đã tồn tại."
+},
+"seedPhraseNotAvailable": "Cụm từ khóa không khả dụng.",
+"@seedPhraseNotAvailable": {
+  "description": "Thông báo lỗi khi cố gắng truy cập cụm từ khóa không khả dụng."
+},
+"somethingWentWrong": "Đã xảy ra lỗi.",
+"@somethingWentWrong": {
+  "description": "Thông báo lỗi chung."
+},
+"accountNameNotFoundForId": "Không tìm thấy tên tài khoản cho accountId: {accountId}",
+"@accountNameNotFoundForId": {
+  "description": "Thông báo lỗi khi không tìm thấy tên tài khoản cho một ID tài khoản cụ thể.",
+  "placeholders": {
+    "accountId": {
+      "type": "String",
+      "description": "ID của tài khoản."
+    }
+  }
+},
+"failedToSelectAccount": "Không thể chọn tài khoản: {error}",
+"@failedToSelectAccount": {
+  "description": "Thông báo lỗi khi ứng dụng không thể chọn tài khoản.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToCompleteAccountSetup": "Không thể hoàn tất thiết lập tài khoản: {error}",
+"@failedToCompleteAccountSetup": {
+  "description": "Thông báo lỗi khi thiết lập tài khoản không hoàn thành.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"invalidIconType": "Biểu tượng phải là IconData hoặc đường dẫn String tới SVG.",
+"@invalidIconType": {
+  "description": "Thông báo lỗi khi loại biểu tượng không hợp lệ được cung cấp."
+},
+"resetAppFailed": "Đặt lại ứng dụng thất bại: {error}",
+"@resetAppFailed": {
+  "description": "Thông báo lỗi khi quá trình đặt lại ứng dụng thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToDisconnectWalletConnectSessions": "Không thể ngắt kết nối các phiên WalletConnect: {error}",
+"@failedToDisconnectWalletConnectSessions": {
+  "description": "Thông báo lỗi khi ngắt kết nối các phiên WalletConnect thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToClearStorage": "Không thể xóa bộ nhớ: {error}",
+"@failedToClearStorage": {
+  "description": "Thông báo lỗi khi xóa bộ nhớ bảo mật thất bại.",
+  "placeholders": {
+    "error": {
+      "type": "String",
+      "description": "Thông báo lỗi từ ngoại lệ."
+    }
+  }
+},
+"failedToLoadArc200Balances": "Không thể tải số dư ARC-0200.",
+"@failedToLoadArc200Balances": {
+  "description": "Thông báo lỗi khi tải số dư ARC-0200 thất bại."
+},
+"noArc200TokenDetailsForNetwork": "Không có thông tin chi tiết token ARC-0200 cho mạng đã chọn.",
+"@noArc200TokenDetailsForNetwork": {
+  "description": "Thông báo lỗi khi không có thông tin chi tiết token ARC-0200 cho mạng đã chọn."
+},
+"failedToLoadArc200TokenDetails": "Không thể tải thông tin chi tiết token ARC-0200.",
+"@failedToLoadArc200TokenDetails": {
+  "description": "Thông báo lỗi khi tải thông tin chi tiết token ARC-0200 thất bại."
+},
+"tokenDetailsNotFound": "Không tìm thấy thông tin chi tiết token cho contractId {contractId}.",
+"@tokenDetailsNotFound": {
+  "description": "Thông báo lỗi khi không tìm thấy thông tin chi tiết token cho ID hợp đồng cụ thể.",
+  "placeholders": {
+    "contractId": {
+      "type": "String",
+      "description": "ID hợp đồng không tìm thấy thông tin chi tiết token."
+    }
+  }
+},
+"failedToSearchArc200Assets": "Không thể tìm kiếm tài sản ARC-0200.",
+"@failedToSearchArc200Assets": {
+  "description": "Thông báo lỗi khi tìm kiếm tài sản ARC-0200 thất bại."
+},
+"networkNotConfiguredForArc200": "Mạng chưa được cấu hình cho các thao tác ARC-0200.",
+"@networkNotConfiguredForArc200": {
+  "description": "Thông báo lỗi khi mạng được chọn chưa được cấu hình cho các thao tác ARC-0200."
+},
+"failedToFetchArc200Balance": "Không thể lấy số dư ARC-0200 cho hợp đồng {contractId}.",
+"@failedToFetchArc200Balance": {
+  "description": "Thông báo lỗi khi lấy số dư ARC-0200 cho hợp đồng cụ thể thất bại.",
+  "placeholders": {
+    "contractId": {
+      "type": "String",
+      "description": "ID hợp đồng không thể lấy số dư."
+    }
+  }
+},
+"assetNotFoundForContract": "Không tìm thấy tài sản cho hợp đồng {contractId}.",
+"@assetNotFoundForContract": {
+  "description": "Thông báo lỗi khi không tìm thấy tài sản cho một ID hợp đồng cụ thể.",
+  "placeholders": {
+    "contractId": {
+      "type": "String",
+      "description": "ID hợp đồng không tìm thấy tài sản."
+    }
+  }
+},
+"copiedToClipboard": "Đã sao chép vào clipboard",
+"@copiedToClipboard": {
+  "description": "Thông báo hiển thị khi một mục được sao chép thành công vào clipboard."
+},
+"unsupportedEncodingOrInvalidFormat": "Mã hóa không được hỗ trợ hoặc định dạng chuỗi không hợp lệ.",
+"@unsupportedEncodingOrInvalidFormat": {
+  "description": "Thông báo lỗi khi chuỗi đầu vào có mã hóa không được hỗ trợ hoặc định dạng không hợp lệ."
+},
+"privateKeyMissingInUri": "Khóa riêng tư bị thiếu trong URI.",
+"@privateKeyMissingInUri": {
+  "description": "Thông báo lỗi khi khóa riêng tư bị thiếu trong URI đầu vào."
+},
+"unsupportedEncodingInUri": "Mã hóa không được hỗ trợ trong URI.",
+"@unsupportedEncodingInUri": {
+  "description": "Thông báo lỗi khi một mã hóa không được hỗ trợ được chỉ định trong URI."
+},
+"invalidHexStringLength": "Độ dài chuỗi hex không hợp lệ.",
+"@invalidHexStringLength": {
+  "description": "Thông báo lỗi khi chuỗi hex có độ dài không hợp lệ."
+},
+"invalidBase64String": "Chuỗi Base64 không hợp lệ.",
+"@invalidBase64String": {
+  "description": "Thông báo lỗi khi chuỗi Base64 không hợp lệ."
+},
+"invalidBase32String": "Chuỗi Base32 không hợp lệ.",
+"@invalidBase32String": {
+  "description": "Thông báo lỗi khi chuỗi Base32 không hợp lệ."
+},
+"hereIsMyQRCode": "Đây là mã QR của tôi!",
+"@hereIsMyQRCode": {
+  "description": "Văn bản kèm theo mã QR được chia sẻ."
+},
+"failedToApproveSession": "Không thể chấp thuận phiên.",
+"@failedToApproveSession": {
+  "description": "Thông báo lỗi khi chấp thuận một phiên WalletConnect thất bại."
+},
+"failedToDisconnectSession": "Không thể ngắt kết nối phiên.",
+"@failedToDisconnectSession": {
+  "description": "Thông báo lỗi khi ngắt kết nối một phiên WalletConnect thất bại."
+},
+"language": "Ngôn ngữ",
+"@language": {
+  "description": "Nhãn cho danh sách thả xuống chọn ngôn ngữ."
+}
+}

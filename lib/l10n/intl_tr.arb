@@ -1,0 +1,1871 @@
+{
+    "@@locale": "tr",
+    "noInternetConnection": "İnternet Bağlantısı Yok",
+    "@noInternetConnection": {
+      "description": "Cihazın internet bağlantısı olmadığında afişte gösterilir."
+    },
+    "initializationError": "Başlatma hatası, lütfen uygulamayı yeniden başlatın.",
+    "@initializationError": {
+      "description": "Uygulama başlatması başarısız olduğunda gösterilen hata mesajı."
+    },
+    "unknown": "Bilinmeyen",
+    "@unknown": {
+      "description": "Varlık adı bilinmediğinde gösterilir."
+    },
+    "alreadyAdded": "Zaten\neklenmiş",
+    "@alreadyAdded": {
+      "description": "Bir varlık zaten kullanıcının listesine eklendiğinde gösterilir."
+    },
+    "defaultConfirmationTitle": "Emin misiniz?",
+    "@defaultConfirmationTitle": {
+      "description": "Onay diyalogları için varsayılan başlık."
+    },
+    "defaultConfirmationContent": "Bu işlemi yapmak istediğinizden emin misiniz?",
+    "@defaultConfirmationContent": {
+      "description": "Onay diyalogları için varsayılan içerik."
+    },
+    "yes": "Evet",
+    "@yes": {
+      "description": "Onay butonu etiketi."
+    },
+    "no": "Hayır",
+    "@no": {
+      "description": "Onay diyaloglarında iptal butonu etiketi."
+    },
+    "ok": "Tamam",
+    "@ok": {
+      "description": "Diyaloglarda OK buton etiketi."
+    },
+    "confirm": "Onayla",
+    "@confirm": {
+      "description": "Alt sayfalarda onay butonu için varsayılan metin."
+    },
+    "pullToRefresh": "Yenilemek için aşağı çekin",
+    "@pullToRefresh": {
+      "description": "Kullanıcı içeriği yenilemek için aşağı çekebileceğinde gösterilir."
+    },
+    "releaseToRefresh": "Yenilemek için bırakın",
+    "@releaseToRefresh": {
+      "description": "Kullanıcının yenilemeyi tetiklemesi gerektiğinde gösterilir."
+    },
+    "refreshing": "Yenileniyor...",
+    "@refreshing": {
+      "description": "Yenileme işlemi sırasında gösterilir."
+    },
+    "initializing": "Başlatılıyor",
+    "@initializing": {
+      "description": "Animasyonlu noktalarla başlatma sırasında gösterilen metin."
+    },
+    "reset": "Sıfırla",
+    "@reset": {
+      "description": "Sıfırlama onay butonu için metin."
+    },
+    "resetConfirmationMessage": "Bu cihazı sıfırlamak istediğinizden emin misiniz? Bu işlem tüm hesapları, ayarları ve güvenlik bilgilerini kaldıracaktır.",
+    "@resetConfirmationMessage": {
+      "description": "Uygulama sıfırlama sırasında gösterilen onay mesajı."
+    },
+    "pinMismatchError": "PIN eşleşmiyor.",
+    "@pinMismatchError": {
+      "description": "Kurulum sırasında PIN'ler eşleşmediğinde gösterilen hata mesajı."
+    },
+    "incorrectPinError": "Yanlış PIN. Tekrar deneyin.",
+    "@incorrectPinError": {
+      "description": "Yanlış PIN girildiğinde gösterilen hata mesajı."
+    },
+    "timeout1Minute": "1 dakika",
+    "@timeout1Minute": {
+      "description": "1 dakikalık zaman aşımı süresi."
+    },
+    "timeout2Minutes": "2 dakika",
+    "@timeout2Minutes": {
+      "description": "2 dakikalık zaman aşımı süresi."
+    },
+    "timeout5Minutes": "5 dakika",
+    "@timeout5Minutes": {
+      "description": "5 dakikalık zaman aşımı süresi."
+    },
+    "timeout10Minutes": "10 dakika",
+    "@timeout10Minutes": {
+      "description": "10 dakikalık zaman aşımı süresi."
+    },
+    "timeout15Minutes": "15 dakika",
+    "@timeout15Minutes": {
+      "description": "15 dakikalık zaman aşımı süresi."
+    },
+    "transactionGroupSizeExceeded": "İşlem grubu boyutu maksimum \"{maxSize}\" boyutunu aşıyor.",
+    "@transactionGroupSizeExceeded": {
+      "description": "İşlem grubu boyutu izin verilen maksimum değeri aştığında hata mesajı.",
+      "placeholders": {
+        "maxSize": {
+          "type": "int",
+          "description": "Maksimum işlem grubu boyutu."
+        }
+      }
+    },
+    "searchPrompt": "Bir assetID, isim, varlık veya sembol ID (ARC-200) girin.",
+    "@searchPrompt": {
+      "description": "Arama girişinin üstünde gösterilen istem metni."
+    },
+    "searchQueryLabel": "Arama Sorgusu",
+    "@searchQueryLabel": {
+      "description": "Arama giriş alanı etiketi."
+    },
+    "noAssetsFound": "Hiçbir varlık bulunamadı.",
+    "@noAssetsFound": {
+      "description": "Arama sorgusuyla eşleşen varlıklar olmadığında gösterilir."
+    },
+    "genericErrorMessage": "Üzgünüz, bir hata oluştu.",
+    "@genericErrorMessage": {
+      "description": "Beklenmeyen bir hata oluştuğunda gösterilen genel hata mesajı."
+    },
+    "notAvailable": "Yok",
+    "@notAvailable": {
+      "description": "Birim adı mevcut olmadığında varsayılan değer."
+    },
+    "contactsTab": "Kişiler",
+    "@contactsTab": {
+      "description": "Kişi listesi için sekme başlığı."
+    },
+    "myAccountsTab": "Hesaplarım",
+    "@myAccountsTab": {
+      "description": "Kullanıcı hesap listesi için sekme başlığı."
+    },
+    "cancel": "İptal",
+    "@cancel": {
+      "description": "İptal butonları etiketi."
+    },
+
+        "deleteContactTitle": "Kişiyi Sil",
+        "@deleteContactTitle": {
+          "description": "Kişiyi silme onay diyalogu başlığı."
+        },
+        "deleteContactMessage": "{contactName} adlı kişiyi silmek istediğinizden emin misiniz?",
+        "@deleteContactMessage": {
+          "description": "Kişi silme işlemini onaylarken gösterilen mesaj.",
+          "placeholders": {
+            "contactName": {
+              "type": "String",
+              "description": "Silinecek kişinin adı."
+            }
+          }
+        },
+        "selectAccountTitle": "Hesap Seçin",
+        "@selectAccountTitle": {
+          "description": "Hesap seçme ekranı başlığı."
+        },
+        "errorMessage": "Hata: {error}",
+        "@errorMessage": {
+          "description": "Bir hata meydana geldiğinde gösterilen hata mesajı.",
+          "placeholders": {
+            "error": {
+              "type": "String",
+              "description": "Görüntülenecek hata mesajı."
+            }
+          }
+        },
+        "noAccountsFound": "Hiçbir hesap bulunamadı",
+        "@noAccountsFound": {
+          "description": "Kullanılabilir hesap olmadığında gösterilen mesaj."
+        },
+        "noPublicKey": "Genel Anahtar Yok",
+        "@noPublicKey": {
+          "description": "Bir hesabın genel anahtarı olmadığında gösterilen yedek mesaj."
+        },
+        "assetsTab": "Varlıklar",
+        "@assetsTab": {
+          "description": "Pano üzerindeki Varlıklar sekmesi için etiket."
+        },
+        "nftsTab": "NFT'ler",
+        "@nftsTab": {
+          "description": "Pano üzerindeki NFT'ler sekmesi için etiket."
+        },
+        "activityTab": "Etkinlik",
+        "@activityTab": {
+          "description": "Pano üzerindeki Etkinlik sekmesi için etiket."
+        },
+        "selectNetworkHeader": "Ağ Seçin",
+        "@selectNetworkHeader": {
+          "description": "Ağ seçim alt sayfası başlığı."
+        },
+        "networkSwitchSuccess": "{networkName} ağına geçildi",
+        "@networkSwitchSuccess": {
+          "description": "Ağ değiştirme işlemi başarılı olduğunda gösterilen mesaj.",
+          "placeholders": {
+            "networkName": {
+              "type": "String",
+              "description": "Kullanıcının geçtiği ağın adı."
+            }
+          }
+        },
+        "networkSwitchFailure": "{networkName} ağına geçiş başarısız oldu",
+        "@networkSwitchFailure": {
+          "description": "Ağ değiştirme işlemi başarısız olduğunda gösterilen mesaj.",
+          "placeholders": {
+            "networkName": {
+              "type": "String",
+              "description": "Geçiş yapılmaya çalışılan ağın adı."
+            }
+          }
+        },
+        "minimumBalanceInfo": "Minimum bakiye {balance} VOI'dir. Hesap yapılandırmasına göre, bu hesabı açık tutmak için gereken minimum bakiyedir.",
+        "@minimumBalanceInfo": {
+          "description": "Bir hesabın minimum bakiye gereksinimini açıklayan mesaj.",
+          "placeholders": {
+            "balance": {
+              "type": "String",
+              "description": "Minimum bakiye değeri."
+            }
+          }
+        },
+        "infoHeader": "Bilgi",
+        "@infoHeader": {
+          "description": "Bilgi alt sayfası başlığı."
+        },
+        "loadingAccount": "Hesap Yükleniyor",
+        "@loadingAccount": {
+          "description": "Hesap detayları yüklenirken gösterilen metin."
+        },
+        "pleaseWait": "Lütfen bekleyin",
+        "@pleaseWait": {
+          "description": "Hesap detayları yüklenirken gösterilen metin."
+        },
+        "genericError": "Hata",
+        "@genericError": {
+          "description": "Bir hata oluştuğunda gösterilen genel hata mesajı."
+        },
+        "errorLoadingTransactions": "İşlemler yüklenirken hata oluştu",
+        "@errorLoadingTransactions": {
+          "description": "İşlemler yüklenemezse gösterilir."
+        },
+        "selectTransactionPrompt": "Detayları görüntülemek için bir işlem seçin",
+        "@selectTransactionPrompt": {
+          "description": "Geniş ekran modunda bir işlem seçmek için istem."
+        },
+        "noTransactionsFound": "Hiçbir İşlem Bulunamadı",
+        "@noTransactionsFound": {
+          "description": "Hiç işlem olmadığında gösterilir."
+        },
+        "noTransactionsMade": "Hiçbir işlem yapmadınız.",
+        "@noTransactionsMade": {
+          "description": "Kullanıcı herhangi bir işlem yapmadığında gösterilir."
+        },
+        "noMoreTransactions": "Daha fazla işlem yok.",
+        "@noMoreTransactions": {
+          "description": "Yüklenebilecek başka işlem olmadığında gösterilir."
+        },
+        "noAssets": "Hiçbir Varlık Bulunamadı",
+        "@noAssets": {
+          "description": "Hiçbir varlık mevcut olmadığında gösterilir."
+        },
+        "noAssetsForFilter": "Filtre için hiçbir Varlık Bulunamadı",
+        "@noAssetsForFilter": {
+          "description": "Filtre uygulandıktan sonra sonuç yoksa gösterilir."
+        },
+        "tryClearingFilter": "Tüm varlıkları görmek için filtreyi temizlemeyi deneyin.",
+        "@tryClearingFilter": {
+          "description": "Filtreyi temizlemeye yönelik öneri."
+        },
+        "noAssetsAdded": "Hiçbir varlık eklenmedi.",
+        "@noAssetsAdded": {
+          "description": "Henüz hiçbir varlık eklenmediğinde gösterilir."
+        },
+        "clearFilter": "Filtreyi Temizle",
+        "@clearFilter": {
+          "description": "Filtreyi temizleme butonu etiketi."
+        },
+        "retry": "Tekrar Dene",
+        "@retry": {
+          "description": "Varlıkları yeniden yükleme butonu etiketi."
+        },
+        "errorLoadingAssets": "Varlıklar yüklenirken hata oluştu",
+        "@errorLoadingAssets": {
+          "description": "Varlıklar yüklenemezse gösterilir."
+        },
+        "sortAndFilter": "Varlıkları Sırala ve Filtrele",
+        "@sortAndFilter": {
+          "description": "Varlıkları sıralama ve filtreleme diyalog başlığı."
+        },
+        "showFrozenAssets": "Dondurulmuş Varlıkları Göster",
+        "@showFrozenAssets": {
+          "description": "Dondurulmuş varlıkların görünürlüğünü değiştirir."
+        },
+        "copyAddress": "Adresi Kopyala",
+        "@copyAddress": {
+          "description": "Hesabın adresini kopyalama işlemi için gösterilen eylem."
+        },
+        "shareAddress": "Adresi Paylaş",
+        "@shareAddress": {
+          "description": "Hesap adresini paylaşmak için gösterilen eylem."
+        },
+        "editAccount": "Düzenle",
+        "@editAccount": {
+          "description": "Hesap detaylarını düzenlemek için gösterilen eylem."
+        },
+        "refreshAccount": "Yenile",
+        "@refreshAccount": {
+          "description": "Hesap verilerini yenilemek için gösterilen eylem."
+        },
+        "noAccountName": "Hesap Adı Yok",
+        "@noAccountName": {
+          "description": "Hesap adı olmadığında gösterilen mesaj."
+        },
+        "options": "Seçenekler",
+        "@options": {
+          "description": "Hesap seçenekleri alt sayfası başlığı."
+        },
+        "noNftsFound": "Hiçbir NFT Bulunamadı",
+        "@noNftsFound": {
+          "description": "Hiçbir NFT mevcut olmadığında gösterilir."
+        },
+        "noNftsForFilter": "Filtre için hiçbir NFT Bulunamadı",
+        "@noNftsForFilter": {
+          "description": "Filtre uygulandıktan sonra sonuç yoksa gösterilir."
+        },
+        "noNftsAdded": "Hiçbir NFT eklenmedi.",
+        "@noNftsAdded": {
+          "description": "Henüz hiçbir NFT eklenmediğinde gösterilir."
+        },
+        "filter": "Filtre",
+        "@filter": {
+          "description": "Filtre giriş alanı için etiket metni."
+        },
+        "scanQrCode": "QR Kodunu Tara",
+        "@scanQrCode": {
+          "description": "QR diyalogunda gösterilen başlık."
+        },
+        "shareQr": "QR'yi Paylaş",
+        "@shareQr": {
+          "description": "QR kodunu paylaşma işlemi için araç ipucu."
+        },
+        "copyUri": "URI'yi Kopyala",
+        "@copyUri": {
+          "description": "QR verilerini panoya kopyalama aracı için ipucu."
+        },
+        "downloadQrImage": "QR Resmini İndir",
+        "@downloadQrImage": {
+          "description": "QR kodunu resim olarak indirmek için araç ipucu."
+        },
+        "close": "Kapat",
+        "@close": {
+          "description": "Diyaloğu kapatmak için düğme metni."
+        },
+            "transactionIdCopied": "İşlem Kimliği Kopyalandı",
+            "@transactionIdCopied": {
+              "description": "Bir işlem kimliği kopyalandığında gösterilen snackbar mesajı."
+            },
+            "payment": "Ödeme",
+            "@payment": {
+              "description": "Ödeme türündeki işlemler için etiket."
+            },
+            "assetTransfer": "Varlık Transferi",
+            "@assetTransfer": {
+              "description": "Token içeren varlık transferleri için etiket."
+            },
+            "errorTitle": "Hata",
+            "@errorTitle": {
+              "description": "Hata ekranında gösterilen başlık."
+            },
+            "defaultErrorMessage": "Bir hata oluştu. Daha fazla bilgi sağlanmadı.",
+            "@defaultErrorMessage": {
+              "description": "Detay verilmediğinde gösterilen varsayılan hata mesajı."
+            },
+            "back": "Geri",
+            "@back": {
+              "description": "Ana ekrana geri dönmek için kullanılan buton etiketi."
+            },
+            "createPin": "Pin Oluştur",
+            "@createPin": {
+              "description": "Kullanıcının bir PIN oluşturduğu ekranın başlığı."
+            },
+            "confirmPin": "Pin Onayla",
+            "@confirmPin": {
+              "description": "Kullanıcının PIN'ini onayladığı ekranın başlığı."
+            },
+            "unlock": "Kilidi Aç",
+            "@unlock": {
+              "description": "Kullanıcının uygulamanın kilidini açtığı ekranın başlığı."
+            },
+            "verifyPin": "Pin Doğrula",
+            "@verifyPin": {
+              "description": "Kullanıcının PIN'ini doğruladığı ekranın başlığı."
+            },
+            "resettingApp": "Uygulama Sıfırlanıyor",
+            "@resettingApp": {
+              "description": "Uygulama sıfırlama işlemi sırasında gösterilen mesaj."
+            },
+            "invalidQrCodeData": "Geçersiz QR kodu verisi",
+            "@invalidQrCodeData": {
+              "description": "Taranan QR kodunda veri bulunamadığında gösterilen hata mesajı."
+            },
+            "expectedPrivateKeyQr": "Özel anahtar QR kodu bekleniyordu, ancak genel anahtar bulundu.",
+            "@expectedPrivateKeyQr": {
+              "description": "Özel anahtar modunda genel anahtar tarandığında gösterilen hata mesajı."
+            },
+            "expectedWalletConnectUri": "Özel anahtar QR kodu bekleniyordu, ancak WalletConnect URI bulundu.",
+            "@expectedWalletConnectUri": {
+              "description": "Özel anahtar modunda WalletConnect URI tarandığında gösterilen hata mesajı."
+            },
+            "expectedPublicKeyQr": "Genel anahtar QR kodu bekleniyordu, ancak başka bir şey bulundu.",
+            "@expectedPublicKeyQr": {
+              "description": "Genel anahtar beklenirken başka tür QR kod tarandığında gösterilen hata mesajı."
+            },
+            "expectedWalletConnectSessionQr": "WalletConnect oturum QR kodu bekleniyordu, ancak başka bir şey bulundu.",
+            "@expectedWalletConnectSessionQr": {
+              "description": "Oturum modunda WalletConnect dışı bir QR kod tarandığında gösterilen hata mesajı."
+            },
+            "unknownQrCodeType": "Bilinmeyen QR Kodu türü",
+            "@unknownQrCodeType": {
+              "description": "QR kodu türü tanınamadığında gösterilen hata mesajı."
+            },
+            "walletConnectV1NotSupported": "WalletConnect V1 URI'leri desteklenmiyor.",
+            "@walletConnectV1NotSupported": {
+              "description": "WalletConnect V1 URI tarandığında gösterilen hata mesajı."
+            },
+            "invalidWalletConnectUri": "Geçersiz WalletConnect URI formatı.",
+            "@invalidWalletConnectUri": {
+              "description": "WalletConnect URI geçersiz formatta olduğunda gösterilen hata mesajı."
+            },
+            "failedToParseWalletConnectUri": "WalletConnect URI çözümlenemedi: {error}",
+            "@failedToParseWalletConnectUri": {
+              "description": "WalletConnect URI çözümlenemediğinde gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Çözümleme sırasında dönen hata mesajı."
+                }
+              }
+            },
+            "unknownImportAccountUriFormat": "Bilinmeyen hesap URI formatı",
+            "@unknownImportAccountUriFormat": {
+              "description": "Hesap aktarım URI formatı tanınmadığında gösterilen hata mesajı."
+            },
+            "paginatedUriMissingInfo": "Parçalı URI eksik bilgi içeriyor",
+            "@paginatedUriMissingInfo": {
+              "description": "Parçalı URI kontrol veya sayfa bilgisi eksik olduğunda gösterilen hata mesajı."
+            },
+            "invalidPageFormatInUri": "Parçalı URI'deki sayfa formatı geçersiz",
+            "@invalidPageFormatInUri": {
+              "description": "Parçalı URI içindeki sayfa parametresi geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "invalidPublicKeyFormat": "Geçersiz Genel Anahtar Formatı",
+            "@invalidPublicKeyFormat": {
+              "description": "Sağlanan genel anahtar formatı geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "invalidUriFormat": "Geçersiz URI formatı",
+            "@invalidUriFormat": {
+              "description": "URI çözümlenemediğinde gösterilen hata mesajı."
+            },
+            "invalidPrivateKey": "Geçersiz özel anahtar",
+            "@invalidPrivateKey": {
+              "description": "Özel anahtar doğrulaması başarısız olduğunda gösterilen hata mesajı."
+            },
+            "missingPrivateKeyInLegacyUri": "Eski URI'de özel anahtar eksik",
+            "@missingPrivateKeyInLegacyUri": {
+              "description": "Eski aktarım URI'lerinde özel anahtar olmadığında gösterilen hata mesajı."
+            },
+            "keyNeitherBase64NorHex": "Anahtar ne geçerli Base64 ne de geçerli Hex: {key}",
+            "@keyNeitherBase64NorHex": {
+              "description": "Özel anahtar ne geçerli Base64 ne de geçerli Hex formatında olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "key": {
+                  "type": "String",
+                  "description": "Geçersiz anahtar."
+                }
+              }
+            },
+            "failedToDecodePrivateKey": "Özel anahtar çözümlenemedi: {error}",
+            "@failedToDecodePrivateKey": {
+              "description": "Özel anahtar çözümleme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Çözümleme sürecinden dönen hata mesajı."
+                }
+              }
+            },
+            "unknownWalletConnectVersion": "Bilinmeyen WalletConnect sürümü. Eşleşme yapılamıyor.",
+            "@unknownWalletConnectVersion": {
+              "description": "Bilinmeyen WalletConnect sürümü kullanıldığında gösterilen hata mesajı."
+            },
+            "invalidPrivateKeyLength": "Geçersiz özel anahtar uzunluğu.",
+            "@invalidPrivateKeyLength": {
+              "description": "Özel anahtar uzunluğu geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "importedAccount": "Aktarılan Hesap",
+            "@importedAccount": {
+              "description": "Aktarılan hesaplar için varsayılan hesap adı."
+            },
+            "importedAccountWithCounter": "Aktarılan Hesap {counter}",
+            "@importedAccountWithCounter": {
+              "description": "Sayaç içeren varsayılan hesap adı.",
+              "placeholders": {
+                "counter": {
+                  "type": "int",
+                  "example": "1"
+                }
+              }
+            },
+            "connectToTitle": "Bağlan:",
+            "@connectToTitle": {
+              "description": "WalletConnect oturumuna bağlanma diyalog başlığı."
+            },
+            "failedFinalizeAccountImport": "Hesap aktarımı tamamlanamadı.",
+            "@failedFinalizeAccountImport": {
+              "description": "Hesap aktarımı tamamlanamadığında gösterilen hata mesajı."
+            },
+            "errorProcessingPublicKey": "Genel anahtar işlenirken hata",
+            "@errorProcessingPublicKey": {
+              "description": "Genel anahtar işlenemediğinde gösterilen hata mesajı."
+            },
+            "successfullyConnected": "Başarıyla bağlanıldı",
+            "@successfullyConnected": {
+              "description": "WalletConnect bağlantısı başarıyla tamamlandığında gösterilen mesaj."
+            },
+            "nextQrCode": "Sonraki QR:",
+            "@nextQrCode": {
+              "description": "Tarama için sıradaki QR kod parçasını belirtir."
+            },
+            "partNumber": "Bölüm {partNumber}",
+            "@partNumber": {
+              "description": "Tarama sırasında mevcut QR kod parçasını belirtir.",
+              "placeholders": {
+                "partNumber": {
+                  "type": "int",
+                  "example": "2"
+                }
+              }
+            },
+            "expectedPrivateKeyButPublic": "Özel anahtar QR kodu bekleniyordu, ancak genel anahtar bulundu.",
+            "@expectedPrivateKeyButPublic": {
+              "description": "Özel anahtar yerine genel anahtar QR kodu tarandığında gösterilen hata mesajı."
+            },
+            "expectedPrivateKeyButWalletConnect": "Özel anahtar QR kodu bekleniyordu, ancak WalletConnect URI bulundu.",
+            "@expectedPrivateKeyButWalletConnect": {
+              "description": "Özel anahtar yerine WalletConnect URI tarandığında gösterilen hata mesajı."
+            },
+            "expectedPublicKey": "Genel anahtar QR kodu bekleniyordu, ancak başka bir şey bulundu.",
+            "@expectedPublicKey": {
+              "description": "Genel anahtar QR kodu yerine başka bir tür QR kod tarandığında gösterilen hata mesajı."
+            },
+            "failedParseWalletConnectUri": "WalletConnect URI çözümlenemedi",
+            "@failedParseWalletConnectUri": {
+              "description": "WalletConnect URI çözümleme işlemi başarısız olduğunda gösterilen hata mesajı."
+            },
+            "invalidPageFormat": "Parçalı URI'deki sayfa formatı geçersiz",
+            "@invalidPageFormat": {
+              "description": "Parçalı URI içindeki sayfa parametresi geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "missingPrivateKeyLegacy": "Eski URI'de özel anahtar eksik",
+            "@missingPrivateKeyLegacy": {
+              "description": "Eski aktarım URI'sinde özel anahtar bulunmadığında gösterilen hata mesajı."
+            },
+            "unknownImportUriFormat": "Bilinmeyen hesap aktarım URI formatı",
+            "@unknownImportUriFormat": {
+              "description": "Hesap aktarım URI formatı tanınmadığında gösterilen hata mesajı."
+            },
+            "importAccountTitle": "Hesap Aktar",
+            "@importAccountTitle": {
+              "description": "Özel anahtar tarayarak hesap aktarımı ekranı başlığı."
+            },
+            "scanAddressTitle": "Adres Tara",
+            "@scanAddressTitle": {
+              "description": "Genel anahtar adresi tararken ekran başlığı."
+            },
+            "connectTitle": "Bağlan",
+            "@connectTitle": {
+              "description": "WalletConnect oturumu bağlanırken ekran başlığı."
+            },
+            "qrCodeScannerTitle": "QR Kod Tarayıcı",
+            "@qrCodeScannerTitle": {
+              "description": "QR kod tarayıcı ekranı için varsayılan başlık."
+            },
+            "processingQrCode": "QR Kodu İşleniyor",
+            "@processingQrCode": {
+              "description": "Taranan QR kodu işlenirken gösterilen yükleme mesajı."
+            },
+            "invalidScanResult": "Geçersiz tarama sonucu",
+            "@invalidScanResult": {
+              "description": "Taranan QR kod sonucu geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "noAccountsAvailableToConnect": "Bağlanacak hesap yok.",
+            "@noAccountsAvailableToConnect": {
+              "description": "WalletConnect için kullanılabilir hesap olmadığında gösterilen hata mesajı."
+            },
+            "errorLoadingAccounts": "Hesaplar yüklenirken hata oluştu",
+            "@errorLoadingAccounts": {
+              "description": "Hesap listesi yüklenemediğinde gösterilen hata mesajı."
+            },
+            "unnamedAsset": "Adlandırılmamış Varlık",
+            "@unnamedAsset": {
+              "description": "Bir varlığın adı yoksa kullanılan etiket."
+            },
+            "noNetwork": "Ağ Yok",
+            "@noNetwork": {
+              "description": "Hiçbir ağ seçili olmadığında gösterilen etiket."
+            },
+            "pleaseEnterValidAmount": "Lütfen geçerli bir miktar girin",
+            "@pleaseEnterValidAmount": {
+              "description": "Girilen miktar geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "pleaseEnterValidAlgorandAddress": "Lütfen geçerli bir Algorand adresi girin",
+            "@pleaseEnterValidAlgorandAddress": {
+              "description": "Girilen Algorand adresi geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "insufficientFunds": "Yetersiz bakiye",
+            "@insufficientFunds": {
+              "description": "İşlemi tamamlamak için yeterli bakiye olmadığında gösterilen hata mesajı."
+            },
+            "transactionSuccessful": "İşlem başarılı",
+            "@transactionSuccessful": {
+              "description": "Bir işlem başarıyla tamamlandığında gösterilen mesaj."
+            },
+            "noActiveAccountIdFound": "Aktif hesap kimliği bulunamadı",
+            "@noActiveAccountIdFound": {
+              "description": "Aktif hesap kimliği bulunamadığında gösterilen hata mesajı."
+            },
+            "privateKeyNotFoundInStorage": "Özel anahtar depoda bulunamadı",
+            "@privateKeyNotFoundInStorage": {
+              "description": "Depoda özel anahtar bulunamadığında gösterilen hata mesajı."
+            },
+            "noItemSelectedForTransaction": "İşlem için hiçbir öğe seçilmedi.",
+            "@noItemSelectedForTransaction": {
+              "description": "İşlem için hiçbir öğe seçilmediğinde gösterilen hata mesajı."
+            },
+            "standardAssetTransferSuccessful": "Standart Varlık transferi başarılı.",
+            "@standardAssetTransferSuccessful": {
+              "description": "Standart varlık transferi başarıyla tamamlandığında gösterilen mesaj."
+            },
+            "arc0200AssetTransferSuccessful": "ARC-0200 Varlık transferi başarılı.",
+            "@arc0200AssetTransferSuccessful": {
+              "description": "ARC-0200 varlık transferi başarıyla tamamlandığında gösterilen mesaj."
+            },
+            "unsupportedAssetType": "Desteklenmeyen varlık türü: {assetType}",
+            "@unsupportedAssetType": {
+              "description": "Desteklenmeyen varlık türü için hata mesajı.",
+              "placeholders": {
+                "assetType": {
+                  "type": "String",
+                  "description": "Desteklenmeyen varlık türü."
+                }
+              }
+            },
+            "insufficientFundsError": "Yetersiz bakiye.",
+            "@insufficientFundsError": {
+              "description": "Yeterli bakiye olmadığında gösterilen hata mesajı."
+            },
+            "transactionFailedToConfirm": "İşlem beklenen turlar içinde onaylanamadı.",
+            "@transactionFailedToConfirm": {
+              "description": "Bir işlem beklenen turlar içinde onaylanmadığında gösterilen hata mesajı."
+            },
+            "sendingPayment": "Ödeme Gönderiliyor",
+            "@sendingPayment": {
+              "description": "Bir ödeme gönderilirken gösterilen mesaj."
+            },
+            "sendingAsset": "Varlık Gönderiliyor",
+            "@sendingAsset": {
+              "description": "Bir varlık gönderilirken gösterilen mesaj."
+            },
+            "contactNameUpdatedSuccessfully": "Kişi adı başarıyla güncellendi.",
+            "@contactNameUpdatedSuccessfully": {
+              "description": "Bir kişi adı başarıyla güncellendiğinde gösterilen mesaj."
+            },
+            "contactSavedSuccessfully": "Kişi başarıyla kaydedildi.",
+            "@contactSavedSuccessfully": {
+              "description": "Bir kişi başarıyla kaydedildiğinde gösterilen mesaj."
+            },
+            "failedToSaveContact": "Kişi kaydedilemedi: {error}",
+            "@failedToSaveContact": {
+              "description": "Kişi kaydetme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "max": "Maks",
+            "@max": {
+              "description": "Maksimum miktar için etiket."
+            },
+            "error": "Hata",
+            "@error": {
+              "description": "Hata mesajları için etiket."
+            },
+            "calculating": "Hesaplanıyor...",
+            "@calculating": {
+              "description": "Bir hesaplama sırasında gösterilen mesaj."
+            },
+            "maxVoiAmountCalculation": "Maksimum VOI miktarı şöyle hesaplanır: bakiye ({balance}), eksi hesabı açık tutmak için gerekli minimum bakiye ({minimumBalance}), eksi minimum işlem ücreti (0.001)",
+            "@maxVoiAmountCalculation": {
+              "description": "Maksimum VOI miktarının nasıl hesaplandığını açıklayan mesaj.",
+              "placeholders": {
+                "balance": {},
+                "minimumBalance": {}
+              }
+            },
+            "info": "Bilgi",
+            "@info": {
+              "description": "Bilgi başlığı etiketi."
+            },
+            "account": "Hesap",
+            "@account": {
+              "description": "Hesap alanı için etiket."
+            },
+            "asset": "Varlık",
+            "@asset": {
+              "description": "Varlık alanı için etiket."
+            },
+            "amount": "Miktar",
+            "@amount": {
+              "description": "Miktar alanı için etiket."
+            },
+            "contactNameOptional": "Kişi Adı (İsteğe Bağlı)",
+            "@contactNameOptional": {
+              "description": "Kişi adı alanı için isteğe bağlı etiket."
+            },
+            "noteOptional": "Not (İsteğe Bağlı)",
+            "@noteOptional": {
+              "description": "Not alanı için isteğe bağlı etiket."
+            },
+            "send": "Gönder",
+            "@send": {
+              "description": "Gönder butonu için metin."
+            },
+            "selectAsset": "Varlık Seçin",
+            "@selectAsset": {
+              "description": "Varlık seçme diyalogu başlığı."
+            },
+            "transactionFailed": "İşlem başarısız oldu",
+            "@transactionFailed": {
+              "description": "Bir işlem başarısız olduğunda gösterilen hata mesajı."
+            },
+            "noAccount": "Hesap yok",
+            "@noAccount": {
+              "description": "Aktif hesap olmadığında gösterilen metin."
+            },
+            "noteTooLarge": "Not çok büyük.",
+            "@noteTooLarge": {
+              "description": "Not maksimum bayt boyutunu aştığında gösterilen hata mesajı."
+            },
+            "sendTransactionTitle": "İşlem Gönder",
+            "@sendTransactionTitle": {
+              "description": "İşlem gönderme ekranında gösterilen başlık."
+            },
+            "loading": "Yükleniyor...",
+            "@loading": {
+              "description": "Yükleme durumlarında gösterilen metin."
+            },
+            "failedToLoad": "Yüklenemedi",
+            "@failedToLoad": {
+              "description": "Veriler yüklenemediğinde gösterilen metin."
+            },
+            "recipientAddress": "Alıcı Adresi",
+            "@recipientAddress": {
+              "description": "Alıcı adresi giriş alanı etiketi."
+            },
+            "noItems": "Öğe yok",
+            "@noItems": {
+              "description": "Hiçbir öğe mevcut olmadığında gösterilen metin."
+            },
+            "about": "Hakkında",
+            "@about": {
+              "description": "Hakkında ekranı için başlık."
+            },
+            "version": "Sürüm:",
+            "@version": {
+              "description": "Uygulama sürümü etiketi."
+            },
+            "build": "Yapı:",
+            "@build": {
+              "description": "Uygulama yapı sürümü etiketi."
+            },
+            "buildNumber": "Yapı Numarası:",
+            "@buildNumber": {
+              "description": "Uygulama yapı numarası etiketi."
+            },
+            "advanced": "Gelişmiş",
+            "@advanced": {
+              "description": "Gelişmiş ekranı için başlık."
+            },
+            "networkSwitched": "Ağ {networkName} olarak değiştirildi",
+            "@networkSwitched": {
+              "description": "Ağ başarıyla değiştirildiğinde gösterilen mesaj.",
+              "placeholders": {
+                "networkName": {}
+              }
+            },
+            "allowTestNetworks": "Test Ağlarına İzin Ver",
+            "@allowTestNetworks": {
+              "description": "Test ağı geçiş anahtarı için etiket."
+            },
+            "toggleTestNetworksDescription": "Ağ listesine test ağlarını dahil etmek için geçiş yapın.",
+            "@toggleTestNetworksDescription": {
+              "description": "Test ağı geçiş anahtarı açıklaması."
+            },
+            "appearance": "Görünüm",
+            "@appearance": {
+              "description": "Görünüm ekranı için başlık."
+            },
+            "darkMode": "Karanlık Mod",
+            "@darkMode": {
+              "description": "Karanlık mod geçiş anahtarı için etiket."
+            },
+            "general": "Genel",
+            "@general": {
+              "description": "Genel ekranı için başlık."
+            },
+            "dangerZone": "Tehlikeli Bölge",
+            "@dangerZone": {
+              "description": "Tehlikeli bölge bölümü için başlık."
+            },
+            "dangerZoneDescription": "Bu, tüm hesapları, ayarları ve güvenlik bilgilerini kaldıracaktır.",
+            "@dangerZoneDescription": {
+              "description": "Tehlikeli bölge bölümünün açıklaması."
+            },
+            "confirmReset": "Sıfırlamayı Onayla",
+            "@confirmReset": {
+              "description": "PIN pad diyalogunda sıfırlamayı onayla başlığı."
+            },
+            "exportAccounts": "Hesapları Dışa Aktar",
+            "@exportAccounts": {
+              "description": "Hesapları Dışa Aktar ekranı için başlık."
+            },
+            "noAccountsForExport": "Dışa aktarmak için uygun hesap yok.",
+            "@noAccountsForExport": {
+              "description": "Dışa aktarmak için hiçbir hesap mevcut olmadığında gösterilen mesaj."
+            },
+            "unnamedAccount": "Adlandırılmamış Hesap",
+            "@unnamedAccount": {
+              "description": "Adı olmayan bir hesap için etiket."
+            },
+            "accountCannotBeExported": "Bu hesap özel anahtarı olmadığı için dışa aktarılamaz.",
+            "@accountCannotBeExported": {
+              "description": "Özel anahtarı olmayan bir hesap dışa aktarılamaz."
+            },
+            "allAccounts": "Tüm Hesaplar",
+            "@allAccounts": {
+              "description": "Açılır menüde tüm hesapları seçmek için etiket."
+            },
+            "security": "Güvenlik",
+            "@security": {
+              "description": "Güvenlik ekranı için başlık."
+            },
+            "enablePasswordLock": "Şifre Kilidini Etkinleştir",
+            "@enablePasswordLock": {
+              "description": "Şifre kilidini etkinleştirmek veya devre dışı bırakmak için geçiş anahtarı."
+            },
+            "selectTimeout": "Zaman Aşımı Seçin",
+            "@selectTimeout": {
+              "description": "Zaman aşımı seçimi diyalogu için başlık."
+            },
+            "timeout": "Zaman Aşımı",
+            "@timeout": {
+              "description": "Zaman aşımı açılır menüsü için etiket."
+            },
+            "changePin": "Pin Değiştir",
+            "@changePin": {
+              "description": "Pin değiştirme seçeneği için başlık."
+            },
+            "sessions": "Oturumlar",
+            "@sessions": {
+              "description": "Oturumlar ekranı için başlık."
+            },
+            "disconnectAllSessions": "Tüm Oturumları Sonlandır?",
+            "@disconnectAllSessions": {
+              "description": "Tüm oturumları sonlandırma araç ipucu."
+            },
+            "disconnectAllSessionsPrompt": "Tüm oturumları sonlandırmak istiyor musunuz?",
+            "@disconnectAllSessionsPrompt": {
+              "description": "Tüm oturumları sonlandırma işlemini onaylamak için mesaj."
+            },
+            "noActiveSessions": "Aktif oturum yok.",
+            "@noActiveSessions": {
+              "description": "Hiçbir aktif oturum olmadığında gösterilen mesaj."
+            },
+            "disconnectAllSessionsForAccountPrompt": "Bu hesap için tüm oturumları sonlandırmak istiyor musunuz?",
+            "@disconnectAllSessionsForAccountPrompt": {
+              "description": "Belirli bir hesap için tüm oturumları sonlandırma işlemini onaylamak için mesaj."
+            },
+            "disconnectAll": "Tümünü Sonlandır",
+            "@disconnectAll": {
+              "description": "Bir hesap için tüm oturumları sonlandırmak için düğme etiketi."
+            },
+            "expires": "Son Kullanma Tarihi:",
+            "@expires": {
+              "description": "Oturum sona erme tarihi etiketi."
+            },
+            "failedToDisconnect": "{sessionName} oturumu sonlandırılamadı. Lütfen tekrar deneyin.",
+            "@failedToDisconnect": {
+              "description": "Bir oturum sonlandırma işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "sessionName": {}
+              }
+            },
+            "sessionDisconnected": "{sessionName} oturumu başarıyla sonlandırıldı.",
+            "@sessionDisconnected": {
+              "description": "Bir oturum başarıyla sonlandırıldığında gösterilen mesaj.",
+              "placeholders": {
+                "sessionName": {}
+              }
+            },
+            "allSessions": "Tüm oturumlar",
+            "@allSessions": {
+              "description": "Tüm oturumlar için etiket."
+            },
+            "allSessionsFor": "{publicKey} için tüm oturumlar",
+            "@allSessionsFor": {
+              "description": "Belirli bir hesapla ilişkilendirilen tüm oturumlar için etiket.",
+              "placeholders": {
+                "publicKey": {}
+              }
+            },
+            "disconnect": "Bağlantıyı Kes",
+            "@disconnect": {
+              "description": "Bağlantıyı kesme düğmesi etiketi."
+            },
+            "settings": "Ayarlar",
+            "@settings": {
+              "description": "Ayarlar ekranı etiketi."
+            },
+            "createNewAccount": "Yeni Hesap Oluştur",
+            "@createNewAccount": {
+              "description": "Yeni hesap oluşturma ekranı için başlık."
+            },
+            "createNewAccountSubtitle": "Bir anahtar kelime yedekleme isteği alacaksınız.",
+            "@createNewAccountSubtitle": {
+              "description": "Yeni hesap oluştururken gösterilen alt başlık."
+            },
+            "importViaSeed": "Seed ile İçe Aktar",
+            "@importViaSeed": {
+              "description": "Seed ifadeyle hesap içe aktarma ekranı başlığı."
+            },
+            "importViaSeedSubtitle": "Mevcut bir hesabı seed ifadeyle içe aktarın.",
+            "@importViaSeedSubtitle": {
+              "description": "Seed ifadeyle içe aktarma ekranında gösterilen alt başlık."
+            },
+            "importViaQrCode": "QR Kod ile İçe Aktar",
+            "@importViaQrCode": {
+              "description": "QR kod ile hesap içe aktarma ekranı başlığı."
+            },
+            "importViaQrCodeSubtitle": "Mevcut bir hesabı QR kod tarayarak içe aktarın.",
+            "@importViaQrCodeSubtitle": {
+              "description": "QR kod ile içe aktarma ekranında gösterilen alt başlık."
+            },
+            "importViaPrivateKey": "Özel Anahtar ile İçe Aktar",
+            "@importViaPrivateKey": {
+              "description": "Özel anahtar ile hesap içe aktarma ekranı başlığı."
+            },
+            "importViaPrivateKeySubtitle": "Özel anahtarla bir hesap içe aktarın.",
+            "@importViaPrivateKeySubtitle": {
+              "description": "Özel anahtarla içe aktarma ekranında gösterilen alt başlık."
+            },
+            "addWatch": "Gözlem Hesabı Ekle",
+            "@addWatch": {
+              "description": "Gözlem hesabı ekleme başlığı."
+            },
+            "addWatchSubtitle": "Genel adresle gözlem hesabı ekleyin.",
+            "@addWatchSubtitle": {
+              "description": "Gözlem hesabı ekleme ekranında gösterilen alt başlık."
+            },
+            "addAccountTitle": "Hesap Ekle",
+            "@addAccountTitle": {
+              "description": "Hesap Ekle ekranı başlığı."
+            },
+            "importPublicAddress": "Genel Adres İçe Aktar",
+            "@importPublicAddress": {
+              "description": "Gözlem Hesabı Ekle ekranının başlığı."
+            },
+            "publicAddress": "Genel Adres",
+            "@publicAddress": {
+              "description": "Genel adres metin kutusu etiketi."
+            },
+            "import": "İçe Aktar",
+            "@import": {
+              "description": "İçe aktarma butonu için metin."
+            },
+            "pleaseEnterPublicAddress": "Lütfen bir genel adres girin.",
+            "@pleaseEnterPublicAddress": {
+              "description": "Genel adres boş bırakıldığında gösterilen hata mesajı."
+            },
+            "invalidAlgorandAddress": "Geçersiz Algorand adresi.",
+            "@invalidAlgorandAddress": {
+              "description": "Geçersiz Algorand adresi girildiğinde gösterilen hata mesajı."
+            },
+            "copySeed": "Seed Kopyala",
+            "@copySeed": {
+              "description": "Seed Kopyala ekranı başlığı."
+            },
+            "generateSeedPhrase": "Seed ifadesi oluştur",
+            "@generateSeedPhrase": {
+              "description": "Seed ifadesi oluşturma etiketi."
+            },
+            "seedPhraseDescription": "İşte 25 kelimelik seed ifadeniz. Bunu güvenli bir yerde sakladığınızdan emin olun.",
+            "@seedPhraseDescription": {
+              "description": "Mnemonic seed ifadesi görüntülenirken açıklama metni."
+            },
+            "copySeedPhrase": "Seed ifadesini kopyala",
+            "@copySeedPhrase": {
+              "description": "Seed ifadesini kopyalamak için ipucu."
+            },
+            "noSeedPhraseAvailable": "Seed ifadesi mevcut değil.",
+            "@noSeedPhraseAvailable": {
+              "description": "Seed ifadesi mevcut olmadığında gösterilen mesaj."
+            },
+            "backupConfirmationRequired": "Seed ifadenizin bir yedeğini aldığınızı onaylamanız gerekiyor.",
+            "@backupConfirmationRequired": {
+              "description": "Yedekleme onaylanmadığında gösterilen doğrulama hatası."
+            },
+            "backupConfirmationPrompt": "Seed ifadenizin bir yedeğini güvenli bir yerde sakladığınızı onaylayın.",
+            "@backupConfirmationPrompt": {
+              "description": "Kullanıcılardan seed ifadelerini yedeklediklerini onaylamalarını isteyen mesaj."
+            },
+            "next": "İleri",
+            "@next": {
+              "description": "İleri butonu etiketi."
+            },
+            "importPrivateKey": "Özel Anahtar İçe Aktar",
+            "@importPrivateKey": {
+              "description": "Özel Anahtar İçe Aktar ekranı başlığı."
+            },
+            "privateKey": "Özel Anahtar",
+            "@privateKey": {
+              "description": "Özel anahtar metin kutusu etiketi."
+            },
+            "importSeed": "Seed İçe Aktar",
+            "@importSeed": {
+              "description": "Seed İçe Aktar ekranı başlığı."
+            },
+            "enterSeedPhrasePrompt": "Hesabınızı içe aktarmak için seed ifadenizi girin.",
+            "@enterSeedPhrasePrompt": {
+              "description": "Kullanıcılardan seed ifadelerini girmelerini isteyen mesaj."
+            },
+            "enterWord": "Kelimeyi girin {index}",
+            "@enterWord": {
+              "description": "Seed ifadesinde eksik bir kelime için hata mesajı.",
+              "placeholders": {
+                "index": {
+                  "type": "int",
+                  "description": "Seed ifadesindeki kelimenin konumu."
+                }
+              }
+            },
+            "nameAccount": "Hesap Adlandır",
+            "@nameAccount": {
+              "description": "Hesap adlandırma ekranı başlığı."
+            },
+            "delete": "Sil",
+            "@delete": {
+              "description": "Sil butonu etiketi."
+            },
+            "confirmDeleteAccount": "Bu hesabı silmek istediğinize emin misiniz?",
+            "@confirmDeleteAccount": {
+              "description": "Bir hesabı silme işlemini onaylatmak için mesaj."
+            },
+            "editAccountNamePrompt": "Hesap adınızı düzenleyin",
+            "@editAccountNamePrompt": {
+              "description": "Hesap adını düzenleme mesajı."
+            },
+            "nameAccountPrompt": "Hesabınızı adlandırın",
+            "@nameAccountPrompt": {
+              "description": "Hesabı adlandırma mesajı."
+            },
+            "editAccountDescription": "Aşağıdan hesap adınızı değiştirebilirsiniz.",
+            "@editAccountDescription": {
+              "description": "Hesap düzenleme için açıklama."
+            },
+            "nameAccountDescription": "Hesabınıza bir takma ad verin. Endişelenmeyin, bunu daha sonra değiştirebilirsiniz.",
+            "@nameAccountDescription": {
+              "description": "Hesap adlandırma için açıklama."
+            },
+            "accountName": "Hesap Adı",
+            "@accountName": {
+              "description": "Hesap adı metin kutusu etiketi."
+            },
+            "pleaseEnterText": "Lütfen metin girin",
+            "@pleaseEnterText": {
+              "description": "Boş giriş alanları için doğrulama hatası mesajı."
+            },
+            "save": "Kaydet",
+            "@save": {
+              "description": "Kaydet butonu etiketi."
+            },
+            "create": "Oluştur",
+            "@create": {
+              "description": "Oluştur butonu etiketi."
+            },
+            "updatingAccount": "Hesap Güncelleniyor",
+            "@updatingAccount": {
+              "description": "Bir hesap güncellenirken gösterilen mesaj."
+            },
+            "creatingAccount": "Hesap Oluşturuluyor",
+            "@creatingAccount": {
+              "description": "Bir hesap oluşturulurken gösterilen mesaj."
+            },
+            "welcomeTitle": "Hoş Geldiniz",
+            "@welcomeTitle": {
+              "description": "Hoş Geldiniz ekranı başlığı."
+            },
+            "welcomeMessage": "Hoş geldiniz. Öncelikle, bu cihazı güvenceye almak için yeni bir PIN oluşturun.",
+            "@welcomeMessage": {
+              "description": "Kullanıcıyı karşılama mesajı, onları bir PIN oluşturmaya yönlendirir."
+            },
+            "algorandStandardAsset": "Algorand Standart Varlık",
+            "@algorandStandardAsset": {
+              "description": "ASA varlıkları için etiket."
+            },
+            "insufficientBalance": "Yetersiz bakiye.",
+            "@insufficientBalance": {
+              "description": "Kullanıcının yeterli fonu olmadığında gösterilen hata mesajı."
+            },
+            "assetOptInSuccess": "Varlık başarıyla eklenmiştir.",
+            "@assetOptInSuccess": {
+              "description": "Varlık ekleme işlemi başarıyla tamamlandığında gösterilen mesaj."
+            },
+            "applicationId": "Uygulama Kimliği",
+            "@applicationId": {
+              "description": "Uygulama Kimliği alanı etiketi."
+            },
+            "type": "Tür",
+            "@type": {
+              "description": "Tür alanı etiketi."
+            },
+            "decimals": "Ondalık",
+            "@decimals": {
+              "description": "Ondalık alanı etiketi."
+            },
+            "totalSupply": "Toplam Arz",
+            "@totalSupply": {
+              "description": "Toplam arz alanı etiketi."
+            },
+            "sendAsset": "Varlık Gönder",
+            "@sendAsset": {
+              "description": "Varlık gönder butonu için metin."
+            },
+            "addAsset": "Varlık Ekle",
+            "@addAsset": {
+              "description": "Varlık ekle butonu için metin."
+            },
+            "optingInMessage": "Varlık ekleniyor...",
+            "@optingInMessage": {
+              "description": "Varlık ekleme işlemi sırasında gösterilen mesaj."
+            },
+            "activeAssetNullError": "Aktif varlık null",
+            "@activeAssetNullError": {
+              "description": "Hiçbir aktif varlık bulunamadığında gösterilen hata mesajı."
+            },
+            "fundAccountError": "Lütfen hesabınıza para yatırın.",
+            "@fundAccountError": {
+              "description": "Hesap bakiyesi yetersiz olduğunda gösterilen hata mesajı."
+            },
+            "privateKeyNotFoundError": "Özel anahtar bulunamadı",
+            "@privateKeyNotFoundError": {
+              "description": "Özel anahtar bulunamadığında gösterilen hata mesajı."
+            },
+            "accountIdOrAddressNotAvailable": "Hesap Kimliği veya Genel Adres mevcut değil",
+            "@accountIdOrAddressNotAvailable": {
+              "description": "Hesap Kimliği veya genel adres eksik olduğunda gösterilen hata mesajı."
+            },
+            "failedToOptInError": "Varlık eklenemedi",
+            "@failedToOptInError": {
+              "description": "Varlık ekleme işlemi başarısız olduğunda gösterilen hata mesajı."
+            },
+            "algorandServiceError": "Algorand servisinde bir hata oluştu",
+            "@algorandServiceError": {
+              "description": "Algorand servisi ile ilgili genel hata mesajı."
+            },
+            "viewAssetTitle": "Varlık Görüntüle",
+            "@viewAssetTitle": {
+              "description": "Varlık görüntüleme ekranı başlığı."
+            },
+            "addAssetTitle": "Varlık Ekle",
+            "@addAssetTitle": {
+              "description": "Varlık ekleme ekranı başlığı."
+            },
+            "noAssetAvailableMessage": "Görüntülenecek varlık yok.",
+            "@noAssetAvailableMessage": {
+              "description": "Görüntülenebilir varlık bulunamadığında gösterilen mesaj."
+            },
+            "optOutTooltip": "Çıkış Yap",
+            "@optOutTooltip": {
+              "description": "Çıkış yap butonu için araç ipucu."
+            },
+            "optOutAssetTitle": "Varlıktan Çık?",
+            "@optOutAssetTitle": {
+              "description": "Çıkış onayı için diyalog başlığı."
+            },
+            "optOutAssetContent": "Bu ARC-0200 varlığından çıkmak istediğinizden emin misiniz?",
+            "@optOutAssetContent": {
+              "description": "Çıkış onayı diyalogu içeriği."
+            },
+            "optOutButton": "Çıkış Yap",
+            "@optOutButton": {
+              "description": "Çıkış yap butonu etiketi."
+            },
+            "cancelButton": "İptal",
+            "@cancelButton": {
+              "description": "Diyaloglarda iptal butonu etiketi."
+            },
+            "nftViewerTitle": "NFT Görüntüleyici",
+            "@nftViewerTitle": {
+              "description": "NFT görüntüleyici ekranı başlığı."
+            },
+            "sentTransactionTitle": "Gönderilen İşlem",
+            "@sentTransactionTitle": {
+              "description": "Gönderilen işlemler için başlık."
+            },
+            "transactionType": "İşlem Türü",
+            "@transactionType": {
+              "description": "İşlem türü alanı etiketi."
+            },
+            "fromField": "Gönderen",
+            "@fromField": {
+              "description": "Gönderen alanı etiketi."
+            },
+            "toField": "Alıcı",
+            "@toField": {
+              "description": "Alıcı alanı etiketi."
+            },
+            "fee": "Ücret",
+            "@fee": {
+              "description": "İşlem ücreti alanı etiketi."
+            },
+            "date": "Tarih",
+            "@date": {
+              "description": "İşlem tarihi alanı etiketi."
+            },
+            "transactionId": "İşlem Kimliği",
+            "@transactionId": {
+              "description": "İşlem kimliği alanı etiketi."
+            },
+            "note": "Not",
+            "@note": {
+              "description": "İşlem notu alanı etiketi."
+            },
+            "receivedTransactionTitle": "Alınan İşlem",
+            "@receivedTransactionTitle": {
+              "description": "Alınan işlemler için başlık."
+            },
+            "selfTransferTitle": "Kendi Kendine Transfer",
+            "@selfTransferTitle": {
+              "description": "Kendi kendine gönderilen işlemler için başlık."
+            },
+            "viewTransactionTitle": "İşlemi Görüntüle",
+            "@viewTransactionTitle": {
+              "description": "İşlem görüntüleme ekranı başlığı."
+            },
+            "noTransactionAvailable": "Görüntülenecek işlem yok.",
+            "@noTransactionAvailable": {
+              "description": "Görüntülenebilir işlem bulunamadığında gösterilen mesaj."
+            },
+            "invalidAddressSupplied": "Girilen değer \"{value}\" geçerli bir adres değil.",
+            "@invalidAddressSupplied": {
+              "description": "Geçersiz Algorand adresi için hata mesajı.",
+              "placeholders": {
+                "value": {
+                  "type": "String",
+                  "example": "INVALID_ADDRESS"
+                }
+              }
+            },
+            "invalidAddressByteLength": "Bayt dizisi geçerli bir adres için {expected} bayt uzunluğunda olmalıdır, ancak \"{found}\" uzunluk bulundu.",
+            "@invalidAddressByteLength": {
+              "description": "Adresin bayt uzunluğu yanlış olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "expected": {
+                  "type": "int",
+                  "example": "32"
+                },
+                "found": {
+                  "type": "int",
+                  "example": "24"
+                }
+              }
+            },
+            "addressType": "adres",
+            "@addressType": {
+              "description": "ABI adres türünün string temsilidir."
+            },
+            "noActiveAccountFound": "Etkin hesap bulunamadı.",
+            "@noActiveAccountFound": {
+              "description": "Depolamada etkin bir hesap bulunamadığında gösterilen hata mesajı."
+            },
+            "failedToInitializeAccount": "Hesap başlatılamadı: {error}",
+            "@failedToInitializeAccount": {
+              "description": "Hesap başlatma işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "publicKeyNotFoundInStorage": "Genel anahtar depolamada bulunamadı.",
+            "@publicKeyNotFoundInStorage": {
+              "description": "Genel anahtar depolamada bulunamadığında gösterilen hata mesajı."
+            },
+            "accountNotFundedPleaseFundToSeeDetails": "Bu hesap henüz finanse edilmedi. Detayları görmek için lütfen fon sağlayın.",
+            "@accountNotFundedPleaseFundToSeeDetails": {
+              "description": "Hesap finanse edilmediğinde gösterilen hata mesajı."
+            },
+            "accountNameIsTooLong": "Hesap adı çok uzun.",
+            "@accountNameIsTooLong": {
+              "description": "Hesap adı maksimum uzunluğu aştığında gösterilen hata mesajı."
+            },
+            "failedToCreateAccountName": "Hesap adı oluşturulamadı: {error}",
+            "@failedToCreateAccountName": {
+              "description": "Hesap adı oluşturulamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "failedToCreateAccount": "Hesap oluşturulamadı: {error}",
+            "@failedToCreateAccount": {
+              "description": "Hesap oluşturma işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "noActiveAccountToUpdate": "Güncellenecek etkin hesap yok.",
+            "@noActiveAccountToUpdate": {
+              "description": "Güncelleme için etkin bir hesap bulunamadığında gösterilen hata mesajı."
+            },
+            "accountNotFound": "Hesap bulunamadı.",
+            "@accountNotFound": {
+              "description": "Belirtilen hesap bulunamadığında gösterilen hata mesajı."
+            },
+            "failedToDeleteAccount": "Hesap silinemedi: {error}",
+            "@failedToDeleteAccount": {
+              "description": "Hesap silme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "failedToRestoreAccount": "Hesap geri yüklenemedi: {error}",
+            "@failedToRestoreAccount": {
+              "description": "Hesap geri yükleme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "noActiveAccount": "Etkin hesap yok.",
+            "@noActiveAccount": {
+              "description": "Etkin bir hesap bulunamadığında gösterilen hata mesajı."
+            },
+            "seedPhraseNotFoundInStorage": "Seed kelime grubu depolamada bulunamadı.",
+            "@seedPhraseNotFoundInStorage": {
+              "description": "Seed kelime grubu depolamada bulunamadığında gösterilen hata mesajı."
+            },
+            "publicAddressNotAvailable": "Genel adres mevcut değil.",
+            "@publicAddressNotAvailable": {
+              "description": "Genel adres mevcut olmadığında gösterilen hata mesajı."
+            },
+            "accountMissingInTemporaryData": "Hesap, geçici hesap verilerinde eksik.",
+            "@accountMissingInTemporaryData": {
+              "description": "Hesap geçici verilerde eksik olduğunda gösterilen hata mesajı."
+            },
+            "incompleteTemporaryAccountData": "Normal hesap için eksik geçici hesap verileri.",
+            "@incompleteTemporaryAccountData": {
+              "description": "Geçici hesap verileri eksik olduğunda gösterilen hata mesajı."
+            },
+            "publicKeyIsMissing": "Genel anahtar eksik.",
+            "@publicKeyIsMissing": {
+              "description": "Genel anahtar eksik olduğunda gösterilen hata mesajı."
+            },
+            "unsupportedAccountType": "Desteklenmeyen hesap türü.",
+            "@unsupportedAccountType": {
+              "description": "Desteklenmeyen hesap türüyle karşılaşıldığında gösterilen hata mesajı."
+            },
+            "failedToFinalizeAccountCreation": "Hesap oluşturma tamamlanamadı: {error}",
+            "@failedToFinalizeAccountCreation": {
+              "description": "Hesap oluşturma işlemi tamamlanamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "failedToCreateUnsignedTransactions": "İmzalanmamış transfer işlemleri oluşturulamadı: {error}",
+            "@failedToCreateUnsignedTransactions": {
+              "description": "İmzalanmamış işlemler oluşturulamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "transactionIdInvalid": "İşlem başarısız: İşlem Kimliği geçersiz veya 'hata' olarak işaretlenmiş.",
+            "@transactionIdInvalid": {
+              "description": "İşlem kimliği geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "failedToSendPayment": "Ödeme gönderilemedi: {error}",
+            "@failedToSendPayment": {
+              "description": "Ödeme gönderme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "getAccountAssetsFailed": "Varlıklar alınamadı: {error}",
+            "@getAccountAssetsFailed": {
+              "description": "Hesap varlıkları alınamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "assetDetailsFetchFailed": "Varlık detayları alınamadı: {error}",
+            "@assetDetailsFetchFailed": {
+              "description": "Varlık detayları alınamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "assetIdInvalidFormat": "Geçersiz varlık kimliği formatı. Varlık kimliği geçerli bir tam sayı olmalıdır.",
+            "@assetIdInvalidFormat": {
+              "description": "Varlık kimliği geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "assetOptInFailed": "Varlık eklenemedi: {error}",
+            "@assetOptInFailed": {
+              "description": "Varlık ekleme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "arc200AssetFetchFailed": "ARC-0200 varlık detayları alınamadı.",
+            "@arc200AssetFetchFailed": {
+              "description": "ARC-0200 varlık detayları alınamadığında gösterilen hata mesajı."
+            },
+            "failedToTransferAsset": "Varlık transferi başarısız oldu: {error}",
+            "@failedToTransferAsset": {
+              "description": "Varlık transferi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "failedToToggleFreeze": "Varlık {action} işlemi başarısız: {error}",
+            "@failedToToggleFreeze": {
+              "description": "Varlık dondurma/çözme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "action": {},
+                "error": {}
+              }
+            },
+            "failedToRevokeAsset": "Varlık iptali başarısız: {error}",
+            "@failedToRevokeAsset": {
+              "description": "Varlık iptali başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "failedToFetchTransactions": "İşlemler alınamadı: {error}",
+            "@failedToFetchTransactions": {
+              "description": "İşlemler alınamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "contractOptInFailed": "Sözleşme eklenemedi: {error}",
+            "@contractOptInFailed": {
+              "description": "Sözleşme ekleme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "contractCallFailed": "Sözleşme çağrısı başarısız oldu: {error}",
+            "@contractCallFailed": {
+              "description": "Sözleşme çağrısı başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "transactionError": "İşlem hatası: {error}",
+            "@transactionError": {
+              "description": "İşlem hatası oluştuğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "searchQueryTooShort": "Arama sorgusu çok kısa.",
+            "@searchQueryTooShort": {
+              "description": "Arama sorgusu çok kısa olduğunda gösterilen hata mesajı."
+            },
+            "failedToFetchAssets": "Varlıklar alınamadı: {error}",
+            "@failedToFetchAssets": {
+              "description": "Varlıklar alınamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "failedToGetAccountBalance": "Hesap bakiyesi alınamadı: {error}",
+            "@failedToGetAccountBalance": {
+              "description": "Hesap bakiyesi alınamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "assetEditConfirmationFailed": "Varlık düzenleme onayı başarısız oldu.",
+            "@assetEditConfirmationFailed": {
+              "description": "Varlık düzenleme onayı başarısız olduğunda gösterilen hata mesajı."
+            },
+            "failedToEditAsset": "Varlık düzenlenemedi: {error}",
+            "@failedToEditAsset": {
+              "description": "Varlık düzenleme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "failedToDestroyAsset": "Varlık silinemedi: {error}",
+            "@failedToDestroyAsset": {
+              "description": "Varlık silme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "assetDestructionConfirmationFailed": "Varlık silme onayı başarısız oldu.",
+            "@assetDestructionConfirmationFailed": {
+              "description": "Varlık silme onayı başarısız olduğunda gösterilen hata mesajı."
+            },
+            "failedToOptInAsset": "Varlık eklenemedi.",
+            "@failedToOptInAsset": {
+              "description": "Varlık ekleme işlemi başarısız olduğunda gösterilen hata mesajı."
+            },
+            "privateKeyNotFound": "Etkin hesap için özel anahtar bulunamadı.",
+            "@privateKeyNotFound": {
+              "description": "Etkin hesap için özel anahtar bulunamadığında gösterilen hata mesajı."
+            },
+            "assetOptInConfirmationFailed": "Varlık ekleme onayı başarısız oldu.",
+            "@assetOptInConfirmationFailed": {
+              "description": "Varlık ekleme onayı başarısız olduğunda gösterilen hata mesajı."
+            },
+            "failedToOptInToASA": "ASA varlığı eklenemedi: {error}",
+            "@failedToOptInToASA": {
+              "description": "ASA varlığı ekleme işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {}
+              }
+            },
+            "assetNameOrUnitMissing": "Varlık adı veya birim adı eksik.",
+            "@assetNameOrUnitMissing": {
+              "description": "Varlık adı veya birim adı eksik olduğunda gösterilen hata mesajı."
+            },
+            "failedToFollowArc200Asset": "ARC-0200 varlığı takibe alınamadı.",
+            "@failedToFollowArc200Asset": {
+              "description": "ARC-0200 varlığı takip edilemediğinde gösterilen hata mesajı."
+            },
+            "assetTransferConfirmationFailed": "Varlık transfer onayı başarısız oldu.",
+            "@assetTransferConfirmationFailed": {
+              "description": "Varlık transfer onayı başarısız olduğunda gösterilen hata mesajı."
+            },
+            "assetIsFrozen": "Varlık dondurulmuş.",
+            "@assetIsFrozen": {
+              "description": "Varlık dondurulduğunda gösterilen hata mesajı."
+            },
+            "privateKeyNotFoundForAccount": "Hesap kimliği için özel anahtar bulunamadı: {accountId}",
+            "@privateKeyNotFoundForAccount": {
+              "description": "Belirli bir hesap için özel anahtar bulunamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "accountId": {
+                  "type": "String",
+                  "description": "Özel anahtarı bulunamayan hesabın kimliği."
+                }
+              }
+            },
+            "invalidEncodedKeyLength": "Kodlanmış anahtar 44 karakter uzunluğunda olmalıdır.",
+            "@invalidEncodedKeyLength": {
+              "description": "Kodlanmış anahtar uzunluğu 44 karakter olmadığında gösterilen hata mesajı."
+            },
+            "contactNotFound": "Kişi bulunamadı.",
+            "@contactNotFound": {
+              "description": "Talep edilen kişi bulunamadığında gösterilen hata mesajı."
+            },
+            "almostThere": "Neredeyse bitti",
+            "@almostThere": {
+              "description": "Yükleme neredeyse tamamlandığında gösterilen mesaj."
+            },
+            "hangInThere": "Biraz daha sabredin",
+            "@hangInThere": {
+              "description": "Yükleme sırasında gösterilen cesaretlendirici mesaj."
+            },
+            "justABitMore": "Biraz daha kaldı",
+            "@justABitMore": {
+              "description": "Yüklemenin neredeyse tamamlandığını belirten mesaj."
+            },
+            "youreDoingGreat": "Harika gidiyorsunuz",
+            "@youreDoingGreat": {
+              "description": "Yükleme sırasında gösterilen cesaretlendirici mesaj."
+            },
+            "nearlyDone": "Neredeyse tamam",
+            "@nearlyDone": {
+              "description": "Yükleme işleminin neredeyse bittiğini belirten mesaj."
+            },
+            "thanksForWaiting": "Beklediğiniz için teşekkürler",
+            "@thanksForWaiting": {
+              "description": "Bekleme sırasında kullanıcıya teşekkür etmek için gösterilen mesaj."
+            },
+            "checksumMismatch": "Checksum uyuşmuyor. Taratılan QR kodları aynı setten değil.",
+            "@checksumMismatch": {
+              "description": "Taratılan QR kodlarının aynı setten olmadığını belirten hata mesajı."
+            },
+            "networkChangedTo": "Ağa geçildi: {networkName}",
+            "@networkChangedTo": {
+              "description": "Ağ başarıyla değiştirildiğinde gösterilen mesaj.",
+              "placeholders": {
+                "networkName": {
+                  "type": "String",
+                  "description": "Yeni ağın adı."
+                }
+              }
+            },
+            "failedToLoadNFTs": "NFT'ler yüklenemedi. Durum kodu: {statusCode}",
+            "@failedToLoadNFTs": {
+              "description": "NFT'ler yüklenemediğinde gösterilen hata mesajı.",
+              "placeholders": {
+                "statusCode": {
+                  "type": "int",
+                  "description": "Sunucudan dönen HTTP durum kodu."
+                }
+              }
+            },
+            "settingUp": "Kurulum Yapılıyor",
+            "@settingUp": {
+              "description": "PIN kurulumu sırasında gösterilen yazı."
+            },
+            "authenticating": "Kimlik doğrulanıyor",
+            "@authenticating": {
+              "description": "Kimlik doğrulama sırasında gösterilen yazı."
+            },
+            "verifying": "Doğrulanıyor",
+            "@verifying": {
+              "description": "İşlem doğrulama sırasında gösterilen yazı."
+            },
+            "settingNewPin": "Yeni PIN Ayarlanıyor",
+            "@settingNewPin": {
+              "description": "PIN değiştirme işlemi sırasında gösterilen yazı."
+            },
+            "accountNameNotFound": "Etkin hesap kimliği için hesap adı bulunamadı: {activeAccountId}",
+            "@accountNameNotFound": {
+              "description": "Etkin hesap için hesap adı bulunamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "activeAccountId": {
+                  "type": "String",
+                  "description": "Etkin hesabın kimliği."
+                }
+              }
+            },
+            "incorrectPin": "Hatalı PIN",
+            "@incorrectPin": {
+              "description": "Kullanıcı yanlış PIN girdiğinde gösterilen hata mesajı."
+            },
+            "invalidPinTryAgain": "Geçersiz PIN. Tekrar deneyin.",
+            "@invalidPinTryAgain": {
+              "description": "Girilen PIN geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "failedToSetPin": "PIN ayarlanamadı: {error}",
+            "@failedToSetPin": {
+              "description": "PIN ayarlanamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Hata mesajını içeren istisna."
+                }
+              }
+            },
+            "errorReadingPinHash": "PIN hash okunurken hata oluştu.",
+            "@errorReadingPinHash": {
+              "description": "PIN hash güvenli depolamadan okunamadığında gösterilen hata mesajı."
+            },
+            "failedToReadAccountsData": "Hesap verileri okunamadı: {error}",
+            "@failedToReadAccountsData": {
+              "description": "Hesap verileri okunamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Hata mesajını içeren istisna."
+                }
+              }
+            },
+            "sharedPreferencesNotInitialized": "SharedPreferences başlatılmadı.",
+            "@sharedPreferencesNotInitialized": {
+              "description": "SharedPreferences başlatılmadan erişildiğinde gösterilen hata mesajı."
+            },
+            "failedToSaveSessions": "Oturumlar kaydedilemedi.",
+            "@failedToSaveSessions": {
+              "description": "Oturumlar kaydedilemediğinde gösterilen hata mesajı."
+            },
+            "failedToRetrieveSessions": "Oturumlar getirilemedi.",
+            "@failedToRetrieveSessions": {
+              "description": "Oturumlar getirilemediğinde gösterilen hata mesajı."
+            },
+            "failedToRemoveSessions": "Oturumlar kaldırılamadı.",
+            "@failedToRemoveSessions": {
+              "description": "Tüm oturumlar kaldırılamadığında gösterilen hata mesajı."
+            },
+            "failedToCreateWatchAccount": "Takip hesabı oluşturulamadı: {error}",
+            "@failedToCreateWatchAccount": {
+              "description": "Takip hesabı oluşturulamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Hata mesajını içeren istisna."
+                }
+              }
+            },
+            "accountAlreadyAdded": "Hesap zaten eklenmiş.",
+            "@accountAlreadyAdded": {
+              "description": "Zaten eklenmiş bir hesap eklenmeye çalışıldığında gösterilen hata mesajı."
+            },
+            "seedPhraseNotAvailable": "Seed phrase mevcut değil.",
+            "@seedPhraseNotAvailable": {
+              "description": "Erişilemeyen bir seed phrase istenildiğinde gösterilen hata mesajı."
+            },
+            "somethingWentWrong": "Bir şeyler ters gitti.",
+            "@somethingWentWrong": {
+              "description": "Genel hata mesajı."
+            },
+            "accountNameNotFoundForId": "Hesap adı bulunamadı: {accountId}",
+            "@accountNameNotFoundForId": {
+              "description": "Belirli bir hesap kimliği için hesap adı bulunamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "accountId": {
+                  "type": "String",
+                  "description": "Hesap kimliği."
+                }
+              }
+            },
+            "failedToSelectAccount": "Hesap seçilemedi: {error}",
+            "@failedToSelectAccount": {
+              "description": "Hesap seçimi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Hata mesajını içeren istisna."
+                }
+              }
+            },
+            "failedToCompleteAccountSetup": "Hesap kurulumu tamamlanamadı: {error}",
+            "@failedToCompleteAccountSetup": {
+              "description": "Hesap kurulumu tamamlanamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Hata mesajını içeren istisna."
+                }
+              }
+            },
+            "invalidIconType": "Simge ya IconData ya da SVG yolu olmalıdır.",
+            "@invalidIconType": {
+              "description": "Geçersiz bir simge türü sağlandığında gösterilen hata mesajı."
+            },
+            "resetAppFailed": "Uygulama sıfırlanamadı: {error}",
+            "@resetAppFailed": {
+              "description": "Uygulama sıfırlama işlemi başarısız olduğunda gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Hata mesajını içeren istisna."
+                }
+              }
+            },
+            "failedToDisconnectWalletConnectSessions": "WalletConnect oturumları sonlandırılamadı: {error}",
+            "@failedToDisconnectWalletConnectSessions": {
+              "description": "WalletConnect oturumları sonlandırılamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Hata mesajını içeren istisna."
+                }
+              }
+            },
+            "failedToClearStorage": "Depolama temizlenemedi: {error}",
+            "@failedToClearStorage": {
+              "description": "Güvenli depolama temizlenemediğinde gösterilen hata mesajı.",
+              "placeholders": {
+                "error": {
+                  "type": "String",
+                  "description": "Hata mesajını içeren istisna."
+                }
+              }
+            },
+            "failedToLoadArc200Balances": "ARC200 bakiyeleri yüklenemedi.",
+            "@failedToLoadArc200Balances": {
+              "description": "ARC200 bakiyeleri yüklenemediğinde gösterilen hata mesajı."
+            },
+            "noArc200TokenDetailsForNetwork": "Seçilen ağ için ARC200 token bilgileri mevcut değil.",
+            "@noArc200TokenDetailsForNetwork": {
+              "description": "Seçilen ağ için ARC200 token detayları bulunamadığında gösterilen hata mesajı."
+            },
+            "failedToLoadArc200TokenDetails": "ARC200 token detayları yüklenemedi.",
+            "@failedToLoadArc200TokenDetails": {
+              "description": "ARC200 token detayları yüklenemediğinde gösterilen hata mesajı."
+            },
+            "tokenDetailsNotFound": "Token detayları bulunamadı: {contractId}",
+            "@tokenDetailsNotFound": {
+              "description": "Belirli bir sözleşme kimliği için token detayları bulunamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "contractId": {
+                  "type": "String",
+                  "description": "Token detaylarının bulunamadığı sözleşme kimliği."
+                }
+              }
+            },
+            "failedToSearchArc200Assets": "ARC200 varlıkları aranamadı.",
+            "@failedToSearchArc200Assets": {
+              "description": "ARC200 varlıkları aranamadığında gösterilen hata mesajı."
+            },
+            "networkNotConfiguredForArc200": "Seçilen ağ ARC200 işlemleri için yapılandırılmamış.",
+            "@networkNotConfiguredForArc200": {
+              "description": "Seçilen ağın ARC200 işlemleri için yapılandırılmadığında gösterilen hata mesajı."
+            },
+            "failedToFetchArc200Balance": "ARC200 bakiyesi alınamadı: {contractId}",
+            "@failedToFetchArc200Balance": {
+              "description": "Belirli bir sözleşme için ARC200 bakiyesi alınamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "contractId": {
+                  "type": "String",
+                  "description": "Bakiyesinin alınamadığı sözleşme kimliği."
+                }
+              }
+            },
+            "assetNotFoundForContract": "Bu sözleşme için varlık bulunamadı: {contractId}",
+            "@assetNotFoundForContract": {
+              "description": "Belirli bir sözleşme kimliği için varlık bulunamadığında gösterilen hata mesajı.",
+              "placeholders": {
+                "contractId": {
+                  "type": "String",
+                  "description": "Varlığın bulunamadığı sözleşme kimliği."
+                }
+              }
+            },
+            "copiedToClipboard": "Panoya kopyalandı",
+            "@copiedToClipboard": {
+              "description": "Bir öğe başarıyla panoya kopyalandığında gösterilen mesaj."
+            },
+            "unsupportedEncodingOrInvalidFormat": "Desteklenmeyen kodlama veya geçersiz dize formatı.",
+            "@unsupportedEncodingOrInvalidFormat": {
+              "description": "Giriş dizesi desteklenmeyen bir kodlama veya geçersiz bir format içerdiğinde gösterilen hata mesajı."
+            },
+            "privateKeyMissingInUri": "URI içinde özel anahtar eksik.",
+            "@privateKeyMissingInUri": {
+              "description": "Bir URI girişinde özel anahtar eksik olduğunda gösterilen hata mesajı."
+            },
+            "unsupportedEncodingInUri": "URI içinde desteklenmeyen kodlama.",
+            "@unsupportedEncodingInUri": {
+              "description": "Bir URI içinde belirtilen kodlama desteklenmediğinde gösterilen hata mesajı."
+            },
+            "invalidHexStringLength": "Geçersiz hex dize uzunluğu.",
+            "@invalidHexStringLength": {
+              "description": "Bir hex dizesi geçersiz bir uzunluğa sahip olduğunda gösterilen hata mesajı."
+            },
+            "invalidBase64String": "Geçersiz Base64 dizesi.",
+            "@invalidBase64String": {
+              "description": "Bir Base64 dizesi geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "invalidBase32String": "Geçersiz Base32 dizesi.",
+            "@invalidBase32String": {
+              "description": "Bir Base32 dizesi geçersiz olduğunda gösterilen hata mesajı."
+            },
+            "hereIsMyQRCode": "İşte QR Kodum!",
+            "@hereIsMyQRCode": {
+              "description": "Paylaşılan QR koduna eşlik eden metin."
+            },
+            "failedToApproveSession": "Oturum onaylanamadı.",
+            "@failedToApproveSession": {
+              "description": "WalletConnect oturumu onaylanamadığında gösterilen hata mesajı."
+            },
+            "failedToDisconnectSession": "Oturum sonlandırılamadı.",
+            "@failedToDisconnectSession": {
+              "description": "WalletConnect oturumu sonlandırılamadığında gösterilen hata mesajı."
+            },
+            "language": "Dil",
+            "@language": {
+              "description": "Dil seçimi açılır listesi için etiket."
+            }                                                                                
+        }

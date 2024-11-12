@@ -69,6 +69,10 @@ class LanguagePicker extends ConsumerWidget {
         return 'English';
       case 'th':
         return 'ไทย';
+      case 'tr':
+        return 'Türkçe';
+      case 'vi':
+        return 'Tiếng Việt';
       default:
         return languageCode;
     }
