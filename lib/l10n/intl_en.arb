@@ -1,58 +1,45 @@
 {
   "@@locale": "en",
-  
   "noInternetConnection": "No Internet Connection",
   "@noInternetConnection": {
     "description": "Shown in the banner when the device has no internet connectivity."
   },
-  
   "initializationError": "Initialization error, please restart the app.",
   "@initializationError": {
     "description": "Error message displayed when app initialization fails."
   },
-  
   "unknown": "Unknown",
   "@unknown": {
     "description": "Displayed when the asset name is unknown."
   },
-  
   "alreadyAdded": "Already\nadded",
   "@alreadyAdded": {
     "description": "Displayed when an asset is already added to the user's list."
   },
-
   "defaultConfirmationTitle": "Are you sure?",
   "@defaultConfirmationTitle": {
     "description": "Default title for confirmation dialogs."
   },
-  
   "defaultConfirmationContent": "Do you want to proceed with this action?",
   "@defaultConfirmationContent": {
     "description": "Default content for confirmation dialogs."
   },
-  
   "yes": "Yes",
   "@yes": {
     "description": "Label for the confirmation button."
   },
-  
   "no": "No",
   "@no": {
     "description": "Label for the cancel button in confirmation dialogs."
   },
-  
   "ok": "OK",
   "@ok": {
     "description": "Label for the OK button in dialogs."
   },
-
   "confirm": "Confirm",
   "@confirm": {
     "description": "Default text for confirmation button on bottom sheets."
   },
-
-
-
   "pullToRefresh": "Pull down to refresh",
   "@pullToRefresh": {
     "description": "Shown when the user can pull down to refresh the content."
@@ -65,12 +52,10 @@
   "@refreshing": {
     "description": "Shown when the refresh action is in progress."
   },
-
   "initializing": "Init",
   "@initializing": {
     "description": "Prefix text shown during initialization with animated dots."
   },
-
   "reset": "Reset",
   "@reset": {
     "description": "Text for the reset confirmation button."
@@ -87,7 +72,6 @@
   "@incorrectPinError": {
     "description": "Error message shown when an incorrect PIN is entered."
   },
-
   "timeout1Minute": "1 minute",
   "@timeout1Minute": {
     "description": "Timeout duration of 1 minute."
@@ -108,8 +92,6 @@
   "@timeout15Minutes": {
     "description": "Timeout duration of 15 minutes."
   },
-
-  
     "transactionGroupSizeExceeded": "Transaction group size exceeds the maximum size of \"{maxSize}\"",
     "@transactionGroupSizeExceeded": {
       "description": "Error message when the transaction group size exceeds the maximum allowed.",
@@ -136,14 +118,11 @@
   "@genericErrorMessage": {
     "description": "Generic error message displayed when an unexpected error occurs."
   },
-
-
-    "notAvailable": "N/A",
-    "@notAvailable": {
-      "description": "Default value for asset unit name when it's not available."
-    },
-  
-    "contactsTab": "Contacts",
+  "notAvailable": "N/A",
+  "@notAvailable": {
+    "description": "Default value for asset unit name when it's not available."
+  },
+  "contactsTab": "Contacts",
   "@contactsTab": {
     "description": "Tab title for the contacts list."
   },
@@ -187,12 +166,10 @@
   "@noAccountsFound": {
     "description": "Message displayed when no accounts are available."
   },
-
   "noPublicKey": "No Public Key",
   "@noPublicKey": {
     "description": "Fallback message when an account has no public key."
   },
-
   "assetsTab": "Assets",
 "@assetsTab": {
   "description": "Label for the Assets tab in the dashboard."
@@ -533,27 +510,22 @@
 "@connectToTitle": {
   "description": "Dialog title for connecting to a WalletConnect session."
 },
-
 "failedFinalizeAccountImport": "Failed to finalize account import.",
 "@failedFinalizeAccountImport": {
   "description": "Error message when account import could not be completed."
 },
-
 "errorProcessingPublicKey": "Error processing public key",
 "@errorProcessingPublicKey": {
   "description": "Error message when a public key fails to process."
 },
-
 "successfullyConnected": "Successfully connected",
 "@successfullyConnected": {
   "description": "Message displayed after a successful WalletConnect connection."
 },
-
 "nextQrCode": "Next QR:",
 "@nextQrCode": {
   "description": "Label for indicating the next QR code part to scan."
 },
-
 "partNumber": "Part {partNumber}",
 "@partNumber": {
   "description": "Label for indicating the current QR code part being scanned.",
@@ -564,38 +536,30 @@
     }
   }
 },
-
-
 "expectedPrivateKeyButPublic": "Expected a private key QR code but found a public key.",
 "@expectedPrivateKeyButPublic": {
   "description": "Error message for mismatched QR code type when expecting private key but received public key."
 },
-
 "expectedPrivateKeyButWalletConnect": "Expected a private key QR code but found a WalletConnect URI.",
 "@expectedPrivateKeyButWalletConnect": {
   "description": "Error message for mismatched QR code type when expecting private key but received WalletConnect URI."
 },
-
 "expectedPublicKey": "Expected a public key QR code but found something else.",
 "@expectedPublicKey": {
   "description": "Error message when expecting public key but received a different type of QR code."
 },
-
 "failedParseWalletConnectUri": "Failed to parse WalletConnect URI",
 "@failedParseWalletConnectUri": {
   "description": "Error message for failure to parse a WalletConnect URI."
 },
-
 "invalidPageFormat": "Invalid page format in paginated URI",
 "@invalidPageFormat": {
   "description": "Error message for an invalid page parameter format in a paginated URI."
 },
-
 "missingPrivateKeyLegacy": "Missing privatekey in legacy URI",
 "@missingPrivateKeyLegacy": {
   "description": "Error message when a legacy URI is missing the private key."
 },
-
 "unknownImportUriFormat": "Unknown import account URI format",
 "@unknownImportUriFormat": {
   "description": "Error message when the import account URI format is unrecognized."
@@ -604,12 +568,10 @@
 "@importAccountTitle": {
   "description": "Title for the screen when scanning a private key to import an account."
 },
-
 "scanAddressTitle": "Scan Address",
 "@scanAddressTitle": {
   "description": "Title for the screen when scanning a public key address."
 },
-
 "connectTitle": "Connect",
 "@connectTitle": {
   "description": "Title for the screen when scanning to connect a WalletConnect session."
@@ -695,7 +657,6 @@
 "@insufficientFundsError": {
   "description": "Error message when there are insufficient funds."
 },
-
 "transactionFailedToConfirm": "Transaction failed to confirm within the expected rounds.",
 "@transactionFailedToConfirm": {
   "description": "Error message when a transaction fails to confirm within expected rounds."
@@ -1097,7 +1058,6 @@
 "@delete": {
   "description": "Label for the delete button."
 },
-
 "confirmDeleteAccount": "Are you sure you want to delete this account?",
 "@confirmDeleteAccount": {
   "description": "Confirmation message for deleting an account."
@@ -1675,7 +1635,6 @@
 "@settingNewPin": {
   "description": "Overlay text shown during PIN change process."
 },
-
 "accountNameNotFound": "Account name not found for activeAccountId: {activeAccountId}",
 "@accountNameNotFound": {
   "description": "Error message when the account name for a specific ID is not found.",
@@ -1734,7 +1693,6 @@
 "@failedToRemoveSessions": {
   "description": "Error message when removing all sessions fails."
 },
-
 "failedToCreateWatchAccount": "Failed to create watch account: {error}",
 "@failedToCreateWatchAccount": {
   "description": "Error message when creating a watch account fails.",
@@ -1749,7 +1707,6 @@
 "@accountAlreadyAdded": {
   "description": "Error message when attempting to add an already existing account."
 },
-
 "seedPhraseNotAvailable": "Seed phrase is not available.",
 "@seedPhraseNotAvailable": {
   "description": "Error message when attempting to access a seed phrase that is not available."
@@ -1911,6 +1868,9 @@
 "failedToDisconnectSession": "Failed to disconnect session.",
 "@failedToDisconnectSession": {
   "description": "Error message when disconnecting a WalletConnect session fails."
+},
+"language": "Language",
+"@language": {
+  "description": "Label for the language selection dropdown."
 }
-
 }

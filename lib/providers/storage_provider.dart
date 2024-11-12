@@ -406,4 +406,14 @@ class StorageService {
       debugPrint('No ARC-0200 assets to clear for account: $accountId');
     }
   }
+
+  static const String _preferredLanguageKey = 'preferredLanguage';
+
+  Future<void> setPreferredLanguage(String languageCode) async {
+    await _prefs?.setString(_preferredLanguageKey, languageCode);
+  }
+
+  String? getPreferredLanguage() {
+    return _prefs?.getString(_preferredLanguageKey);
+  }
 }

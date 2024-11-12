@@ -494,6 +494,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Invalid WalletConnect URI format."),
         "justABitMore": MessageLookupByLibrary.simpleMessage("Just a bit more"),
         "keyNeitherBase64NorHex": m45,
+        "language": MessageLookupByLibrary.simpleMessage("Language"),
         "loading": MessageLookupByLibrary.simpleMessage("Loading..."),
         "loadingAccount":
             MessageLookupByLibrary.simpleMessage("Loading Account"),

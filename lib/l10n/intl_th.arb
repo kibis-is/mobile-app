@@ -1,0 +1,1874 @@
+{
+    "@@locale": "th",
+    "noInternetConnection": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
+    "@noInternetConnection": {
+      "description": "แสดงในแบนเนอร์เมื่ออุปกรณ์ไม่มีการเชื่อมต่ออินเทอร์เน็ต"
+    },
+    "initializationError": "เกิดข้อผิดพลาดในการเริ่มต้น กรุณารีสตาร์ทแอป",
+    "@initializationError": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อการเริ่มต้นแอปพลิเคชันล้มเหลว"
+    },
+    "unknown": "ไม่ทราบ",
+    "@unknown": {
+      "description": "แสดงเมื่อไม่ทราบชื่อสินทรัพย์"
+    },
+    "alreadyAdded": "เพิ่มแล้ว",
+    "@alreadyAdded": {
+      "description": "แสดงเมื่อสินทรัพย์ถูกเพิ่มในรายการของผู้ใช้แล้ว"
+    },
+    "defaultConfirmationTitle": "คุณแน่ใจหรือไม่",
+    "@defaultConfirmationTitle": {
+      "description": "หัวเรื่องเริ่มต้นสำหรับกล่องยืนยัน"
+    },
+    "defaultConfirmationContent": "คุณต้องการดำเนินการนี้ต่อหรือไม่",
+    "@defaultConfirmationContent": {
+      "description": "เนื้อหาเริ่มต้นสำหรับกล่องยืนยัน"
+    },
+    "yes": "ใช่",
+    "@yes": {
+      "description": "ป้ายสำหรับปุ่มยืนยัน"
+    },
+    "no": "ไม่",
+    "@no": {
+      "description": "ป้ายสำหรับปุ่มยกเลิกในกล่องยืนยัน"
+    },
+    "ok": "ตกลง",
+    "@ok": {
+      "description": "ป้ายสำหรับปุ่มตกลงในกล่องโต้ตอบ"
+    },
+    "confirm": "ยืนยัน",
+    "@confirm": {
+      "description": "ข้อความเริ่มต้นสำหรับปุ่มยืนยันในแผ่นด้านล่าง"
+    },
+    "pullToRefresh": "ดึงลงเพื่อรีเฟรช",
+    "@pullToRefresh": {
+      "description": "แสดงเมื่อผู้ใช้สามารถดึงลงเพื่อรีเฟรชเนื้อหา"
+    },
+    "releaseToRefresh": "ปล่อยเพื่อรีเฟรช",
+    "@releaseToRefresh": {
+      "description": "แสดงเมื่อผู้ใช้ควรปล่อยเพื่อเริ่มการรีเฟรช"
+    },
+    "refreshing": "กำลังรีเฟรช",
+    "@refreshing": {
+      "description": "แสดงเมื่อการกระทำการรีเฟรชกำลังดำเนินการ"
+    },
+    "initializing": "กำลังเริ่มต้น",
+    "@initializing": {
+      "description": "ข้อความนำที่แสดงระหว่างการเริ่มต้นด้วยจุดที่เคลื่อนไหว"
+    },
+    "reset": "รีเซ็ต",
+    "@reset": {
+      "description": "ข้อความสำหรับปุ่มยืนยันการรีเซ็ต"
+    },
+    "resetConfirmationMessage": "คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตอุปกรณ์นี้ การดำเนินการนี้จะลบบัญชี การตั้งค่า และข้อมูลความปลอดภัยทั้งหมด",
+    "@resetConfirmationMessage": {
+      "description": "ข้อความยืนยันที่แสดงเมื่อรีเซ็ตแอป"
+    },
+    "pinMismatchError": "รหัส PIN ไม่ตรงกัน",
+    "@pinMismatchError": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อรหัส PIN ไม่ตรงกันระหว่างการตั้งค่า"
+    },
+    "incorrectPinError": "รหัส PIN ไม่ถูกต้อง ลองอีกครั้ง",
+    "@incorrectPinError": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อป้อนรหัส PIN ไม่ถูกต้อง"
+    },
+    "timeout1Minute": "1 นาที",
+    "@timeout1Minute": {
+      "description": "ระยะเวลาหมดเวลา 1 นาที"
+    },
+    "timeout2Minutes": "2 นาที",
+    "@timeout2Minutes": {
+      "description": "ระยะเวลาหมดเวลา 2 นาที"
+    },
+    "timeout5Minutes": "5 นาที",
+    "@timeout5Minutes": {
+      "description": "ระยะเวลาหมดเวลา 5 นาที"
+    },
+    "timeout10Minutes": "10 นาที",
+    "@timeout10Minutes": {
+      "description": "ระยะเวลาหมดเวลา 10 นาที"
+    },
+    "timeout15Minutes": "15 นาที",
+    "@timeout15Minutes": {
+      "description": "ระยะเวลาหมดเวลา 15 นาที"
+    },
+    "transactionGroupSizeExceeded": "ขนาดกลุ่มธุรกรรมเกินขนาดสูงสุดที่ \"{maxSize}\"",
+    "@transactionGroupSizeExceeded": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อขนาดกลุ่มธุรกรรมเกินขนาดที่อนุญาต",
+      "placeholders": {
+        "maxSize": {
+          "type": "int",
+          "description": "ขนาดกลุ่มธุรกรรมสูงสุด"
+        }
+      }
+    },
+    "searchPrompt": "ป้อน assetID, ชื่อ, สินทรัพย์ หรือสัญลักษณ์ ID (สำหรับ ARC-200)",
+    "@searchPrompt": {
+      "description": "ข้อความแจ้งที่แสดงเหนือช่องค้นหา"
+    },
+    "searchQueryLabel": "ค้นหา",
+    "@searchQueryLabel": {
+      "description": "ป้ายสำหรับช่องป้อนการค้นหา"
+    },
+    "noAssetsFound": "ไม่พบสินทรัพย์",
+    "@noAssetsFound": {
+      "description": "แสดงเมื่อไม่มีสินทรัพย์ที่ตรงกับการค้นหา"
+    },
+    "genericErrorMessage": "ขออภัย เกิดข้อผิดพลาด",
+    "@genericErrorMessage": {
+      "description": "ข้อความแสดงข้อผิดพลาดทั่วไปเมื่อเกิดข้อผิดพลาดที่ไม่คาดคิด"
+    },
+    "notAvailable": "ไม่มีข้อมูล",
+    "@notAvailable": {
+      "description": "ค่าเริ่มต้นสำหรับชื่อหน่วยสินทรัพย์เมื่อไม่มี"
+    },
+    "contactsTab": "ผู้ติดต่อ",
+    "@contactsTab": {
+      "description": "ชื่อแท็บสำหรับรายการผู้ติดต่อ"
+    },
+    "myAccountsTab": "บัญชีของฉัน",
+    "@myAccountsTab": {
+      "description": "ชื่อแท็บสำหรับรายการบัญชีของผู้ใช้"
+    },
+    "cancel": "ยกเลิก",
+    "@cancel": {
+      "description": "ป้ายสำหรับปุ่มยกเลิก"
+    },
+    "deleteContactTitle": "ลบผู้ติดต่อ",
+    "@deleteContactTitle": {
+      "description": "หัวเรื่องสำหรับกล่องยืนยันการลบผู้ติดต่อ"
+    },
+    "deleteContactMessage": "คุณแน่ใจหรือไม่ว่าต้องการลบ {contactName}",
+    "@deleteContactMessage": {
+      "description": "ข้อความที่แสดงเมื่อยืนยันการลบผู้ติดต่อ",
+      "placeholders": {
+        "contactName": {
+          "type": "String",
+          "description": "ชื่อของผู้ติดต่อที่จะลบ"
+        }
+      }
+    },
+    "selectAccountTitle": "เลือกบัญชี",
+    "@selectAccountTitle": {
+      "description": "หัวเรื่องสำหรับหน้าจอเลือกบัญชี"
+    },
+    "errorMessage": "ข้อผิดพลาด: {error}",
+    "@errorMessage": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อเกิดข้อผิดพลาด",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "ข้อความข้อผิดพลาดที่จะแสดง"
+        }
+      }
+    },
+    "noAccountsFound": "ไม่พบบัญชี",
+    "@noAccountsFound": {
+      "description": "ข้อความแสดงเมื่อไม่มีบัญชีที่สามารถใช้ได้"
+    },
+    "noPublicKey": "ไม่มีคีย์สาธารณะ",
+    "@noPublicKey": {
+      "description": "ข้อความสำรองเมื่อบัญชีไม่มีคีย์สาธารณะ"
+    },
+  
+    "assetsTab": "สินทรัพย์",
+    "@assetsTab": {
+      "description": "ป้ายสำหรับแท็บสินทรัพย์ในแดชบอร์ด"
+    },
+    "nftsTab": "NFTs",
+    "@nftsTab": {
+      "description": "ป้ายสำหรับแท็บ NFTs ในแดชบอร์ด"
+    },
+    "activityTab": "กิจกรรม",
+    "@activityTab": {
+      "description": "ป้ายสำหรับแท็บกิจกรรมในแดชบอร์ด"
+    },
+    "selectNetworkHeader": "เลือกเครือข่าย",
+    "@selectNetworkHeader": {
+      "description": "หัวเรื่องสำหรับแผ่นด้านล่างการเลือกเครือข่าย"
+    },
+    "networkSwitchSuccess": "เปลี่ยนไปใช้ {networkName} แล้ว",
+    "@networkSwitchSuccess": {
+      "description": "ข้อความแสดงเมื่อการเปลี่ยนเครือข่ายสำเร็จ",
+      "placeholders": {
+        "networkName": {
+          "type": "String",
+          "description": "ชื่อของเครือข่ายที่เปลี่ยนไป"
+        }
+      }
+    },
+    "networkSwitchFailure": "ไม่สามารถเปลี่ยนไปใช้ {networkName}",
+    "@networkSwitchFailure": {
+      "description": "ข้อความแสดงเมื่อการเปลี่ยนเครือข่ายล้มเหลว",
+      "placeholders": {
+        "networkName": {
+          "type": "String",
+          "description": "ชื่อของเครือข่ายที่ไม่สามารถเปลี่ยนไปได้"
+        }
+      }
+    },
+    "minimumBalanceInfo": "ยอดคงเหลือขั้นต่ำคือ {balance} VOI ขึ้นอยู่กับการกำหนดค่าบัญชี นี่คือยอดคงเหลือขั้นต่ำที่จำเป็นในการเปิดบัญชี",
+    "@minimumBalanceInfo": {
+      "description": "ข้อความอธิบายยอดคงเหลือขั้นต่ำที่จำเป็นสำหรับบัญชี",
+      "placeholders": {
+        "balance": {
+          "type": "String",
+          "description": "มูลค่ายอดคงเหลือขั้นต่ำ"
+        }
+      }
+    },
+    "infoHeader": "ข้อมูล",
+    "@infoHeader": {
+      "description": "หัวเรื่องสำหรับแผ่นข้อมูล"
+    },
+    "loadingAccount": "กำลังโหลดบัญชี",
+    "@loadingAccount": {
+      "description": "ข้อความที่แสดงเมื่อรายละเอียดบัญชีกำลังโหลด"
+    },
+    "pleaseWait": "กรุณารอ",
+    "@pleaseWait": {
+      "description": "ข้อความที่แสดงขณะรอให้รายละเอียดบัญชีโหลด"
+    },
+    "genericError": "ข้อผิดพลาด",
+    "@genericError": {
+      "description": "ข้อความแสดงข้อผิดพลาดทั่วไปเมื่อเกิดข้อผิดพลาด"
+    },
+    "errorLoadingTransactions": "เกิดข้อผิดพลาดในการโหลดธุรกรรม",
+    "@errorLoadingTransactions": {
+      "description": "แสดงเมื่อการโหลดธุรกรรมล้มเหลว"
+    },
+    "selectTransactionPrompt": "เลือกธุรกรรมเพื่อดูรายละเอียด",
+    "@selectTransactionPrompt": {
+      "description": "ข้อความแจ้งในโหมดหน้าจอกว้างให้เลือกธุรกรรม"
+    },
+    "noTransactionsFound": "ไม่พบธุรกรรม",
+    "@noTransactionsFound": {
+      "description": "แสดงเมื่อไม่มีธุรกรรมใด ๆ"
+    },
+    "noTransactionsMade": "คุณยังไม่ได้ทำธุรกรรมใด ๆ",
+    "@noTransactionsMade": {
+      "description": "แสดงเมื่อผู้ใช้ยังไม่ได้ทำธุรกรรม"
+    },
+    "noMoreTransactions": "ไม่มีธุรกรรมเพิ่มเติม",
+    "@noMoreTransactions": {
+      "description": "แสดงเมื่อไม่มีธุรกรรมเพิ่มเติมที่จะโหลด"
+    },
+    "noAssets": "ไม่พบสินทรัพย์",
+    "@noAssets": {
+      "description": "แสดงเมื่อไม่มีสินทรัพย์ที่สามารถใช้ได้"
+    },
+    "noAssetsForFilter": "ไม่พบสินทรัพย์สำหรับตัวกรอง",
+    "@noAssetsForFilter": {
+      "description": "แสดงเมื่อสินทรัพย์ที่ถูกกรองไม่มีผลลัพธ์"
+    },
+    "tryClearingFilter": "ลองล้างตัวกรองเพื่อดูสินทรัพย์ทั้งหมด",
+    "@tryClearingFilter": {
+      "description": "ข้อความย่อยแนะนำให้ล้างตัวกรอง"
+    },
+    "noAssetsAdded": "คุณยังไม่ได้เพิ่มสินทรัพย์ใด ๆ",
+    "@noAssetsAdded": {
+      "description": "ข้อความย่อยแสดงเมื่อยังไม่ได้เพิ่มสินทรัพย์"
+    },
+    "clearFilter": "ล้างตัวกรอง",
+    "@clearFilter": {
+      "description": "ป้ายสำหรับปุ่มล้างตัวกรอง"
+    },
+    "retry": "ลองอีกครั้ง",
+    "@retry": {
+      "description": "ป้ายสำหรับปุ่มลองโหลดสินทรัพย์อีกครั้ง"
+    },
+    "errorLoadingAssets": "เกิดข้อผิดพลาดในการโหลดสินทรัพย์",
+    "@errorLoadingAssets": {
+      "description": "แสดงเมื่อการโหลดสินทรัพย์ล้มเหลว"
+    },
+    "sortAndFilter": "เรียงลำดับและกรองสินทรัพย์",
+    "@sortAndFilter": {
+      "description": "หัวเรื่องกล่องโต้ตอบสำหรับการเรียงลำดับและกรองสินทรัพย์"
+    },
+    "showFrozenAssets": "แสดงสินทรัพย์ที่ถูกแช่แข็ง",
+    "@showFrozenAssets": {
+      "description": "ป้ายช่องทำเครื่องหมายเพื่อสลับการแสดงสินทรัพย์ที่ถูกแช่แข็ง"
+    },
+    "copyAddress": "คัดลอกที่อยู่",
+    "@copyAddress": {
+      "description": "แสดงเป็นการกระทำเพื่อคัดลอกที่อยู่ของบัญชี"
+    },
+    "shareAddress": "แชร์ที่อยู่",
+    "@shareAddress": {
+      "description": "แสดงเป็นการกระทำเพื่อแชร์ที่อยู่ของบัญชี"
+    },
+    "editAccount": "แก้ไข",
+    "@editAccount": {
+      "description": "แสดงเป็นการกระทำเพื่อแก้ไขรายละเอียดบัญชี"
+    },
+    "refreshAccount": "รีเฟรช",
+    "@refreshAccount": {
+      "description": "แสดงเป็นการกระทำเพื่อรีเฟรชข้อมูลบัญชี"
+    },
+    "noAccountName": "ไม่มีชื่อบัญชี",
+    "@noAccountName": {
+      "description": "แสดงเมื่อบัญชีไม่มีชื่อ"
+    },
+    "options": "ตัวเลือก",
+    "@options": {
+      "description": "หัวเรื่องสำหรับแผ่นด้านล่างที่มีตัวเลือกบัญชี"
+    },
+    "noNftsFound": "ไม่พบ NFTs",
+    "@noNftsFound": {
+      "description": "แสดงเมื่อไม่มี NFTs ที่สามารถใช้ได้"
+    },
+    "noNftsForFilter": "ไม่พบ NFTs สำหรับตัวกรอง",
+    "@noNftsForFilter": {
+      "description": "แสดงเมื่อไม่มี NFTs ตรงกับเกณฑ์ตัวกรอง"
+    },
+    "noNftsAdded": "คุณยังไม่ได้เพิ่ม NFTs ใด ๆ",
+    "@noNftsAdded": {
+      "description": "แสดงเมื่อผู้ใช้ยังไม่ได้เพิ่ม NFTs"
+    },
+    "filter": "ตัวกรอง",
+    "@filter": {
+      "description": "ป้ายข้อความสำหรับช่องป้อนตัวกรอง"
+    },
+    "scanQrCode": "สแกนรหัส QR",
+    "@scanQrCode": {
+      "description": "หัวเรื่องที่แสดงในกล่องโต้ตอบ QR"
+    },
+    "shareQr": "แชร์ QR",
+    "@shareQr": {
+      "description": "คำแนะนำเครื่องมือสำหรับการแชร์รหัส QR"
+    },
+    "copyUri": "คัดลอก URI",
+    "@copyUri": {
+      "description": "คำแนะนำเครื่องมือสำหรับการคัดลอกข้อมูล QR ไปยังคลิปบอร์ด"
+    },
+    "downloadQrImage": "ดาวน์โหลดภาพ QR",
+    "@downloadQrImage": {
+      "description": "คำแนะนำเครื่องมือสำหรับการดาวน์โหลดรหัส QR เป็นภาพ"
+    },
+    "close": "ปิด",
+    "@close": {
+      "description": "ข้อความปุ่มเพื่อปิดกล่องโต้ตอบ"
+    },
+    "transactionIdCopied": "คัดลอก ID ธุรกรรมแล้ว",
+    "@transactionIdCopied": {
+      "description": "ข้อความแถบสถานะที่แสดงเมื่อคัดลอก ID ธุรกรรม"
+    },
+  
+    "payment": "การชำระเงิน",
+    "@payment": {
+      "description": "ป้ายสำหรับธุรกรรมประเภทการชำระเงิน"
+    },
+    "assetTransfer": "การโอนสินทรัพย์",
+    "@assetTransfer": {
+      "description": "ป้ายสำหรับการโอนสินทรัพย์ที่เกี่ยวข้องกับโทเค็น"
+    },
+    "errorTitle": "ข้อผิดพลาด",
+    "@errorTitle": {
+      "description": "หัวเรื่องที่แสดงบนหน้าจอข้อผิดพลาด"
+    },
+    "defaultErrorMessage": "เกิดข้อผิดพลาด ไม่มีรายละเอียดเพิ่มเติม",
+    "@defaultErrorMessage": {
+      "description": "ข้อความแสดงข้อผิดพลาดเริ่มต้นเมื่อไม่มีรายละเอียดเพิ่มเติม"
+    },
+    "back": "กลับ",
+    "@back": {
+      "description": "ป้ายสำหรับปุ่มที่นำทางกลับไปยังหน้าจอหลัก"
+    },
+    "createPin": "สร้าง PIN",
+    "@createPin": {
+      "description": "หัวเรื่องสำหรับหน้าจอที่ผู้ใช้สร้างรหัส PIN"
+    },
+    "confirmPin": "ยืนยัน PIN",
+    "@confirmPin": {
+      "description": "หัวเรื่องสำหรับหน้าจอที่ผู้ใช้ยืนยันรหัส PIN"
+    },
+    "unlock": "ปลดล็อก",
+    "@unlock": {
+      "description": "หัวเรื่องสำหรับหน้าจอที่ผู้ใช้ปลดล็อกแอป"
+    },
+    "verifyPin": "ยืนยัน PIN",
+    "@verifyPin": {
+      "description": "หัวเรื่องสำหรับหน้าจอที่ผู้ใช้ยืนยันรหัส PIN"
+    },
+    "resettingApp": "กำลังรีเซ็ตแอป",
+    "@resettingApp": {
+      "description": "ข้อความแสดงเมื่อแอปกำลังรีเซ็ต"
+    },
+    "invalidQrCodeData": "ข้อมูลรหัส QR ไม่ถูกต้อง",
+    "@invalidQrCodeData": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อสแกนรหัส QR ที่ไม่มีข้อมูล"
+    },
+    "expectedPrivateKeyQr": "คาดหวังรหัส QR คีย์ส่วนตัวแต่พบคีย์สาธารณะ",
+    "@expectedPrivateKeyQr": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อสแกนคีย์สาธารณะในโหมดคีย์ส่วนตัว"
+    },
+    "expectedWalletConnectUri": "คาดหวังรหัส QR คีย์ส่วนตัวแต่พบ WalletConnect URI",
+    "@expectedWalletConnectUri": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อสแกน WalletConnect URI ในโหมดคีย์ส่วนตัว"
+    },
+    "expectedPublicKeyQr": "คาดหวังรหัส QR คีย์สาธารณะแต่พบอย่างอื่น",
+    "@expectedPublicKeyQr": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อสแกนรหัส QR ที่ไม่ใช่คีย์สาธารณะในโหมดคีย์สาธารณะ"
+    },
+    "expectedWalletConnectSessionQr": "คาดหวังรหัส QR เซสชัน WalletConnect แต่พบอย่างอื่น",
+    "@expectedWalletConnectSessionQr": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อสแกนรหัส QR ที่ไม่ใช่ WalletConnect ในโหมดเซสชัน"
+    },
+    "unknownQrCodeType": "ประเภทของรหัส QR ไม่ทราบ",
+    "@unknownQrCodeType": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อประเภทของรหัส QR ไม่ได้รับการรับรู้"
+    },
+    "walletConnectV1NotSupported": "ไม่รองรับ WalletConnect V1 URIs",
+    "@walletConnectV1NotSupported": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อสแกน WalletConnect V1 URI"
+    },
+    "invalidWalletConnectUri": "รูปแบบ WalletConnect URI ไม่ถูกต้อง",
+    "@invalidWalletConnectUri": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อรูปแบบ WalletConnect URI ไม่ถูกต้อง"
+    },
+    "failedToParseWalletConnectUri": "ไม่สามารถแยกวิเคราะห์ WalletConnect URI: {error}",
+    "@failedToParseWalletConnectUri": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อการแยกวิเคราะห์ WalletConnect URI ล้มเหลว",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "ข้อความข้อผิดพลาดที่เกิดขึ้นระหว่างการแยกวิเคราะห์"
+        }
+      }
+    },
+    "unknownImportAccountUriFormat": "รูปแบบ URI การนำเข้าบัญชีไม่ทราบ",
+    "@unknownImportAccountUriFormat": {
+      "description": "ข้อความแสดงข้อผิดพลาดเมื่อรูปแบบ URI การนำเข้าบัญชีไม่รู้จัก"
+    },
+    
+        "paginatedUriMissingInfo": "URI แบบแบ่งหน้าขาดข้อมูล checksum หรือหน้า",
+        "@paginatedUriMissingInfo": {
+          "description": "ข้อความแสดงข้อผิดพลาดสำหรับ URI แบบแบ่งหน้าที่ขาดข้อมูล checksum หรือหน้า"
+        },
+        "invalidPageFormatInUri": "รูปแบบหน้าที่ไม่ถูกต้องใน URI แบบแบ่งหน้า",
+        "@invalidPageFormatInUri": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อพารามิเตอร์หน้าของ URI แบบแบ่งหน้ามีรูปแบบไม่ถูกต้อง"
+        },
+        "invalidPublicKeyFormat": "รูปแบบคีย์สาธารณะไม่ถูกต้อง",
+        "@invalidPublicKeyFormat": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อรูปแบบคีย์สาธารณะที่ให้มาไม่ถูกต้อง"
+        },
+        "invalidUriFormat": "รูปแบบ URI ไม่ถูกต้อง",
+        "@invalidUriFormat": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อ URI ไม่สามารถแยกวิเคราะห์ได้"
+        },
+        "invalidPrivateKey": "คีย์ส่วนตัวไม่ถูกต้อง",
+        "@invalidPrivateKey": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อคีย์ส่วนตัวไม่ผ่านการตรวจสอบความถูกต้อง"
+        },
+        "missingPrivateKeyInLegacyUri": "ไม่มีคีย์ส่วนตัวใน URI แบบเก่า",
+        "@missingPrivateKeyInLegacyUri": {
+          "description": "ข้อความแสดงข้อผิดพลาดสำหรับ URI การนำเข้าแบบเก่าที่ไม่มีคีย์ส่วนตัว"
+        },
+        "keyNeitherBase64NorHex": "คีย์ไม่ใช่ Base64 หรือ Hex ที่ถูกต้อง: {key}",
+        "@keyNeitherBase64NorHex": {
+          "description": "ข้อความดีบักเมื่อคีย์ส่วนตัวไม่ใช่ Base64 หรือ Hex ที่ถูกต้อง",
+          "placeholders": {
+            "key": {
+              "type": "String",
+              "description": "คีย์ที่ไม่ถูกต้องที่ให้มา"
+            }
+          }
+        },
+        "failedToDecodePrivateKey": "ไม่สามารถถอดรหัสคีย์ส่วนตัว: {error}",
+        "@failedToDecodePrivateKey": {
+          "description": "ข้อความดีบักสำหรับความล้มเหลวในการถอดรหัสคีย์ส่วนตัว",
+          "placeholders": {
+            "error": {
+              "type": "String",
+              "description": "ข้อความข้อผิดพลาดจากกระบวนการถอดรหัส"
+            }
+          }
+        },
+        "unknownWalletConnectVersion": "ไม่ทราบเวอร์ชันของ WalletConnect ไม่สามารถจับคู่ได้",
+        "@unknownWalletConnectVersion": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อพบเวอร์ชัน WalletConnect ที่ไม่ทราบ"
+        },
+        "invalidPrivateKeyLength": "ความยาวคีย์ส่วนตัวไม่ถูกต้อง",
+        "@invalidPrivateKeyLength": {
+          "description": "ข้อความแสดงข้อผิดพลาดสำหรับความยาวคีย์ส่วนตัวที่ไม่ถูกต้อง"
+        },
+        "importedAccount": "บัญชีที่นำเข้า",
+        "@importedAccount": {
+          "description": "ชื่อบัญชีเริ่มต้นสำหรับบัญชีที่นำเข้า"
+        },
+        "importedAccountWithCounter": "บัญชีที่นำเข้า {counter}",
+        "@importedAccountWithCounter": {
+          "description": "ชื่อบัญชีเริ่มต้นพร้อมตัวนับสำหรับบัญชีที่นำเข้า",
+          "placeholders": {
+            "counter": {
+              "type": "int",
+              "example": "1"
+            }
+          }
+        },
+        "connectToTitle": "เชื่อมต่อกับ:",
+        "@connectToTitle": {
+          "description": "หัวเรื่องกล่องโต้ตอบสำหรับการเชื่อมต่อเซสชัน WalletConnect"
+        },
+        "failedFinalizeAccountImport": "การนำเข้าบัญชีล้มเหลว",
+        "@failedFinalizeAccountImport": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อการนำเข้าบัญชีไม่สามารถเสร็จสมบูรณ์ได้"
+        },
+        "errorProcessingPublicKey": "ข้อผิดพลาดในการประมวลผลคีย์สาธารณะ",
+        "@errorProcessingPublicKey": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อคีย์สาธารณะไม่สามารถประมวลผลได้"
+        },
+        "successfullyConnected": "เชื่อมต่อสำเร็จ",
+        "@successfullyConnected": {
+          "description": "ข้อความที่แสดงหลังจากการเชื่อมต่อ WalletConnect สำเร็จ"
+        },
+        "nextQrCode": "QR ถัดไป:",
+        "@nextQrCode": {
+          "description": "ป้ายกำกับเพื่อระบุส่วน QR โค้ดถัดไปที่จะสแกน"
+        },
+        "partNumber": "ส่วนที่ {partNumber}",
+        "@partNumber": {
+          "description": "ป้ายกำกับเพื่อระบุส่วน QR โค้ดปัจจุบันที่กำลังสแกน",
+          "placeholders": {
+            "partNumber": {
+              "type": "int",
+              "example": "2"
+            }
+          }
+        },
+        "expectedPrivateKeyButPublic": "คาดหวังรหัส QR คีย์ส่วนตัวแต่พบคีย์สาธารณะ",
+        "@expectedPrivateKeyButPublic": {
+          "description": "ข้อความแสดงข้อผิดพลาดสำหรับประเภท QR โค้ดที่ไม่ตรงกันเมื่อคาดหวังคีย์ส่วนตัวแต่ได้รับคีย์สาธารณะ"
+        },
+        "expectedPrivateKeyButWalletConnect": "คาดหวังรหัส QR คีย์ส่วนตัวแต่พบ WalletConnect URI",
+        "@expectedPrivateKeyButWalletConnect": {
+          "description": "ข้อความแสดงข้อผิดพลาดสำหรับประเภท QR โค้ดที่ไม่ตรงกันเมื่อคาดหวังคีย์ส่วนตัวแต่ได้รับ WalletConnect URI"
+        },
+        "expectedPublicKey": "คาดหวังรหัส QR คีย์สาธารณะแต่พบอย่างอื่น",
+        "@expectedPublicKey": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อคาดหวังคีย์สาธารณะแต่ได้รับ QR โค้ดประเภทอื่น"
+        },
+        "failedParseWalletConnectUri": "ไม่สามารถแยกวิเคราะห์ WalletConnect URI",
+        "@failedParseWalletConnectUri": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อการแยกวิเคราะห์ WalletConnect URI ล้มเหลว"
+        },
+        "invalidPageFormat": "รูปแบบหน้าที่ไม่ถูกต้องใน URI แบบแบ่งหน้า",
+        "@invalidPageFormat": {
+          "description": "ข้อความแสดงข้อผิดพลาดสำหรับรูปแบบพารามิเตอร์หน้าที่ไม่ถูกต้องใน URI แบบแบ่งหน้า"
+        },
+        "missingPrivateKeyLegacy": "ไม่มีคีย์ส่วนตัวใน URI แบบเก่า",
+        "@missingPrivateKeyLegacy": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อ URI แบบเก่าขาดคีย์ส่วนตัว"
+        },
+        "unknownImportUriFormat": "รูปแบบ URI การนำเข้าบัญชีไม่ทราบ",
+        "@unknownImportUriFormat": {
+          "description": "ข้อความแสดงข้อผิดพลาดเมื่อรูปแบบ URI การนำเข้าบัญชีไม่สามารถระบุได้"
+        },
+
+    "importAccountTitle": "นำเข้าบัญชี",
+    "@importAccountTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอนำเข้าบัญชีเมื่อสแกนคีย์ส่วนตัว"
+    },
+    "scanAddressTitle": "สแกนที่อยู่",
+    "@scanAddressTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอสแกนที่อยู่คีย์สาธารณะ"
+    },
+    "connectTitle": "เชื่อมต่อ",
+    "@connectTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอสแกนเพื่อเชื่อมต่อเซสชัน WalletConnect"
+    },
+    "qrCodeScannerTitle": "เครื่องสแกนรหัส QR",
+    "@qrCodeScannerTitle": {
+        "description": "หัวเรื่องเริ่มต้นสำหรับหน้าจอสแกนรหัส QR"
+    },
+    "processingQrCode": "กำลังประมวลผลรหัส QR",
+    "@processingQrCode": {
+        "description": "ข้อความโหลดที่แสดงขณะประมวลผลรหัส QR ที่สแกน"
+    },
+    "invalidScanResult": "ผลการสแกนไม่ถูกต้อง",
+    "@invalidScanResult": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อผลการสแกน QR ไม่ถูกต้อง"
+    },
+    "noAccountsAvailableToConnect": "ไม่มีบัญชีที่สามารถเชื่อมต่อได้",
+    "@noAccountsAvailableToConnect": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่มีบัญชีที่สามารถใช้ได้สำหรับ WalletConnect"
+    },
+    "errorLoadingAccounts": "เกิดข้อผิดพลาดในการโหลดบัญชี",
+    "@errorLoadingAccounts": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อรายการบัญชีล้มเหลวในการโหลด"
+    },
+    "unnamedAsset": "สินทรัพย์ไม่มีชื่อ",
+    "@unnamedAsset": {
+        "description": "ป้ายที่ใช้เมื่อสินทรัพย์ไม่มีชื่อ"
+    },
+    "noNetwork": "ไม่มีเครือข่าย",
+    "@noNetwork": {
+        "description": "ป้ายที่แสดงเมื่อไม่มีเครือข่ายที่เลือก"
+    },
+    "pleaseEnterValidAmount": "กรุณาป้อนจำนวนเงินที่ถูกต้อง",
+    "@pleaseEnterValidAmount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อจำนวนเงินที่ป้อนไม่ถูกต้อง"
+    },
+    "pleaseEnterValidAlgorandAddress": "กรุณาป้อนที่อยู่ Algorand ที่ถูกต้อง",
+    "@pleaseEnterValidAlgorandAddress": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อป้อนที่อยู่ Algorand ที่ไม่ถูกต้อง"
+    },
+    "insufficientFunds": "ยอดเงินคงเหลือไม่เพียงพอ",
+    "@insufficientFunds": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อยอดเงินคงเหลือไม่เพียงพอสำหรับการทำธุรกรรม"
+    },
+    "transactionSuccessful": "ทำธุรกรรมสำเร็จ",
+    "@transactionSuccessful": {
+        "description": "ข้อความที่แสดงเมื่อธุรกรรมสำเร็จ"
+    },
+    "noActiveAccountIdFound": "ไม่พบ ID บัญชีที่ใช้งาน",
+    "@noActiveAccountIdFound": {
+        "description": "ข้อความข้อผิดพลาดเมื่อไม่มี ID บัญชีที่ใช้งาน"
+    },
+    "privateKeyNotFoundInStorage": "ไม่พบคีย์ส่วนตัวในที่จัดเก็บ",
+    "@privateKeyNotFoundInStorage": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบคีย์ส่วนตัวในที่จัดเก็บ"
+    },
+    "noItemSelectedForTransaction": "ไม่มีรายการที่เลือกสำหรับการทำธุรกรรม",
+    "@noItemSelectedForTransaction": {
+        "description": "ข้อความข้อผิดพลาดเมื่อไม่มีการเลือกสินทรัพย์หรือบัญชีสำหรับการทำธุรกรรม"
+    },
+    "standardAssetTransferSuccessful": "โอนสินทรัพย์มาตรฐานสำเร็จ",
+    "@standardAssetTransferSuccessful": {
+        "description": "ข้อความที่แสดงเมื่อการโอนสินทรัพย์มาตรฐานสำเร็จ"
+    },
+    "arc0200AssetTransferSuccessful": "โอนสินทรัพย์ ARC-0200 สำเร็จ",
+    "@arc0200AssetTransferSuccessful": {
+        "description": "ข้อความที่แสดงเมื่อการโอนสินทรัพย์ ARC-0200 สำเร็จ"
+    },
+    "unsupportedAssetType": "ไม่รองรับประเภทสินทรัพย์: {assetType}",
+    "@unsupportedAssetType": {
+        "description": "ข้อความแสดงข้อผิดพลาดสำหรับประเภทสินทรัพย์ที่ไม่รองรับ",
+        "placeholders": {
+        "assetType": {
+            "type": "String",
+            "description": "ประเภทสินทรัพย์ที่ไม่รองรับ"
+        }
+        }
+    },
+    "insufficientFundsError": "ยอดเงินคงเหลือไม่เพียงพอ",
+    "@insufficientFundsError": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อยอดเงินคงเหลือไม่เพียงพอ"
+    },
+    "transactionFailedToConfirm": "ธุรกรรมไม่สามารถยืนยันได้ภายในรอบที่คาดไว้",
+    "@transactionFailedToConfirm": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อธุรกรรมไม่สามารถยืนยันได้ภายในรอบที่คาดหวัง"
+    },
+    "sendingPayment": "กำลังส่งการชำระเงิน",
+    "@sendingPayment": {
+        "description": "ข้อความที่แสดงขณะส่งการชำระเงิน"
+    },
+    "sendingAsset": "กำลังส่งสินทรัพย์",
+    "@sendingAsset": {
+        "description": "ข้อความที่แสดงขณะส่งสินทรัพย์"
+    },
+    "contactNameUpdatedSuccessfully": "อัปเดตชื่อผู้ติดต่อสำเร็จ",
+    "@contactNameUpdatedSuccessfully": {
+        "description": "ข้อความที่แสดงเมื่ออัปเดตชื่อผู้ติดต่อสำเร็จ"
+    },
+    "contactSavedSuccessfully": "บันทึกผู้ติดต่อสำเร็จ",
+    "@contactSavedSuccessfully": {
+        "description": "ข้อความที่แสดงเมื่อบันทึกผู้ติดต่อสำเร็จ"
+    },
+    "failedToSaveContact": "ไม่สามารถบันทึกผู้ติดต่อ: {error}",
+    "@failedToSaveContact": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการบันทึกผู้ติดต่อล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "max": "สูงสุด",
+    "@max": {
+        "description": "ป้ายสำหรับจำนวนเงินสูงสุด"
+    },
+    "error": "ข้อผิดพลาด",
+    "@error": {
+        "description": "ป้ายสำหรับข้อความข้อผิดพลาด"
+    },
+    "calculating": "กำลังคำนวณ",
+    "@calculating": {
+        "description": "ข้อความที่แสดงเมื่อการคำนวณกำลังดำเนินการ"
+    },
+    "maxVoiAmountCalculation": "จำนวน VOI สูงสุดคำนวณโดย: ยอดคงเหลือ ({balance}) ลบด้วยยอดคงเหลือขั้นต่ำ ({minimumBalance}) และค่าธรรมเนียมธุรกรรมขั้นต่ำ (0001)",
+    "@maxVoiAmountCalculation": {
+        "description": "คำอธิบายเกี่ยวกับการคำนวณจำนวน VOI สูงสุด",
+        "placeholders": {
+        "balance": {},
+        "minimumBalance": {}
+        }
+    },
+    "info": "ข้อมูล",
+    "@info": {
+        "description": "ป้ายหัวเรื่องสำหรับข้อมูล"
+    },
+    "account": "บัญชี",
+    "@account": {
+        "description": "ป้ายสำหรับช่องบัญชี"
+    },
+    "asset": "สินทรัพย์",
+    "@asset": {
+        "description": "ป้ายสำหรับช่องสินทรัพย์"
+    },
+    "amount": "จำนวนเงิน",
+    "@amount": {
+        "description": "ป้ายสำหรับช่องจำนวนเงิน"
+    },
+    "contactNameOptional": "ชื่อผู้ติดต่อ (ไม่บังคับ)",
+    "@contactNameOptional": {
+        "description": "ป้ายสำหรับช่องชื่อผู้ติดต่อ ซึ่งเป็นทางเลือก"
+    },
+    "noteOptional": "หมายเหตุ (ไม่บังคับ)",
+    "@noteOptional": {
+        "description": "ป้ายสำหรับช่องหมายเหตุ ซึ่งเป็นทางเลือก"
+    },
+    "send": "ส่ง",
+    "@send": {
+        "description": "ข้อความสำหรับปุ่มส่ง"
+    },
+    "selectAsset": "เลือกสินทรัพย์",
+    "@selectAsset": {
+        "description": "หัวข้อสำหรับกล่องโต้ตอบเลือกสินทรัพย์"
+    },
+    "transactionFailed": "การทำธุรกรรมล้มเหลว",
+    "@transactionFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการทำธุรกรรมล้มเหลว"
+    },
+    "noAccount": "ไม่มีบัญชี",
+    "@noAccount": {
+        "description": "ข้อความที่แสดงเมื่อไม่มีบัญชีที่ใช้งานอยู่"
+    },
+    "noteTooLarge": "หมายเหตุมีขนาดใหญ่เกินไป",
+    "@noteTooLarge": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อหมายเหตุเกินขนาดไบต์สูงสุดที่อนุญาต"
+    },
+    "sendTransactionTitle": "ส่งธุรกรรม",
+    "@sendTransactionTitle": {
+        "description": "หัวเรื่องที่แสดงในหน้าส่งธุรกรรม"
+    },
+    "loading": "กำลังโหลด",
+    "@loading": {
+        "description": "ข้อความที่แสดงระหว่างสถานะการโหลด"
+    },
+    "failedToLoad": "ไม่สามารถโหลดได้",
+    "@failedToLoad": {
+        "description": "ข้อความที่แสดงเมื่อข้อมูลล้มเหลวในการโหลด"
+    },
+    "recipientAddress": "ที่อยู่ผู้รับ",
+    "@recipientAddress": {
+        "description": "ป้ายสำหรับช่องป้อนที่อยู่ผู้รับ"
+    },
+    "noItems": "ไม่มีรายการ",
+    "@noItems": {
+        "description": "ข้อความที่แสดงเมื่อไม่มีรายการใด ๆ ที่มีอยู่"
+    },
+    "about": "เกี่ยวกับ",
+    "@about": {
+        "description": "หัวเรื่องสำหรับหน้าจอเกี่ยวกับ"
+    },
+    "version": "เวอร์ชัน:",
+    "@version": {
+        "description": "ป้ายสำหรับเวอร์ชันของแอป"
+    },
+    "build": "บิลด์:",
+    "@build": {
+        "description": "ป้ายสำหรับเวอร์ชันบิลด์ของแอป"
+    },
+    "buildNumber": "หมายเลขบิลด์:",
+    "@buildNumber": {
+        "description": "ป้ายสำหรับหมายเลขบิลด์ของแอป"
+    },
+    "advanced": "ขั้นสูง",
+    "@advanced": {
+        "description": "หัวเรื่องสำหรับหน้าจอขั้นสูง"
+    },
+    "networkSwitched": "เปลี่ยนเครือข่ายเป็น {networkName}",
+    "@networkSwitched": {
+        "description": "ข้อความที่แสดงเมื่อเปลี่ยนเครือข่ายสำเร็จ",
+        "placeholders": {
+        "networkName": {}
+        }
+    },
+    "allowTestNetworks": "อนุญาตเครือข่ายทดสอบ",
+    "@allowTestNetworks": {
+        "description": "ป้ายสำหรับสวิตช์เปิดปิดเครือข่ายทดสอบ"
+    },
+    "toggleTestNetworksDescription": "สลับเพื่อรวมเครือข่ายทดสอบในรายการเครือข่าย",
+    "@toggleTestNetworksDescription": {
+        "description": "คำอธิบายสำหรับการเปิดหรือปิดเครือข่ายทดสอบ"
+    },
+    "appearance": "ลักษณะ",
+    "@appearance": {
+        "description": "หัวเรื่องสำหรับหน้าจอลักษณะ"
+    },
+    "darkMode": "โหมดมืด",
+    "@darkMode": {
+        "description": "ป้ายสำหรับสวิตช์เปิดปิดโหมดมืด"
+    },
+    "general": "ทั่วไป",
+    "@general": {
+        "description": "หัวเรื่องสำหรับหน้าจอทั่วไป"
+    },
+    "dangerZone": "เขตอันตราย",
+    "@dangerZone": {
+        "description": "หัวเรื่องสำหรับส่วนเขตอันตราย"
+    },
+    "dangerZoneDescription": "นี่จะลบบัญชีทั้งหมด การตั้งค่า และข้อมูลความปลอดภัย",
+    "@dangerZoneDescription": {
+        "description": "คำอธิบายสำหรับส่วนเขตอันตราย"
+    },
+    "confirmReset": "ยืนยันการรีเซ็ต",
+    "@confirmReset": {
+        "description": "หัวข้อสำหรับกล่องโต้ตอบแป้นพิมพ์เพื่อยืนยันการรีเซ็ต"
+    },
+    "exportAccounts": "ส่งออกบัญชี",
+    "@exportAccounts": {
+        "description": "หัวเรื่องสำหรับหน้าจอส่งออกบัญชี"
+    },
+    "noAccountsForExport": "ไม่มีบัญชีที่พร้อมสำหรับการส่งออก",
+    "@noAccountsForExport": {
+        "description": "ข้อความที่แสดงเมื่อไม่มีบัญชีที่สามารถส่งออกได้"
+    },
+    "unnamedAccount": "บัญชีไม่มีชื่อ",
+    "@unnamedAccount": {
+        "description": "ป้ายสำหรับบัญชีที่ไม่มีชื่อ"
+    },
+    "accountCannotBeExported": "ไม่สามารถส่งออกบัญชีนี้ได้เนื่องจากไม่มีคีย์ส่วนตัว",
+    "@accountCannotBeExported": {
+        "description": "ข้อความที่แสดงเมื่อบัญชีที่ไม่มีคีย์ส่วนตัวไม่สามารถส่งออกได้"
+    },
+    "allAccounts": "บัญชีทั้งหมด",
+    "@allAccounts": {
+        "description": "ป้ายสำหรับการเลือกบัญชีทั้งหมดในเมนูแบบเลื่อนลง"
+    },
+    "security": "ความปลอดภัย",
+    "@security": {
+        "description": "หัวเรื่องสำหรับหน้าจอความปลอดภัย"
+    },
+    "enablePasswordLock": "เปิดใช้งานล็อกรหัสผ่าน",
+    "@enablePasswordLock": {
+        "description": "ป้ายสำหรับสวิตช์เปิดปิดล็อกรหัสผ่าน"
+    },
+    "selectTimeout": "เลือกช่วงหมดเวลา",
+    "@selectTimeout": {
+        "description": "หัวเรื่องสำหรับกล่องโต้ตอบการเลือกช่วงหมดเวลา"
+    },
+    "timeout": "ช่วงหมดเวลา",
+    "@timeout": {
+        "description": "ป้ายสำหรับเมนูแบบเลื่อนลงช่วงหมดเวลา"
+    },
+    "changePin": "เปลี่ยน PIN",
+    "@changePin": {
+        "description": "หัวเรื่องสำหรับตัวเลือกเปลี่ยน PIN"
+    },
+    "sessions": "เซสชัน",
+    "@sessions": {
+        "description": "หัวเรื่องสำหรับหน้าจอเซสชัน"
+    },
+    "disconnectAllSessions": "ตัดการเชื่อมต่อเซสชันทั้งหมด",
+    "@disconnectAllSessions": {
+        "description": "ข้อความสำหรับตัดการเชื่อมต่อเซสชันทั้งหมด"
+    },
+    "disconnectAllSessionsPrompt": "ต้องการตัดการเชื่อมต่อเซสชันทั้งหมดหรือไม่",
+    "@disconnectAllSessionsPrompt": {
+        "description": "ข้อความแจ้งเพื่อยืนยันการตัดการเชื่อมต่อเซสชันทั้งหมด"
+    },
+    "noActiveSessions": "ไม่มีเซสชันที่ใช้งาน",
+    "@noActiveSessions": {
+        "description": "ข้อความที่แสดงเมื่อไม่มีเซสชันที่ใช้งานอยู่"
+    },
+    "disconnectAllSessionsForAccountPrompt": "ต้องการตัดการเชื่อมต่อเซสชันทั้งหมดสำหรับบัญชีนี้หรือไม่",
+    "@disconnectAllSessionsForAccountPrompt": {
+        "description": "ข้อความแจ้งเพื่อยืนยันการตัดการเชื่อมต่อเซสชันทั้งหมดสำหรับบัญชีเฉพาะ"
+    },
+    "disconnectAll": "ตัดการเชื่อมต่อทั้งหมด",
+    "@disconnectAll": {
+        "description": "ป้ายสำหรับปุ่มตัดการเชื่อมต่อเซสชันทั้งหมดสำหรับบัญชี"
+    },
+    "expires": "หมดอายุ:",
+    "@expires": {
+        "description": "ป้ายสำหรับวันที่หมดอายุของเซสชัน"
+    },
+    "failedToDisconnect": "ไม่สามารถตัดการเชื่อมต่อ {sessionName} โปรดลองอีกครั้ง",
+    "@failedToDisconnect": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่สามารถตัดการเชื่อมต่อเซสชัน",
+        "placeholders": {
+        "sessionName": {}
+        }
+    },
+    "sessionDisconnected": "{sessionName} ตัดการเชื่อมต่อสำเร็จ",
+    "@sessionDisconnected": {
+        "description": "ข้อความที่แสดงเมื่อเซสชันตัดการเชื่อมต่อสำเร็จ",
+        "placeholders": {
+        "sessionName": {}
+        }
+    },
+    "allSessions": "เซสชันทั้งหมด",
+    "@allSessions": {
+        "description": "ป้ายสำหรับเซสชันทั้งหมด"
+    },
+    "allSessionsFor": "เซสชันทั้งหมดสำหรับ {publicKey}",
+    "@allSessionsFor": {
+        "description": "ป้ายสำหรับเซสชันทั้งหมดที่เกี่ยวข้องกับบัญชีเฉพาะ",
+        "placeholders": {
+        "publicKey": {}
+        }
+    },
+    "disconnect": "ตัดการเชื่อมต่อ",
+    "@disconnect": {
+        "description": "ป้ายสำหรับปุ่มตัดการเชื่อมต่อ"
+    },
+    "settings": "การตั้งค่า",
+    "@settings": {
+        "description": "ป้ายสำหรับหน้าจอการตั้งค่า"
+    },
+    "createNewAccount": "สร้างบัญชีใหม่",
+    "@createNewAccount": {
+        "description": "หัวเรื่องสำหรับการสร้างบัญชีใหม่"
+    },
+    "createNewAccountSubtitle": "คุณจะได้รับการแจ้งให้บันทึก seed",
+    "@createNewAccountSubtitle": {
+        "description": "คำอธิบายย่อยสำหรับการสร้างบัญชีใหม่"
+    },
+    "importViaSeed": "นำเข้าผ่าน Seed",
+    "@importViaSeed": {
+        "description": "หัวเรื่องสำหรับการนำเข้าบัญชีผ่าน seed"
+    },
+    "importViaSeedSubtitle": "นำเข้าบัญชีที่มีอยู่ผ่าน seed phrase",
+    "@importViaSeedSubtitle": {
+        "description": "คำอธิบายย่อยสำหรับการนำเข้าบัญชีผ่าน seed"
+    },
+    "importViaQrCode": "นำเข้าผ่าน QR Code",
+    "@importViaQrCode": {
+        "description": "หัวเรื่องสำหรับการนำเข้าบัญชีผ่าน QR code"
+    },
+    "importViaQrCodeSubtitle": "สแกน QR code เพื่อนำเข้าบัญชีที่มีอยู่",
+    "@importViaQrCodeSubtitle": {
+        "description": "คำอธิบายย่อยสำหรับการนำเข้าบัญชีผ่าน QR code"
+    },
+    "importViaPrivateKey": "นำเข้าผ่านคีย์ส่วนตัว",
+    "@importViaPrivateKey": {
+        "description": "หัวเรื่องสำหรับการนำเข้าบัญชีผ่านคีย์ส่วนตัว"
+    },
+    "importViaPrivateKeySubtitle": "นำเข้าบัญชีผ่านคีย์ส่วนตัว",
+    "@importViaPrivateKeySubtitle": {
+        "description": "คำอธิบายย่อยสำหรับการนำเข้าบัญชีผ่านคีย์ส่วนตัว"
+    },
+    "addWatch": "เพิ่ม Watch",
+    "@addWatch": {
+        "description": "หัวเรื่องสำหรับการเพิ่มบัญชี Watch"
+    },
+    "addWatchSubtitle": "เพิ่มบัญชี Watch เพื่อดูผ่านที่อยู่สาธารณะ",
+    "@addWatchSubtitle": {
+        "description": "คำอธิบายย่อยสำหรับการเพิ่มบัญชี Watch"
+    },
+    "addAccountTitle": "เพิ่มบัญชี",
+    "@addAccountTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอเพิ่มบัญชี"
+    },
+    "importPublicAddress": "นำเข้าที่อยู่สาธารณะ",
+    "@importPublicAddress": {
+        "description": "หัวเรื่องสำหรับหน้าจอ Add Watch"
+    },
+    "publicAddress": "ที่อยู่สาธารณะ",
+    "@publicAddress": {
+        "description": "ป้ายสำหรับช่องป้อนที่อยู่สาธารณะ"
+    },
+    "import": "นำเข้า",
+    "@import": {
+        "description": "ข้อความสำหรับปุ่มนำเข้า"
+    },
+    "pleaseEnterPublicAddress": "กรุณาป้อนที่อยู่สาธารณะ",
+    "@pleaseEnterPublicAddress": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อที่อยู่สาธารณะว่างเปล่า"
+    },
+    "invalidAlgorandAddress": "ที่อยู่ Algorand ไม่ถูกต้อง",
+    "@invalidAlgorandAddress": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อป้อนที่อยู่ Algorand ที่ไม่ถูกต้อง"
+    },
+    "copySeed": "คัดลอก Seed",
+    "@copySeed": {
+        "description": "หัวเรื่องสำหรับหน้าจอคัดลอก Seed"
+    },
+    "generateSeedPhrase": "สร้าง Seed phrase",
+    "@generateSeedPhrase": {
+        "description": "ป้ายสำหรับการสร้าง seed phrase"
+    },
+    "seedPhraseDescription": "นี่คือคำ seed mnemonic 25 คำของคุณ อย่าลืมบันทึกในที่ปลอดภัย",
+    "@seedPhraseDescription": {
+        "description": "คำอธิบายสำหรับการแสดง seed phrase mnemonic"
+    },
+    "copySeedPhrase": "คัดลอก seed phrase",
+    "@copySeedPhrase": {
+        "description": "คำแนะนำเครื่องมือสำหรับคัดลอก seed phrase"
+    },
+    "noSeedPhraseAvailable": "ไม่มี seed phrase ที่พร้อมใช้งาน",
+    "@noSeedPhraseAvailable": {
+        "description": "ข้อความที่แสดงเมื่อไม่มี seed phrase"
+    },
+    "backupConfirmationRequired": "คุณต้องยืนยันว่าคุณได้ทำการสำรองข้อมูล seed phrase ของคุณ",
+    "@backupConfirmationRequired": {
+        "description": "ข้อความแสดงข้อผิดพลาดการยืนยันเมื่อไม่ได้สำรองข้อมูล"
+    },
+    "backupConfirmationPrompt": "โปรดยืนยันว่าคุณได้บันทึกสำรองข้อมูล seed phrase ของคุณในที่ปลอดภัย",
+    "@backupConfirmationPrompt": {
+        "description": "ข้อความแจ้งให้ผู้ใช้ยืนยันว่าพวกเขาได้สำรองข้อมูล seed phrase"
+    },
+    "next": "ถัดไป",
+    "@next": {
+        "description": "ข้อความสำหรับปุ่มถัดไป"
+    },
+    "importPrivateKey": "นำเข้าคีย์ส่วนตัว",
+    "@importPrivateKey": {
+        "description": "หัวเรื่องสำหรับหน้าจอนำเข้าคีย์ส่วนตัว"
+    },
+    "privateKey": "คีย์ส่วนตัว",
+    "@privateKey": {
+        "description": "ป้ายสำหรับช่องป้อนคีย์ส่วนตัว"
+    },
+    "importSeed": "นำเข้า Seed",
+    "@importSeed": {
+        "description": "หัวเรื่องสำหรับหน้าจอนำเข้า Seed"
+    },
+    "enterSeedPhrasePrompt": "ป้อน Seed phrase ของคุณเพื่อนำเข้าบัญชี",
+    "@enterSeedPhrasePrompt": {
+        "description": "ข้อความแจ้งให้ผู้ใช้ป้อน Seed phrase ของตน"
+    },
+    "enterWord": "ป้อนคำที่ {index}",
+    "@enterWord": {
+        "description": "ข้อความแสดงข้อผิดพลาดสำหรับการป้อนคำที่ว่างใน Seed phrase",
+        "placeholders": {
+        "index": {
+            "type": "int",
+            "description": "ตำแหน่งของคำใน Seed phrase"
+        }
+        }
+    },
+    "nameAccount": "ตั้งชื่อบัญชี",
+    "@nameAccount": {
+        "description": "หัวเรื่องสำหรับการตั้งชื่อบัญชี"
+    },
+    "delete": "ลบ",
+    "@delete": {
+        "description": "ป้ายสำหรับปุ่มลบ"
+    },
+    "confirmDeleteAccount": "คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีนี้",
+    "@confirmDeleteAccount": {
+        "description": "ข้อความยืนยันสำหรับการลบบัญชี"
+    },
+    "editAccountNamePrompt": "แก้ไขชื่อบัญชีของคุณ",
+    "@editAccountNamePrompt": {
+        "description": "ข้อความแจ้งสำหรับการแก้ไขชื่อบัญชี"
+    },
+    "nameAccountPrompt": "ตั้งชื่อบัญชีของคุณ",
+    "@nameAccountPrompt": {
+        "description": "ข้อความแจ้งสำหรับการตั้งชื่อบัญชี"
+    },
+    "editAccountDescription": "คุณสามารถเปลี่ยนชื่อบัญชีของคุณด้านล่าง",
+    "@editAccountDescription": {
+        "description": "คำอธิบายสำหรับการแก้ไขชื่อบัญชี"
+    },
+    "nameAccountDescription": "ตั้งชื่อเล่นให้บัญชีของคุณ ไม่ต้องกังวล คุณสามารถเปลี่ยนได้ในภายหลัง",
+    "@nameAccountDescription": {
+        "description": "คำอธิบายสำหรับการตั้งชื่อบัญชี"
+    },
+    "accountName": "ชื่อบัญชี",
+    "@accountName": {
+        "description": "ป้ายสำหรับช่องป้อนชื่อบัญชี"
+    },
+    "pleaseEnterText": "กรุณาป้อนข้อความ",
+    "@pleaseEnterText": {
+        "description": "ข้อความแสดงข้อผิดพลาดสำหรับช่องป้อนข้อมูลที่ว่างเปล่า"
+    },
+    "save": "บันทึก",
+    "@save": {
+        "description": "ป้ายสำหรับปุ่มบันทึก"
+    },
+    "create": "สร้าง",
+    "@create": {
+        "description": "ป้ายสำหรับปุ่มสร้าง"
+    },
+    "updatingAccount": "กำลังอัปเดตบัญชี",
+    "@updatingAccount": {
+        "description": "ข้อความที่แสดงขณะอัปเดตบัญชี"
+    },
+    "creatingAccount": "กำลังสร้างบัญชี",
+    "@creatingAccount": {
+        "description": "ข้อความที่แสดงขณะสร้างบัญชี"
+    },
+    "welcomeTitle": "ยินดีต้อนรับ",
+    "@welcomeTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอต้อนรับ"
+    },
+    "welcomeMessage": "ยินดีต้อนรับ ก่อนอื่นเรามาสร้างรหัสพินเพื่อรักษาความปลอดภัยของอุปกรณ์นี้",
+    "@welcomeMessage": {
+        "description": "ข้อความต้อนรับสำหรับผู้ใช้โดยแจ้งให้สร้างรหัสพิน"
+    },
+    "algorandStandardAsset": "สินทรัพย์มาตรฐาน Algorand",
+    "@algorandStandardAsset": {
+        "description": "ป้ายสำหรับสินทรัพย์ ASA"
+    },
+    "insufficientBalance": "ยอดคงเหลือไม่เพียงพอ",
+    "@insufficientBalance": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อผู้ใช้มียอดเงินไม่พอ"
+    },
+    "assetOptInSuccess": "ลงทะเบียนสินทรัพย์สำเร็จ",
+    "@assetOptInSuccess": {
+        "description": "ข้อความแสดงความสำเร็จเมื่อการลงทะเบียนสินทรัพย์เสร็จสิ้น"
+    },
+    "applicationId": "รหัสแอปพลิเคชัน",
+    "@applicationId": {
+        "description": "ป้ายสำหรับช่องป้อนรหัสแอปพลิเคชัน"
+    },
+    "type": "ประเภท",
+    "@type": {
+        "description": "ป้ายสำหรับช่องป้อนประเภท"
+    },
+    "decimals": "ทศนิยม",
+    "@decimals": {
+        "description": "ป้ายสำหรับช่องป้อนทศนิยม"
+    },
+    "totalSupply": "อุปทานทั้งหมด",
+    "@totalSupply": {
+        "description": "ป้ายสำหรับช่องป้อนอุปทานทั้งหมด"
+    },
+    "sendAsset": "ส่งสินทรัพย์",
+    "@sendAsset": {
+        "description": "ปุ่มข้อความสำหรับส่งสินทรัพย์"
+    },
+    "addAsset": "เพิ่มสินทรัพย์",
+    "@addAsset": {
+        "description": "ปุ่มข้อความสำหรับเพิ่มสินทรัพย์"
+    },
+    "optingInMessage": "กำลังลงทะเบียน",
+    "@optingInMessage": {
+        "description": "ข้อความที่แสดงระหว่างกระบวนการลงทะเบียนสินทรัพย์"
+    },
+    "activeAssetNullError": "สินทรัพย์ที่ใช้งานเป็นค่าว่าง",
+    "@activeAssetNullError": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่มีสินทรัพย์ที่ใช้งาน"
+    },
+    "fundAccountError": "โปรดเติมเงินในบัญชีของคุณเพื่อดำเนินการต่อ",
+    "@fundAccountError": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อยอดเงินในบัญชีของผู้ใช้ไม่เพียงพอ"
+    },
+    "privateKeyNotFoundError": "ไม่พบคีย์ส่วนตัว",
+    "@privateKeyNotFoundError": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่มีคีย์ส่วนตัว"
+    },
+    "accountIdOrAddressNotAvailable": "ID บัญชีหรือที่อยู่สาธารณะไม่พร้อมใช้งาน",
+    "@accountIdOrAddressNotAvailable": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่มี ID บัญชีหรือที่อยู่สาธารณะ"
+    },
+    "failedToOptInError": "ไม่สามารถลงทะเบียนสินทรัพย์",
+    "@failedToOptInError": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการลงทะเบียนสินทรัพย์ล้มเหลว"
+    },
+    "algorandServiceError": "เกิดข้อผิดพลาดกับบริการ Algorand",
+    "@algorandServiceError": {
+        "description": "ข้อความข้อผิดพลาดทั่วไปสำหรับความล้มเหลวของบริการ Algorand"
+    },
+    "viewAssetTitle": "ดูสินทรัพย์",
+    "@viewAssetTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอดูสินทรัพย์"
+    },
+    "addAssetTitle": "เพิ่มสินทรัพย์",
+    "@addAssetTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอเพิ่มสินทรัพย์"
+    },
+    "noAssetAvailableMessage": "ไม่มีสินทรัพย์ที่พร้อมแสดง",
+    "@noAssetAvailableMessage": {
+        "description": "ข้อความที่แสดงเมื่อไม่มีสินทรัพย์ที่สามารถดูได้"
+    },
+    "optOutTooltip": "ยกเลิกการลงทะเบียน",
+    "@optOutTooltip": {
+        "description": "คำแนะนำเครื่องมือสำหรับปุ่มยกเลิกการลงทะเบียนสินทรัพย์"
+    },
+    "optOutAssetTitle": "ยกเลิกการลงทะเบียนสินทรัพย์",
+    "@optOutAssetTitle": {
+        "description": "หัวเรื่องสำหรับกล่องยืนยันการยกเลิกการลงทะเบียนสินทรัพย์"
+    },
+    "optOutAssetContent": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการลงทะเบียนสินทรัพย์ ARC-0200 นี้",
+    "@optOutAssetContent": {
+        "description": "เนื้อหาสำหรับกล่องยืนยันการยกเลิกการลงทะเบียนสินทรัพย์"
+    },
+    "optOutButton": "ยกเลิกการลงทะเบียน",
+    "@optOutButton": {
+        "description": "ป้ายสำหรับปุ่มยืนยันการยกเลิกการลงทะเบียน"
+    },
+    "cancelButton": "ยกเลิก",
+    "@cancelButton": {
+        "description": "ป้ายสำหรับปุ่มยกเลิกในกล่องโต้ตอบ"
+    },
+    "nftViewerTitle": "ดู NFT",
+    "@nftViewerTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอตัวดู NFT"
+    },
+    "sentTransactionTitle": "ธุรกรรมที่ส่งออก",
+    "@sentTransactionTitle": {
+        "description": "หัวเรื่องสำหรับธุรกรรมที่ส่งออกสินทรัพย์"
+    },
+    "transactionType": "ประเภทธุรกรรม",
+    "@transactionType": {
+        "description": "ป้ายสำหรับช่องประเภทธุรกรรม"
+    },
+    "fromField": "จาก",
+    "@fromField": {
+        "description": "ป้ายสำหรับช่องผู้ส่ง"
+    },
+    "toField": "ถึง",
+    "@toField": {
+        "description": "ป้ายสำหรับช่องผู้รับ"
+    },
+    "fee": "ค่าธรรมเนียม",
+    "@fee": {
+        "description": "ป้ายสำหรับค่าธรรมเนียมธุรกรรม"
+    },
+    "date": "วันที่",
+    "@date": {
+        "description": "ป้ายสำหรับช่องวันที่ของธุรกรรม"
+    },
+    "transactionId": "รหัสธุรกรรม",
+    "@transactionId": {
+        "description": "ป้ายสำหรับช่องรหัสธุรกรรม"
+    },
+    "note": "หมายเหตุ",
+    "@note": {
+        "description": "ป้ายสำหรับช่องหมายเหตุธุรกรรม"
+    },
+    "receivedTransactionTitle": "ธุรกรรมที่ได้รับ",
+    "@receivedTransactionTitle": {
+        "description": "หัวเรื่องสำหรับธุรกรรมที่รับสินทรัพย์"
+    },
+    "selfTransferTitle": "การโอนให้ตัวเอง",
+    "@selfTransferTitle": {
+        "description": "หัวเรื่องสำหรับธุรกรรมที่โอนสินทรัพย์ให้ตัวเอง"
+    },
+    "viewTransactionTitle": "ดูธุรกรรม",
+    "@viewTransactionTitle": {
+        "description": "หัวเรื่องสำหรับหน้าจอดูธุรกรรม"
+    },
+    "noTransactionAvailable": "ไม่มีธุรกรรมที่พร้อมแสดง",
+    "@noTransactionAvailable": {
+        "description": "ข้อความที่แสดงเมื่อไม่มีธุรกรรมที่สามารถดูได้"
+    },
+    "invalidAddressSupplied": "ค่าที่ให้ \"{value}\" ไม่ใช่ที่อยู่ที่ถูกต้อง",
+    "@invalidAddressSupplied": {
+        "description": "ข้อความแสดงข้อผิดพลาดสำหรับที่อยู่ Algorand ที่ไม่ถูกต้อง",
+        "placeholders": {
+        "value": {
+            "type": "String",
+            "example": "INVALID_ADDRESS"
+        }
+        }
+    },
+    "invalidAddressByteLength": "สตริงไบต์ต้องมีความยาว {expected} ไบต์สำหรับที่อยู่ที่ถูกต้อง พบความยาว \"{found}\"",
+    "@invalidAddressByteLength": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อความยาวไบต์ของที่อยู่ไม่ถูกต้อง",
+        "placeholders": {
+        "expected": {
+            "type": "int",
+            "example": "32"
+        },
+        "found": {
+            "type": "int",
+            "example": "24"
+        }
+        }
+    },
+    "addressType": "ที่อยู่",
+    "@addressType": {
+        "description": "ตัวแทนสตริงของประเภทที่อยู่ ABI"
+    },
+    "noActiveAccountFound": "ไม่พบบัญชีที่ใช้งาน",
+    "@noActiveAccountFound": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่มีบัญชีที่ใช้งานในที่เก็บข้อมูล"
+    },
+    "failedToInitializeAccount": "ไม่สามารถเริ่มต้นบัญชีได้: {error}",
+    "@failedToInitializeAccount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการเริ่มต้นบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "publicKeyNotFoundInStorage": "ไม่พบคีย์สาธารณะในที่เก็บข้อมูล",
+    "@publicKeyNotFoundInStorage": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบคีย์สาธารณะในที่เก็บข้อมูล"
+    },
+    "accountNotFundedPleaseFundToSeeDetails": "บัญชีนี้ยังไม่ได้รับเงิน โปรดเติมเงินเพื่อดูรายละเอียด",
+    "@accountNotFundedPleaseFundToSeeDetails": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อบัญชีไม่มีเงิน"
+    },
+    "accountNameIsTooLong": "ชื่อบัญชียาวเกินไป",
+    "@accountNameIsTooLong": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อชื่อบัญชียาวเกินขีดจำกัดที่กำหนด"
+    },
+    "failedToCreateAccountName": "ไม่สามารถสร้างชื่อบัญชีได้: {error}",
+    "@failedToCreateAccountName": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการสร้างชื่อบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "failedToCreateAccount": "ไม่สามารถสร้างบัญชีได้: {error}",
+    "@failedToCreateAccount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการสร้างบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "noActiveAccountToUpdate": "ไม่มีบัญชีที่ใช้งานเพื่ออัปเดต",
+    "@noActiveAccountToUpdate": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่มีบัญชีที่ใช้งานสำหรับการอัปเดต"
+    },
+    "accountNotFound": "ไม่พบบัญชี",
+    "@accountNotFound": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบบัญชีที่ระบุ"
+    },
+    "failedToDeleteAccount": "ไม่สามารถลบบัญชีได้: {error}",
+    "@failedToDeleteAccount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการลบบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "failedToRestoreAccount": "ไม่สามารถกู้คืนบัญชีได้: {error}",
+    "@failedToRestoreAccount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการกู้คืนบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "noActiveAccount": "ไม่มีบัญชีที่ใช้งาน",
+    "@noActiveAccount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่มีบัญชีที่ใช้งาน"
+    },
+    "seedPhraseNotFoundInStorage": "ไม่พบ Seed phrase ในที่เก็บข้อมูล",
+    "@seedPhraseNotFoundInStorage": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบ Seed phrase ในที่เก็บข้อมูล"
+    },
+    "publicAddressNotAvailable": "ที่อยู่สาธารณะไม่พร้อมใช้งาน",
+    "@publicAddressNotAvailable": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อที่อยู่สาธารณะไม่พร้อมใช้งาน"
+    },
+    "accountMissingInTemporaryData": "บัญชีหายไปจากข้อมูลบัญชีชั่วคราว",
+    "@accountMissingInTemporaryData": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อบัญชีหายไปจากข้อมูลชั่วคราว"
+    },
+    "incompleteTemporaryAccountData": "ข้อมูลบัญชีชั่วคราวไม่สมบูรณ์สำหรับบัญชีปกติ",
+    "@incompleteTemporaryAccountData": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อข้อมูลบัญชีชั่วคราวไม่สมบูรณ์"
+    },
+    "publicKeyIsMissing": "คีย์สาธารณะหายไป",
+    "@publicKeyIsMissing": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อคีย์สาธารณะหายไป"
+    },
+    "unsupportedAccountType": "ประเภทบัญชีไม่รองรับ",
+    "@unsupportedAccountType": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อพบประเภทบัญชีที่ไม่รองรับ"
+    },
+    "failedToFinalizeAccountCreation": "ไม่สามารถทำการสร้างบัญชีให้สมบูรณ์ได้: {error}",
+    "@failedToFinalizeAccountCreation": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการสร้างบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "failedToCreateUnsignedTransactions": "ไม่สามารถสร้างธุรกรรมที่ยังไม่ได้เซ็นได้: {error}",
+    "@failedToCreateUnsignedTransactions": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการสร้างธุรกรรมที่ยังไม่ได้เซ็นล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "transactionIdInvalid": "การทำธุรกรรมล้มเหลว: รหัสธุรกรรมไม่ถูกต้องหรือถูกระบุว่า 'ผิดพลาด'",
+    "@transactionIdInvalid": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อรหัสธุรกรรมไม่ถูกต้องหรือถูกระบุว่า 'ผิดพลาด'"
+    },
+    "failedToSendPayment": "ไม่สามารถส่งการชำระเงินได้: {error}",
+    "@failedToSendPayment": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการส่งการชำระเงินล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "getAccountAssetsFailed": "ไม่สามารถดึงข้อมูลสินทรัพย์ในบัญชีได้: {error}",
+    "@getAccountAssetsFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการดึงข้อมูลสินทรัพย์ในบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "assetDetailsFetchFailed": "ไม่สามารถดึงข้อมูลรายละเอียดสินทรัพย์ได้: {error}",
+    "@assetDetailsFetchFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการดึงข้อมูลรายละเอียดสินทรัพย์ล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "assetIdInvalidFormat": "รูปแบบรหัสสินทรัพย์ไม่ถูกต้อง รหัสสินทรัพย์ต้องเป็นจำนวนเต็มที่ถูกต้อง",
+    "@assetIdInvalidFormat": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อรูปแบบรหัสสินทรัพย์ไม่ถูกต้อง"
+    },
+    "assetOptInFailed": "ไม่สามารถลงทะเบียนสินทรัพย์ได้: {error}",
+    "@assetOptInFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการลงทะเบียนสินทรัพย์ล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "arc200AssetFetchFailed": "ไม่สามารถดึงข้อมูลสินทรัพย์ ARC-0200 ได้",
+    "@arc200AssetFetchFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการดึงข้อมูลสินทรัพย์ ARC-0200 ล้มเหลว"
+    },
+    "failedToTransferAsset": "ไม่สามารถโอนสินทรัพย์ได้: {error}",
+    "@failedToTransferAsset": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการโอนสินทรัพย์ล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "failedToToggleFreeze": "ไม่สามารถ {action} สินทรัพย์ได้: {error}",
+    "@failedToToggleFreeze": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการแช่แข็ง/ยกเลิกการแช่แข็งสินทรัพย์ล้มเหลว",
+        "placeholders": {
+        "action": {},
+        "error": {}
+        }
+    },
+    "failedToRevokeAsset": "ไม่สามารถเพิกถอนสินทรัพย์ได้: {error}",
+    "@failedToRevokeAsset": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการเพิกถอนสินทรัพย์ล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "failedToFetchTransactions": "ไม่สามารถดึงข้อมูลธุรกรรมได้: {error}",
+    "@failedToFetchTransactions": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการดึงข้อมูลธุรกรรมล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "contractOptInFailed": "ไม่สามารถลงทะเบียนสัญญาได้: {error}",
+    "@contractOptInFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการลงทะเบียนสัญญาล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "contractCallFailed": "ไม่สามารถเรียกสัญญาได้: {error}",
+    "@contractCallFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการเรียกใช้สัญญาล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "transactionError": "ข้อผิดพลาดของธุรกรรม: {error}",
+    "@transactionError": {
+        "description": "ข้อความแสดงข้อผิดพลาดสำหรับข้อผิดพลาดธุรกรรม",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "searchQueryTooShort": "คำค้นหาสั้นเกินไป",
+    "@searchQueryTooShort": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อคำค้นหาสั้นเกินไป"
+    },
+    "failedToFetchAssets": "ไม่สามารถดึงข้อมูลสินทรัพย์ได้: {error}",
+    "@failedToFetchAssets": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการดึงข้อมูลสินทรัพย์ล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "failedToGetAccountBalance": "ไม่สามารถดึงยอดคงเหลือของบัญชีได้: {error}",
+    "@failedToGetAccountBalance": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการดึงยอดคงเหลือของบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "assetEditConfirmationFailed": "การยืนยันการแก้ไขสินทรัพย์ล้มเหลว",
+    "@assetEditConfirmationFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการยืนยันการแก้ไขสินทรัพย์ล้มเหลว"
+    },
+    "failedToEditAsset": "ไม่สามารถแก้ไขสินทรัพย์ได้: {error}",
+    "@failedToEditAsset": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการแก้ไขสินทรัพย์ล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "failedToDestroyAsset": "ไม่สามารถทำลายสินทรัพย์ได้: {error}",
+    "@failedToDestroyAsset": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการทำลายสินทรัพย์ล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "assetDestructionConfirmationFailed": "การยืนยันการทำลายสินทรัพย์ล้มเหลว",
+    "@assetDestructionConfirmationFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการยืนยันการทำลายสินทรัพย์ล้มเหลว"
+    },
+    "failedToOptInAsset": "ไม่สามารถลงทะเบียนสินทรัพย์ได้",
+    "@failedToOptInAsset": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการลงทะเบียนสินทรัพย์ล้มเหลว"
+    },
+    "privateKeyNotFound": "ไม่พบคีย์ส่วนตัวสำหรับบัญชีที่ใช้งาน",
+    "@privateKeyNotFound": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบคีย์ส่วนตัวสำหรับบัญชีที่ใช้งาน"
+    },
+    "assetOptInConfirmationFailed": "การยืนยันการลงทะเบียนสินทรัพย์ล้มเหลว",
+    "@assetOptInConfirmationFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการยืนยันการลงทะเบียนสินทรัพย์ล้มเหลว"
+    },
+    "failedToOptInToASA": "ไม่สามารถลงทะเบียน ASA ได้: {error}",
+    "@failedToOptInToASA": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการลงทะเบียนสินทรัพย์ ASA ล้มเหลว",
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "assetNameOrUnitMissing": "ชื่อสินทรัพย์หรือชื่อหน่วยหายไป",
+    "@assetNameOrUnitMissing": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อชื่อสินทรัพย์หรือชื่อหน่วยหายไป"
+    },
+    "failedToFollowArc200Asset": "ไม่สามารถติดตามสินทรัพย์ ARC-0200 ได้",
+    "@failedToFollowArc200Asset": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการติดตามสินทรัพย์ ARC-0200 ล้มเหลว"
+    },
+    "assetTransferConfirmationFailed": "การยืนยันการโอนสินทรัพย์ล้มเหลว",
+    "@assetTransferConfirmationFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการยืนยันการโอนสินทรัพย์ล้มเหลว"
+    },
+    "assetIsFrozen": "สินทรัพย์ถูกแช่แข็ง",
+    "@assetIsFrozen": {
+        "description": "ข้อความแสดงข้อผิดพลาดที่ระบุว่าสินทรัพย์ถูกแช่แข็ง"
+    },
+    "privateKeyNotFoundForAccount": "ไม่พบคีย์ส่วนตัวสำหรับบัญชี ID: {accountId}",
+    "@privateKeyNotFoundForAccount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบคีย์ส่วนตัวสำหรับบัญชีที่ระบุ",
+        "placeholders": {
+        "accountId": {
+            "type": "String",
+            "description": "ID ของบัญชีที่ไม่พบคีย์ส่วนตัว"
+        }
+        }
+    },
+    "invalidEncodedKeyLength": "คีย์ที่เข้ารหัสควรมีความยาว 44 อักขระ",
+    "@invalidEncodedKeyLength": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อความยาวของคีย์ที่เข้ารหัสไม่ถูกต้อง"
+    },
+    "contactNotFound": "ไม่พบผู้ติดต่อ",
+    "@contactNotFound": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบผู้ติดต่อที่ต้องการ"
+    },
+    "almostThere": "เกือบถึงแล้ว",
+    "@almostThere": {
+        "description": "ข้อความติดตามเพื่อแสดงเมื่อโหลดใกล้เสร็จสิ้น"
+    },
+    "hangInThere": "รอก่อนนะ",
+    "@hangInThere": {
+        "description": "ข้อความติดตามเพื่อให้กำลังใจระหว่างการโหลด"
+    },
+    "justABitMore": "อีกนิดเดียว",
+    "@justABitMore": {
+        "description": "ข้อความเพื่อแสดงว่ากระบวนการโหลดใกล้เสร็จสิ้น"
+    },
+    "youreDoingGreat": "คุณกำลังทำได้ดี",
+    "@youreDoingGreat": {
+        "description": "ข้อความให้กำลังใจที่แสดงระหว่างการโหลด"
+    },
+    "nearlyDone": "เกือบเสร็จแล้ว",
+    "@nearlyDone": {
+        "description": "ข้อความแสดงว่ากระบวนการโหลดเกือบเสร็จสิ้น"
+    },
+    "thanksForWaiting": "ขอบคุณที่รอ",
+    "@thanksForWaiting": {
+        "description": "ข้อความขอบคุณผู้ใช้สำหรับความอดทนระหว่างการโหลด"
+    },
+    "checksumMismatch": "ค่า checksum ไม่ตรงกัน โค้ด QR ที่สแกนไม่ใช่ชุดเดียวกัน",
+    "@checksumMismatch": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อค่า checksum ของโค้ด QR ที่สแกนไม่ตรงกัน"
+    },
+    "networkChangedTo": "เครือข่ายเปลี่ยนเป็น {networkName}",
+    "@networkChangedTo": {
+        "description": "ข้อความที่แสดงเมื่อเปลี่ยนเครือข่ายสำเร็จ",
+        "placeholders": {
+        "networkName": {
+            "type": "String",
+            "description": "ชื่อของเครือข่ายใหม่"
+        }
+        }
+    },
+    "failedToLoadNFTs": "ไม่สามารถโหลด NFTs ได้ รหัสสถานะ: {statusCode}",
+    "@failedToLoadNFTs": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อแอปไม่สามารถโหลด NFTs ได้ พร้อมแสดงรหัสสถานะ HTTP",
+        "placeholders": {
+        "statusCode": {
+            "type": "int",
+            "description": "รหัสสถานะ HTTP ที่เซิร์ฟเวอร์ส่งกลับ"
+        }
+        }
+    },
+    "settingUp": "กำลังตั้งค่า",
+    "@settingUp": {
+        "description": "ข้อความที่แสดงขณะตั้งค่ารหัส PIN"
+    },
+    "authenticating": "กำลังยืนยันตัวตน",
+    "@authenticating": {
+        "description": "ข้อความที่แสดงขณะกำลังยืนยันตัวตน"
+    },
+    "verifying": "กำลังตรวจสอบ",
+    "@verifying": {
+        "description": "ข้อความที่แสดงขณะกำลังตรวจสอบธุรกรรม"
+    },
+    "settingNewPin": "กำลังตั้งรหัส PIN ใหม่",
+    "@settingNewPin": {
+        "description": "ข้อความที่แสดงขณะกำลังเปลี่ยนรหัส PIN"
+    },
+    "accountNameNotFound": "ไม่พบชื่อบัญชีสำหรับ activeAccountId: {activeAccountId}",
+    "@accountNameNotFound": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบชื่อบัญชีสำหรับ ID ที่กำหนด",
+        "placeholders": {
+        "activeAccountId": {
+            "type": "String",
+            "description": "ID ของบัญชีที่ใช้งาน"
+        }
+        }
+    },
+    "incorrectPin": "รหัส PIN ไม่ถูกต้อง",
+    "@incorrectPin": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อผู้ใช้ป้อนรหัส PIN ไม่ถูกต้อง"
+    },
+    "invalidPinTryAgain": "รหัส PIN ไม่ถูกต้อง โปรดลองอีกครั้ง",
+    "@invalidPinTryAgain": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อป้อนรหัส PIN ไม่ถูกต้อง"
+    },
+    "failedToSetPin": "ไม่สามารถตั้งค่ารหัส PIN ได้: {error}",
+    "@failedToSetPin": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการตั้งค่ารหัส PIN ล้มเหลว",
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "description": "ข้อความแสดงข้อผิดพลาดจากข้อยกเว้น"
+        }
+        }
+    },
+    "errorReadingPinHash": "เกิดข้อผิดพลาดในการอ่านค่า pin hash",
+    "@errorReadingPinHash": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการอ่านค่า pin hash จากที่เก็บข้อมูลล้มเหลว"
+    },
+    "failedToReadAccountsData": "ไม่สามารถอ่านข้อมูลบัญชีได้: {error}",
+    "@failedToReadAccountsData": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการอ่านข้อมูลบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "description": "ข้อความแสดงข้อผิดพลาดจากข้อยกเว้น"
+        }
+        }
+    },
+    "sharedPreferencesNotInitialized": "SharedPreferences ยังไม่ได้รับการเริ่มต้น",
+    "@sharedPreferencesNotInitialized": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อเข้าถึง SharedPreferences ก่อนการเริ่มต้น"
+    },
+    "failedToSaveSessions": "ไม่สามารถบันทึกเซสชันได้",
+    "@failedToSaveSessions": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการบันทึกเซสชันล้มเหลว"
+    },
+    "failedToRetrieveSessions": "ไม่สามารถดึงข้อมูลเซสชันได้",
+    "@failedToRetrieveSessions": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการดึงข้อมูลเซสชันล้มเหลว"
+    },
+    "failedToRemoveSessions": "ไม่สามารถลบเซสชันได้",
+    "@failedToRemoveSessions": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการลบเซสชันทั้งหมดล้มเหลว"
+    },
+    "failedToCreateWatchAccount": "ไม่สามารถสร้างบัญชี Watch ได้: {error}",
+    "@failedToCreateWatchAccount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการสร้างบัญชี Watch ล้มเหลว",
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "description": "ข้อความแสดงข้อผิดพลาดจากข้อยกเว้น"
+        }
+        }
+    },
+    "accountAlreadyAdded": "บัญชีนี้ถูกเพิ่มแล้ว",
+    "@accountAlreadyAdded": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อพยายามเพิ่มบัญชีที่มีอยู่แล้ว"
+    },
+    "seedPhraseNotAvailable": "Seed phrase ไม่พร้อมใช้งาน",
+    "@seedPhraseNotAvailable": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อพยายามเข้าถึง Seed phrase ที่ไม่พร้อมใช้งาน"
+    },
+    "somethingWentWrong": "มีบางอย่างผิดพลาด",
+    "@somethingWentWrong": {
+        "description": "ข้อความแสดงข้อผิดพลาดทั่วไป"
+    },
+    "accountNameNotFoundForId": "ไม่พบชื่อบัญชีสำหรับ accountId: {accountId}",
+    "@accountNameNotFoundForId": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบชื่อบัญชีสำหรับ ID บัญชีที่ระบุ",
+        "placeholders": {
+        "accountId": {
+            "type": "String",
+            "description": "ID ของบัญชี"
+        }
+        }
+    },
+    "failedToSelectAccount": "ไม่สามารถเลือกบัญชีได้: {error}",
+    "@failedToSelectAccount": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อแอปไม่สามารถเลือกบัญชีได้",
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "description": "ข้อความแสดงข้อผิดพลาดจากข้อยกเว้น"
+        }
+        }
+    },
+    "failedToCompleteAccountSetup": "ไม่สามารถตั้งค่าบัญชีให้สมบูรณ์ได้: {error}",
+    "@failedToCompleteAccountSetup": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการตั้งค่าบัญชีล้มเหลว",
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "description": "ข้อความแสดงข้อผิดพลาดจากข้อยกเว้น"
+        }
+        }
+    },
+    "invalidIconType": "ไอคอนต้องเป็น IconData หรือเส้นทางไปยัง SVG",
+    "@invalidIconType": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อประเภทไอคอนไม่ถูกต้อง"
+    },
+    "resetAppFailed": "การรีเซ็ตแอปล้มเหลว: {error}",
+    "@resetAppFailed": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อกระบวนการรีเซ็ตแอปล้มเหลว",
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "description": "ข้อความแสดงข้อผิดพลาดจากข้อยกเว้น"
+        }
+        }
+    },
+    "failedToDisconnectWalletConnectSessions": "ไม่สามารถตัดการเชื่อมต่อ WalletConnect เซสชันได้: {error}",
+    "@failedToDisconnectWalletConnectSessions": {
+            "description": "ข้อความแสดงข้อผิดพลาดเมื่อการตัดการเชื่อมต่อ WalletConnect เซสชันล้มเหลว",
+            "placeholders": {
+            "error": {
+                "type": "String",
+                "description": "ข้อความแสดงข้อผิดพลาดจากข้อยกเว้น"
+            }
+        }
+    },
+    "failedToClearStorage": "ไม่สามารถล้างที่เก็บข้อมูลได้: {error}",
+    "@failedToClearStorage": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการล้างที่เก็บข้อมูลล้มเหลว",
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "description": "ข้อความแสดงข้อผิดพลาดจากข้อยกเว้น"
+        }
+        }
+    },
+    "failedToLoadArc200Balances": "ไม่สามารถโหลดยอดคงเหลือ ARC-0200 ได้",
+    "@failedToLoadArc200Balances": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อโหลดยอดคงเหลือ ARC-0200 ล้มเหลว"
+    },
+    "noArc200TokenDetailsForNetwork": "ไม่มีรายละเอียดโทเค็น ARC-0200 สำหรับเครือข่ายที่เลือก",
+    "@noArc200TokenDetailsForNetwork": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่มีรายละเอียดโทเค็น ARC-0200 สำหรับเครือข่ายที่เลือก"
+    },
+    "failedToLoadArc200TokenDetails": "ไม่สามารถโหลดรายละเอียดโทเค็น ARC-0200 ได้",
+    "@failedToLoadArc200TokenDetails": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อโหลดรายละเอียดโทเค็น ARC-0200 ล้มเหลว"
+    },
+    "tokenDetailsNotFound": "ไม่พบรายละเอียดโทเค็นสำหรับ contractId {contractId}",
+    "@tokenDetailsNotFound": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบรายละเอียดโทเค็นสำหรับ ID สัญญาที่ระบุ",
+        "placeholders": {
+        "contractId": {
+            "type": "String",
+            "description": "ID สัญญาที่ไม่พบรายละเอียดโทเค็น"
+        }
+        }
+    },
+    "failedToSearchArc200Assets": "ไม่สามารถค้นหาสินทรัพย์ ARC-0200 ได้",
+    "@failedToSearchArc200Assets": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการค้นหาสินทรัพย์ ARC-0200 ล้มเหลว"
+    },
+    "networkNotConfiguredForArc200": "เครือข่ายไม่ได้รับการกำหนดค่าสำหรับการทำงาน ARC-0200",
+    "@networkNotConfiguredForArc200": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อเครือข่ายที่เลือกไม่ได้รับการกำหนดค่าสำหรับการทำงาน ARC-0200"
+    },
+    "failedToFetchArc200Balance": "ไม่สามารถดึงยอดคงเหลือ ARC-0200 สำหรับสัญญา {contractId} ได้",
+    "@failedToFetchArc200Balance": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการดึงยอดคงเหลือ ARC-0200 สำหรับสัญญาที่ระบุล้มเหลว",
+        "placeholders": {
+        "contractId": {
+            "type": "String",
+            "description": "ID สัญญาที่ไม่สามารถดึงยอดคงเหลือได้"
+        }
+        }
+    },
+    "assetNotFoundForContract": "ไม่พบสินทรัพย์สำหรับสัญญา {contractId}",
+    "@assetNotFoundForContract": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อไม่พบสินทรัพย์สำหรับ ID สัญญาที่ระบุ",
+        "placeholders": {
+        "contractId": {
+            "type": "String",
+            "description": "ID สัญญาที่ไม่พบสินทรัพย์"
+        }
+        }
+    },
+    "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+    "@copiedToClipboard": {
+        "description": "ข้อความที่แสดงเมื่อคัดลอกรายการไปยังคลิปบอร์ดสำเร็จ"
+    },
+    "unsupportedEncodingOrInvalidFormat": "การเข้ารหัสไม่รองรับหรือรูปแบบสตริงไม่ถูกต้อง",
+    "@unsupportedEncodingOrInvalidFormat": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อสตริงมีการเข้ารหัสที่ไม่รองรับหรือรูปแบบไม่ถูกต้อง"
+    },
+    "privateKeyMissingInUri": "คีย์ส่วนตัวหายไปใน URI",
+    "@privateKeyMissingInUri": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อคีย์ส่วนตัวหายไปจาก URI อินพุต"
+    },
+    "unsupportedEncodingInUri": "การเข้ารหัสที่ไม่รองรับใน URI",
+    "@unsupportedEncodingInUri": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อ URI มีการเข้ารหัสที่ไม่รองรับ"
+    },
+    "invalidHexStringLength": "ความยาวสตริงเลขฐานสิบหกไม่ถูกต้อง",
+    "@invalidHexStringLength": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อความยาวของสตริงเลขฐานสิบหกไม่ถูกต้อง"
+    },
+    "invalidBase64String": "สตริง Base64 ไม่ถูกต้อง",
+    "@invalidBase64String": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อสตริง Base64 ไม่ถูกต้อง"
+    },
+    "invalidBase32String": "สตริง Base32 ไม่ถูกต้อง",
+    "@invalidBase32String": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อสตริง Base32 ไม่ถูกต้อง"
+    },
+    "hereIsMyQRCode": "นี่คือโค้ด QR ของฉัน",
+    "@hereIsMyQRCode": {
+        "description": "ข้อความที่แสดงพร้อมกับการแชร์โค้ด QR"
+    },
+    "failedToApproveSession": "ไม่สามารถอนุมัติเซสชันได้",
+    "@failedToApproveSession": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการอนุมัติเซสชัน WalletConnect ล้มเหลว"
+    },
+    "failedToDisconnectSession": "ไม่สามารถตัดการเชื่อมต่อเซสชันได้",
+    "@failedToDisconnectSession": {
+        "description": "ข้อความแสดงข้อผิดพลาดเมื่อการตัดการเชื่อมต่อเซสชัน WalletConnect ล้มเหลว"
+    },
+    "language": "ภาษา",
+    "@language": {
+      "description": "Label for the language selection dropdown."
+    }
+}

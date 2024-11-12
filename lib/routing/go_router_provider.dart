@@ -31,16 +31,17 @@ import 'package:kibisis/features/view_transaction/view_transaction_screen.dart';
 import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/locale_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
-  final router = RouterNotifier(ref);
+  final routerNotifier = RouterNotifier(ref);
   return GoRouter(
-    refreshListenable: router,
-    routes: router._routes,
-    redirect: router._redirectLogic,
+    refreshListenable: routerNotifier,
+    routes: routerNotifier._routes,
+    redirect: routerNotifier._redirectLogic,
     initialLocation: '/$welcomeRouteName',
     errorPageBuilder: (context, state) {
       final errorMessage =
@@ -84,6 +85,13 @@ class RouterNotifier extends ChangeNotifier {
           _previousIsAuthenticated = next;
           notifyListeners();
         }
+      },
+    );
+
+    ref.listen<Locale?>(
+      localeProvider,
+      (_, __) {
+        notifyListeners();
       },
     );
   }

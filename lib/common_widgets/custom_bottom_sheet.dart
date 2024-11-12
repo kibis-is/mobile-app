@@ -110,11 +110,14 @@ Widget _buildListItem(
       padding: const EdgeInsets.symmetric(vertical: kSizedBoxSpacing),
       child: Row(
         children: [
-          AppIcons.icon(
-            icon: item.icon,
-            size: kSizedBoxSpacing * 2,
-            color: context.colorScheme.primary,
-          ),
+          if (item.icon is Widget)
+            item.icon
+          else
+            AppIcons.icon(
+              icon: item.icon,
+              size: kSizedBoxSpacing * 2,
+              color: context.colorScheme.primary,
+            ),
           const SizedBox(width: kSizedBoxSpacing),
           Flexible(
             child: EllipsizedText(

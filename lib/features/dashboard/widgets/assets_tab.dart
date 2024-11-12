@@ -200,7 +200,7 @@ class _AssetsTabState extends ConsumerState<AssetsTab> {
     return Expanded(
       child: CustomTextField(
         controller: filterController,
-        labelText: 'Filter',
+        labelText: S.of(context).filter,
         onChanged: _handleFilterChange,
         autoCorrect: false,
         suffixIcon: filterController.text.isNotEmpty ? AppIcons.cross : null,

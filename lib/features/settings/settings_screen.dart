@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/transparent_list_tile.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/menu.dart';
 import 'package:kibisis/generated/l10n.dart';
 
-class SettingsScreen extends StatelessWidget {
-  static String title = S.current.settings;
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    List<SettingsMenu> settingsMenu = SettingsMenu.menuList;
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    List<SettingsMenu> settingsMenu = SettingsMenu.generateMenuList();
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(S.of(context).settings),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
         child: Column(
           children: [
-            const SizedBox(
-              height: kScreenPadding,
-            ),
+            const SizedBox(height: kScreenPadding),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(kScreenPadding / 2),
