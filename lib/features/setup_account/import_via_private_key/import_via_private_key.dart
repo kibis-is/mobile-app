@@ -13,21 +13,41 @@ import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
-class ImportPrivateKeyScreen extends ConsumerWidget {
+class ImportPrivateKeyScreen extends ConsumerStatefulWidget {
   static String title = S.current.importPrivateKey;
   final AccountFlow accountFlow;
 
   const ImportPrivateKeyScreen({super.key, required this.accountFlow});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final privateKeyController = ref.watch(privateKeyProvider);
+  ImportPrivateKeyScreenState createState() => ImportPrivateKeyScreenState();
+}
+
+class ImportPrivateKeyScreenState
+    extends ConsumerState<ImportPrivateKeyScreen> {
+  late TextEditingController privateKeyController;
+
+  @override
+  void initState() {
+    super.initState();
+    privateKeyController =
+        TextEditingController(text: ref.read(privateKeyProvider).text);
+  }
+
+  @override
+  void dispose() {
+    privateKeyController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final showError = ref.watch(privateKeyErrorProvider);
     final isSuffixIconVisible = ref.watch(suffixIconVisibilityProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(ImportPrivateKeyScreen.title),
         actions: [
           IconButton(
             icon: AppIcons.icon(icon: AppIcons.paste),
@@ -47,9 +67,7 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: kScreenPadding,
-            ),
+            const SizedBox(height: kScreenPadding),
             CustomTextField(
               controller: privateKeyController,
               labelText: S.of(context).privateKey,
@@ -70,9 +88,7 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
                 }
               },
             ),
-            const SizedBox(
-              height: kScreenPadding,
-            ),
+            const SizedBox(height: kScreenPadding),
           ],
         ),
       ),
@@ -80,11 +96,11 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
         isBottomNavigationPosition: true,
         text: S.of(context).import,
         isFullWidth: true,
-        onPressed: () {
+        onPressed: () async {
           if (privateKeyController.text.isEmpty) {
             ref.read(privateKeyErrorProvider.notifier).showError();
           } else {
-            _importAccount(context, ref);
+            await _importAccount(context, ref);
           }
         },
       ),
@@ -93,15 +109,16 @@ class ImportPrivateKeyScreen extends ConsumerWidget {
 
   Future<void> _importAccount(BuildContext context, WidgetRef ref) async {
     try {
-      final privateKeyInput = ref.read(privateKeyProvider).text.trim();
+      final privateKeyInput = privateKeyController.text.trim();
 
       await ref
           .read(temporaryAccountProvider.notifier)
           .restoreAccountFromPrivateKey(privateKeyInput);
+      privateKeyController.clear();
 
       if (!context.mounted) return;
 
-      GoRouter.of(context).push(accountFlow == AccountFlow.setup
+      GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
           ? '/setup/setupNameAccount'
           : '/addAccount/addAccountNameAccount');
     } catch (e) {
