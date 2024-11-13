@@ -258,7 +258,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               iconColor: context.colorScheme.onPrimary,
               onPressed: () {
                 closeFab();
-                GoRouter.of(context).push('/$accountListRouteName');
+                GoRouter.of(context).go('/$accountListRouteName');
               },
             ),
             CustomFabChild(
@@ -267,8 +267,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               backgroundColor: ColorPalette.orange,
               iconColor: context.colorScheme.onPrimary,
               onPressed: () {
-                GoRouter.of(context).push('/$settingsRouteName');
                 closeFab();
+                GoRouter.of(context).push('/$settingsRouteName');
               },
             ),
           ],
