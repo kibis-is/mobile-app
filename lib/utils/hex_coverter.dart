@@ -64,7 +64,7 @@ class HexConverter {
   }
 
   static bool _isBase64(String input) {
-    return RegExp(r'^[A-Za-z0-9+/]+={0,2}$').hasMatch(input);
+    return RegExp(r'^[A-Za-z0-9\-_+/]+={0,2}$').hasMatch(input);
   }
 
   static String _handleBase64(String input) {
