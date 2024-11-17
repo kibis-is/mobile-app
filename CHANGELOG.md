@@ -1,3 +1,32 @@
+# [1.1.0-beta.1](https://github.com/kibis-is/mobile-app/compare/v1.0.1...v1.1.0-beta.1) (2024-11-17)
+
+
+### Bug Fixes
+
+* adjust app icons to remove alpha for compatibility with apple store ([8d3c75d](https://github.com/kibis-is/mobile-app/commit/8d3c75da6f6040a897d2ee702788d6205f035575))
+* Apply number shortener to amount in transaction list items ([8bc5b8c](https://github.com/kibis-is/mobile-app/commit/8bc5b8c32e98dcab45c7a6385e1a44cdd620c5df))
+* correctly copying public key from transaction screen even when contact name is showing ([3886753](https://github.com/kibis-is/mobile-app/commit/3886753968589c4362560661e5095af55722a06a))
+* correctly showing appropriate network icon after the balance ([5100cae](https://github.com/kibis-is/mobile-app/commit/5100cae8c2021df001923337dd06bfedaed9d46a))
+* dispose the private key textfield when leaving the screen for additional security ([a81327b](https://github.com/kibis-is/mobile-app/commit/a81327bb7d67bc582b65feb98cc6860654e0bb26))
+* fixed bug where sometimes transactions are being fetched twice and showing duplicates. Refactored. ([b01f415](https://github.com/kibis-is/mobile-app/commit/b01f4157b708092e3c34020ceb6da146bcfeab4a))
+* Fixed bug where the FAB would stay open after navigating to a subscreen and back. ([ef514c8](https://github.com/kibis-is/mobile-app/commit/ef514c8ad94a2bf0524459d1a111ce974d0aea16))
+* Multi line text fields now show 7 lines. Up from 3. ([81edb9c](https://github.com/kibis-is/mobile-app/commit/81edb9c215f23f5ead5c7e5eb19f5d7faba0f35c))
+* Now correctly importing Base64 privateKeys ([7317204](https://github.com/kibis-is/mobile-app/commit/73172043ad9e0baab28193ace3b3102995305819))
+* reduced spacing around icon in the appIcon to make it more visible and bring into alignment with the kibisis extension icon ([11f93b9](https://github.com/kibis-is/mobile-app/commit/11f93b9797bf65d6876f29c54e512e2383c32b41))
+* Remove the back button from the Select Account Screen. ([3cbe574](https://github.com/kibis-is/mobile-app/commit/3cbe574fb87bd2917ba0f5238e72ac9ab9adab23))
+
+
+### Features
+
+* Add language picker to the welcome screen. ([572bf3b](https://github.com/kibis-is/mobile-app/commit/572bf3be50cf86ff022caace6aac36f96f8607c3))
+* Added Vietnamese and Turkish languages ([a0b2ed0](https://github.com/kibis-is/mobile-app/commit/a0b2ed0c9dbcdaf5bf106ab3d9ee69d8d284afdd))
+* Can now open transactions for more details ([8ce76ca](https://github.com/kibis-is/mobile-app/commit/8ce76ca0fffc177195387a5907e29c74d3692c8a))
+* Can now opt out of arc200s that are being tracked locally. ([a8799a2](https://github.com/kibis-is/mobile-app/commit/a8799a2fe82e0ba28840d360ab113a5418a15d07))
+* Can now toggle between languages. English and Thai implemented ([9ed1a3a](https://github.com/kibis-is/mobile-app/commit/9ed1a3ae1e2b558e683640857240b9d6d5884aa0))
+* Now formatting long displays of voi with comma separation for clarity ([d3b16c9](https://github.com/kibis-is/mobile-app/commit/d3b16c96e0c414d22a0e1bd6074fd1e8c825856f))
+* Now highlighting new transactions since last time updated ([6493031](https://github.com/kibis-is/mobile-app/commit/6493031b70fa75ff643249def8805e9d3ebbd001))
+* track arc200 assets locally and poll balance for indexed arc200s ([26dd8c8](https://github.com/kibis-is/mobile-app/commit/26dd8c84e821ca38e08d93f08d80ddfc0154fc94))
+
 ## [1.0.1](https://github.com/kibis-is/mobile-app/compare/v1.0.0...v1.0.1) (2024-10-30)
 
 
