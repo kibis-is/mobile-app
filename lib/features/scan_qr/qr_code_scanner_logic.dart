@@ -13,6 +13,7 @@ class QRCodeScannerLogic {
     this.accountFlow = AccountFlow.general,
     this.scanMode = ScanMode.catchAll,
   });
+
   Future<dynamic> handleBarcode(BarcodeCapture capture) async {
     try {
       String rawData = capture.barcodes.first.rawValue ?? '';

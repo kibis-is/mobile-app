@@ -19,7 +19,7 @@ import 'package:kibisis/utils/account_setup.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/refresh_account_data.dart';
 import 'package:kibisis/utils/wallet_connect_manageer.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+// import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:vibration/vibration.dart';
@@ -47,12 +47,11 @@ class QrCodeScannerScreen extends ConsumerStatefulWidget {
 class QrCodeScannerScreenState extends ConsumerState<QrCodeScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
-  MobileScannerController scanController = MobileScannerController(
-    formats: [BarcodeFormat.qrCode],
-  );
+  // MobileScannerController scanController = MobileScannerController(
+  //   formats: [BarcodeFormat.qrCode],
+  // );
   Timer? _debounceTimer;
   bool isProcessing = false;
-
   WalletConnectManager? walletConnectManager;
 
   @override
