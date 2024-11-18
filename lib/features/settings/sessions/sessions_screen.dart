@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/generated/l10n.dart';
+import 'package:kibisis/providers/fab_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -168,7 +169,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
   @override
   Widget build(BuildContext context) {
     final accountsState = ref.watch(accountsListProvider);
-
+    final fabPosition = ref.watch(fabPositionProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(SessionsScreen.title),
@@ -245,6 +246,9 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
         foregroundColor: Colors.white,
         child: const Icon(AppIcons.scan),
       ),
+      floatingActionButtonLocation: fabPosition == FabPosition.left
+          ? FloatingActionButtonLocation.startFloat
+          : FloatingActionButtonLocation.endFloat,
     );
   }
 

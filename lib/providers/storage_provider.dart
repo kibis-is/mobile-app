@@ -5,6 +5,7 @@ import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/arc200_asset_data.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/nft.dart';
+import 'package:kibisis/providers/fab_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -415,5 +416,14 @@ class StorageService {
 
   String? getPreferredLanguage() {
     return _prefs?.getString(_preferredLanguageKey);
+  }
+
+  Future<void> setFabPosition(FabPosition position) async {
+    await _prefs?.setString('fabPosition', position.name);
+  }
+
+  FabPosition? getFabPosition() {
+    final position = _prefs?.getString('fabPosition');
+    return position == 'left' ? FabPosition.left : FabPosition.right;
   }
 }

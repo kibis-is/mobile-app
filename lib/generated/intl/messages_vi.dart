@@ -356,6 +356,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "expires": MessageLookupByLibrary.simpleMessage("Hết hạn:"),
         "exportAccounts":
             MessageLookupByLibrary.simpleMessage("Xuất tài khoản"),
+        "fabLeft": MessageLookupByLibrary.simpleMessage("Trái"),
+        "fabPosition": MessageLookupByLibrary.simpleMessage("Vị Trí Nút Nổi"),
+        "fabRight": MessageLookupByLibrary.simpleMessage("Phải"),
         "failedFinalizeAccountImport": MessageLookupByLibrary.simpleMessage(
             "Không thể hoàn tất nhập tài khoản."),
         "failedParseWalletConnectUri": MessageLookupByLibrary.simpleMessage(

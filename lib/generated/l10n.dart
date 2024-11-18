@@ -4071,6 +4071,37 @@ class S {
       args: [],
     );
   }
+
+  /// `Floating Button Position`
+  String get fabPosition {
+    return Intl.message(
+      'Floating Button Position',
+      name: 'fabPosition',
+      desc:
+          'Label for the setting to choose the position of the floating action button.',
+      args: [],
+    );
+  }
+
+  /// `Left`
+  String get fabLeft {
+    return Intl.message(
+      'Left',
+      name: 'fabLeft',
+      desc: 'Option for positioning the floating button on the left.',
+      args: [],
+    );
+  }
+
+  /// `Right`
+  String get fabRight {
+    return Intl.message(
+      'Right',
+      name: 'fabRight',
+      desc: 'Option for positioning the floating button on the right.',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

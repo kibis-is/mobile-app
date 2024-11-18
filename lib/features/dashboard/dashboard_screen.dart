@@ -21,6 +21,7 @@ import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
+import 'package:kibisis/providers/fab_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -178,12 +179,14 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       future: ref.read(accountProvider.notifier).hasPrivateKey(),
       builder: (context, snapshot) {
         final hasPrivateKey = snapshot.data ?? false;
-
+        final fabPosition = ref.watch(fabPositionProvider);
         return ExpandableFab(
           key: _key,
           type: ExpandableFabType.up,
           distance: 70,
-          pos: ExpandableFabPos.right,
+          pos: fabPosition == FabPosition.left
+              ? ExpandableFabPos.left
+              : ExpandableFabPos.right,
           onOpen: () => _handleVibration(kHapticButtonPressDuration),
           overlayStyle: const ExpandableFabOverlayStyle(
             color: Colors.black54,

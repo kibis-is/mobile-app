@@ -1871,7 +1871,20 @@
   "viewSeedPhrase": "Ver Frase Semilla",
 "@viewSeedPhrase": {
   "description": "Etiqueta para el botón o título de la pantalla para ver la frase semilla."
+},
+"fabPosition": "Posición del Botón Flotante",
+"@fabPosition": {
+  "description": "Etiqueta para la configuración de la posición del botón de acción flotante."
+},
+"fabLeft": "Izquierda",
+"@fabLeft": {
+  "description": "Opción para posicionar el botón flotante a la izquierda."
+},
+"fabRight": "Derecha",
+"@fabRight": {
+  "description": "Opción para posicionar el botón flotante a la derecha."
 }
+
 
   }
   

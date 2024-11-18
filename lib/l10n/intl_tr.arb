@@ -1871,6 +1871,19 @@
             "viewSeedPhrase": "Anahtar Cümlesini Görüntüle",
 "@viewSeedPhrase": {
   "description": "Anahtar cümlesini görüntülemek için düğme veya ekran başlığı etiketi."
+},
+"fabPosition": "Yüzen Düğme Konumu",
+"@fabPosition": {
+  "description": "Yüzen işlem düğmesinin konumunu seçmek için ayar etiketi."
+},
+"fabLeft": "Sol",
+"@fabLeft": {
+  "description": "Yüzen düğmenin sola yerleştirilmesi için seçenek."
+},
+"fabRight": "Sağ",
+"@fabRight": {
+  "description": "Yüzen düğmenin sağa yerleştirilmesi için seçenek."
 }
+
 
         }

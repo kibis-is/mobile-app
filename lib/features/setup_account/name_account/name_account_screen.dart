@@ -77,8 +77,7 @@ class NameAccountScreenState extends ConsumerState<NameAccountScreen> {
           ),
         ),
       ),
-      floatingActionButton: _buildSubmitButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: _buildSubmitButton(),
     );
   }
 

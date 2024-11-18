@@ -348,6 +348,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "คาดหวังรหัส QR คีย์ส่วนตัวแต่พบ WalletConnect URI"),
         "expires": MessageLookupByLibrary.simpleMessage("หมดอายุ:"),
         "exportAccounts": MessageLookupByLibrary.simpleMessage("ส่งออกบัญชี"),
+        "fabLeft": MessageLookupByLibrary.simpleMessage("ซ้าย"),
+        "fabPosition": MessageLookupByLibrary.simpleMessage("ตำแหน่งปุ่มลอย"),
+        "fabRight": MessageLookupByLibrary.simpleMessage("ขวา"),
         "failedFinalizeAccountImport":
             MessageLookupByLibrary.simpleMessage("การนำเข้าบัญชีล้มเหลว"),
         "failedParseWalletConnectUri": MessageLookupByLibrary.simpleMessage(

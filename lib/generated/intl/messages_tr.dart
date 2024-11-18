@@ -351,6 +351,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "expires": MessageLookupByLibrary.simpleMessage("Son Kullanma Tarihi:"),
         "exportAccounts":
             MessageLookupByLibrary.simpleMessage("Hesapları Dışa Aktar"),
+        "fabLeft": MessageLookupByLibrary.simpleMessage("Sol"),
+        "fabPosition":
+            MessageLookupByLibrary.simpleMessage("Yüzen Düğme Konumu"),
+        "fabRight": MessageLookupByLibrary.simpleMessage("Sağ"),
         "failedFinalizeAccountImport": MessageLookupByLibrary.simpleMessage(
             "Hesap aktarımı tamamlanamadı."),
         "failedParseWalletConnectUri": MessageLookupByLibrary.simpleMessage(

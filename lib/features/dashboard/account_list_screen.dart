@@ -8,6 +8,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_body.dart';
 import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
+import 'package:kibisis/providers/fab_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/theme/color_palette.dart';
@@ -33,7 +34,7 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
     final accountsListState = ref.watch(accountsListProvider);
     final isSetupComplete = ref.watch(setupCompleteProvider);
     final flex = mediaQueryHelper.getDynamicFlex();
-
+    final fabPosition = ref.watch(fabPositionProvider);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -72,7 +73,9 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
               backgroundColor: context.colorScheme.secondary,
               child: const Icon(AppIcons.add),
             ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: fabPosition == FabPosition.left
+          ? FloatingActionButtonLocation.startFloat
+          : FloatingActionButtonLocation.endFloat,
     );
   }
 

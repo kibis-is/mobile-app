@@ -1963,5 +1963,18 @@
 "viewSeedPhrase": "Xem Cụm Từ Khóa",
 "@viewSeedPhrase": {
   "description": "Nhãn cho nút hoặc tiêu đề màn hình để xem cụm từ khóa."
+},
+"fabPosition": "Vị Trí Nút Nổi",
+"@fabPosition": {
+  "description": "Nhãn cho cài đặt chọn vị trí của nút hành động nổi."
+},
+"fabLeft": "Trái",
+"@fabLeft": {
+  "description": "Tùy chọn đặt nút nổi ở bên trái."
+},
+"fabRight": "Phải",
+"@fabRight": {
+  "description": "Tùy chọn đặt nút nổi ở bên phải."
 }
+
 }

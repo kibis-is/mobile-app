@@ -69,6 +69,7 @@ class AppIcons {
   static const IconData sendToSelf = Icons.change_circle_outlined;
   static const IconData text = Icons.short_text_rounded;
   static const IconData money = Icons.monetization_on_outlined;
+  static const IconData menuArrow = Icons.menu_open_rounded;
 
   static const String svgBasePath = 'assets/images/';
 

@@ -347,6 +347,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "expires": MessageLookupByLibrary.simpleMessage("Expires:"),
         "exportAccounts":
             MessageLookupByLibrary.simpleMessage("Export Accounts"),
+        "fabLeft": MessageLookupByLibrary.simpleMessage("Left"),
+        "fabPosition":
+            MessageLookupByLibrary.simpleMessage("Floating Button Position"),
+        "fabRight": MessageLookupByLibrary.simpleMessage("Right"),
         "failedFinalizeAccountImport": MessageLookupByLibrary.simpleMessage(
             "Failed to finalize account import."),
         "failedParseWalletConnectUri": MessageLookupByLibrary.simpleMessage(

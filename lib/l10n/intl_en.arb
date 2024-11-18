@@ -1876,6 +1876,18 @@
 "viewSeedPhrase": "View Seed Phrase",
 "@viewSeedPhrase": {
   "description": "Label for the button or screen title to view the seed phrase."
+},
+"fabPosition": "Floating Button Position",
+"@fabPosition": {
+  "description": "Label for the setting to choose the position of the floating action button."
+},
+"fabLeft": "Left",
+"@fabLeft": {
+  "description": "Option for positioning the floating button on the left."
+},
+"fabRight": "Right",
+"@fabRight": {
+  "description": "Option for positioning the floating button on the right."
 }
 
 }
