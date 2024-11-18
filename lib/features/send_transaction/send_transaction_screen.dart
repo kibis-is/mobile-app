@@ -527,18 +527,47 @@ class SendTransactionScreenState extends ConsumerState<SendTransactionScreen> {
                 ),
                 iconSize: kScreenPadding,
                 onPressed: () {
-                  customBottomSheet(
-                    context: context,
-                    singleWidget: Text(
-                      S.of(context).maxVoiAmountCalculation(
-                            ref.watch(balanceProvider).toString(),
-                            ref.watch(minimumBalanceProvider).toString(),
-                          ),
-                      softWrap: true,
-                      style: context.textTheme.bodyMedium,
-                    ),
-                    header: S.of(context).info,
-                    onPressed: (SelectItem item) {},
+                  final balanceAsync = ref.watch(balanceProvider);
+                  final minimumBalance = ref.watch(minimumBalanceProvider);
+
+                  balanceAsync.when(
+                    data: (balance) {
+                      customBottomSheet(
+                        context: context,
+                        singleWidget: Text(
+                          S.of(context).maxVoiAmountCalculation(
+                                balance.toString(),
+                                minimumBalance.toString(),
+                              ),
+                          softWrap: true,
+                          style: context.textTheme.bodyMedium,
+                        ),
+                        header: S.of(context).info,
+                        onPressed: (SelectItem item) {},
+                      );
+                    },
+                    loading: () {
+                      customBottomSheet(
+                        context: context,
+                        singleWidget: Text(
+                          'Loading balance...',
+                          style: context.textTheme.bodyMedium,
+                        ),
+                        header: S.of(context).info,
+                        onPressed: (SelectItem item) {},
+                      );
+                    },
+                    error: (err, stack) {
+                      customBottomSheet(
+                        context: context,
+                        singleWidget: Text(
+                          'Error loading balance: $err',
+                          style: context.textTheme.bodyMedium,
+                        ),
+                        header: S.of(context).info,
+                        onPressed: (SelectItem item) {},
+                      );
+                    },
                   );
                 },
               ),
