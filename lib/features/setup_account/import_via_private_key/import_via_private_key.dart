@@ -100,14 +100,14 @@ class ImportPrivateKeyScreenState
           if (privateKeyController.text.isEmpty) {
             ref.read(privateKeyErrorProvider.notifier).showError();
           } else {
-            await _importAccount(context, ref);
+            await _importAccount();
           }
         },
       ),
     );
   }
 
-  Future<void> _importAccount(BuildContext context, WidgetRef ref) async {
+  Future<void> _importAccount() async {
     try {
       final privateKeyInput = privateKeyController.text.trim();
 
@@ -116,7 +116,7 @@ class ImportPrivateKeyScreenState
           .restoreAccountFromPrivateKey(privateKeyInput);
       privateKeyController.clear();
 
-      if (!context.mounted) return;
+      if (!mounted) return;
 
       GoRouter.of(context).push(widget.accountFlow == AccountFlow.setup
           ? '/setup/setupNameAccount'
