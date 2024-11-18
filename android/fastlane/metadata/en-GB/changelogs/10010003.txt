@@ -1,0 +1,17 @@
+1.1.0-beta.3 (2024-11-18)
+
+
+Bug Fixes
+
+* fixed a bug where it wasnt showing the correct balance in the balance info bottom sheet on the send transaction screen (7e6d2ac)
+* fixed bug where it was not showing the next button at the bottom of the screen when adding a new account (9e24c53)
+* fixed bug where it was not switching to a newly created account (48da901)
+
+
+Features
+
+* added view seedphrase screen under the security screen (4582d12)
+* new option to move the floating action button to the left or right of the screen (5f15082)
+
+
+

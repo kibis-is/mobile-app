@@ -1,3 +1,18 @@
+# [1.1.0-beta.3](https://github.com/kibis-is/mobile-app/compare/v1.1.0-beta.2...v1.1.0-beta.3) (2024-11-18)
+
+
+### Bug Fixes
+
+* fixed a bug where it wasnt showing the correct balance in the balance info bottom sheet on the send transaction screen ([7e6d2ac](https://github.com/kibis-is/mobile-app/commit/7e6d2ac86a19c37c85daf2e7e5b07f56d8a4e8b9))
+* fixed bug where it was not showing the next button at the bottom of the screen when adding a new account ([9e24c53](https://github.com/kibis-is/mobile-app/commit/9e24c53ee4bf11143946decf03d026c083744dca))
+* fixed bug where it was not switching to a newly created account ([48da901](https://github.com/kibis-is/mobile-app/commit/48da901375ea95d52599832cd32789adc5f8cf68))
+
+
+### Features
+
+* added view seedphrase screen under the security screen ([4582d12](https://github.com/kibis-is/mobile-app/commit/4582d129fc3aaa0422bfc1a18f1fc5a1e6c37d02))
+* new option to move the floating action button to the left or right of the screen ([5f15082](https://github.com/kibis-is/mobile-app/commit/5f15082a66a35ef17e5d59b3b166c80f75098d12))
+
 # [1.1.0-beta.2](https://github.com/kibis-is/mobile-app/compare/v1.1.0-beta.1...v1.1.0-beta.2) (2024-11-18)
 
 
