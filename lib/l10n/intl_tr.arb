@@ -1867,5 +1867,10 @@
             "language": "Dil",
             "@language": {
               "description": "Dil seçimi açılır listesi için etiket."
-            }                                                                                
+            },
+            "viewSeedPhrase": "Anahtar Cümlesini Görüntüle",
+"@viewSeedPhrase": {
+  "description": "Anahtar cümlesini görüntülemek için düğme veya ekran başlığı etiketi."
+}
+
         }

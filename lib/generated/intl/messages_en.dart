@@ -755,6 +755,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "verifying": MessageLookupByLibrary.simpleMessage("Verifying"),
         "version": MessageLookupByLibrary.simpleMessage("Version:"),
         "viewAssetTitle": MessageLookupByLibrary.simpleMessage("View Asset"),
+        "viewSeedPhrase":
+            MessageLookupByLibrary.simpleMessage("View Seed Phrase"),
         "viewTransactionTitle":
             MessageLookupByLibrary.simpleMessage("View Transaction"),
         "walletConnectV1NotSupported": MessageLookupByLibrary.simpleMessage(

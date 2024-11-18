@@ -464,6 +464,16 @@ class RouterNotifier extends ChangeNotifier {
                         );
                       },
                     ),
+                    GoRoute(
+                      name: viewSeedPhraseRouteName,
+                      path: viewSeedPhraseRouteName,
+                      pageBuilder: (context, state) {
+                        return defaultTransitionPage(
+                          const CopySeedScreen(accountFlow: AccountFlow.view),
+                          state,
+                        );
+                      },
+                    ),
                   ],
                 ),
                 GoRoute(

@@ -18,6 +18,7 @@ enum AccountFlow {
   addNew,
   edit,
   general,
+  view,
 }
 
 enum SendTransactionScreenMode {

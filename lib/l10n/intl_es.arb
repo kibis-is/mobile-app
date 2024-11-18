@@ -1867,6 +1867,11 @@
   "language": "Idioma",
   "@language": {
     "description": "Etiqueta para el menú desplegable de selección de idioma."
-  }
+  },
+  "viewSeedPhrase": "Ver Frase Semilla",
+"@viewSeedPhrase": {
+  "description": "Etiqueta para el botón o título de la pantalla para ver la frase semilla."
+}
+
   }
   

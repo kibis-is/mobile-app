@@ -767,6 +767,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("Sürüm:"),
         "viewAssetTitle":
             MessageLookupByLibrary.simpleMessage("Varlık Görüntüle"),
+        "viewSeedPhrase":
+            MessageLookupByLibrary.simpleMessage("Anahtar Cümlesini Görüntüle"),
         "viewTransactionTitle":
             MessageLookupByLibrary.simpleMessage("İşlemi Görüntüle"),
         "walletConnectV1NotSupported": MessageLookupByLibrary.simpleMessage(

@@ -1872,5 +1872,10 @@
 "language": "Language",
 "@language": {
   "description": "Label for the language selection dropdown."
+},
+"viewSeedPhrase": "View Seed Phrase",
+"@viewSeedPhrase": {
+  "description": "Label for the button or screen title to view the seed phrase."
 }
+
 }

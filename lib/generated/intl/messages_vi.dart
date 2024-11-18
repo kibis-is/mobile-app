@@ -778,6 +778,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "verifying": MessageLookupByLibrary.simpleMessage("Đang xác minh"),
         "version": MessageLookupByLibrary.simpleMessage("Phiên bản:"),
         "viewAssetTitle": MessageLookupByLibrary.simpleMessage("Xem tài sản"),
+        "viewSeedPhrase":
+            MessageLookupByLibrary.simpleMessage("Xem Cụm Từ Khóa"),
         "viewTransactionTitle":
             MessageLookupByLibrary.simpleMessage("Xem giao dịch"),
         "walletConnectV1NotSupported": MessageLookupByLibrary.simpleMessage(

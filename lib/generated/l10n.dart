@@ -4061,6 +4061,16 @@ class S {
       args: [],
     );
   }
+
+  /// `View Seed Phrase`
+  String get viewSeedPhrase {
+    return Intl.message(
+      'View Seed Phrase',
+      name: 'viewSeedPhrase',
+      desc: 'Label for the button or screen title to view the seed phrase.',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

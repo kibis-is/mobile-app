@@ -1870,5 +1870,10 @@
     "language": "ภาษา",
     "@language": {
       "description": "Label for the language selection dropdown."
-    }
+    },
+"viewSeedPhrase": "ดูวลีสำรอง",
+"@viewSeedPhrase": {
+  "description": "ป้ายกำกับสำหรับปุ่มหรือชื่อหน้าจอเพื่อดูวลีสำรอง"
+}
+
 }

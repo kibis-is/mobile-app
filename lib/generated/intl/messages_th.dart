@@ -759,6 +759,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "verifying": MessageLookupByLibrary.simpleMessage("กำลังตรวจสอบ"),
         "version": MessageLookupByLibrary.simpleMessage("เวอร์ชัน:"),
         "viewAssetTitle": MessageLookupByLibrary.simpleMessage("ดูสินทรัพย์"),
+        "viewSeedPhrase": MessageLookupByLibrary.simpleMessage("ดูวลีสำรอง"),
         "viewTransactionTitle":
             MessageLookupByLibrary.simpleMessage("ดูธุรกรรม"),
         "walletConnectV1NotSupported": MessageLookupByLibrary.simpleMessage(

@@ -1959,5 +1959,9 @@
 "language": "Ngôn ngữ",
 "@language": {
   "description": "Nhãn cho danh sách thả xuống chọn ngôn ngữ."
+},
+"viewSeedPhrase": "Xem Cụm Từ Khóa",
+"@viewSeedPhrase": {
+  "description": "Nhãn cho nút hoặc tiêu đề màn hình để xem cụm từ khóa."
 }
 }

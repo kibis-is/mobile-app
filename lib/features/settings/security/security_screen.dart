@@ -145,6 +145,13 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
             GoRouter.of(context).pushNamed(pinPadChangePinRouteName);
           }),
         ),
+        TransparentListTile(
+          icon: AppIcons.importAccount,
+          title: S.of(context).viewSeedPhrase,
+          onTap: () => _handlePinVerification(() {
+            GoRouter.of(context).pushNamed(viewSeedPhraseRouteName);
+          }),
+        ),
       ],
     );
   }
