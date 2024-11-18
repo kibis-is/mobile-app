@@ -8,7 +8,9 @@ import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/locale_provider.dart';
 
 class LanguagePicker extends ConsumerWidget {
-  const LanguagePicker({super.key});
+  final bool isCompact;
+
+  const LanguagePicker({super.key, this.isCompact = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,26 +41,40 @@ class LanguagePicker extends ConsumerWidget {
       orElse: () => languageList.first,
     );
 
-    return GestureDetector(
-      onTap: () {
-        customBottomSheet(
-          context: context,
-          items: languageList,
-          header: S.of(context).language,
-          onPressed: (SelectItem selectedItem) {
-            final newLocale = Locale(selectedItem.value);
-            ref.read(localeProvider.notifier).setLocale(newLocale);
-          },
-        );
-      },
-      child: AbsorbPointer(
-        absorbing: true,
-        child: CustomDropDown(
-          label: S.of(context).language,
-          items: languageList,
-          selectedValue: selectedItem,
-          onChanged: null,
-        ),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          customBottomSheet(
+            context: context,
+            items: languageList,
+            header: S.of(context).language,
+            onPressed: (SelectItem selectedItem) {
+              final newLocale = Locale(selectedItem.value);
+              ref.read(localeProvider.notifier).setLocale(newLocale);
+            },
+          );
+        },
+        child: isCompact
+            ? ClipOval(
+                child: SizedBox(
+                  width: flagSize,
+                  height: flagSize,
+                  child: LanguageFlag(
+                    language: Language.fromCode(selectedItem.value),
+                    height: flagSize,
+                  ),
+                ),
+              )
+            : AbsorbPointer(
+                absorbing: true,
+                child: CustomDropDown(
+                  label: S.of(context).language,
+                  items: languageList,
+                  selectedValue: selectedItem,
+                  onChanged: null,
+                ),
+              ),
       ),
     );
   }
@@ -67,6 +83,8 @@ class LanguagePicker extends ConsumerWidget {
     switch (languageCode) {
       case 'en':
         return 'English';
+      case 'es':
+        return 'Español';
       case 'th':
         return 'ไทย';
       case 'tr':

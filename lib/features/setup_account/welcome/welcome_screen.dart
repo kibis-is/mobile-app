@@ -27,7 +27,12 @@ class WelcomeScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const LanguagePicker(),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                LanguagePicker(isCompact: true),
+              ],
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
