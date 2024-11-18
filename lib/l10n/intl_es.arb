@@ -1,0 +1,1872 @@
+{
+    "@@locale": "es",
+    "noInternetConnection": "Sin conexión a Internet",
+    "@noInternetConnection": {
+      "description": "Mostrado en el banner cuando el dispositivo no tiene conectividad a Internet."
+    },
+    "initializationError": "Error de inicialización, por favor reinicia la aplicación.",
+    "@initializationError": {
+      "description": "Mensaje de error mostrado cuando la inicialización de la aplicación falla."
+    },
+    "unknown": "Desconocido",
+    "@unknown": {
+      "description": "Mostrado cuando el nombre del activo es desconocido."
+    },
+    "alreadyAdded": "Ya\nagregado",
+    "@alreadyAdded": {
+      "description": "Mostrado cuando un activo ya ha sido agregado a la lista del usuario."
+    },
+    "defaultConfirmationTitle": "¿Estás seguro?",
+    "@defaultConfirmationTitle": {
+      "description": "Título predeterminado para diálogos de confirmación."
+    },
+    "defaultConfirmationContent": "¿Quieres proceder con esta acción?",
+    "@defaultConfirmationContent": {
+      "description": "Contenido predeterminado para diálogos de confirmación."
+    },
+    "yes": "Sí",
+    "@yes": {
+      "description": "Etiqueta para el botón de confirmación."
+    },
+    "no": "No",
+    "@no": {
+      "description": "Etiqueta para el botón de cancelar en los diálogos de confirmación."
+    },
+    "ok": "Aceptar",
+    "@ok": {
+      "description": "Etiqueta para el botón de OK en los diálogos."
+    },
+    "confirm": "Confirmar",
+    "@confirm": {
+      "description": "Texto predeterminado para el botón de confirmación en hojas inferiores."
+    },
+    "pullToRefresh": "Tira hacia abajo para actualizar",
+    "@pullToRefresh": {
+      "description": "Mostrado cuando el usuario puede tirar hacia abajo para refrescar el contenido."
+    },
+    "releaseToRefresh": "Suelta para actualizar",
+    "@releaseToRefresh": {
+      "description": "Mostrado cuando el usuario debe soltar para activar la actualización."
+    },
+    "refreshing": "Actualizando...",
+    "@refreshing": {
+      "description": "Mostrado cuando la acción de actualización está en progreso."
+    },
+    "initializing": "Iniciando",
+    "@initializing": {
+      "description": "Texto de prefijo mostrado durante la inicialización con puntos animados."
+    },
+    "reset": "Restablecer",
+    "@reset": {
+      "description": "Texto para el botón de confirmación de restablecimiento."
+    },
+    "resetConfirmationMessage": "¿Estás seguro de que deseas restablecer este dispositivo? Esto eliminará todas las cuentas, configuraciones e información de seguridad.",
+    "@resetConfirmationMessage": {
+      "description": "Mensaje de confirmación mostrado al restablecer la aplicación."
+    },
+    "pinMismatchError": "El PIN no coincide.",
+    "@pinMismatchError": {
+      "description": "Mensaje de error mostrado cuando los PIN no coinciden durante la configuración."
+    },
+    "incorrectPinError": "PIN incorrecto. Inténtalo de nuevo.",
+    "@incorrectPinError": {
+      "description": "Mensaje de error mostrado cuando se introduce un PIN incorrecto."
+    },
+    "timeout1Minute": "1 minuto",
+    "@timeout1Minute": {
+      "description": "Duración del tiempo de espera de 1 minuto."
+    },
+    "timeout2Minutes": "2 minutos",
+    "@timeout2Minutes": {
+      "description": "Duración del tiempo de espera de 2 minutos."
+    },
+    "timeout5Minutes": "5 minutos",
+    "@timeout5Minutes": {
+      "description": "Duración del tiempo de espera de 5 minutos."
+    },
+    "timeout10Minutes": "10 minutos",
+    "@timeout10Minutes": {
+      "description": "Duración del tiempo de espera de 10 minutos."
+    },
+    "timeout15Minutes": "15 minutos",
+    "@timeout15Minutes": {
+      "description": "Duración del tiempo de espera de 15 minutos."
+    },
+    "transactionGroupSizeExceeded": "El tamaño del grupo de transacciones excede el tamaño máximo de \"{maxSize}\"",
+    "@transactionGroupSizeExceeded": {
+      "description": "Mensaje de error cuando el tamaño del grupo de transacciones excede el máximo permitido.",
+      "placeholders": {
+        "maxSize": {
+          "type": "int",
+          "description": "El tamaño máximo del grupo de transacciones."
+        }
+      }
+    },
+    "searchPrompt": "Ingresa un assetID, nombre, activo o ID de símbolo (para ARC-200).",
+    "@searchPrompt": {
+      "description": "Texto de solicitud mostrado encima de la entrada de búsqueda."
+    },
+    "searchQueryLabel": "Consulta de búsqueda",
+    "@searchQueryLabel": {
+      "description": "Etiqueta para el campo de entrada de búsqueda."
+    },
+      "noAssetsFound": "No se encontraron activos.",
+      "@noAssetsFound": {
+        "description": "Mostrado cuando ningún activo coincide con la búsqueda."
+      },
+      "genericErrorMessage": "Lo sentimos, ocurrió un error.",
+      "@genericErrorMessage": {
+        "description": "Mensaje de error genérico mostrado cuando ocurre un error inesperado."
+      },
+      "notAvailable": "No disponible",
+      "@notAvailable": {
+        "description": "Valor predeterminado para el nombre de unidad de activo cuando no está disponible."
+      },
+      "contactsTab": "Contactos",
+      "@contactsTab": {
+        "description": "Título de la pestaña para la lista de contactos."
+      },
+      "myAccountsTab": "Mis Cuentas",
+      "@myAccountsTab": {
+        "description": "Título de la pestaña para la lista de cuentas del usuario."
+      },
+      "cancel": "Cancelar",
+      "@cancel": {
+        "description": "Etiqueta para botones de cancelar."
+      },
+      "deleteContactTitle": "Eliminar Contacto",
+      "@deleteContactTitle": {
+        "description": "Título del diálogo de confirmación para eliminar contacto."
+      },
+      "deleteContactMessage": "¿Estás seguro de que deseas eliminar {contactName}?",
+      "@deleteContactMessage": {
+        "description": "Mensaje mostrado al confirmar la eliminación de un contacto.",
+        "placeholders": {
+          "contactName": {
+            "type": "String",
+            "description": "Nombre del contacto a eliminar."
+          }
+        }
+      },
+      "selectAccountTitle": "Seleccionar Cuenta",
+      "@selectAccountTitle": {
+        "description": "Título para la pantalla de selección de cuenta."
+      },
+      "errorMessage": "Error: {error}",
+      "@errorMessage": {
+        "description": "Mensaje de error mostrado cuando ocurre un error.",
+        "placeholders": {
+          "error": {
+            "type": "String",
+            "description": "El mensaje de error para mostrar."
+          }
+        }
+      },
+      "noAccountsFound": "No se encontraron cuentas",
+      "@noAccountsFound": {
+        "description": "Mensaje mostrado cuando no hay cuentas disponibles."
+      },
+      "noPublicKey": "Sin Clave Pública",
+      "@noPublicKey": {
+        "description": "Mensaje predeterminado cuando una cuenta no tiene clave pública."
+      },
+      "assetsTab": "Activos",
+      "@assetsTab": {
+        "description": "Etiqueta para la pestaña Activos en el tablero."
+      },
+      "nftsTab": "NFTs",
+      "@nftsTab": {
+        "description": "Etiqueta para la pestaña NFTs en el tablero."
+      },
+      "activityTab": "Actividad",
+      "@activityTab": {
+        "description": "Etiqueta para la pestaña Actividad en el tablero."
+      },
+      "selectNetworkHeader": "Seleccionar Red",
+      "@selectNetworkHeader": {
+        "description": "Encabezado para la hoja inferior de selección de red."
+      },
+      "networkSwitchSuccess": "Cambiado a {networkName}",
+      "@networkSwitchSuccess": {
+        "description": "Mensaje mostrado cuando el cambio de red se realiza con éxito.",
+        "placeholders": {
+          "networkName": {
+            "type": "String",
+            "description": "Nombre de la red a la que el usuario cambió."
+          }
+        }
+      },
+      "networkSwitchFailure": "Fallo al cambiar a {networkName}",
+      "@networkSwitchFailure": {
+        "description": "Mensaje mostrado cuando falla el cambio de red.",
+        "placeholders": {
+          "networkName": {
+            "type": "String",
+            "description": "Nombre de la red a la que no se pudo cambiar."
+          }
+        }
+      },
+      "minimumBalanceInfo": "El saldo mínimo es {balance} VOI. Basado en la configuración de la cuenta, este es el saldo mínimo necesario para mantener la cuenta abierta.",
+      "@minimumBalanceInfo": {
+        "description": "Mensaje que explica el saldo mínimo requerido para una cuenta.",
+        "placeholders": {
+          "balance": {
+            "type": "String",
+            "description": "Valor del saldo mínimo."
+          }
+        }
+      },
+      "infoHeader": "Información",
+      "@infoHeader": {
+        "description": "Encabezado para la hoja inferior de información."
+      },
+      "loadingAccount": "Cargando Cuenta",
+      "@loadingAccount": {
+        "description": "Texto mostrado cuando se cargan los detalles de la cuenta."
+      },
+      "pleaseWait": "Por favor espera",
+      "@pleaseWait": {
+        "description": "Texto mostrado mientras se cargan los detalles de la cuenta."
+      },
+        "genericError": "Error",
+        "@genericError": {
+          "description": "Mensaje de error genérico mostrado cuando ocurre un error."
+        },
+        "errorLoadingTransactions": "Error al cargar las transacciones",
+        "@errorLoadingTransactions": {
+          "description": "Mostrado cuando falla la carga de transacciones."
+        },
+        "selectTransactionPrompt": "Selecciona una transacción para ver detalles",
+        "@selectTransactionPrompt": {
+          "description": "Solicitud mostrada en modo de pantalla ancha para seleccionar una transacción."
+        },
+        "noTransactionsFound": "No se encontraron transacciones.",
+        "@noTransactionsFound": {
+          "description": "Mostrado cuando no existen transacciones."
+        },
+        "noTransactionsMade": "No has realizado ninguna transacción.",
+        "@noTransactionsMade": {
+          "description": "Mostrado cuando el usuario no ha realizado transacciones."
+        },
+        "noMoreTransactions": "No hay más transacciones.",
+        "@noMoreTransactions": {
+          "description": "Mostrado cuando no hay más transacciones para cargar."
+        },
+        "noAssets": "No se encontraron activos.",
+        "@noAssets": {
+          "description": "Mostrado cuando no hay activos disponibles."
+        },
+        "noAssetsForFilter": "No se encontraron activos para el filtro",
+        "@noAssetsForFilter": {
+          "description": "Mostrado cuando el filtro aplicado no arroja resultados."
+        },
+        "tryClearingFilter": "Intenta borrar el filtro para ver todos los activos.",
+        "@tryClearingFilter": {
+          "description": "Subtítulo que sugiere borrar el filtro."
+        },
+        "noAssetsAdded": "No has agregado ningún activo.",
+        "@noAssetsAdded": {
+          "description": "Subtítulo mostrado cuando no se han agregado activos aún."
+        },
+        "clearFilter": "Borrar Filtro",
+        "@clearFilter": {
+          "description": "Etiqueta para el botón que borra el filtro."
+        },
+        "retry": "Reintentar",
+        "@retry": {
+          "description": "Etiqueta para el botón de reintento de carga de activos."
+        },
+        "errorLoadingAssets": "Error al cargar los activos",
+        "@errorLoadingAssets": {
+          "description": "Mostrado cuando falla la carga de activos."
+        },
+        "sortAndFilter": "Ordenar y Filtrar Activos",
+        "@sortAndFilter": {
+          "description": "Encabezado del diálogo para ordenar y filtrar activos."
+        },
+        "showFrozenAssets": "Mostrar Activos Congelados",
+        "@showFrozenAssets": {
+          "description": "Etiqueta del checkbox para mostrar activos congelados."
+        },
+        "copyAddress": "Copiar Dirección",
+        "@copyAddress": {
+          "description": "Mostrado como acción para copiar la dirección de la cuenta."
+        },
+        "shareAddress": "Compartir Dirección",
+        "@shareAddress": {
+          "description": "Mostrado como acción para compartir la dirección de la cuenta."
+        },
+        "editAccount": "Editar",
+        "@editAccount": {
+          "description": "Mostrado como acción para editar los detalles de la cuenta."
+        },
+        "refreshAccount": "Actualizar",
+        "@refreshAccount": {
+          "description": "Mostrado como acción para actualizar los datos de la cuenta."
+        },
+        "noAccountName": "Sin Nombre de Cuenta",
+        "@noAccountName": {
+          "description": "Mostrado cuando la cuenta no tiene nombre."
+        },
+        "options": "Opciones",
+        "@options": {
+          "description": "Encabezado para la hoja inferior con opciones de cuenta."
+        },
+        "noNftsFound": "No se encontraron NFTs.",
+        "@noNftsFound": {
+          "description": "Mostrado cuando no hay NFTs disponibles."
+        },
+        "noNftsForFilter": "No se encontraron NFTs para el filtro",
+        "@noNftsForFilter": {
+          "description": "Mostrado cuando ningún NFT coincide con el filtro aplicado."
+        },
+        "noNftsAdded": "No has agregado ningún NFT.",
+        "@noNftsAdded": {
+          "description": "Mostrado cuando el usuario no ha agregado ningún NFT."
+        },
+        "filter": "Filtrar",
+        "@filter": {
+          "description": "Texto de etiqueta para el campo de entrada de filtro."
+        },
+        "scanQrCode": "Escanear Código QR",
+        "@scanQrCode": {
+          "description": "Título mostrado en el diálogo QR."
+        },
+        "shareQr": "Compartir QR",
+        "@shareQr": {
+          "description": "Tooltip para compartir el código QR."
+        },
+        "copyUri": "Copiar URI",
+        "@copyUri": {
+          "description": "Tooltip para copiar los datos del QR al portapapeles."
+        },
+        "downloadQrImage": "Descargar Imagen QR",
+        "@downloadQrImage": {
+          "description": "Tooltip para descargar el código QR como imagen."
+        },
+        "close": "Cerrar",
+        "@close": {
+          "description": "Texto del botón para cerrar el diálogo."
+        },
+  
+    "transactionIdCopied": "ID de Transacción Copiado",
+    "@transactionIdCopied": {
+      "description": "Mensaje de snackbar mostrado cuando se copia un ID de transacción."
+    },
+    "payment": "Pago",
+    "@payment": {
+      "description": "Etiqueta para transacciones de tipo pago."
+    },
+    "assetTransfer": "Transferencia de Activos",
+    "@assetTransfer": {
+      "description": "Etiqueta para transferencias de activos que involucran tokens."
+    },
+    "errorTitle": "Error",
+    "@errorTitle": {
+      "description": "Título mostrado en la pantalla de error."
+    },
+    "defaultErrorMessage": "Hubo un error. No se proporcionaron más detalles.",
+    "@defaultErrorMessage": {
+      "description": "Mensaje de error predeterminado mostrado cuando no se proporcionan detalles."
+    },
+    "back": "Atrás",
+    "@back": {
+      "description": "Etiqueta para el botón que navega de regreso a la pantalla principal."
+    },
+    "createPin": "Crear PIN",
+    "@createPin": {
+      "description": "Título para la pantalla donde el usuario crea un PIN."
+    },
+    "confirmPin": "Confirmar PIN",
+    "@confirmPin": {
+      "description": "Título para la pantalla donde el usuario confirma el PIN."
+    },
+    "unlock": "Desbloquear",
+    "@unlock": {
+      "description": "Título para la pantalla donde el usuario desbloquea la aplicación."
+    },
+    "verifyPin": "Verificar PIN",
+    "@verifyPin": {
+      "description": "Título para la pantalla donde el usuario verifica su PIN."
+    },
+    "resettingApp": "Restableciendo la Aplicación",
+    "@resettingApp": {
+      "description": "Mensaje mostrado cuando la aplicación se está restableciendo."
+    },
+    "invalidQrCodeData": "Datos del código QR inválidos",
+    "@invalidQrCodeData": {
+      "description": "Mensaje de error mostrado cuando un código QR escaneado contiene datos inválidos."
+    },
+    "expectedPrivateKeyQr": "Se esperaba un código QR de clave privada, pero se encontró una clave pública.",
+    "@expectedPrivateKeyQr": {
+      "description": "Mensaje de error cuando se escanea una clave pública en modo de clave privada."
+    },
+    "expectedWalletConnectUri": "Se esperaba un código QR de clave privada, pero se encontró un URI de WalletConnect.",
+    "@expectedWalletConnectUri": {
+      "description": "Mensaje de error cuando se escanea un URI de WalletConnect en modo de clave privada."
+    },
+    "expectedPublicKeyQr": "Se esperaba un código QR de clave pública, pero se encontró otra cosa.",
+    "@expectedPublicKeyQr": {
+      "description": "Mensaje de error cuando se escanea un código QR que no es una clave pública en modo clave pública."
+    },
+    "expectedWalletConnectSessionQr": "Se esperaba un código QR de sesión de WalletConnect, pero se encontró otra cosa.",
+    "@expectedWalletConnectSessionQr": {
+      "description": "Mensaje de error cuando se escanea un código QR que no es una sesión de WalletConnect en modo sesión."
+    },
+    "unknownQrCodeType": "Tipo de Código QR desconocido",
+    "@unknownQrCodeType": {
+      "description": "Mensaje de error mostrado cuando el tipo de código QR no es reconocido."
+    },
+    "walletConnectV1NotSupported": "Los URIs de WalletConnect V1 no son compatibles.",
+    "@walletConnectV1NotSupported": {
+      "description": "Mensaje de error mostrado cuando se escanea un URI de WalletConnect V1."
+    },
+    "invalidWalletConnectUri": "Formato de URI de WalletConnect inválido.",
+    "@invalidWalletConnectUri": {
+      "description": "Mensaje de error mostrado cuando un URI de WalletConnect tiene un formato inválido."
+    },
+    "failedToParseWalletConnectUri": "Error al analizar el URI de WalletConnect: {error}",
+    "@failedToParseWalletConnectUri": {
+      "description": "Mensaje de error mostrado cuando falla el análisis de un URI de WalletConnect.",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "El mensaje de error devuelto durante el análisis."
+        }
+      }
+    },
+    "unknownImportAccountUriFormat": "Formato de URI de importación de cuenta desconocido",
+    "@unknownImportAccountUriFormat": {
+      "description": "Mensaje de error mostrado cuando el formato del URI de importación de cuenta no es reconocido."
+    },
+    "paginatedUriMissingInfo": "URI paginado carece de información de checksum o página",
+    "@paginatedUriMissingInfo": {
+      "description": "Mensaje de error para URIs paginados que carecen de datos de checksum o página."
+    },
+    "invalidPageFormatInUri": "Formato de página inválido en URI paginado",
+    "@invalidPageFormatInUri": {
+      "description": "Mensaje de error mostrado cuando el parámetro de página en un URI paginado es inválido."
+    },
+    "invalidPublicKeyFormat": "Formato de Clave Pública Inválido",
+    "@invalidPublicKeyFormat": {
+      "description": "Mensaje de error mostrado cuando el formato de la clave pública proporcionada es inválido."
+    },
+    "invalidUriFormat": "Formato de URI inválido",
+    "@invalidUriFormat": {
+      "description": "Mensaje de error mostrado cuando un URI no puede ser analizado."
+    },
+    "invalidPrivateKey": "Clave privada inválida",
+    "@invalidPrivateKey": {
+      "description": "Mensaje de error mostrado cuando la clave privada no pasa la validación."
+    },
+  "missingPrivateKeyInLegacyUri": "Falta la clave privada en el URI heredado",
+  "@missingPrivateKeyInLegacyUri": {
+    "description": "Mensaje de error para URIs de importación heredados sin una clave privada."
+  },
+  "keyNeitherBase64NorHex": "La clave no es ni Base64 válida ni Hex válida: {key}",
+  "@keyNeitherBase64NorHex": {
+    "description": "Mensaje de depuración cuando una clave privada no es ni Base64 ni Hex válida.",
+    "placeholders": {
+      "key": {
+        "type": "String",
+        "description": "La clave inválida proporcionada."
+      }
+    }
+  },
+  "failedToDecodePrivateKey": "Error al decodificar la clave privada: {error}",
+  "@failedToDecodePrivateKey": {
+    "description": "Mensaje de depuración para errores de decodificación de clave privada.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error del proceso de decodificación."
+      }
+    }
+  },
+  "unknownWalletConnectVersion": "Versión desconocida de WalletConnect. No se puede emparejar.",
+  "@unknownWalletConnectVersion": {
+    "description": "Mensaje de error mostrado cuando se encuentra una versión desconocida de WalletConnect."
+  },
+  "invalidPrivateKeyLength": "Longitud de clave privada inválida.",
+  "@invalidPrivateKeyLength": {
+    "description": "Mensaje de error para longitud de clave privada inválida."
+  },
+  "importedAccount": "Cuenta Importada",
+  "@importedAccount": {
+    "description": "Nombre de cuenta predeterminado para cuentas importadas."
+  },
+  "importedAccountWithCounter": "Cuenta Importada {counter}",
+  "@importedAccountWithCounter": {
+    "description": "Nombre de cuenta predeterminado con contador para cuentas importadas.",
+    "placeholders": {
+      "counter": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "connectToTitle": "Conectar a:",
+  "@connectToTitle": {
+    "description": "Título del diálogo para conectar una sesión de WalletConnect."
+  },
+  "failedFinalizeAccountImport": "Error al finalizar la importación de la cuenta.",
+  "@failedFinalizeAccountImport": {
+    "description": "Mensaje de error cuando no se puede completar la importación de la cuenta."
+  },
+  "errorProcessingPublicKey": "Error al procesar la clave pública",
+  "@errorProcessingPublicKey": {
+    "description": "Mensaje de error cuando una clave pública no se procesa correctamente."
+  },
+  "successfullyConnected": "Conectado con éxito",
+  "@successfullyConnected": {
+    "description": "Mensaje mostrado después de una conexión exitosa de WalletConnect."
+  },
+  "nextQrCode": "Siguiente QR:",
+  "@nextQrCode": {
+    "description": "Etiqueta que indica la siguiente parte del código QR a escanear."
+  },
+  "partNumber": "Parte {partNumber}",
+  "@partNumber": {
+    "description": "Etiqueta que indica la parte actual del código QR que se está escaneando.",
+    "placeholders": {
+      "partNumber": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "expectedPrivateKeyButPublic": "Se esperaba un código QR de clave privada, pero se encontró una clave pública.",
+  "@expectedPrivateKeyButPublic": {
+    "description": "Mensaje de error por tipo de código QR no coincidente cuando se esperaba clave privada pero se recibió clave pública."
+  },
+  "expectedPrivateKeyButWalletConnect": "Se esperaba un código QR de clave privada, pero se encontró un URI de WalletConnect.",
+  "@expectedPrivateKeyButWalletConnect": {
+    "description": "Mensaje de error por tipo de código QR no coincidente cuando se esperaba clave privada pero se recibió un URI de WalletConnect."
+  },
+  "expectedPublicKey": "Se esperaba un código QR de clave pública, pero se encontró otra cosa.",
+  "@expectedPublicKey": {
+    "description": "Mensaje de error cuando se esperaba una clave pública pero se recibió un tipo diferente de código QR."
+  },
+  "failedParseWalletConnectUri": "Error al analizar el URI de WalletConnect",
+  "@failedParseWalletConnectUri": {
+    "description": "Mensaje de error para fallo al analizar un URI de WalletConnect."
+  },
+  "invalidPageFormat": "Formato de página inválido en URI paginado",
+  "@invalidPageFormat": {
+    "description": "Mensaje de error para un formato de parámetro de página inválido en un URI paginado."
+  },
+  "missingPrivateKeyLegacy": "Falta la clave privada en el URI heredado",
+  "@missingPrivateKeyLegacy": {
+    "description": "Mensaje de error cuando un URI heredado de importación no incluye una clave privada."
+  },
+  "unknownImportUriFormat": "Formato de URI de importación de cuenta desconocido",
+  "@unknownImportUriFormat": {
+    "description": "Mensaje de error cuando el formato del URI de importación de cuenta no es reconocido."
+  },
+  "importAccountTitle": "Importar Cuenta",
+  "@importAccountTitle": {
+    "description": "Título de la pantalla al escanear una clave privada para importar una cuenta."
+  },
+  "scanAddressTitle": "Escanear Dirección",
+  "@scanAddressTitle": {
+    "description": "Título de la pantalla al escanear una dirección de clave pública."
+  },
+  "connectTitle": "Conectar",
+  "@connectTitle": {
+    "description": "Título de la pantalla al escanear para conectar una sesión de WalletConnect."
+  },
+  "qrCodeScannerTitle": "Escáner de Código QR",
+  "@qrCodeScannerTitle": {
+    "description": "Título predeterminado para la pantalla del escáner de código QR."
+  },
+  "processingQrCode": "Procesando Código QR",
+  "@processingQrCode": {
+    "description": "Mensaje de carga mostrado mientras se procesa el código QR escaneado."
+  },
+  "invalidScanResult": "Resultado de escaneo inválido",
+  "@invalidScanResult": {
+    "description": "Mensaje de error cuando el resultado del escaneo QR es inválido."
+  },
+  "noAccountsAvailableToConnect": "No hay cuentas disponibles para conectar.",
+  "@noAccountsAvailableToConnect": {
+    "description": "Mensaje de error mostrado cuando no hay cuentas disponibles para WalletConnect."
+  },
+  "errorLoadingAccounts": "Error al cargar las cuentas",
+  "@errorLoadingAccounts": {
+    "description": "Mensaje de error mostrado cuando falla la carga de la lista de cuentas."
+  },
+  "unnamedAsset": "Activo Sin Nombre",
+  "@unnamedAsset": {
+    "description": "Etiqueta utilizada cuando un activo no tiene nombre."
+  },
+  "noNetwork": "Sin Red",
+  "@noNetwork": {
+    "description": "Etiqueta mostrada cuando no se ha seleccionado ninguna red."
+  },
+  "pleaseEnterValidAmount": "Por favor, introduce un monto válido",
+  "@pleaseEnterValidAmount": {
+    "description": "Mensaje de error cuando el monto introducido es inválido."
+  },
+  "pleaseEnterValidAlgorandAddress": "Por favor, introduce una dirección de Algorand válida",
+  "@pleaseEnterValidAlgorandAddress": {
+    "description": "Mensaje de error cuando la dirección de Algorand introducida es inválida."
+  },
+  "insufficientFunds": "Fondos insuficientes",
+  "@insufficientFunds": {
+    "description": "Mensaje de error cuando no hay suficientes fondos para completar la transacción."
+  },
+  "transactionSuccessful": "Transacción exitosa",
+  "@transactionSuccessful": {
+    "description": "Mensaje mostrado cuando una transacción se realiza con éxito."
+  },
+  "noActiveAccountIdFound": "No se encontró ID de cuenta activa",
+  "@noActiveAccountIdFound": {
+    "description": "Mensaje de excepción cuando no hay un ID de cuenta activa."
+  },
+  "privateKeyNotFoundInStorage": "Clave privada no encontrada en el almacenamiento",
+  "@privateKeyNotFoundInStorage": {
+    "description": "Mensaje de excepción cuando la clave privada no se encuentra en el almacenamiento."
+  },
+  "noItemSelectedForTransaction": "No se seleccionó ningún elemento para la transacción.",
+  "@noItemSelectedForTransaction": {
+    "description": "Mensaje de excepción cuando no se selecciona ningún elemento para la transacción."
+  },
+  "standardAssetTransferSuccessful": "Transferencia de Activo Estándar exitosa.",
+  "@standardAssetTransferSuccessful": {
+    "description": "Mensaje mostrado cuando una transferencia de activo estándar se realiza con éxito."
+  },
+  "arc0200AssetTransferSuccessful": "Transferencia de Activo ARC-0200 exitosa.",
+  "@arc0200AssetTransferSuccessful": {
+    "description": "Mensaje mostrado cuando una transferencia de activo ARC-0200 se realiza con éxito."
+  },
+  "unsupportedAssetType": "Tipo de activo no compatible: {assetType}",
+  "@unsupportedAssetType": {
+    "description": "Mensaje de error para un tipo de activo no compatible.",
+    "placeholders": {
+      "assetType": {
+        "type": "String",
+        "description": "El tipo de activo no compatible."
+      }
+    }
+  },
+  "insufficientFundsError": "Fondos insuficientes.",
+  "@insufficientFundsError": {
+    "description": "Mensaje de error cuando los fondos son insuficientes."
+  },
+  "transactionFailedToConfirm": "La transacción no se confirmó dentro de las rondas esperadas.",
+  "@transactionFailedToConfirm": {
+    "description": "Mensaje de error cuando una transacción no se confirma dentro de las rondas esperadas."
+  },
+  "sendingPayment": "Enviando Pago",
+  "@sendingPayment": {
+    "description": "Mensaje mostrado mientras se envía un pago."
+  },
+  "sendingAsset": "Enviando Activo",
+  "@sendingAsset": {
+    "description": "Mensaje mostrado mientras se envía un activo."
+  },
+  "contactNameUpdatedSuccessfully": "Nombre del contacto actualizado con éxito.",
+  "@contactNameUpdatedSuccessfully": {
+    "description": "Mensaje mostrado cuando el nombre de un contacto se actualiza con éxito."
+  },
+  "contactSavedSuccessfully": "Contacto guardado con éxito.",
+  "@contactSavedSuccessfully": {
+    "description": "Mensaje mostrado cuando un contacto se guarda con éxito."
+  },
+  "failedToSaveContact": "Error al guardar el contacto: {error}",
+  "@failedToSaveContact": {
+    "description": "Mensaje de error cuando falla el guardado de un contacto.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "max": "Máximo",
+  "@max": {
+    "description": "Etiqueta para la cantidad máxima."
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Etiqueta para mensajes de error."
+  },
+  "calculating": "Calculando...",
+  "@calculating": {
+    "description": "Mensaje mostrado mientras se realiza un cálculo."
+  },
+  "maxVoiAmountCalculation": "La cantidad máxima de VOI se calcula como: el saldo ({balance}), menos el saldo mínimo necesario para mantener la cuenta abierta ({minimumBalance}), menos la tarifa mínima de transacción (0.001)",
+  "@maxVoiAmountCalculation": {
+    "description": "Explicación de cómo se calcula la cantidad máxima de VOI.",
+    "placeholders": {
+      "balance": {},
+      "minimumBalance": {}
+    }
+  },
+  "info": "Información",
+  "@info": {
+    "description": "Etiqueta del encabezado para información."
+  },
+  "account": "Cuenta",
+  "@account": {
+    "description": "Etiqueta para el campo de cuenta."
+  },
+  "asset": "Activo",
+  "@asset": {
+    "description": "Etiqueta para el campo de activo."
+  },
+  "amount": "Monto",
+  "@amount": {
+    "description": "Etiqueta para el campo de monto."
+  },
+  "contactNameOptional": "Nombre del Contacto (Opcional)",
+  "@contactNameOptional": {
+    "description": "Etiqueta para el campo de nombre del contacto, opcional."
+  },
+  "noteOptional": "Nota (Opcional)",
+  "@noteOptional": {
+    "description": "Etiqueta para el campo de nota, opcional."
+  },
+  "send": "Enviar",
+  "@send": {
+    "description": "Texto para el botón de enviar."
+  },
+  "selectAsset": "Seleccionar Activo",
+  "@selectAsset": {
+    "description": "Encabezado para el diálogo de selección de activos."
+  },
+  "transactionFailed": "Transacción fallida",
+  "@transactionFailed": {
+    "description": "Mensaje de excepción cuando una transacción falla."
+  },
+  "noAccount": "Sin cuenta",
+  "@noAccount": {
+    "description": "Texto mostrado cuando no hay una cuenta activa."
+  },
+  "noteTooLarge": "La nota es demasiado grande.",
+  "@noteTooLarge": {
+    "description": "Mensaje de error mostrado cuando la nota excede el tamaño máximo permitido."
+  },
+  "sendTransactionTitle": "Enviar Transacción",
+  "@sendTransactionTitle": {
+    "description": "Título mostrado en la pantalla de envío de transacciones."
+  },
+  "loading": "Cargando...",
+  "@loading": {
+    "description": "Texto mostrado durante los estados de carga."
+  },
+  "failedToLoad": "No se pudo cargar",
+  "@failedToLoad": {
+    "description": "Texto mostrado cuando los datos no se cargan correctamente."
+  },
+  "recipientAddress": "Dirección del Destinatario",
+  "@recipientAddress": {
+    "description": "Etiqueta para el campo de entrada de la dirección del destinatario."
+  },
+  "noItems": "Sin elementos",
+  "@noItems": {
+    "description": "Texto mostrado cuando no hay elementos disponibles."
+  },
+  "about": "Acerca de",
+  "@about": {
+    "description": "Título para la pantalla Acerca de."
+  },
+  "version": "Versión:",
+  "@version": {
+    "description": "Etiqueta para la versión de la aplicación."
+  },
+  "build": "Compilación:",
+  "@build": {
+    "description": "Etiqueta para la versión de compilación de la aplicación."
+  },
+  "buildNumber": "Número de Compilación:",
+  "@buildNumber": {
+    "description": "Etiqueta para el número de compilación de la aplicación."
+  },
+  "advanced": "Avanzado",
+  "@advanced": {
+    "description": "Título para la pantalla Avanzado."
+  },
+  "networkSwitched": "Red cambiada a {networkName}",
+  "@networkSwitched": {
+    "description": "Mensaje mostrado cuando la red se cambia correctamente.",
+    "placeholders": {
+      "networkName": {}
+    }
+  },
+  "allowTestNetworks": "Permitir Redes de Prueba",
+  "@allowTestNetworks": {
+    "description": "Etiqueta para el interruptor de redes de prueba."
+  },
+  "toggleTestNetworksDescription": "Activar para incluir redes de prueba en la lista de redes.",
+  "@toggleTestNetworksDescription": {
+    "description": "Descripción del interruptor de redes de prueba."
+  },
+  "appearance": "Apariencia",
+  "@appearance": {
+    "description": "Título para la pantalla de Apariencia."
+  },
+  "darkMode": "Modo Oscuro",
+  "@darkMode": {
+    "description": "Etiqueta para el interruptor de modo oscuro."
+  },
+  "general": "General",
+  "@general": {
+    "description": "Título para la pantalla General."
+  },
+  "dangerZone": "Zona de Peligro",
+  "@dangerZone": {
+    "description": "Título para la sección de zona de peligro."
+  },
+  "dangerZoneDescription": "Esto eliminará todas las cuentas, configuraciones e información de seguridad.",
+  "@dangerZoneDescription": {
+    "description": "Descripción de la sección de zona de peligro."
+  },
+  "confirmReset": "Confirmar Restablecimiento",
+  "@confirmReset": {
+    "description": "Título para el diálogo de confirmación de restablecimiento."
+  },
+  "exportAccounts": "Exportar Cuentas",
+  "@exportAccounts": {
+    "description": "Título para la pantalla Exportar Cuentas."
+  },
+  "noAccountsForExport": "No hay cuentas disponibles para exportar.",
+  "@noAccountsForExport": {
+    "description": "Mensaje mostrado cuando no hay cuentas disponibles para exportación."
+  },
+  "unnamedAccount": "Cuenta Sin Nombre",
+  "@unnamedAccount": {
+    "description": "Etiqueta para una cuenta sin nombre."
+  },
+  "accountCannotBeExported": "Esta cuenta no se puede exportar, ya que no tiene una clave privada.",
+  "@accountCannotBeExported": {
+    "description": "Mensaje mostrado cuando una cuenta sin clave privada no se puede exportar."
+  },
+  "allAccounts": "Todas las Cuentas",
+  "@allAccounts": {
+    "description": "Etiqueta para seleccionar todas las cuentas en el menú desplegable."
+  },
+  "security": "Seguridad",
+  "@security": {
+    "description": "Título para la pantalla de Seguridad."
+  },
+  "enablePasswordLock": "Activar Bloqueo con Contraseña",
+  "@enablePasswordLock": {
+    "description": "Etiqueta para el interruptor de bloqueo con contraseña."
+  },
+  "selectTimeout": "Seleccionar Tiempo de Espera",
+  "@selectTimeout": {
+    "description": "Encabezado para el diálogo de selección de tiempo de espera."
+  },
+  "timeout": "Tiempo de Espera",
+  "@timeout": {
+    "description": "Etiqueta para el menú desplegable de tiempo de espera."
+  },
+  "changePin": "Cambiar PIN",
+  "@changePin": {
+    "description": "Título para la opción de cambiar el PIN."
+  },
+  "sessions": "Sesiones",
+  "@sessions": {
+    "description": "Título para la pantalla de Sesiones."
+  },
+  "disconnectAllSessions": "¿Desconectar Todas las Sesiones?",
+  "@disconnectAllSessions": {
+    "description": "Tooltip para desconectar todas las sesiones."
+  },
+  "disconnectAllSessionsPrompt": "¿Desconectar todas las sesiones?",
+  "@disconnectAllSessionsPrompt": {
+    "description": "Mensaje de confirmación para desconectar todas las sesiones."
+  },
+  "noActiveSessions": "No hay sesiones activas.",
+  "@noActiveSessions": {
+    "description": "Mensaje mostrado cuando no hay sesiones activas."
+  },
+  "disconnectAllSessionsForAccountPrompt": "¿Desconectar todas las sesiones para esta cuenta?",
+  "@disconnectAllSessionsForAccountPrompt": {
+    "description": "Mensaje de confirmación para desconectar todas las sesiones de una cuenta específica."
+  },
+  "disconnectAll": "Desconectar Todo",
+  "@disconnectAll": {
+    "description": "Etiqueta para el botón que desconecta todas las sesiones de una cuenta."
+  },
+  "expires": "Expira:",
+  "@expires": {
+    "description": "Etiqueta para la fecha de expiración de la sesión."
+  },
+  "failedToDisconnect": "No se pudo desconectar {sessionName}. Por favor, inténtalo de nuevo.",
+  "@failedToDisconnect": {
+    "description": "Mensaje de error cuando falla la desconexión de una sesión.",
+    "placeholders": {
+      "sessionName": {}
+    }
+  },
+  "sessionDisconnected": "{sessionName} desconectada con éxito.",
+  "@sessionDisconnected": {
+    "description": "Mensaje mostrado cuando una sesión se desconecta con éxito.",
+    "placeholders": {
+      "sessionName": {}
+    }
+  },
+  "allSessions": "Todas las sesiones",
+  "@allSessions": {
+    "description": "Etiqueta para todas las sesiones."
+  },
+  "allSessionsFor": "Todas las sesiones para {publicKey}",
+  "@allSessionsFor": {
+    "description": "Etiqueta para todas las sesiones asociadas con una cuenta específica.",
+    "placeholders": {
+      "publicKey": {}
+    }
+  },
+  "disconnect": "Desconectar",
+  "@disconnect": {
+    "description": "Etiqueta para el botón de desconectar."
+  },
+  "settings": "Configuración",
+  "@settings": {
+    "description": "Etiqueta para la pantalla de Configuración."
+  },
+  "createNewAccount": "Crear Nueva Cuenta",
+  "@createNewAccount": {
+    "description": "Título para la opción de crear una nueva cuenta."
+  },
+  "createNewAccountSubtitle": "Se te pedirá que guardes una frase semilla.",
+  "@createNewAccountSubtitle": {
+    "description": "Subtítulo para la creación de una nueva cuenta."
+  },
+  "importViaSeed": "Importar con Frase Semilla",
+  "@importViaSeed": {
+    "description": "Título para la opción de importar una cuenta con frase semilla."
+  },
+  "importViaSeedSubtitle": "Importa una cuenta existente con una frase semilla.",
+  "@importViaSeedSubtitle": {
+    "description": "Subtítulo para importar una cuenta con frase semilla."
+  },
+  "importViaQrCode": "Importar con Código QR",
+  "@importViaQrCode": {
+    "description": "Título para la opción de importar una cuenta con un código QR."
+  },
+  "importViaQrCodeSubtitle": "Escanea un código QR para importar una cuenta existente.",
+  "@importViaQrCodeSubtitle": {
+    "description": "Subtítulo para importar una cuenta con código QR."
+  },
+  "importViaPrivateKey": "Importar con Clave Privada",
+  "@importViaPrivateKey": {
+    "description": "Título para la opción de importar una cuenta con clave privada."
+  },
+  "importViaPrivateKeySubtitle": "Importa cuentas con una clave privada.",
+  "@importViaPrivateKeySubtitle": {
+    "description": "Subtítulo para importar una cuenta con clave privada."
+  },
+  "addWatch": "Añadir Cuenta de Observación",
+  "@addWatch": {
+    "description": "Título para la opción de añadir una cuenta de observación."
+  },
+  "addWatchSubtitle": "Añade una cuenta de observación para monitorear mediante dirección pública.",
+  "@addWatchSubtitle": {
+    "description": "Subtítulo para añadir una cuenta de observación."
+  },
+  "addAccountTitle": "Añadir Cuenta",
+  "@addAccountTitle": {
+    "description": "Título para la pantalla de Añadir Cuenta."
+  },
+  "importPublicAddress": "Importar Dirección Pública",
+  "@importPublicAddress": {
+    "description": "Título para la pantalla de Añadir Cuenta de Observación."
+  },
+  "publicAddress": "Dirección Pública",
+  "@publicAddress": {
+    "description": "Etiqueta para el campo de texto de dirección pública."
+  },
+  "import": "Importar",
+  "@import": {
+    "description": "Texto para el botón de importación."
+  },
+  "pleaseEnterPublicAddress": "Por favor, introduce una dirección pública.",
+  "@pleaseEnterPublicAddress": {
+    "description": "Mensaje de error mostrado cuando la dirección pública está vacía."
+  },
+  "invalidAlgorandAddress": "Dirección de Algorand inválida.",
+  "@invalidAlgorandAddress": {
+    "description": "Mensaje de error mostrado cuando se introduce una dirección de Algorand inválida."
+  },
+  "copySeed": "Copiar Frase Semilla",
+  "@copySeed": {
+    "description": "Título para la pantalla de Copiar Frase Semilla."
+  },
+  "generateSeedPhrase": "Generar frase semilla",
+  "@generateSeedPhrase": {
+    "description": "Etiqueta para generar una frase semilla."
+  },
+  "seedPhraseDescription": "Aquí está tu frase semilla de 25 palabras. Asegúrate de guardarla en un lugar seguro.",
+  "@seedPhraseDescription": {
+    "description": "Descripción para mostrar la frase semilla mnemónica."
+  },
+  "copySeedPhrase": "Copiar frase semilla",
+  "@copySeedPhrase": {
+    "description": "Tooltip para copiar la frase semilla."
+  },
+  "noSeedPhraseAvailable": "No hay frase semilla disponible.",
+  "@noSeedPhraseAvailable": {
+    "description": "Mensaje mostrado cuando no hay frase semilla disponible."
+  },
+  "backupConfirmationRequired": "Debes confirmar que has hecho una copia de seguridad de tu frase semilla.",
+  "@backupConfirmationRequired": {
+    "description": "Mensaje de validación mostrado cuando no se confirma la copia de seguridad."
+  },
+  "backupConfirmationPrompt": "Por favor, confirma que has guardado una copia de seguridad de tu frase semilla en un lugar seguro.",
+  "@backupConfirmationPrompt": {
+    "description": "Solicitud para que los usuarios confirmen que han respaldado su frase semilla."
+  },
+  "next": "Siguiente",
+  "@next": {
+    "description": "Etiqueta para el botón de siguiente."
+  },
+  "importPrivateKey": "Importar Clave Privada",
+  "@importPrivateKey": {
+    "description": "Título para la pantalla de Importar Clave Privada."
+  },
+  "privateKey": "Clave Privada",
+  "@privateKey": {
+    "description": "Etiqueta para el campo de texto de clave privada."
+  },
+  "importSeed": "Importar Frase Semilla",
+  "@importSeed": {
+    "description": "Título para la pantalla de Importar Frase Semilla."
+  },
+  "enterSeedPhrasePrompt": "Introduce tu frase semilla para importar tu cuenta.",
+  "@enterSeedPhrasePrompt": {
+    "description": "Solicitud pidiendo al usuario que introduzca su frase semilla."
+  },
+  "enterWord": "Introduce la palabra {index}",
+  "@enterWord": {
+    "description": "Mensaje de error para una palabra vacía en la frase semilla.",
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "description": "La posición de la palabra en la frase semilla."
+      }
+    }
+  },
+  "nameAccount": "Nombrar Cuenta",
+  "@nameAccount": {
+    "description": "Título para la pantalla de nombrar una cuenta."
+  },
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Etiqueta para el botón de eliminar."
+  },
+  "confirmDeleteAccount": "¿Estás seguro de que deseas eliminar esta cuenta?",
+  "@confirmDeleteAccount": {
+    "description": "Mensaje de confirmación para eliminar una cuenta."
+  },
+  "editAccountNamePrompt": "Edita el nombre de tu cuenta",
+  "@editAccountNamePrompt": {
+    "description": "Solicitud para editar el nombre de la cuenta."
+  },
+  "nameAccountPrompt": "Nombra tu cuenta",
+  "@nameAccountPrompt": {
+    "description": "Solicitud para nombrar una cuenta."
+  },
+  "editAccountDescription": "Puedes cambiar el nombre de tu cuenta a continuación.",
+  "@editAccountDescription": {
+    "description": "Descripción para editar una cuenta."
+  },
+  "nameAccountDescription": "Dale un apodo a tu cuenta. No te preocupes, puedes cambiarlo más tarde.",
+  "@nameAccountDescription": {
+    "description": "Descripción para nombrar una cuenta."
+  },
+  "accountName": "Nombre de la Cuenta",
+  "@accountName": {
+    "description": "Etiqueta para el campo de texto del nombre de la cuenta."
+  },
+  "pleaseEnterText": "Por favor, introduce texto",
+  "@pleaseEnterText": {
+    "description": "Mensaje de validación para campos de entrada vacíos."
+  },
+  "save": "Guardar",
+  "@save": {
+    "description": "Etiqueta para el botón de guardar."
+  },
+  "create": "Crear",
+  "@create": {
+    "description": "Etiqueta para el botón de crear."
+  },
+  "updatingAccount": "Actualizando Cuenta",
+  "@updatingAccount": {
+    "description": "Mensaje mostrado mientras se actualiza una cuenta."
+  },
+  "creatingAccount": "Creando Cuenta",
+  "@creatingAccount": {
+    "description": "Mensaje mostrado mientras se crea una cuenta."
+  },
+  "welcomeTitle": "Bienvenido",
+  "@welcomeTitle": {
+    "description": "Título para la pantalla de bienvenida."
+  },
+  "welcomeMessage": "Bienvenido. Primero, vamos a crear un nuevo código PIN para asegurar este dispositivo.",
+  "@welcomeMessage": {
+    "description": "Mensaje de bienvenida para el usuario, pidiéndole que cree un código PIN."
+  },
+  "algorandStandardAsset": "Activo Estándar de Algorand",
+  "@algorandStandardAsset": {
+    "description": "Etiqueta para activos ASA."
+  },
+  "insufficientBalance": "Saldo insuficiente.",
+  "@insufficientBalance": {
+    "description": "Mensaje de error cuando el usuario no tiene suficientes fondos."
+  },
+  "assetOptInSuccess": "Activo añadido con éxito",
+  "@assetOptInSuccess": {
+    "description": "Mensaje de éxito mostrado cuando se completa la adhesión al activo."
+  },
+  "applicationId": "ID de Aplicación",
+  "@applicationId": {
+    "description": "Etiqueta para el campo de ID de la aplicación."
+  },
+  "type": "Tipo",
+  "@type": {
+    "description": "Etiqueta para el campo de tipo."
+  },
+  "decimals": "Decimales",
+  "@decimals": {
+    "description": "Etiqueta para el campo de decimales."
+  },
+  "totalSupply": "Suministro Total",
+  "@totalSupply": {
+    "description": "Etiqueta para el campo de suministro total."
+  },
+  "sendAsset": "Enviar Activo",
+  "@sendAsset": {
+    "description": "Texto del botón para enviar un activo."
+  },
+  "addAsset": "Añadir Activo",
+  "@addAsset": {
+    "description": "Texto del botón para añadir un activo."
+  },
+  "optingInMessage": "Añadiendo activo...",
+  "@optingInMessage": {
+    "description": "Mensaje mostrado durante el proceso de adhesión al activo."
+  },
+  "activeAssetNullError": "El activo activo es nulo",
+  "@activeAssetNullError": {
+    "description": "Mensaje de error cuando no se encuentra un activo activo."
+  },
+  "fundAccountError": "Por favor, financia tu cuenta para continuar.",
+  "@fundAccountError": {
+    "description": "Mensaje de error cuando el saldo de la cuenta del usuario es insuficiente."
+  },
+  "privateKeyNotFoundError": "Clave privada no encontrada",
+  "@privateKeyNotFoundError": {
+    "description": "Mensaje de error cuando la clave privada no está disponible."
+  },
+  "accountIdOrAddressNotAvailable": "ID de cuenta o dirección pública no disponible",
+  "@accountIdOrAddressNotAvailable": {
+    "description": "Mensaje de error cuando falta el ID de cuenta o la dirección pública."
+  },
+  "failedToOptInError": "Error al añadir el activo",
+  "@failedToOptInError": {
+    "description": "Mensaje de error cuando la adhesión al activo falla."
+  },
+  "algorandServiceError": "Ocurrió un error con el servicio de Algorand",
+  "@algorandServiceError": {
+    "description": "Mensaje de error general para fallos en el servicio de Algorand."
+  },
+  "viewAssetTitle": "Ver Activo",
+  "@viewAssetTitle": {
+    "description": "Título para la pantalla de Ver Activo."
+  },
+  "addAssetTitle": "Añadir Activo",
+  "@addAssetTitle": {
+    "description": "Título para la pantalla de Añadir Activo."
+  },
+  "noAssetAvailableMessage": "No hay activo disponible para mostrar.",
+  "@noAssetAvailableMessage": {
+    "description": "Mensaje mostrado cuando no hay activo disponible para ver."
+  },
+  "optOutTooltip": "Optar Salida",
+  "@optOutTooltip": {
+    "description": "Tooltip para el botón de optar salida de un activo."
+  },
+  "optOutAssetTitle": "¿Optar por salir del activo?",
+  "@optOutAssetTitle": {
+    "description": "Título del diálogo de confirmación para optar por salir del activo."
+  },
+  "optOutAssetContent": "¿Estás seguro de que deseas optar por salir de este activo ARC-0200?",
+  "@optOutAssetContent": {
+    "description": "Contenido del diálogo de confirmación para optar por salir del activo."
+  },
+  "optOutButton": "Optar Salida",
+  "@optOutButton": {
+    "description": "Etiqueta para el botón de optar salida en el diálogo de confirmación."
+  },
+  "cancelButton": "Cancelar",
+  "@cancelButton": {
+    "description": "Etiqueta para el botón de cancelar en los diálogos."
+  },
+  "nftViewerTitle": "Visor de NFTs",
+  "@nftViewerTitle": {
+    "description": "Título para la pantalla del Visor de NFTs."
+  },
+  "sentTransactionTitle": "Transacción Enviada",
+  "@sentTransactionTitle": {
+    "description": "Título para transacciones donde se envían activos."
+  },
+  "transactionType": "Tipo de Transacción",
+  "@transactionType": {
+    "description": "Etiqueta para el campo de tipo de transacción."
+  },
+  "fromField": "De",
+  "@fromField": {
+    "description": "Etiqueta para el campo de remitente."
+  },
+  "toField": "Para",
+  "@toField": {
+    "description": "Etiqueta para el campo de destinatario."
+  },
+  "fee": "Tarifa",
+  "@fee": {
+    "description": "Etiqueta para la tarifa de transacción."
+  },
+  "date": "Fecha",
+  "@date": {
+    "description": "Etiqueta para el campo de fecha de transacción."
+  },
+  "transactionId": "ID de Transacción",
+  "@transactionId": {
+    "description": "Etiqueta para el campo de ID de transacción."
+  },
+  "note": "Nota",
+  "@note": {
+    "description": "Etiqueta para el campo de nota de la transacción."
+  },
+  "receivedTransactionTitle": "Transacción Recibida",
+  "@receivedTransactionTitle": {
+    "description": "Título para transacciones donde se reciben activos."
+  },
+  "selfTransferTitle": "Transferencia Propia",
+  "@selfTransferTitle": {
+    "description": "Título para transacciones donde se envían activos a uno mismo."
+  },
+  "viewTransactionTitle": "Ver Transacción",
+  "@viewTransactionTitle": {
+    "description": "Título para la pantalla de ver transacciones."
+  },
+  "noTransactionAvailable": "No hay transacción disponible para mostrar.",
+  "@noTransactionAvailable": {
+    "description": "Mensaje mostrado cuando no hay transacción disponible."
+  },
+  "invalidAddressSupplied": "El valor proporcionado \"{value}\" no es una dirección válida.",
+  "@invalidAddressSupplied": {
+    "description": "Mensaje de error para dirección de Algorand inválida.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "INVALID_ADDRESS"
+      }
+    }
+  },
+  "invalidAddressByteLength": "La cadena de bytes debe tener {expected} bytes para una dirección válida, se encontró longitud \"{found}\".",
+  "@invalidAddressByteLength": {
+    "description": "Mensaje de error para longitud de bytes incorrecta de una dirección.",
+    "placeholders": {
+      "expected": {
+        "type": "int",
+        "example": "32"
+      },
+      "found": {
+        "type": "int",
+        "example": "24"
+      }
+    }
+  },
+  "addressType": "dirección",
+  "@addressType": {
+    "description": "Representación en cadena del tipo de dirección ABI."
+  },
+  "noActiveAccountFound": "No se encontró ninguna cuenta activa.",
+  "@noActiveAccountFound": {
+    "description": "Mensaje de error mostrado cuando no se encuentra una cuenta activa en el almacenamiento."
+  },
+  "failedToInitializeAccount": "Error al inicializar la cuenta: {error}",
+  "@failedToInitializeAccount": {
+    "description": "Mensaje de error mostrado cuando falla la inicialización de una cuenta.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "publicKeyNotFoundInStorage": "Clave pública no encontrada en el almacenamiento.",
+  "@publicKeyNotFoundInStorage": {
+    "description": "Mensaje de error mostrado cuando la clave pública no se encuentra en el almacenamiento."
+  },
+  "accountNotFundedPleaseFundToSeeDetails": "Esta cuenta no ha sido financiada aún. Por favor, financia la cuenta para ver detalles.",
+  "@accountNotFundedPleaseFundToSeeDetails": {
+    "description": "Mensaje de error mostrado cuando una cuenta no ha sido financiada."
+  },
+  "accountNameIsTooLong": "El nombre de la cuenta es demasiado largo.",
+  "@accountNameIsTooLong": {
+    "description": "Mensaje de error mostrado cuando el nombre de la cuenta excede la longitud máxima permitida."
+  },
+  "failedToCreateAccountName": "Error al crear el nombre de la cuenta: {error}",
+  "@failedToCreateAccountName": {
+    "description": "Mensaje de error mostrado cuando falla la creación del nombre de la cuenta.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToCreateAccount": "Error al crear la cuenta: {error}",
+  "@failedToCreateAccount": {
+    "description": "Mensaje de error mostrado cuando falla la creación de la cuenta.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "noActiveAccountToUpdate": "No hay cuenta activa para actualizar.",
+  "@noActiveAccountToUpdate": {
+    "description": "Mensaje de error mostrado cuando no hay cuenta activa para actualizar."
+  },
+  "accountNotFound": "Cuenta no encontrada.",
+  "@accountNotFound": {
+    "description": "Mensaje de error mostrado cuando la cuenta especificada no se encuentra."
+  },
+  "failedToDeleteAccount": "Error al eliminar la cuenta: {error}",
+  "@failedToDeleteAccount": {
+    "description": "Mensaje de error mostrado cuando falla la eliminación de la cuenta.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToRestoreAccount": "Error al restaurar la cuenta: {error}",
+  "@failedToRestoreAccount": {
+    "description": "Mensaje de error mostrado cuando falla la restauración de la cuenta.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "noActiveAccount": "No hay cuenta activa.",
+  "@noActiveAccount": {
+    "description": "Mensaje de error mostrado cuando no hay cuenta activa."
+  },
+  "seedPhraseNotFoundInStorage": "Frase semilla no encontrada en el almacenamiento.",
+  "@seedPhraseNotFoundInStorage": {
+    "description": "Mensaje de error mostrado cuando la frase semilla no se encuentra en el almacenamiento."
+  },
+  "publicAddressNotAvailable": "Dirección pública no disponible.",
+  "@publicAddressNotAvailable": {
+    "description": "Mensaje de error mostrado cuando la dirección pública no está disponible."
+  },
+  "accountMissingInTemporaryData": "Falta la cuenta en los datos temporales.",
+  "@accountMissingInTemporaryData": {
+    "description": "Mensaje de error mostrado cuando la cuenta falta en los datos temporales."
+  },
+  "incompleteTemporaryAccountData": "Datos temporales de cuenta incompletos para cuenta regular.",
+  "@incompleteTemporaryAccountData": {
+    "description": "Mensaje de error mostrado cuando los datos temporales de la cuenta son incompletos."
+  },
+  "publicKeyIsMissing": "Falta la clave pública.",
+  "@publicKeyIsMissing": {
+    "description": "Mensaje de error mostrado cuando falta la clave pública."
+  },
+  "unsupportedAccountType": "Tipo de cuenta no soportado.",
+  "@unsupportedAccountType": {
+    "description": "Mensaje de error mostrado cuando se encuentra un tipo de cuenta no soportado."
+  },
+  "failedToFinalizeAccountCreation": "Error al finalizar la creación de la cuenta: {error}",
+  "@failedToFinalizeAccountCreation": {
+    "description": "Mensaje de error mostrado cuando falla la finalización de la creación de la cuenta.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToCreateUnsignedTransactions": "Error al crear transacciones de transferencia sin firmar: {error}",
+  "@failedToCreateUnsignedTransactions": {
+    "description": "Mensaje de error mostrado cuando falla la creación de transacciones sin firmar.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "transactionIdInvalid": "Error en la transacción: ID de transacción inválido o marcado como 'error'.",
+  "@transactionIdInvalid": {
+    "description": "Mensaje de error mostrado cuando un ID de transacción es inválido o está marcado como 'error'."
+  },
+  "failedToSendPayment": "Error al enviar el pago: {error}",
+  "@failedToSendPayment": {
+    "description": "Mensaje de error mostrado cuando falla el envío de un pago.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "getAccountAssetsFailed": "Error al obtener los activos de la cuenta: {error}",
+  "@getAccountAssetsFailed": {
+    "description": "Mensaje de error mostrado cuando falla la obtención de los activos de la cuenta.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "assetDetailsFetchFailed": "Error al obtener los detalles del activo: {error}",
+  "@assetDetailsFetchFailed": {
+    "description": "Mensaje de error mostrado cuando falla la obtención de los detalles del activo.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "assetIdInvalidFormat": "Formato de ID de activo inválido. El ID de activo debe ser un número entero válido.",
+  "@assetIdInvalidFormat": {
+    "description": "Mensaje de error mostrado cuando un ID de activo es inválido."
+  },
+  "assetOptInFailed": "Error al optar por el activo: {error}",
+  "@assetOptInFailed": {
+    "description": "Mensaje de error mostrado cuando falla la adhesión al activo.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "arc200AssetFetchFailed": "Error al obtener detalles del activo ARC-0200",
+  "@arc200AssetFetchFailed": {
+    "description": "Mensaje de error mostrado cuando falla la obtención de detalles del activo ARC-0200."
+  },
+  "failedToTransferAsset": "Error al transferir el activo: {error}",
+  "@failedToTransferAsset": {
+    "description": "Mensaje de error mostrado cuando falla la transferencia de un activo.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToToggleFreeze": "Error al {action} el activo: {error}",
+  "@failedToToggleFreeze": {
+    "description": "Mensaje de error mostrado cuando falla el proceso de congelar/descongelar un activo.",
+    "placeholders": {
+      "action": {},
+      "error": {}
+    }
+  },
+  "failedToRevokeAsset": "Error al revocar el activo: {error}",
+  "@failedToRevokeAsset": {
+    "description": "Mensaje de error mostrado cuando falla la revocación de un activo.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToFetchTransactions": "Error al obtener transacciones: {error}",
+  "@failedToFetchTransactions": {
+    "description": "Mensaje de error mostrado cuando falla la obtención de transacciones.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "contractOptInFailed": "Error al optar por el contrato: {error}",
+  "@contractOptInFailed": {
+    "description": "Mensaje de error mostrado cuando falla la adhesión al contrato.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "contractCallFailed": "Error al llamar al contrato: {error}",
+  "@contractCallFailed": {
+    "description": "Mensaje de error mostrado cuando falla la llamada a un contrato.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "transactionError": "Error en la transacción: {error}",
+  "@transactionError": {
+    "description": "Mensaje de error para fallos en transacciones.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "searchQueryTooShort": "La consulta de búsqueda es demasiado corta.",
+  "@searchQueryTooShort": {
+    "description": "Mensaje de error mostrado cuando la consulta de búsqueda es demasiado corta."
+  },
+  "failedToFetchAssets": "Error al obtener activos: {error}",
+  "@failedToFetchAssets": {
+    "description": "Mensaje de error mostrado cuando falla la obtención de activos.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToGetAccountBalance": "Error al obtener el saldo de la cuenta: {error}",
+  "@failedToGetAccountBalance": {
+    "description": "Mensaje de error mostrado cuando falla la obtención del saldo de la cuenta.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "assetEditConfirmationFailed": "Error en la confirmación de edición del activo.",
+  "@assetEditConfirmationFailed": {
+    "description": "Mensaje de error mostrado cuando falla la confirmación de edición del activo."
+  },
+  "failedToEditAsset": "Error al editar el activo: {error}",
+  "@failedToEditAsset": {
+    "description": "Mensaje de error mostrado cuando falla la edición de un activo.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "failedToDestroyAsset": "Error al destruir el activo: {error}",
+  "@failedToDestroyAsset": {
+    "description": "Mensaje de error mostrado cuando falla la destrucción de un activo.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "assetDestructionConfirmationFailed": "Error en la confirmación de destrucción del activo.",
+  "@assetDestructionConfirmationFailed": {
+    "description": "Mensaje de error mostrado cuando falla la confirmación de destrucción del activo."
+  },
+  "failedToOptInAsset": "Error al optar por el activo.",
+  "@failedToOptInAsset": {
+    "description": "Mensaje de error mostrado cuando falla la adhesión al activo."
+  },
+  "privateKeyNotFound": "Clave privada no encontrada para la cuenta activa.",
+  "@privateKeyNotFound": {
+    "description": "Mensaje de error mostrado cuando no se encuentra la clave privada de la cuenta activa."
+  },
+  "assetOptInConfirmationFailed": "Error en la confirmación de adhesión al activo.",
+  "@assetOptInConfirmationFailed": {
+    "description": "Mensaje de error mostrado cuando falla la confirmación de adhesión al activo."
+  },
+  "failedToOptInToASA": "Error al optar por el ASA: {error}",
+  "@failedToOptInToASA": {
+    "description": "Mensaje de error mostrado cuando falla la adhesión a un activo ASA.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "assetNameOrUnitMissing": "Falta el nombre del activo o el nombre de la unidad.",
+  "@assetNameOrUnitMissing": {
+    "description": "Mensaje de error mostrado cuando falta el nombre del activo o el nombre de la unidad."
+  },
+  "failedToFollowArc200Asset": "Error al seguir el activo ARC-0200.",
+  "@failedToFollowArc200Asset": {
+    "description": "Mensaje de error mostrado cuando falla el seguimiento de un activo ARC-0200."
+  },
+  "assetTransferConfirmationFailed": "Error en la confirmación de transferencia del activo.",
+  "@assetTransferConfirmationFailed": {
+    "description": "Mensaje de error mostrado cuando falla la confirmación de transferencia de un activo."
+  },
+  "assetIsFrozen": "El activo está congelado.",
+  "@assetIsFrozen": {
+    "description": "Mensaje de error que indica que un activo está congelado."
+  },
+  "privateKeyNotFoundForAccount": "Clave privada no encontrada para el ID de cuenta: {accountId}",
+  "@privateKeyNotFoundForAccount": {
+    "description": "Mensaje de error mostrado cuando no se encuentra la clave privada para una cuenta específica.",
+    "placeholders": {
+      "accountId": {
+        "type": "String",
+        "description": "El ID de la cuenta para la cual no se encontró la clave privada."
+      }
+    }
+  },
+  "invalidEncodedKeyLength": "La clave codificada debe tener 44 caracteres.",
+  "@invalidEncodedKeyLength": {
+    "description": "Mensaje de error mostrado cuando la longitud de la clave codificada no es de 44 caracteres."
+  },
+  "contactNotFound": "Contacto no encontrado.",
+  "@contactNotFound": {
+    "description": "Mensaje de error mostrado cuando no se encuentra un contacto solicitado."
+  },
+  "almostThere": "Casi llegamos",
+  "@almostThere": {
+    "description": "Mensaje de seguimiento mostrado cuando la carga está casi completa."
+  },
+  "hangInThere": "Aguanta un poco más",
+  "@hangInThere": {
+    "description": "Mensaje alentador mostrado durante la carga."
+  },
+  "justABitMore": "Solo un poco más",
+  "@justABitMore": {
+    "description": "Mensaje indicando que la carga está casi terminada."
+  },
+  "youreDoingGreat": "Lo estás haciendo genial",
+  "@youreDoingGreat": {
+    "description": "Mensaje alentador mostrado durante la carga."
+  },
+  "nearlyDone": "Casi terminado",
+  "@nearlyDone": {
+    "description": "Mensaje indicando que el proceso está casi completo."
+  },
+  "thanksForWaiting": "Gracias por esperar",
+  "@thanksForWaiting": {
+    "description": "Mensaje de agradecimiento por la paciencia durante la carga."
+  },
+  "checksumMismatch": "El checksum no coincide. Los códigos QR escaneados no son del mismo conjunto.",
+  "@checksumMismatch": {
+    "description": "Mensaje de error mostrado cuando el checksum de los códigos QR escaneados no coincide, indicando que no son del mismo conjunto."
+  },
+  "networkChangedTo": "Red cambiada a {networkName}",
+  "@networkChangedTo": {
+    "description": "Mensaje mostrado cuando la red se cambia con éxito.",
+    "placeholders": {
+      "networkName": {
+        "type": "String",
+        "description": "El nombre de la nueva red."
+      }
+    }
+  },
+  "failedToLoadNFTs": "Error al cargar NFTs con el código de estado: {statusCode}",
+  "@failedToLoadNFTs": {
+    "description": "Mensaje de error mostrado cuando la aplicación no puede cargar NFTs, mostrando el código de estado HTTP.",
+    "placeholders": {
+      "statusCode": {
+        "type": "int",
+        "description": "El código de estado HTTP devuelto por el servidor."
+      }
+    }
+  },
+  "settingUp": "Configurando",
+  "@settingUp": {
+    "description": "Texto de superposición mostrado durante la configuración del PIN."
+  },
+  "authenticating": "Autenticando",
+  "@authenticating": {
+    "description": "Texto de superposición mostrado durante la autenticación."
+  },
+  "verifying": "Verificando",
+  "@verifying": {
+    "description": "Texto de superposición mostrado durante la verificación de transacciones."
+  },
+  "settingNewPin": "Estableciendo un nuevo PIN",
+  "@settingNewPin": {
+    "description": "Texto de superposición mostrado durante el proceso de cambio de PIN."
+  },
+  "accountNameNotFound": "Nombre de cuenta no encontrado para activeAccountId: {activeAccountId}",
+  "@accountNameNotFound": {
+    "description": "Mensaje de error mostrado cuando no se encuentra el nombre de la cuenta para un ID específico.",
+    "placeholders": {
+      "activeAccountId": {
+        "type": "String",
+        "description": "El ID de la cuenta activa."
+      }
+    }
+  },
+  "incorrectPin": "PIN incorrecto",
+  "@incorrectPin": {
+    "description": "Mensaje de error mostrado cuando el usuario ingresa un PIN incorrecto."
+  },
+  "invalidPinTryAgain": "PIN inválido. Intenta de nuevo.",
+  "@invalidPinTryAgain": {
+    "description": "Mensaje de error mostrado cuando el PIN ingresado es inválido."
+  },
+  "failedToSetPin": "Error al establecer el PIN: {error}",
+  "@failedToSetPin": {
+    "description": "Mensaje de error mostrado cuando falla el establecimiento del PIN.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error de la excepción."
+      }
+    }
+  },
+  "errorReadingPinHash": "Error al leer el hash del PIN.",
+  "@errorReadingPinHash": {
+    "description": "Mensaje de error mostrado cuando falla la lectura del hash del PIN desde el almacenamiento seguro."
+  },
+  "failedToReadAccountsData": "Error al leer los datos de las cuentas: {error}",
+  "@failedToReadAccountsData": {
+    "description": "Mensaje de error mostrado cuando falla la lectura de los datos de las cuentas.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error de la excepción."
+      }
+    }
+  },
+  "sharedPreferencesNotInitialized": "SharedPreferences no está inicializado.",
+  "@sharedPreferencesNotInitialized": {
+    "description": "Mensaje de error mostrado cuando se intenta acceder a SharedPreferences antes de su inicialización."
+  },
+  "failedToSaveSessions": "Error al guardar las sesiones.",
+  "@failedToSaveSessions": {
+    "description": "Mensaje de error mostrado cuando falla el guardado de sesiones."
+  },
+  "failedToRetrieveSessions": "Error al recuperar las sesiones.",
+  "@failedToRetrieveSessions": {
+    "description": "Mensaje de error mostrado cuando falla la recuperación de sesiones."
+  },
+  "failedToRemoveSessions": "Error al eliminar las sesiones.",
+  "@failedToRemoveSessions": {
+    "description": "Mensaje de error mostrado cuando falla la eliminación de todas las sesiones."
+  },
+  "failedToCreateWatchAccount": "Error al crear la cuenta de observación: {error}",
+  "@failedToCreateWatchAccount": {
+    "description": "Mensaje de error mostrado cuando falla la creación de una cuenta de observación.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error de la excepción."
+      }
+    }
+  },
+  "accountAlreadyAdded": "Cuenta ya añadida.",
+  "@accountAlreadyAdded": {
+    "description": "Mensaje de error mostrado cuando se intenta añadir una cuenta que ya existe."
+  },
+  "seedPhraseNotAvailable": "Frase semilla no disponible.",
+  "@seedPhraseNotAvailable": {
+    "description": "Mensaje de error mostrado cuando se intenta acceder a una frase semilla que no está disponible."
+  },
+  "somethingWentWrong": "Algo salió mal.",
+  "@somethingWentWrong": {
+    "description": "Un mensaje de error genérico."
+  },
+  "accountNameNotFoundForId": "Nombre de cuenta no encontrado para accountId: {accountId}",
+  "@accountNameNotFoundForId": {
+    "description": "Mensaje de error mostrado cuando no se encuentra el nombre de la cuenta para un ID de cuenta específico.",
+    "placeholders": {
+      "accountId": {
+        "type": "String",
+        "description": "El ID de la cuenta."
+      }
+    }
+  },
+  "failedToSelectAccount": "Error al seleccionar la cuenta: {error}",
+  "@failedToSelectAccount": {
+    "description": "Mensaje de error mostrado cuando falla la selección de una cuenta.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error de la excepción."
+      }
+    }
+  },
+  "failedToCompleteAccountSetup": "Error al completar la configuración de la cuenta: {error}",
+  "@failedToCompleteAccountSetup": {
+    "description": "Mensaje de error mostrado cuando falla la configuración de la cuenta.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error de la excepción."
+      }
+    }
+  },
+  "invalidIconType": "El icono debe ser IconData o una ruta de archivo SVG.",
+  "@invalidIconType": {
+    "description": "Mensaje de error mostrado cuando se proporciona un tipo de icono no válido."
+  },
+  "resetAppFailed": "Error al reiniciar la aplicación: {error}",
+  "@resetAppFailed": {
+    "description": "Mensaje de error mostrado cuando falla el proceso de reinicio de la aplicación.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error de la excepción."
+      }
+    }
+  },
+  "failedToDisconnectWalletConnectSessions": "Error al desconectar sesiones WalletConnect: {error}",
+  "@failedToDisconnectWalletConnectSessions": {
+    "description": "Mensaje de error mostrado cuando falla la desconexión de sesiones WalletConnect.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error de la excepción."
+      }
+    }
+  },
+  "failedToClearStorage": "Error al borrar el almacenamiento: {error}",
+  "@failedToClearStorage": {
+    "description": "Mensaje de error mostrado cuando falla el borrado del almacenamiento seguro.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "El mensaje de error de la excepción."
+      }
+    }
+  },
+  "failedToLoadArc200Balances": "Error al cargar los saldos ARC-0200.",
+  "@failedToLoadArc200Balances": {
+    "description": "Mensaje de error mostrado cuando falla la carga de saldos ARC-0200."
+  },
+  "noArc200TokenDetailsForNetwork": "No hay detalles de tokens ARC-0200 disponibles para la red seleccionada.",
+  "@noArc200TokenDetailsForNetwork": {
+    "description": "Mensaje de error mostrado cuando no hay detalles de tokens ARC-0200 disponibles para la red seleccionada."
+  },
+  "failedToLoadArc200TokenDetails": "Error al cargar los detalles del token ARC-0200.",
+  "@failedToLoadArc200TokenDetails": {
+    "description": "Mensaje de error mostrado cuando falla la carga de detalles de un token ARC-0200."
+  },
+  "tokenDetailsNotFound": "No se encontraron detalles del token para el contrato {contractId}.",
+  "@tokenDetailsNotFound": {
+    "description": "Mensaje de error mostrado cuando no se encuentran detalles del token para un contrato específico.",
+    "placeholders": {
+      "contractId": {
+        "type": "String",
+        "description": "El ID del contrato para el que no se encontraron detalles."
+      }
+    }
+  },
+  "failedToSearchArc200Assets": "Error al buscar activos ARC-0200.",
+  "@failedToSearchArc200Assets": {
+    "description": "Mensaje de error mostrado cuando falla la búsqueda de activos ARC-0200."
+  },
+  "networkNotConfiguredForArc200": "La red no está configurada para operaciones ARC-0200.",
+  "@networkNotConfiguredForArc200": {
+    "description": "Mensaje de error mostrado cuando la red seleccionada no está configurada para operaciones ARC-0200."
+  },
+  "failedToFetchArc200Balance": "Error al obtener el saldo ARC-0200 para el contrato {contractId}.",
+  "@failedToFetchArc200Balance": {
+    "description": "Mensaje de error mostrado cuando falla la obtención del saldo ARC-0200 para un contrato específico.",
+    "placeholders": {
+      "contractId": {
+        "type": "String",
+        "description": "El ID del contrato para el que no se pudo obtener el saldo."
+      }
+    }
+  },
+  "assetNotFoundForContract": "Activo no encontrado para el contrato {contractId}.",
+  "@assetNotFoundForContract": {
+    "description": "Mensaje de error mostrado cuando no se encuentra un activo para un contrato específico.",
+    "placeholders": {
+      "contractId": {
+        "type": "String",
+        "description": "El ID del contrato para el que no se encontró el activo."
+      }
+    }
+  },
+  "copiedToClipboard": "Copiado al portapapeles",
+  "@copiedToClipboard": {
+    "description": "Mensaje mostrado cuando un elemento se copia correctamente al portapapeles."
+  },
+  "unsupportedEncodingOrInvalidFormat": "Codificación no soportada o formato de cadena inválido.",
+  "@unsupportedEncodingOrInvalidFormat": {
+    "description": "Mensaje de error mostrado cuando la cadena de entrada tiene una codificación no soportada o un formato inválido."
+  },
+  "privateKeyMissingInUri": "Falta la clave privada en la URI.",
+  "@privateKeyMissingInUri": {
+    "description": "Mensaje de error mostrado cuando falta la clave privada en una URI de entrada."
+  },
+  "unsupportedEncodingInUri": "Codificación no soportada en la URI.",
+  "@unsupportedEncodingInUri": {
+    "description": "Mensaje de error mostrado cuando una URI especifica una codificación no soportada."
+  },
+  "invalidHexStringLength": "Longitud de cadena hexadecimal inválida.",
+  "@invalidHexStringLength": {
+    "description": "Mensaje de error mostrado cuando una cadena hexadecimal tiene una longitud inválida."
+  },
+  "invalidBase64String": "Cadena Base64 inválida.",
+  "@invalidBase64String": {
+    "description": "Mensaje de error mostrado cuando una cadena Base64 es inválida."
+  },
+  "invalidBase32String": "Cadena Base32 inválida.",
+  "@invalidBase32String": {
+    "description": "Mensaje de error mostrado cuando una cadena Base32 es inválida."
+  },
+  "hereIsMyQRCode": "¡Aquí está mi código QR!",
+  "@hereIsMyQRCode": {
+    "description": "Texto que acompaña al código QR compartido."
+  },
+  "failedToApproveSession": "Error al aprobar la sesión.",
+  "@failedToApproveSession": {
+    "description": "Mensaje de error mostrado cuando falla la aprobación de una sesión WalletConnect."
+  },
+  "failedToDisconnectSession": "Error al desconectar la sesión.",
+  "@failedToDisconnectSession": {
+    "description": "Mensaje de error mostrado cuando falla la desconexión de una sesión WalletConnect."
+  },
+  "language": "Idioma",
+  "@language": {
+    "description": "Etiqueta para el menú desplegable de selección de idioma."
+  }
+  }
+  
