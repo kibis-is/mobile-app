@@ -1,3 +1,15 @@
+# [1.1.0-beta.2](https://github.com/kibis-is/mobile-app/compare/v1.1.0-beta.1...v1.1.0-beta.2) (2024-11-18)
+
+
+### Bug Fixes
+
+* add intl as a dependency override to fix package incompaitibility issues ([75c55c0](https://github.com/kibis-is/mobile-app/commit/75c55c02a25946c78e3832eee632ed6337faaa01))
+
+
+### Features
+
+* spanish lanugage now added ([62aa4a4](https://github.com/kibis-is/mobile-app/commit/62aa4a42c4f99e7a2264968430cc4fc9cfe639d9))
+
 # [1.1.0-beta.1](https://github.com/kibis-is/mobile-app/compare/v1.0.1...v1.1.0-beta.1) (2024-11-17)
 
 
