@@ -32,7 +32,6 @@ class AccountSetupUtility {
 
   static Future<void> _handleAccountPostSetup(
       WidgetRef ref, AccountFlow accountFlow, bool setFinalState) async {
-    ref.invalidate(accountProvider);
     final newAccountId =
         await ref.read(accountProvider.notifier).getAccountId() ?? '';
 
