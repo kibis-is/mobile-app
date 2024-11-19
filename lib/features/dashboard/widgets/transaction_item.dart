@@ -10,6 +10,7 @@ import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
+import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class TransactionItem extends ConsumerWidget {
@@ -140,13 +141,8 @@ class TransactionItem extends ConsumerWidget {
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: kScreenPadding / 2),
                     child: Text(
-                      type == 'appl'
-                          ? '$amount'
-                          : (amount != null &&
-                                  amount != '0' &&
-                                  !(amount?.startsWith('0') ?? false))
-                              ? '${direction == TransactionDirection.outgoing ? '-' : '+'}$amount'
-                              : '$amount',
+                      NumberFormatter.formatAmountWithDirection(
+                          amount, direction),
                       style: context.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: (amount == null ||

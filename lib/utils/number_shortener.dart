@@ -1,3 +1,5 @@
+import 'package:kibisis/constants/constants.dart';
+
 class NumberFormatter {
   static String shortenNumber(double number) {
     const suffixes = ['', 'K', 'M', 'B', 'T'];
@@ -27,5 +29,17 @@ class NumberFormatter {
     return fractionalPart.isNotEmpty
         ? '$formattedInteger.$fractionalPart'
         : formattedInteger;
+  }
+
+  static String formatAmountWithDirection(
+      String? amount, TransactionDirection direction) {
+    if (amount == null || amount == '0') {
+      return amount ?? '';
+    }
+
+    double number = double.parse(amount);
+    String formattedNumber = shortenNumber(number);
+
+    return '${direction == TransactionDirection.outgoing ? '-' : '+'}$formattedNumber';
   }
 }

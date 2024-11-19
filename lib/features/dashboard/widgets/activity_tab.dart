@@ -1,3 +1,4 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -11,7 +12,6 @@ import 'package:kibisis/providers/active_transaction_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/media_query_helper.dart';
-import 'package:kibisis/utils/number_shortener.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -213,9 +213,7 @@ class _ActivityTabState extends ConsumerState<ActivityTab> {
             transaction: item.transaction,
             direction: item.direction,
             otherPartyAddress: item.otherPartyAddress,
-            amount: item.amount != null && double.tryParse(item.amount!) != null
-                ? NumberFormatter.shortenNumber(double.parse(item.amount!))
-                : '0',
+            amount: item.amount ?? '0',
             note: item.note,
             type: item.type,
             isNew: item.isNew,
