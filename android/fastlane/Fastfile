@@ -5,6 +5,7 @@ lane :beta do
         json_key: File.expand_path('../..', __dir__) + '/play_store_credentials.json',
         metadata_path: File.expand_path(__dir__) + '/metadata',
         release_status: 'draft',
+        skip_upload_changelogs: true, # TODO: remove after version release
         track: 'internal'
     )
 end
@@ -16,6 +17,7 @@ lane :production do
         json_key: File.expand_path('../..', __dir__) + '/play_store_credentials.json',
         metadata_path: File.expand_path(__dir__) + '/metadata',
         release_status: 'draft',
+        skip_upload_changelogs: true, # TODO: remove after version release
         track: 'beta' # TODO: change to 'production' track when launching - currently releases to "Open Testing"
     )
 end
