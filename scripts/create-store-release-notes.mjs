@@ -28,7 +28,10 @@ function main(version, notes) {
     process.exit(1);
   }
 
-  releaseNotes = convertMarkdownToPlainText(notes);
+  releaseNotes = convertMarkdownToPlainText(
+    notes,
+    500 // google imposes a 500 character limit on changelogs
+  );
 
   if (!releaseNotes) {
     console.error('failed to convert the release notes to plain text');
