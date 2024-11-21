@@ -753,6 +753,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tryClearingFilter": MessageLookupByLibrary.simpleMessage(
             "Hãy thử xóa bộ lọc để xem tất cả tài sản."),
         "type": MessageLookupByLibrary.simpleMessage("Loại"),
+        "unitName": MessageLookupByLibrary.simpleMessage("Tên Đơn Vị"),
         "unknown": MessageLookupByLibrary.simpleMessage("Không xác định"),
         "unknownImportAccountUriFormat": MessageLookupByLibrary.simpleMessage(
             "Định dạng URI nhập tài khoản không xác định"),

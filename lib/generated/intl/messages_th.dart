@@ -734,6 +734,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tryClearingFilter": MessageLookupByLibrary.simpleMessage(
             "ลองล้างตัวกรองเพื่อดูสินทรัพย์ทั้งหมด"),
         "type": MessageLookupByLibrary.simpleMessage("ประเภท"),
+        "unitName": MessageLookupByLibrary.simpleMessage("ชื่อหน่วย"),
         "unknown": MessageLookupByLibrary.simpleMessage("ไม่ทราบ"),
         "unknownImportAccountUriFormat": MessageLookupByLibrary.simpleMessage(
             "รูปแบบ URI การนำเข้าบัญชีไม่ทราบ"),

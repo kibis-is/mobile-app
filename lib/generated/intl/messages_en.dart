@@ -732,6 +732,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tryClearingFilter": MessageLookupByLibrary.simpleMessage(
             "Try clearing the filter to see all assets."),
         "type": MessageLookupByLibrary.simpleMessage("Type"),
+        "unitName": MessageLookupByLibrary.simpleMessage("Unit Name"),
         "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
         "unknownImportAccountUriFormat": MessageLookupByLibrary.simpleMessage(
             "Unknown import account URI format"),

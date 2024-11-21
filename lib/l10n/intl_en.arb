@@ -1888,6 +1888,9 @@
 "fabRight": "Right",
 "@fabRight": {
   "description": "Option for positioning the floating button on the right."
+},
+"unitName": "Unit Name",
+"@unitName": {
+  "description": "Label for the Unit Name field on the Asset View screen."
 }
-
 }

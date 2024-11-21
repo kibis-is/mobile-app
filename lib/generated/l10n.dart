@@ -4102,6 +4102,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Unit Name`
+  String get unitName {
+    return Intl.message(
+      'Unit Name',
+      name: 'unitName',
+      desc: 'Label for the Unit Name field on the Asset View screen.',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

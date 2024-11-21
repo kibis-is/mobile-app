@@ -765,6 +765,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tryClearingFilter": MessageLookupByLibrary.simpleMessage(
             "Intenta borrar el filtro para ver todos los activos."),
         "type": MessageLookupByLibrary.simpleMessage("Tipo"),
+        "unitName": MessageLookupByLibrary.simpleMessage("Nombre de la Unidad"),
         "unknown": MessageLookupByLibrary.simpleMessage("Desconocido"),
         "unknownImportAccountUriFormat": MessageLookupByLibrary.simpleMessage(
             "Formato de URI de importación de cuenta desconocido"),

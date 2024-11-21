@@ -1883,6 +1883,10 @@
 "fabRight": "Sağ",
 "@fabRight": {
   "description": "Yüzen düğmenin sağa yerleştirilmesi için seçenek."
+},
+"unitName": "Birim Adı",
+"@unitName": {
+  "description": "Varlık Görüntüleme ekranındaki Birim Adı alanı için etiket."
 }
 
 

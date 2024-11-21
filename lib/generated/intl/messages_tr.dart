@@ -742,6 +742,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tryClearingFilter": MessageLookupByLibrary.simpleMessage(
             "Tüm varlıkları görmek için filtreyi temizlemeyi deneyin."),
         "type": MessageLookupByLibrary.simpleMessage("Tür"),
+        "unitName": MessageLookupByLibrary.simpleMessage("Birim Adı"),
         "unknown": MessageLookupByLibrary.simpleMessage("Bilinmeyen"),
         "unknownImportAccountUriFormat": MessageLookupByLibrary.simpleMessage(
             "Bilinmeyen hesap URI formatı"),

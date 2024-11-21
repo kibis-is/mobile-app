@@ -1883,6 +1883,10 @@
 "fabRight": "Derecha",
 "@fabRight": {
   "description": "Opción para posicionar el botón flotante a la derecha."
+},
+"unitName": "Nombre de la Unidad",
+"@unitName": {
+  "description": "Etiqueta para el campo Nombre de la Unidad en la pantalla de visualización de activos."
 }
 
 
