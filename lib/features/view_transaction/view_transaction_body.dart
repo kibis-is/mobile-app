@@ -68,7 +68,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
 
     final activeAccount = ref.read(accountProvider).account?.address;
     if (activeAccount == null || activeAccount.isEmpty) {
-      return TransactionDirection.unknown; // No active account
+      return TransactionDirection.unknown;
     }
 
     if (activeAccount == sender) {
@@ -77,7 +77,7 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
       return TransactionDirection.incoming;
     }
 
-    return TransactionDirection.unknown; // Neither sender nor receiver
+    return TransactionDirection.unknown;
   }
 
   @override

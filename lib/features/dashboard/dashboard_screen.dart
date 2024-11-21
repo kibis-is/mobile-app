@@ -303,6 +303,22 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
+  String _trimBalanceDecimals(String balance) {
+    final parts = balance.split('.');
+
+    if (parts.length > 1) {
+      final integerPart = parts[0];
+      final fractionalPart = parts[1];
+
+      final limitedFractionalPart = fractionalPart.length > 2
+          ? fractionalPart.substring(0, 2)
+          : fractionalPart;
+
+      return '$integerPart.$limitedFractionalPart';
+    }
+    return balance;
+  }
+
   Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
     final balanceAsync = ref.watch(balanceProvider);
@@ -313,7 +329,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
           data: (balance) => Row(
             children: [
               EllipsizedText(
-                NumberFormatter.shortenNumber(balance),
+                _trimBalanceDecimals(NumberFormatter.shortenNumber(balance)),
                 style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: balance > 0
@@ -336,12 +352,22 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                 onPressed: () {
                   customBottomSheet(
                       context: context,
-                      singleWidget: Text(
-                        S.of(context).minimumBalanceInfo(ref
-                            .watch(minimumBalanceProvider)
-                            .toStringAsFixed(2)),
-                        softWrap: true,
-                        style: context.textTheme.bodyMedium,
+                      singleWidget: Column(
+                        children: [
+                          EllipsizedText(
+                              NumberFormatter.formatWithCommas(balance),
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: context.colorScheme.secondary)),
+                          const SizedBox(height: kScreenPadding / 2),
+                          Text(
+                            S.of(context).minimumBalanceInfo(ref
+                                .watch(minimumBalanceProvider)
+                                .toStringAsFixed(2)),
+                            softWrap: true,
+                            style: context.textTheme.bodyMedium,
+                          ),
+                        ],
                       ),
                       header: S.of(context).infoHeader,
                       onPressed: (SelectItem item) {});

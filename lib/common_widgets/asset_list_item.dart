@@ -1,3 +1,4 @@
+import 'package:algorand_dart/algorand_dart.dart';
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -139,6 +140,7 @@ class AssetListItem extends ConsumerWidget {
   }
 
   String _getFormattedAmount() {
-    return NumberFormatter.shortenNumber(asset.amount.toDouble());
+    final amountInAlgos = Algo.fromMicroAlgos(asset.amount);
+    return NumberFormatter.shortenNumber(amountInAlgos);
   }
 }

@@ -100,13 +100,14 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
 
   @override
   Widget build(BuildContext context) {
-    final userBalance = widget.asset.amount;
+    final userBalance = Algo.fromMicroAlgos(widget.asset.amount);
     final totalSupply = double.parse(widget.asset.params.total.toString());
     final mediaQueryHelper = MediaQueryHelper(context);
     final network = ref.watch(networkProvider)?.value;
     final networkIcon = network?.startsWith('network-voi') ?? false
         ? AppIcons.voiCircleIcon
         : AppIcons.algorandCircleIcon;
+    final currentNetwork = ref.watch(networkProvider);
 
     final publicAddress = ref.watch(accountProvider).account?.address ?? '';
     final assetsState = ref.watch(assetsProvider(publicAddress));
@@ -168,13 +169,23 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                       _buildHeroOrChild(
                         condition: !mediaQueryHelper.isWideScreen(),
                         tag: '${widget.asset.index}-amount',
-                        child: Text(
-                          NumberFormatter.formatWithCommasAndDecimals(
-                              userBalance.toDouble()),
-                          style: context.textTheme.displayMedium?.copyWith(
-                            color: context.colorScheme.secondary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            EllipsizedText(
+                              NumberFormatter.formatWithCommas(
+                                  userBalance.toDouble()),
+                              style: context.textTheme.displayMedium?.copyWith(
+                                color: context.colorScheme.secondary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            AppIcons.icon(
+                              icon: currentNetwork?.icon,
+                              size: AppIcons.medium,
+                              color: context.colorScheme.secondary,
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -192,9 +203,9 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                       leadingIcon: AppIcons.unitName,
                       controller: TextEditingController(
                         text: widget.asset.params.unitName ??
-                            S.of(context).notAvailable,
+                            S.of(context).unitName,
                       ),
-                      labelText: S.current.notAvailable,
+                      labelText: S.current.unitName,
                       isEnabled: false,
                     ),
                   ),

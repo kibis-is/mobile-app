@@ -6,8 +6,8 @@ class NumberFormatter {
     int suffixIndex = 0;
 
     // Apply formatting with commas and decimals for numbers <= 99,999
-    if (number <= 99999) {
-      return formatWithCommasAndDecimals(number);
+    if (number <= 99999 && number >= 1) {
+      return formatWithCommas(number);
     }
 
     while (number >= 1000 && suffixIndex < suffixes.length - 1) {
@@ -29,16 +29,18 @@ class NumberFormatter {
     return '$formattedNumber${suffixes[suffixIndex]}';
   }
 
-  static String formatWithCommasAndDecimals(double number) {
-    String formattedNumber = number.toStringAsFixed(2);
+  static String formatWithCommas(double number) {
+    String formattedNumber = number.toString();
     final parts = formattedNumber.split('.');
     final integerPart = parts[0];
-    final fractionalPart = parts[1];
+    final fractionalPart = parts.length > 1 ? parts[1] : '';
 
     final formattedInteger = integerPart.replaceAllMapped(
         RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},');
 
-    return '$formattedInteger.$fractionalPart';
+    return fractionalPart.isNotEmpty
+        ? '$formattedInteger.$fractionalPart'
+        : formattedInteger;
   }
 
   static String applyDirectionSign(
