@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/constants/constants.dart';
@@ -131,17 +132,28 @@ class TransactionsNotifier
 
   TransactionDirection _getTransactionDirection(Transaction transaction) {
     if (transaction.type == 'pay' || transaction.type == 'axfer') {
-      final sender = transaction.sender;
-      final receiver = transaction.paymentTransaction?.receiver.toString() ??
-          transaction.assetTransferTransaction?.receiver.toString() ??
+      final sender = transaction.sender.toLowerCase();
+      final receiver = transaction.paymentTransaction?.receiver.toLowerCase() ??
+          transaction.assetTransferTransaction?.receiver.toLowerCase() ??
           '';
 
-      if (sender == publicAddress && receiver != publicAddress) {
+      if (sender.isEmpty || receiver.isEmpty) {
+        debugPrint('Transaction missing sender or receiver: $transaction');
+        return TransactionDirection.unknown;
+      }
+
+      if (sender == publicAddress.toLowerCase() &&
+          receiver != publicAddress.toLowerCase()) {
         return TransactionDirection.outgoing;
-      } else if (receiver == publicAddress && sender != publicAddress) {
+      } else if (receiver == publicAddress.toLowerCase() &&
+          sender != publicAddress.toLowerCase()) {
         return TransactionDirection.incoming;
       }
+    } else {
+      debugPrint('Unhandled transaction type: ${transaction.type}');
     }
+
+    debugPrint('Unknown transaction direction for transaction: $transaction');
     return TransactionDirection.unknown;
   }
 
@@ -162,10 +174,18 @@ class TransactionsNotifier
   }
 
   String _getTransactionAmount(Transaction transaction) {
-    return transaction.assetTransferTransaction != null
-        ? transaction.assetTransferTransaction!.amount.toString()
-        : Algo.fromMicroAlgos(transaction.paymentTransaction?.amount ?? 0)
-            .toString();
+    if (transaction.assetTransferTransaction != null) {
+      final assetAmount = transaction.assetTransferTransaction!.amount;
+      final assetAmountMicro = Algo.fromMicroAlgos(assetAmount);
+      debugPrint('Asset transfer amount: $assetAmount');
+      return assetAmountMicro.toString();
+    } else {
+      final microAlgoAmount = transaction.paymentTransaction?.amount ?? 0;
+      final algoAmount = Algo.fromMicroAlgos(microAlgoAmount);
+      debugPrint('MicroAlgo amount: $microAlgoAmount');
+      debugPrint('Algo amount: $algoAmount');
+      return algoAmount.toString();
+    }
   }
 
   Future<String?> _getAssetName(Transaction transaction) async {

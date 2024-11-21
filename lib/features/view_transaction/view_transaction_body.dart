@@ -5,6 +5,7 @@ import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/select_item.dart';
+import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/contacts_provider.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
@@ -64,27 +65,37 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
     if (receiver == null || receiver.isEmpty || sender == receiver) {
       return TransactionDirection.unknown;
     }
-    final accounts = ref.read(accountsListProvider).accounts;
-    final isSender = accounts.any((account) => account['publicKey'] == sender);
 
-    return isSender
-        ? TransactionDirection.outgoing
-        : TransactionDirection.incoming;
+    final activeAccount = ref.read(accountProvider).account?.address;
+    if (activeAccount == null || activeAccount.isEmpty) {
+      return TransactionDirection.unknown; // No active account
+    }
+
+    if (activeAccount == sender) {
+      return TransactionDirection.outgoing;
+    } else if (activeAccount == receiver) {
+      return TransactionDirection.incoming;
+    }
+
+    return TransactionDirection.unknown; // Neither sender nor receiver
   }
 
   @override
   Widget build(BuildContext context) {
     final sender = widget.transaction.sender;
     final receiver = widget.transaction.paymentTransaction?.receiver;
-    final transactionType = widget.transaction.type;
     final note = _decodeNote();
     SelectItem? currentNetwork = ref.watch(networkProvider);
 
     final senderDisplayName = _getDisplayName(sender);
     final receiverDisplayName = _getDisplayName(receiver ?? '');
 
-    final amountInAlgos =
-        Algo.fromMicroAlgos(widget.transaction.paymentTransaction?.amount ?? 0);
+    final amountInAlgos = widget.transaction.assetTransferTransaction != null
+        ? Algo.fromMicroAlgos(
+            widget.transaction.assetTransferTransaction?.amount ?? 0)
+        : Algo.fromMicroAlgos(
+            widget.transaction.paymentTransaction?.amount ?? 0);
+
     final feeInAlgos = Algo.fromMicroAlgos(widget.transaction.fee);
 
     final direction = _getTransactionDirection(sender, receiver);
@@ -134,17 +145,12 @@ class ViewTransactionBodyState extends ConsumerState<ViewTransactionBody> {
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: kScreenPadding / 2),
-            Text(
-              transactionType,
-              style: context.textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: kScreenPadding / 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  NumberFormatter.formatWithCommas(amountInAlgos.toString()),
+                  NumberFormatter.applyDirectionSign(
+                      amountInAlgos.toString(), direction),
                   style: context.textTheme.displayMedium?.copyWith(
                     color: avatarColor,
                     fontWeight: FontWeight.bold,

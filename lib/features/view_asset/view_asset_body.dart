@@ -169,7 +169,8 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
                         condition: !mediaQueryHelper.isWideScreen(),
                         tag: '${widget.asset.index}-amount',
                         child: Text(
-                          NumberFormatter.shortenNumber(userBalance.toDouble()),
+                          NumberFormatter.formatWithCommasAndDecimals(
+                              userBalance.toDouble()),
                           style: context.textTheme.displayMedium?.copyWith(
                             color: context.colorScheme.secondary,
                             fontWeight: FontWeight.bold,

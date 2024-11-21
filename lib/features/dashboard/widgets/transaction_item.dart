@@ -77,6 +77,12 @@ class TransactionItem extends ConsumerWidget {
     final accountName = account.isNotEmpty ? account['accountName'] : null;
     final displayName = accountName ?? otherPartyAddress;
 
+    final shortenedAmount =
+        NumberFormatter.shortenNumber(double.parse(amount ?? '0'));
+
+    final shortenedAmountWithDirection =
+        NumberFormatter.applyDirectionSign(shortenedAmount, direction);
+
     return Column(
       children: [
         Material(
@@ -141,20 +147,17 @@ class TransactionItem extends ConsumerWidget {
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: kScreenPadding / 2),
                     child: Text(
-                      NumberFormatter.formatAmountWithDirection(
-                          amount, direction),
+                      shortenedAmountWithDirection,
                       style: context.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: (amount == null ||
-                                amount == '0' ||
-                                amount?.startsWith('0') == true ||
-                                type == 'appl')
-                            ? context.colorScheme.onSurface
-                            : direction == TransactionDirection.outgoing
-                                ? context.colorScheme.error
-                                : direction == TransactionDirection.incoming
-                                    ? context.colorScheme.secondary
-                                    : context.colorScheme.onSurface,
+                        color:
+                            (amount == null || amount == '0' || type == 'appl')
+                                ? context.colorScheme.onSurface
+                                : direction == TransactionDirection.outgoing
+                                    ? context.colorScheme.error
+                                    : direction == TransactionDirection.incoming
+                                        ? context.colorScheme.secondary
+                                        : context.colorScheme.onSurface,
                       ),
                     ),
                   ),
