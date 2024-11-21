@@ -138,13 +138,6 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
                           ColorPalette.cardGradientPurpleB,
                         ],
                 ),
-                image: isWatchAccount
-                    ? null
-                    : const DecorationImage(
-                        opacity: 0.2,
-                        image: AssetImage('assets/images/voi-logo.png'),
-                        fit: BoxFit.cover,
-                      ),
                 border: GradientBoxBorder(
                   gradient: LinearGradient(
                     begin: Alignment.bottomLeft,
@@ -155,9 +148,20 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
                 ),
                 borderRadius: BorderRadius.circular(kScreenPadding),
               ),
-              padding: const EdgeInsets.all(kScreenPadding),
               child: Stack(
                 children: [
+                  // SVG overlay
+                  if (!isWatchAccount)
+                    Positioned.fill(
+                      child: SvgPicture.asset(
+                        'assets/images/voi-logo.svg',
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          Colors.white.withOpacity(0.1),
+                          BlendMode.srcOut,
+                        ),
+                      ),
+                    ),
                   if (isWatchAccount)
                     Positioned.fill(
                       child: LayoutBuilder(
@@ -173,20 +177,29 @@ class AccountListScreenState extends ConsumerState<AccountListScreen> {
                         },
                       ),
                     ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildEditButton(
-                          context, account['accountId']!, accountName),
-                      const SizedBox(height: kScreenPadding / 2),
-                      _buildLogo(),
-                      const SizedBox(height: kScreenPadding / 2),
-                      _buildAccountName(
-                          context, accountName, account['accountId']!),
-                      const SizedBox(height: kScreenPadding / 2),
-                      _buildPublicKey(context, publicKey),
-                      const SizedBox(height: kScreenPadding),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(kScreenPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildEditButton(
+                          context,
+                          account['accountId']!,
+                          accountName,
+                        ),
+                        const SizedBox(height: kScreenPadding / 2),
+                        _buildLogo(),
+                        const SizedBox(height: kScreenPadding / 2),
+                        _buildAccountName(
+                          context,
+                          accountName,
+                          account['accountId']!,
+                        ),
+                        const SizedBox(height: kScreenPadding / 2),
+                        _buildPublicKey(context, publicKey),
+                        const SizedBox(height: kScreenPadding),
+                      ],
+                    ),
                   ),
                 ],
               ),
