@@ -322,7 +322,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
     final balanceAsync = ref.watch(balanceProvider);
-    SelectItem? currentNetwork = ref.watch(networkProvider);
+    final currentNetwork = ref.watch(networkProvider);
+
     return Row(
       children: [
         balanceAsync.when(
@@ -354,11 +355,24 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                       context: context,
                       singleWidget: Column(
                         children: [
-                          EllipsizedText(
-                              NumberFormatter.formatWithCommas(balance),
-                              style: context.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: context.colorScheme.secondary)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              EllipsizedText(
+                                  NumberFormatter.formatWithCommas(balance),
+                                  style: context.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: context.colorScheme.secondary)),
+                              AppIcons.icon(
+                                  icon: currentNetwork?.value
+                                              .startsWith('network-voi') ??
+                                          false
+                                      ? AppIcons.voiIcon
+                                      : AppIcons.algorandIcon,
+                                  color: context.colorScheme.secondary,
+                                  size: AppIcons.small),
+                            ],
+                          ),
                           const SizedBox(height: kScreenPadding / 2),
                           Text(
                             S.of(context).minimumBalanceInfo(ref
