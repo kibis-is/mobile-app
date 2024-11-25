@@ -33,7 +33,7 @@ class AppResetUtil {
       await _disconnectAllSessions(ref);
 
       await _clearStorage(ref);
-      _invalidateProviders(ref);
+      _invalidateProvidersForReset(ref);
       _resetExplicitProviders(ref);
 
       debugPrint('Reset process completed.');
@@ -72,7 +72,7 @@ class AppResetUtil {
     ref.invalidate(storageProvider);
   }
 
-  static void _invalidateProviders(WidgetRef ref) {
+  static void _invalidateProvidersForReset(WidgetRef ref) {
     ref.invalidate(accountProvider);
     ref.invalidate(pinProvider);
     ref.invalidate(pinEntryStateNotifierProvider);
