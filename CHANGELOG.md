@@ -1,3 +1,54 @@
+# [1.1.0](https://github.com/kibis-is/mobile-app/compare/v1.0.1...v1.1.0) (2024-11-19)
+
+
+### Bug Fixes
+
+* add intl as a dependency override to fix package incompaitibility issues ([75c55c0](https://github.com/kibis-is/mobile-app/commit/75c55c02a25946c78e3832eee632ed6337faaa01))
+* adjust app icons to remove alpha for compatibility with apple store ([8d3c75d](https://github.com/kibis-is/mobile-app/commit/8d3c75da6f6040a897d2ee702788d6205f035575))
+* Apply number shortener to amount in transaction list items ([8bc5b8c](https://github.com/kibis-is/mobile-app/commit/8bc5b8c32e98dcab45c7a6385e1a44cdd620c5df))
+* correctly copying public key from transaction screen even when contact name is showing ([3886753](https://github.com/kibis-is/mobile-app/commit/3886753968589c4362560661e5095af55722a06a))
+* correctly showing appropriate network icon after the balance ([5100cae](https://github.com/kibis-is/mobile-app/commit/5100cae8c2021df001923337dd06bfedaed9d46a))
+* dispose the private key textfield when leaving the screen for additional security ([a81327b](https://github.com/kibis-is/mobile-app/commit/a81327bb7d67bc582b65feb98cc6860654e0bb26))
+* fixed a bug where it wasnt showing the correct balance in the balance info bottom sheet on the send transaction screen ([7e6d2ac](https://github.com/kibis-is/mobile-app/commit/7e6d2ac86a19c37c85daf2e7e5b07f56d8a4e8b9))
+* fixed bug where it was not showing the next button at the bottom of the screen when adding a new account ([9e24c53](https://github.com/kibis-is/mobile-app/commit/9e24c53ee4bf11143946decf03d026c083744dca))
+* fixed bug where it was not switching to a newly created account ([48da901](https://github.com/kibis-is/mobile-app/commit/48da901375ea95d52599832cd32789adc5f8cf68))
+* fixed bug where sometimes transactions are being fetched twice and showing duplicates. Refactored. ([b01f415](https://github.com/kibis-is/mobile-app/commit/b01f4157b708092e3c34020ceb6da146bcfeab4a))
+* Fixed bug where the FAB would stay open after navigating to a subscreen and back. ([ef514c8](https://github.com/kibis-is/mobile-app/commit/ef514c8ad94a2bf0524459d1a111ce974d0aea16))
+* Multi line text fields now show 7 lines. Up from 3. ([81edb9c](https://github.com/kibis-is/mobile-app/commit/81edb9c215f23f5ead5c7e5eb19f5d7faba0f35c))
+* Now correctly importing Base64 privateKeys ([7317204](https://github.com/kibis-is/mobile-app/commit/73172043ad9e0baab28193ace3b3102995305819))
+* reduced spacing around icon in the appIcon to make it more visible and bring into alignment with the kibisis extension icon ([11f93b9](https://github.com/kibis-is/mobile-app/commit/11f93b9797bf65d6876f29c54e512e2383c32b41))
+* Remove the back button from the Select Account Screen. ([3cbe574](https://github.com/kibis-is/mobile-app/commit/3cbe574fb87bd2917ba0f5238e72ac9ab9adab23))
+
+
+### Features
+
+* Add language picker to the welcome screen. ([572bf3b](https://github.com/kibis-is/mobile-app/commit/572bf3be50cf86ff022caace6aac36f96f8607c3))
+* Added Vietnamese and Turkish languages ([a0b2ed0](https://github.com/kibis-is/mobile-app/commit/a0b2ed0c9dbcdaf5bf106ab3d9ee69d8d284afdd))
+* added view seedphrase screen under the security screen ([4582d12](https://github.com/kibis-is/mobile-app/commit/4582d129fc3aaa0422bfc1a18f1fc5a1e6c37d02))
+* Can now open transactions for more details ([8ce76ca](https://github.com/kibis-is/mobile-app/commit/8ce76ca0fffc177195387a5907e29c74d3692c8a))
+* Can now opt out of arc200s that are being tracked locally. ([a8799a2](https://github.com/kibis-is/mobile-app/commit/a8799a2fe82e0ba28840d360ab113a5418a15d07))
+* Can now toggle between languages. English and Thai implemented ([9ed1a3a](https://github.com/kibis-is/mobile-app/commit/9ed1a3ae1e2b558e683640857240b9d6d5884aa0))
+* new option to move the floating action button to the left or right of the screen ([5f15082](https://github.com/kibis-is/mobile-app/commit/5f15082a66a35ef17e5d59b3b166c80f75098d12))
+* Now formatting long displays of voi with comma separation for clarity ([d3b16c9](https://github.com/kibis-is/mobile-app/commit/d3b16c96e0c414d22a0e1bd6074fd1e8c825856f))
+* Now highlighting new transactions since last time updated ([6493031](https://github.com/kibis-is/mobile-app/commit/6493031b70fa75ff643249def8805e9d3ebbd001))
+* spanish lanugage now added ([62aa4a4](https://github.com/kibis-is/mobile-app/commit/62aa4a42c4f99e7a2264968430cc4fc9cfe639d9))
+* track arc200 assets locally and poll balance for indexed arc200s ([26dd8c8](https://github.com/kibis-is/mobile-app/commit/26dd8c84e821ca38e08d93f08d80ddfc0154fc94))
+
+# [1.1.0-beta.3](https://github.com/kibis-is/mobile-app/compare/v1.1.0-beta.2...v1.1.0-beta.3) (2024-11-18)
+
+
+### Bug Fixes
+
+* fixed a bug where it wasnt showing the correct balance in the balance info bottom sheet on the send transaction screen ([7e6d2ac](https://github.com/kibis-is/mobile-app/commit/7e6d2ac86a19c37c85daf2e7e5b07f56d8a4e8b9))
+* fixed bug where it was not showing the next button at the bottom of the screen when adding a new account ([9e24c53](https://github.com/kibis-is/mobile-app/commit/9e24c53ee4bf11143946decf03d026c083744dca))
+* fixed bug where it was not switching to a newly created account ([48da901](https://github.com/kibis-is/mobile-app/commit/48da901375ea95d52599832cd32789adc5f8cf68))
+
+
+### Features
+
+* added view seedphrase screen under the security screen ([4582d12](https://github.com/kibis-is/mobile-app/commit/4582d129fc3aaa0422bfc1a18f1fc5a1e6c37d02))
+* new option to move the floating action button to the left or right of the screen ([5f15082](https://github.com/kibis-is/mobile-app/commit/5f15082a66a35ef17e5d59b3b166c80f75098d12))
+
 # [1.1.0-beta.2](https://github.com/kibis-is/mobile-app/compare/v1.1.0-beta.1...v1.1.0-beta.2) (2024-11-18)
 
 
