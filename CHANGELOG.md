@@ -1,3 +1,10 @@
+## [1.1.1-beta.1](https://github.com/kibis-is/mobile-app/compare/v1.1.0...v1.1.1-beta.1) (2024-11-25)
+
+
+### Bug Fixes
+
+* improved issues with showing incorrectly formatted balances ([643cad6](https://github.com/kibis-is/mobile-app/commit/643cad6aa5a90fb2618e356bd258bbbc16fc5067))
+
 # [1.1.0](https://github.com/kibis-is/mobile-app/compare/v1.0.1...v1.1.0) (2024-11-19)
 
 
