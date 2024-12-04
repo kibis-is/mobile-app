@@ -177,13 +177,10 @@ class TransactionsNotifier
     if (transaction.assetTransferTransaction != null) {
       final assetAmount = transaction.assetTransferTransaction!.amount;
       final assetAmountMicro = Algo.fromMicroAlgos(assetAmount);
-      debugPrint('Asset transfer amount: $assetAmount');
       return assetAmountMicro.toString();
     } else {
       final microAlgoAmount = transaction.paymentTransaction?.amount ?? 0;
       final algoAmount = Algo.fromMicroAlgos(microAlgoAmount);
-      debugPrint('MicroAlgo amount: $microAlgoAmount');
-      debugPrint('Algo amount: $algoAmount');
       return algoAmount.toString();
     }
   }
