@@ -1,0 +1,6 @@
+1.1.1-beta.2 (2024-12-04)
+
+Bug Fixes
+
+* now correctly updating account details after importing an account (2981a9e)
+
