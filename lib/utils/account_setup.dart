@@ -10,6 +10,7 @@ import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/providers/temporary_account_provider.dart';
 import 'package:kibisis/utils/account_selection.dart';
+import 'package:kibisis/utils/refresh_account_data.dart';
 
 class AccountSetupUtility {
   static Future<void> completeAccountSetup({
@@ -24,6 +25,7 @@ class AccountSetupUtility {
           .finalizeAccountCreation(accountName);
       await _handleAccountPostSetup(ref, accountFlow, setFinalState);
       await _handleCleanUp(ref, accountFlow, setFinalState);
+      invalidateProviders(ref);
     } catch (e) {
       debugPrint('Failed to complete account setup: $e');
       throw Exception(S.current.failedToCompleteAccountSetup(e.toString()));

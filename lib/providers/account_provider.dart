@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
+import 'package:kibisis/providers/active_account_provider.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/error_provider.dart';
@@ -336,7 +337,14 @@ class AccountNotifier extends StateNotifier<AccountState> {
         }
         await storageService.setAccountData(accountId, 'publicKey', publicKey);
 
+        // Set the new account as the active account
         await storageService.setActiveAccount(accountId);
+        ref.read(activeAccountProvider.notifier).setActiveAccount(accountId);
+
+        // Initialize account provider with new account details
+        await ref
+            .read(accountProvider.notifier)
+            .initialiseFromPublicKey(accountName, accountId);
       } else if (tempAccountState.account is AccountInformation) {
         final publicKey =
             (tempAccountState.account as AccountInformation).address;
@@ -353,6 +361,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
             accountId, 'isWatchAccount', 'true');
 
         await storageService.setActiveAccount(accountId);
+        ref.read(activeAccountProvider.notifier).setActiveAccount(accountId);
       } else {
         throw Exception(S.current.unsupportedAccountType);
       }
@@ -368,6 +377,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
     } catch (e) {
       state = state.copyWith(
           error: S.current.failedToFinalizeAccountCreation(e.toString()));
+      throw Exception(S.current.failedToFinalizeAccountCreation(e.toString()));
     }
   }
 
