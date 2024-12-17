@@ -1892,5 +1892,9 @@
 "unitName": "Unit Name",
 "@unitName": {
   "description": "Label for the Unit Name field on the Asset View screen."
+},
+"changePinSuccess": "Changed PIN Successfully",
+"@changePinSuccess": {
+  "description": "Message to show when user changes the PIN number successfully."
 }
 }

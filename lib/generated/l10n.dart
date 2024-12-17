@@ -4112,6 +4112,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Changed PIN Successfully`
+  String get changePinSuccess {
+    return Intl.message(
+      'Changed PIN Successfully',
+      name: 'changePinSuccess',
+      desc: 'Message to show when user changes the PIN number successfully.',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

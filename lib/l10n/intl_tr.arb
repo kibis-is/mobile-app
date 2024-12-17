@@ -1887,7 +1887,10 @@
 "unitName": "Birim Adı",
 "@unitName": {
   "description": "Varlık Görüntüleme ekranındaki Birim Adı alanı için etiket."
+},
+"changePinSuccess_tr": "PIN Başarıyla Değiştirildi",
+"@changePinSuccess_tr": {
+  "description": "Kullanıcı PIN numarasını başarıyla değiştirdiğinde gösterilecek mesaj."
 }
-
 
         }

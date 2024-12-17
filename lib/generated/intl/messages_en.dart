@@ -242,6 +242,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelButton": MessageLookupByLibrary.simpleMessage("Cancel"),
         "changePin": MessageLookupByLibrary.simpleMessage("Change Pin"),
+        "changePinSuccess":
+            MessageLookupByLibrary.simpleMessage("Changed PIN Successfully"),
         "checksumMismatch": MessageLookupByLibrary.simpleMessage(
             "Checksum does not match. The scanned QR codes are not from the same set."),
         "clearFilter": MessageLookupByLibrary.simpleMessage("Clear Filter"),

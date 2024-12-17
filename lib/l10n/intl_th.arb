@@ -1890,6 +1890,10 @@
 "unitName": "ชื่อหน่วย",
 "@unitName": {
   "description": "ป้ายกำกับสำหรับช่องชื่อหน่วยในหน้าจอดูสินทรัพย์."
+},
+"changePinSuccess_th": "เปลี่ยน PIN สำเร็จ",
+"@changePinSuccess_th": {
+  "description": "ข้อความที่แสดงเมื่อผู้ใช้เปลี่ยนหมายเลข PIN สำเร็จ."
 }
 
 }
