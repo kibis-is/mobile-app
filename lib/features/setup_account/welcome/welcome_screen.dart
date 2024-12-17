@@ -22,61 +22,45 @@ class WelcomeScreen extends ConsumerWidget {
     final platformInfo = ref.watch(platformInfoProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: kScreenPadding),
+            child: LanguagePicker(isCompact: true),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(kScreenPadding * 2),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                LanguagePicker(isCompact: true),
-              ],
+            SvgPicture.asset(kibisisLogo,
+                height: MediaQuery.of(context).size.height / 5),
+            const SizedBox(height: kSizedBoxSpacing),
+            Text(
+              'Kibisis',
+              style: context.textTheme.headlineMedium,
+              textAlign: TextAlign.center,
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(kibisisLogo,
-                    height: MediaQuery.of(context).size.height / 5),
-                const SizedBox(height: kSizedBoxSpacing),
-                Text(
-                  'Kibisis',
-                  style: context.textTheme.headlineMedium,
-                ),
-                Text(
-                  'v${platformInfo.version}',
-                  style: context.textTheme.bodySmall,
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: kSizedBoxSpacing,
-                    ),
-                    Text(
-                      S.of(context).welcomeMessage,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(
-                      height: kSizedBoxSpacing,
-                    ),
-                    CustomButton(
-                      text: S.of(context).createPin,
-                      isFullWidth: true,
-                      onPressed: () {
-                        ref.read(pinTitleProvider.notifier).setCreatePinTitle();
-                        GoRouter.of(context).push('/setup/pinPadSetup');
-                      },
-                    )
-                  ],
-                ),
-              ],
+            Text(
+              'v${platformInfo.version}',
+              style: context.textTheme.bodySmall,
+              textAlign: TextAlign.center,
             ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(kScreenPadding),
+        child: CustomButton(
+          text: S.of(context).createPin,
+          isFullWidth: true,
+          onPressed: () {
+            ref.read(pinTitleProvider.notifier).setCreatePinTitle();
+            GoRouter.of(context).push('/setup/pinPadSetup');
+          },
         ),
       ),
     );
