@@ -71,13 +71,15 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
                 if (widget.accountFlow != AccountFlow.view) ...[
                   const SizedBox(height: kScreenPadding),
                   _buildBackupConfirmation(),
-                  const SizedBox(height: kScreenPadding),
-                  _buildNextButton(),
                 ],
               ],
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(kScreenPadding),
+        child: _buildNextButton(),
       ),
     );
   }
