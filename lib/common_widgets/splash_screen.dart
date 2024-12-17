@@ -11,32 +11,44 @@ class SplashScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      backgroundColor: context.colorScheme.background,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/images/kibisis-animated.svg',
-              semanticsLabel: 'Kibisis Logo',
-              fit: BoxFit.fitHeight,
-              height: 100,
-              width: 100,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.primary,
-                BlendMode.srcATop,
-              ),
-            ),
-            if (message != null)
-              Padding(
-                padding: const EdgeInsets.only(top: kScreenPadding),
-                child: Text(
-                  message!,
-                  style: context.textTheme.displayMedium,
+    final size = MediaQuery.of(context).size; // Get screen dimensions
+
+    return Material(
+      // Use Material instead of Scaffold for minimal rendering
+      color: context.colorScheme.background,
+      child: SizedBox(
+        width: size.width, // Explicit width
+        height: size.height, // Explicit height
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Avoid unbounded height
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ConstrainedBox(
+                // ignore: prefer_const_constructors
+                constraints: BoxConstraints(
+                  maxWidth: 100,
+                  maxHeight: 100,
+                ),
+                child: SvgPicture.asset(
+                  'assets/images/kibisis-animated.svg',
+                  semanticsLabel: 'Kibisis Logo',
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.primary,
+                    BlendMode.srcATop,
+                  ),
                 ),
               ),
-          ],
+              if (message != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: kScreenPadding),
+                  child: Text(
+                    message!,
+                    style: context.textTheme.displayMedium,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
