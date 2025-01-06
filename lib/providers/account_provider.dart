@@ -52,7 +52,7 @@ class AccountState {
 }
 
 class AccountNotifier extends StateNotifier<AccountState> {
-  final StateNotifierProviderRef<AccountNotifier, AccountState> ref;
+  final Ref ref;
   final Algorand algorand;
   final StorageService storageService;
 

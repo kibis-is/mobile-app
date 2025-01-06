@@ -19,7 +19,7 @@ final isPinCompleteProvider = StateProvider<bool>((ref) => false);
 class PinEntryStateNotifier extends StateNotifier<PinState> {
   String? _firstPin;
 
-  final StateNotifierProviderRef<PinEntryStateNotifier, PinState> ref;
+  final Ref ref;
   final PinStateNotifier pinStateNotifier;
 
   PinEntryStateNotifier(this.ref, this.pinStateNotifier) : super(PinState());

@@ -205,3 +205,6 @@ migrate_working_dir/
 
 # Google Play Store
 play_store_credentials.json
+
+# FVM Version Cache
+.fvm/
