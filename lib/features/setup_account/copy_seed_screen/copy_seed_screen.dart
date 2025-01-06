@@ -79,10 +79,12 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(kScreenPadding),
-        child: _buildNextButton(),
-      ),
+      bottomNavigationBar: widget.accountFlow == AccountFlow.view
+          ? null
+          : Padding(
+              padding: const EdgeInsets.all(kScreenPadding),
+              child: _buildNextButton(),
+            ),
     );
   }
 
