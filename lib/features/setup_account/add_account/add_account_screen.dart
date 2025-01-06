@@ -59,8 +59,4 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
       ),
     );
   }
-
-  void _navigateToAddAccount() {
-    GoRouter.of(context).push('/addAccount');
-  }
 }
