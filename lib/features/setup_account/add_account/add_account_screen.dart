@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/setup_account/add_account/add_account_body.dart';
 import 'package:kibisis/generated/l10n.dart';
-import 'package:kibisis/providers/fab_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
-import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/media_query_helper.dart';
-import 'package:kibisis/utils/theme_extensions.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
   static String title = S.current.addAccountTitle;
@@ -25,7 +21,6 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
   Widget build(BuildContext context) {
     final mediaQueryHelper = MediaQueryHelper(context);
     final isSetupComplete = ref.watch(setupCompleteProvider);
-    final fabPosition = ref.watch(fabPositionProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(AddAccountScreen.title),
