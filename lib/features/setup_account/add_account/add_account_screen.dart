@@ -57,18 +57,6 @@ class AddAccountScreenState extends ConsumerState<AddAccountScreen> {
             ),
         ],
       ),
-      floatingActionButton: !mediaQueryHelper.isWideScreen()
-          ? FloatingActionButton(
-              shape: const CircleBorder(),
-              onPressed: _navigateToAddAccount,
-              backgroundColor: context.colorScheme.secondary,
-              foregroundColor: Colors.white,
-              child: const Icon(AppIcons.add),
-            )
-          : null,
-      floatingActionButtonLocation: fabPosition == FabPosition.left
-          ? FloatingActionButtonLocation.startFloat
-          : FloatingActionButtonLocation.endFloat,
     );
   }
 
