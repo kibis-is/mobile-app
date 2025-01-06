@@ -27,11 +27,13 @@ class CopySeedScreenState extends ConsumerState<CopySeedScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.accountFlow == AccountFlow.setup) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(checkboxProvider.notifier).state = false;
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.accountFlow == AccountFlow.setup) {
+        if (ref.read(checkboxProvider.notifier).state != false) {
+          ref.read(checkboxProvider.notifier).state = false;
+        }
+      }
+    });
   }
 
   Future<String> _fetchSeedPhrase() {
