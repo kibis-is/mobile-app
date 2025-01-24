@@ -1,3 +1,19 @@
+# [1.2.0-beta.1](https://github.com/kibis-is/mobile-app/compare/v1.1.1-beta.2...v1.2.0-beta.1) (2025-01-24)
+
+
+### Bug Fixes
+
+* corrected a bounds error when showing splash screen on nothing phone ([c91b192](https://github.com/kibis-is/mobile-app/commit/c91b19255438001ee28ad1989474b0e921c4573b))
+* fixed an out of bounds issue on the welcome screen when using nothing phone ([f110090](https://github.com/kibis-is/mobile-app/commit/f110090308db8411bf479406a5fe0338734c4715))
+* hide next button if just viewing seed phrase ([426eea6](https://github.com/kibis-is/mobile-app/commit/426eea67a9530609109d6ec5aa0b7b6de49ef42d))
+* now correctly viewing seedphrase on nothing phone ([134b1de](https://github.com/kibis-is/mobile-app/commit/134b1def3fdfbe09baa765f07cab33d82c9d39a4))
+* remove unnecessary floating action button ([0c5bf80](https://github.com/kibis-is/mobile-app/commit/0c5bf8015b7f71066c931dcd6e8395955622c824))
+
+
+### Features
+
+* biometric fingerprint authentication implemented ([031a6aa](https://github.com/kibis-is/mobile-app/commit/031a6aae02a271568dfdb02f24c216e596303b40))
+
 ## [1.1.1-beta.2](https://github.com/kibis-is/mobile-app/compare/v1.1.1-beta.1...v1.1.1-beta.2) (2024-12-04)
 
 

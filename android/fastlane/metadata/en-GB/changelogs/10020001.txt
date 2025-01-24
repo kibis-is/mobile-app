@@ -1,0 +1,14 @@
+1.2.0-beta.1 (2025-01-24)
+
+Bug Fixes
+
+* corrected a bounds error when showing splash screen on nothing phone (c91b192)
+* fixed an out of bounds issue on the welcome screen when using nothing phone (f110090)
+* hide next button if just viewing seed phrase (426eea6)
+* now correctly viewing seedphrase on nothing phone (134b1de)
+* remove unnecessary floating action button (0c5bf80)
+
+Features
+
+* biometric fingerprint authentication implemented (031a6aa)
+
