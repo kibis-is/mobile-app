@@ -1,3 +1,10 @@
+## [1.1.1-beta.2](https://github.com/kibis-is/mobile-app/compare/v1.1.1-beta.1...v1.1.1-beta.2) (2024-12-04)
+
+
+### Bug Fixes
+
+* now correctly updating account details after importing an account ([2981a9e](https://github.com/kibis-is/mobile-app/commit/2981a9e34f0d16f8c96a313c2fa0bba3c60f09f4))
+
 ## [1.1.1-beta.1](https://github.com/kibis-is/mobile-app/compare/v1.1.0...v1.1.1-beta.1) (2024-11-25)
 
 
