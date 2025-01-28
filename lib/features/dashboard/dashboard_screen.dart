@@ -281,6 +281,9 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Future<void> _handleVibration(int duration) async {
+    if (Platform.isIOS) {
+      return;
+    }
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate(duration: duration);
     }

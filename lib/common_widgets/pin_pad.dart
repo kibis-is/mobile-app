@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -447,6 +448,9 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   }
 
   Future<void> _handleVibration(int duration) async {
+    if (Platform.isIOS) {
+      return;
+    }
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate(duration: duration);
     }
