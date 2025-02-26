@@ -291,23 +291,26 @@ class StorageService {
     await saveSessions(sessions);
   }
 
-  Future<void> setNFTsForAccount(String accountId, List<NFT> nfts) async {
+  Future<void> setNFTsForAccount(
+      String accountId, String network, List<NFT> nfts) async {
+    final key = 'nfts_${accountId}_$network';
     final encodedNfts = jsonEncode(nfts.map((nft) => nft.toJson()).toList());
-    await _prefs?.setString('nfts_$accountId', encodedNfts);
+    await _prefs?.setString(key, encodedNfts);
   }
 
-  Future<List<NFT>> getNFTsForAccount(String accountId) async {
-    final cachedNftsJson = _prefs?.getString('nfts_$accountId');
+  Future<List<NFT>> getNFTsForAccount(String accountId, String network) async {
+    final key = 'nfts_${accountId}_$network';
+    final cachedNftsJson = _prefs?.getString(key);
     if (cachedNftsJson == null) {
       return [];
     }
-
     final List<dynamic> cachedNfts = json.decode(cachedNftsJson);
     return cachedNfts.map<NFT>((json) => NFT.fromJson(json)).toList();
   }
 
-  Future<void> clearNFTsForAccount(String accountId) async {
-    await _prefs?.remove('nfts_$accountId');
+  Future<void> clearNFTsForAccount(String accountId, String network) async {
+    final key = 'nfts_${accountId}_$network';
+    await _prefs?.remove(key);
   }
 
   static const String _contactsKey = 'contacts';
