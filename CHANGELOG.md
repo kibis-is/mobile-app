@@ -1,3 +1,10 @@
+# [1.2.0-beta.2](https://github.com/kibis-is/mobile-app/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-02-26)
+
+
+### Bug Fixes
+
+* now correctly showing nfts on mainnet and testnet ([04cc52b](https://github.com/kibis-is/mobile-app/commit/04cc52b57d0ae11a6f4376a9f0375729d0bcb15b))
+
 # [1.2.0-beta.1](https://github.com/kibis-is/mobile-app/compare/v1.1.1-beta.2...v1.2.0-beta.1) (2025-01-24)
 
 
