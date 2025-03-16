@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
 final accountsListProvider =
@@ -59,7 +60,7 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
         final publicKey = accountData['publicKey'] ?? 'No Public Key';
         return {
           'accountId': accountId,
-          'accountName': accountData['accountName'] ?? 'Unnamed Account',
+          'accountName': accountData['accountName'] ?? S.current.unnamedAccount,
           'publicKey': publicKey,
         };
       }).toList();
@@ -97,10 +98,10 @@ class AccountsListNotifier extends StateNotifier<AccountsListState> {
         .map((entry) {
       final accountId = entry.key;
       final accountData = entry.value;
-      final publicKey = accountData['publicKey'] ?? 'No Public Key';
+      final publicKey = accountData['publicKey'] ?? S.current.noPublicKey;
       return {
         'accountId': accountId,
-        'accountName': accountData['accountName'] ?? 'Unnamed Account',
+        'accountName': accountData['accountName'] ?? S.current.unnamedAccount,
         'publicKey': publicKey,
       };
     }).toList();

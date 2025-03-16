@@ -3,13 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
+import 'package:kibisis/common_widgets/language_picker.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/pin_pad/providers/pin_title_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/platform_info/provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class WelcomeScreen extends ConsumerWidget {
-  static String title = "Login";
+  static String title = S.current.welcomeTitle;
   const WelcomeScreen({super.key});
 
   @override
@@ -20,56 +22,45 @@ class WelcomeScreen extends ConsumerWidget {
     final platformInfo = ref.watch(platformInfoProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: kScreenPadding),
+            child: LanguagePicker(isCompact: true),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(kScreenPadding * 2),
-        child: Stack(
-          alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(kibisisLogo,
-                    semanticsLabel: 'Kibisis Logo',
-                    height: MediaQuery.of(context).size.height / 5),
-                const SizedBox(height: kSizedBoxSpacing),
-                Text(
-                  'Kibisis',
-                  style: context.textTheme.headlineMedium,
-                ),
-                Text(
-                  'v${platformInfo.version}',
-                  style: context.textTheme.bodySmall,
-                ),
-              ],
+            SvgPicture.asset(kibisisLogo,
+                height: MediaQuery.of(context).size.height / 5),
+            const SizedBox(height: kSizedBoxSpacing),
+            Text(
+              'Kibisis',
+              style: context.textTheme.headlineMedium,
+              textAlign: TextAlign.center,
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: kSizedBoxSpacing,
-                    ),
-                    Text(
-                      'Welcome. First, let’s create a new pincode to secure this device.',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(
-                      height: kSizedBoxSpacing,
-                    ),
-                    CustomButton(
-                      text: 'Create Pin',
-                      isFullWidth: true,
-                      onPressed: () {
-                        ref.read(pinTitleProvider.notifier).setCreatePinTitle();
-                        GoRouter.of(context).push('/setup/pinPadSetup');
-                      },
-                    )
-                  ],
-                ),
-              ],
+            Text(
+              'v${platformInfo.version}',
+              style: context.textTheme.bodySmall,
+              textAlign: TextAlign.center,
             ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(kScreenPadding),
+        child: CustomButton(
+          text: S.of(context).createPin,
+          isFullWidth: true,
+          onPressed: () {
+            ref.read(pinTitleProvider.notifier).setCreatePinTitle();
+            GoRouter.of(context).push('/setup/pinPadSetup');
+          },
         ),
       ),
     );

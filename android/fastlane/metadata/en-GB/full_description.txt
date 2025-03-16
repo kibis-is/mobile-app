@@ -6,7 +6,7 @@ Your Security Is Important - Kibisis uses the best-in-class security techniques 
 
 Your Assets In One Place - Kibisis supports a wide range of asset types and we believe accessing your assets should not be difficult. That is why Kibisis endeavors to make this process a rich and rewarding experience. We always strive to work with the latest dApps to achieve this rich experience.
 
-Your Payments Made Easy - Kibisis will always be there so you can make, or take, payments seamlessly.
+Your Token Transfers Made Easy - Kibisis will always be there so you can send or receive tokens seamlessly.
 
 Your Online Identity - A wallet is more than just a place to keep your assets; it is your identity. We see your wallet as a way to prove your identity without having store your credentials in the cloud. You should own your identity.
 

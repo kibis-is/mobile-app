@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart'; // Import localization
 import 'package:kibisis/providers/platform_info/provider.dart';
 
 class AboutScreen extends ConsumerWidget {
-  static String title = 'About';
-  const AboutScreen({super.key});
+  static String title = S.current.about;
 
-  // private methods
+  const AboutScreen({super.key});
 
   Row _createRow(String label, String value) {
     return Row(
@@ -28,8 +28,6 @@ class AboutScreen extends ConsumerWidget {
     );
   }
 
-   // public methods
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const rowPadding = SizedBox(
@@ -39,18 +37,18 @@ class AboutScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(S.of(context).about),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
         child: Column(
           children: [
             rowPadding,
-            _createRow('Version:', 'v${platformInfo.version}'),
+            _createRow(S.of(context).version, 'v${platformInfo.version}'),
             rowPadding,
-            _createRow('Build:', platformInfo.build),
+            _createRow(S.of(context).build, platformInfo.build),
             rowPadding,
-            _createRow('Build Number:', platformInfo.buildNumber),
+            _createRow(S.of(context).buildNumber, platformInfo.buildNumber),
           ],
         ),
       ),

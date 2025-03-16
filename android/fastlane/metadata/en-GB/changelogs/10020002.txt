@@ -1,0 +1,6 @@
+1.2.0-beta.2 (2025-02-26)
+
+Bug Fixes
+
+* now correctly showing nfts on mainnet and testnet (04cc52b)
+

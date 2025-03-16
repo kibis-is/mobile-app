@@ -6,6 +6,7 @@ import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/dashboard/providers/nft_filter_provider.dart';
 import 'package:kibisis/features/dashboard/widgets/nft_grid.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/nft_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -141,7 +142,7 @@ class NftTabState extends ConsumerState<NftTab> {
           Expanded(
             child: CustomTextField(
               controller: filterController,
-              labelText: 'Filter',
+              labelText: S.of(context).filter,
               onChanged: (value) {
                 ref.read(nftNotifierProvider.notifier).setFilter(value);
               },
@@ -189,14 +190,16 @@ class NftTabState extends ConsumerState<NftTab> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            isFilterActive ? 'No NFTs Found for the Filter' : 'No NFTs Found',
+            isFilterActive
+                ? S.of(context).noNftsForFilter
+                : S.of(context).noNftsFound,
             style: context.textTheme.titleSmall,
           ),
           const SizedBox(height: kScreenPadding / 2),
           Text(
             isFilterActive
-                ? 'Try clearing the filter to see all NFTs.'
-                : 'You have not added any NFTs.',
+                ? S.of(context).tryClearingFilter
+                : S.of(context).noNftsAdded,
             style: context.textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
@@ -208,7 +211,9 @@ class NftTabState extends ConsumerState<NftTab> {
                     filterController.clear();
                   }
                 : _onRefresh,
-            child: Text(isFilterActive ? 'Clear Filter' : 'Retry'),
+            child: Text(isFilterActive
+                ? S.of(context).clearFilter
+                : S.of(context).retry),
           ),
         ],
       ),

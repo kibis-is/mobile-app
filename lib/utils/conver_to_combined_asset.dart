@@ -1,10 +1,13 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/combined_asset.dart';
 
 class AssetConverter {
   static String getNameOrFallback(String? name, String? fallback) {
-    return (name?.isNotEmpty ?? false) ? name! : (fallback ?? 'Unnamed Asset');
+    return (name?.isNotEmpty ?? false)
+        ? name!
+        : (fallback ?? S.current.unnamedAsset);
   }
 
   static CombinedAsset convertToCombinedAsset(

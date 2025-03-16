@@ -1,0 +1,9 @@
+1.1.0 (2024-11-19)
+
+Bug Fixes
+
+* add intl as a dependency override to fix package incompaitibility issues (75c55c0)
+* adjust app icons to remove alpha for compatibility with apple store (8d3c75d)
+* Apply number shortener to amount in transaction list items (8bc5b8c)
+* correctly copying public key from transaction screen even when contact name is showing (3886753)
+* correctly showing appropriate network icon after the balance (5100cae)

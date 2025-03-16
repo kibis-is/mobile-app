@@ -54,10 +54,14 @@ class CustomDropDown extends StatelessWidget {
               value: item,
               child: Row(
                 children: [
-                  AppIcons.icon(
+                  if (item.icon is Widget)
+                    item.icon
+                  else
+                    AppIcons.icon(
                       icon: item.icon,
                       color: context.colorScheme.onBackground,
-                      size: AppIcons.medium),
+                      size: AppIcons.medium,
+                    ),
                   const SizedBox(width: kScreenPadding / 2),
                   Flexible(
                     child: EllipsizedText(item.name,

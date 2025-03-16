@@ -2,6 +2,7 @@ import 'package:convert/convert.dart';
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/algorand_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/hex_coverter.dart';
@@ -71,7 +72,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
     try {
       final isValid = _isValidAlgorandAddress(publicAddress);
       if (!isValid) {
-        throw Exception('Invalid Algorand address.');
+        throw Exception(S.current.invalidAlgorandAddress);
       }
 
       final accountInfo = AccountInformation(
@@ -96,7 +97,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       );
     } catch (e) {
       state = state.copyWith(account: null);
-      throw Exception('Failed to create watch account: ${e.toString()}');
+      throw Exception(S.current.failedToCreateWatchAccount(e.toString()));
     }
   }
 
@@ -114,7 +115,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       final hexPrivateKey = HexConverter.convertToHex(privateKeyInput);
       final accountExists = await accountAlreadyExists(hexPrivateKey);
       if (accountExists) {
-        throw Exception('Account already added.');
+        throw Exception(S.current.accountAlreadyAdded);
       }
 
       final account = await algorand.loadAccountFromPrivateKey(hexPrivateKey);
@@ -130,7 +131,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       throw Exception(e.message);
     } catch (e) {
       state = state.copyWith(account: null);
-      throw Exception('Failed to restore account: ${e.toString()}');
+      throw Exception(S.current.failedToRestoreAccount(e.toString()));
     }
   }
 
@@ -142,7 +143,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
 
       final accountExists = await accountAlreadyExists(encodedPrivateKey);
       if (accountExists) {
-        throw Exception('Account already added.');
+        throw Exception(S.current.accountAlreadyAdded);
       }
 
       final seedPhraseString = seedPhrase.join(' ');
@@ -170,7 +171,7 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
       final hexPrivateKey = hex.encode(seed);
       final accountExists = await accountAlreadyExists(hexPrivateKey);
       if (accountExists) {
-        throw Exception('Account already added.');
+        throw Exception(S.current.accountAlreadyAdded);
       }
       final seedPhrase = await account.seedPhrase;
       final seedPhraseString = seedPhrase.join(' ');
@@ -210,14 +211,14 @@ class TemporaryAccountNotifier extends StateNotifier<TemporaryAccountState> {
 
   Future<String> getSeedPhraseAsString() async {
     if (state.seedPhrase == null) {
-      throw Exception('Seed phrase is not available');
+      throw Exception(S.current.seedPhraseNotAvailable);
     }
     return state.seedPhrase!;
   }
 
   Future<List<String>> getSeedPhraseAsList() async {
     if (state.seedPhrase == null) {
-      throw Exception('Seed phrase is not available');
+      throw Exception(S.current.seedPhraseNotAvailable);
     }
     return state.seedPhrase!.split(' ');
   }

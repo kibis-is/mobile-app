@@ -4,7 +4,6 @@ import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_appbar.dart';
 import 'package:kibisis/common_widgets/custom_bottom_sheet.dart';
@@ -18,9 +17,11 @@ import 'package:kibisis/features/dashboard/widgets/dashboard_info_panel.dart';
 import 'package:kibisis/features/dashboard/widgets/network_select.dart';
 import 'package:kibisis/features/dashboard/widgets/nft_tab.dart';
 import 'package:kibisis/features/scan_qr/qr_code_scanner_logic.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/balance_provider.dart';
+import 'package:kibisis/providers/fab_provider.dart';
 import 'package:kibisis/providers/minimum_balance_provider.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
@@ -137,7 +138,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                       : AppIcons.algorandIcon,
                   color: context.colorScheme.onSurfaceVariant,
                   size: AppIcons.small),
-              label: 'Assets',
+              label: S.of(context).assetsTab,
               selectedIcon: AppIcons.icon(
                   icon: network?.startsWith('network-voi') ?? false
                       ? AppIcons.voiIcon
@@ -150,7 +151,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                   icon: AppIcons.nft,
                   color: context.colorScheme.onSurfaceVariant,
                   size: AppIcons.small),
-              label: 'NFTs',
+              label: S.of(context).nftsTab,
               selectedIcon: AppIcons.icon(
                   icon: AppIcons.nft,
                   color: context.colorScheme.primary,
@@ -161,7 +162,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                   icon: AppIcons.send,
                   color: context.colorScheme.onSurfaceVariant,
                   size: AppIcons.small),
-              label: 'Activity',
+              label: S.of(context).activityTab,
               selectedIcon: AppIcons.icon(
                   icon: AppIcons.send,
                   color: context.colorScheme.primary,
@@ -178,12 +179,14 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       future: ref.read(accountProvider.notifier).hasPrivateKey(),
       builder: (context, snapshot) {
         final hasPrivateKey = snapshot.data ?? false;
-
+        final fabPosition = ref.watch(fabPositionProvider);
         return ExpandableFab(
           key: _key,
           type: ExpandableFabType.up,
           distance: 70,
-          pos: ExpandableFabPos.right,
+          pos: fabPosition == FabPosition.left
+              ? ExpandableFabPos.left
+              : ExpandableFabPos.right,
           onOpen: () => _handleVibration(kHapticButtonPressDuration),
           overlayStyle: const ExpandableFabOverlayStyle(
             color: Colors.black54,
@@ -258,7 +261,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               iconColor: context.colorScheme.onPrimary,
               onPressed: () {
                 closeFab();
-                GoRouter.of(context).push('/$accountListRouteName');
+                GoRouter.of(context).go('/$accountListRouteName');
               },
             ),
             CustomFabChild(
@@ -267,8 +270,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               backgroundColor: ColorPalette.orange,
               iconColor: context.colorScheme.onPrimary,
               onPressed: () {
-                GoRouter.of(context).push('/$settingsRouteName');
                 closeFab();
+                GoRouter.of(context).push('/$settingsRouteName');
               },
             ),
           ],
@@ -300,31 +303,46 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
+  String _trimBalanceDecimals(String balance) {
+    final parts = balance.split('.');
+
+    if (parts.length > 1) {
+      final integerPart = parts[0];
+      final fractionalPart = parts[1];
+
+      final limitedFractionalPart = fractionalPart.length > 2
+          ? fractionalPart.substring(0, 2)
+          : fractionalPart;
+
+      return '$integerPart.$limitedFractionalPart';
+    }
+    return balance;
+  }
+
   Widget _buildBalanceWidget(BuildContext context, WidgetRef ref,
       List<SelectItem> networks, AccountState accountState) {
     final balanceAsync = ref.watch(balanceProvider);
+    final currentNetwork = ref.watch(networkProvider);
+
     return Row(
       children: [
         balanceAsync.when(
           data: (balance) => Row(
             children: [
               EllipsizedText(
-                NumberShortener.shortenNumber(balance),
+                _trimBalanceDecimals(NumberFormatter.shortenNumber(balance)),
                 style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: balance > 0
                         ? context.colorScheme.secondary
                         : context.colorScheme.onBackground),
               ),
-              SvgPicture.asset(
-                'assets/images/${networks[0].icon}.svg',
-                semanticsLabel: networks[0].name,
-                height: 12,
-                colorFilter: ColorFilter.mode(
-                    balance > 0
-                        ? context.colorScheme.secondary
-                        : context.colorScheme.onBackground,
-                    BlendMode.srcATop),
+              AppIcons.icon(
+                icon: currentNetwork?.icon,
+                size: AppIcons.small,
+                color: balance > 0
+                    ? context.colorScheme.secondary
+                    : context.colorScheme.onBackground,
               ),
               IconButton(
                 icon: AppIcons.icon(
@@ -335,19 +353,44 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
                 onPressed: () {
                   customBottomSheet(
                       context: context,
-                      singleWidget: Text(
-                        'Minimum balance is ${ref.watch(minimumBalanceProvider).toStringAsFixed(2)} VOI. Based on the account configuration, this is the minimum balance needed to keep the account open.',
-                        softWrap: true,
-                        style: context.textTheme.bodyMedium,
+                      singleWidget: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              EllipsizedText(
+                                  NumberFormatter.formatWithCommas(balance),
+                                  style: context.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: context.colorScheme.secondary)),
+                              AppIcons.icon(
+                                  icon: currentNetwork?.value
+                                              .startsWith('network-voi') ??
+                                          false
+                                      ? AppIcons.voiIcon
+                                      : AppIcons.algorandIcon,
+                                  color: context.colorScheme.secondary,
+                                  size: AppIcons.small),
+                            ],
+                          ),
+                          const SizedBox(height: kScreenPadding / 2),
+                          Text(
+                            S.of(context).minimumBalanceInfo(ref
+                                .watch(minimumBalanceProvider)
+                                .toStringAsFixed(2)),
+                            softWrap: true,
+                            style: context.textTheme.bodyMedium,
+                          ),
+                        ],
                       ),
-                      header: "Info",
+                      header: S.of(context).infoHeader,
                       onPressed: (SelectItem item) {});
                 },
               ),
             ],
           ),
           loading: () => const AnimatedDots(),
-          error: (error, stack) => const Text('Error'),
+          error: (error, stack) => Text(S.of(context).genericError),
         ),
       ],
     );
@@ -364,7 +407,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       onPressed: () {
         customBottomSheet(
           context: context,
-          header: "Select Network",
+          header: S.of(context).selectNetworkHeader,
           items: networks,
           hasButton: false,
           onPressed: (SelectItem selectedNetwork) async {
@@ -380,14 +423,16 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               showCustomSnackBar(
                 context: context,
                 snackType: SnackType.success,
-                message: "Switched to ${selectedNetwork.name}",
+                message:
+                    S.of(context).networkSwitchSuccess(selectedNetwork.name),
               );
             } else {
               if (!context.mounted) return;
               showCustomSnackBar(
                 context: context,
                 snackType: SnackType.error,
-                message: "Failed to switch to ${selectedNetwork.name}",
+                message:
+                    S.of(context).networkSwitchFailure(selectedNetwork.name),
               );
             }
           },
@@ -411,7 +456,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               EllipsizedText(
-                'Loading Account',
+                S.of(context).loadingAccount,
                 type: EllipsisType.end,
                 textAlign: TextAlign.start,
                 style: context.textTheme.titleLarge?.copyWith(
@@ -421,7 +466,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
               const SizedBox(height: kScreenPadding / 2),
               EllipsizedText(
-                'Please wait',
+                S.of(context).pleaseWait,
                 type: EllipsisType.end,
                 textAlign: TextAlign.start,
                 style: context.textTheme.bodySmall

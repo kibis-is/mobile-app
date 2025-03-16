@@ -7,6 +7,7 @@ import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/pin_pad/providers/pin_title_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/pin_state.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
@@ -16,6 +17,7 @@ import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/app_reset_util.dart';
+import 'package:kibisis/utils/biomentric_service.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:vibration/vibration.dart';
 
@@ -36,6 +38,7 @@ class PinPad extends ConsumerStatefulWidget {
 }
 
 class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
+  late final BiometricService _biometricService;
   bool isConfirmingPin = false;
   bool isPinCompleted = false;
   late AnimationController _controller;
@@ -47,7 +50,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
+    _biometricService = BiometricService();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 750),
       vsync: this,
@@ -68,7 +71,55 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         _accountName = await storageService.getAccountData(
             _activeAccountId!, 'accountName');
       }
+      await _initializeAuthentication();
+      if (widget.mode == PinPadMode.unlock ||
+          widget.mode == PinPadMode.verifyTransaction) {
+        _attemptBiometricAuthentication();
+      }
     });
+  }
+
+  Future<void> _initializeAuthentication() async {
+    final storageService = ref.read(storageProvider);
+    _activeAccountId = await storageService.getActiveAccount();
+    _accountName = _activeAccountId != null
+        ? await storageService.getAccountData(_activeAccountId!, 'accountName')
+        : null;
+  }
+
+  void _attemptBiometricAuthentication() async {
+    try {
+      final isAuthenticated =
+          await _biometricService.authenticateWithFingerprint();
+      if (isAuthenticated) {
+        _handleAuthenticationSuccess();
+      } else {
+        debugPrint('Biometric authentication failed.');
+        // Optional: Show an error or fallback to PIN entry
+      }
+    } catch (e) {
+      debugPrint('Error during biometric authentication: $e');
+      // Optional: Show a specific error message
+    }
+  }
+
+  Future<void> _handleAuthenticationSuccess() async {
+    try {
+      await ref.read(pinEntryStateNotifierProvider.notifier).pinComplete(
+            widget.mode,
+            _activeAccountId,
+            _accountName,
+          );
+      ref.read(isAuthenticatedProvider.notifier).state = true;
+
+      if (widget.onPinVerified != null) {
+        widget.onPinVerified!.call();
+      } else {
+        _navigateToDashboard();
+      }
+    } catch (e) {
+      debugPrint('Error during post-authentication: $e');
+    }
   }
 
   void _initializeAnimations() {
@@ -208,11 +259,12 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
                                         bool confirm = await showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
-                                                return const ConfirmationDialog(
-                                                  yesText: 'Reset',
-                                                  noText: 'Cancel',
-                                                  content:
-                                                      'Are you sure you want to reset this device? This will remove all accounts, settings, and security information.',
+                                                return ConfirmationDialog(
+                                                  yesText: S.of(context).reset,
+                                                  noText: S.of(context).cancel,
+                                                  content: S
+                                                      .of(context)
+                                                      .resetConfirmationMessage,
                                                 );
                                               },
                                             ) ??
@@ -367,7 +419,10 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
 
   void _handleResetApp() async {
     try {
-      ref.read(loadingProvider.notifier).startLoading(message: 'Resetting App');
+      ref.read(loadingProvider.notifier).startLoading(
+            message: S.of(context).resettingApp,
+          );
+
       await AppResetUtil.resetApp(ref);
       if (!mounted) return;
       GoRouter.of(context).go('/setup');
@@ -402,7 +457,7 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
     final pinNotifier = ref.read(pinEntryStateNotifierProvider.notifier);
     final pinTitleNotifier = ref.read(pinTitleProvider.notifier);
     final pin = pinNotifier.getPin();
-    const pinErrorString = 'PIN does not match.';
+    final pinErrorString = S.of(context).pinMismatchError;
 
     switch (widget.mode) {
       case PinPadMode.setup:
@@ -435,6 +490,35 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
         await _handleVerifyTransactionMode(pinNotifier, pin);
         break;
       case PinPadMode.changePin:
+        if (isConfirmingPin) {
+          if (pinNotifier.getFirstPin() == pin) {
+            await ref.read(pinProvider.notifier).setPin(pin);
+            if (mounted) {
+              Navigator.of(context).pop();
+              showCustomSnackBar(
+                context: context,
+                snackType: SnackType.success,
+                message: "PIN successfully changed",
+              );
+              isConfirmingPin = false;
+              pinTitleNotifier.setCreatePinTitle();
+            }
+          } else {
+            pinNotifier.setError(pinErrorString);
+            _triggerAnimation();
+            pinNotifier.reset();
+            pinNotifier.setFirstPin('');
+            isConfirmingPin = false;
+            pinTitleNotifier.setCreatePinTitle();
+          }
+        } else {
+          isConfirmingPin = true;
+          pinTitleNotifier.setConfirmPinTitle();
+          pinNotifier.setFirstPin(pin);
+          _triggerAnimation();
+          pinNotifier.reset();
+        }
+        break;
       default:
         debugPrint('Unhandled mode in _handlePinComplete');
         break;
@@ -457,7 +541,6 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
           PinPadMode.unlock, _activeAccountId ?? '', _accountName ?? '');
       if (mounted) {
         bool isAuthenticated = ref.read(isAuthenticatedProvider);
-        debugPrint('User is authenticated: $isAuthenticated');
         if (isAuthenticated) {
           _navigateToDashboard();
         }
@@ -472,12 +555,11 @@ class PinPadState extends ConsumerState<PinPad> with TickerProviderStateMixin {
     try {
       bool isPinValid = await ref.read(pinProvider.notifier).verifyPin(pin);
       if (mounted) {
-        debugPrint('PIN is valid: $isPinValid');
         if (isPinValid) {
           pinNotifier.clearError();
           widget.onPinVerified?.call();
         } else {
-          pinNotifier.setError('Incorrect PIN. Try again.');
+          pinNotifier.setError(S.of(context).incorrectPinError);
         }
       }
     } catch (e) {

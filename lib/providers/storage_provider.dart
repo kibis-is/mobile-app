@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
+import 'package:kibisis/models/arc200_asset_data.dart';
 import 'package:kibisis/models/contact.dart';
 import 'package:kibisis/models/nft.dart';
+import 'package:kibisis/providers/fab_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -91,7 +94,7 @@ class StorageService {
         if (attempt < _maxRetries - 1) {
           await Future.delayed(_retryDelay);
         } else {
-          throw Exception('Failed to read accounts data: $e');
+          throw Exception(S.current.failedToReadAccountsData(e.toString()));
         }
       }
     }
@@ -142,7 +145,7 @@ class StorageService {
   Future<void> clearAll() async {
     await _retryOnException(() async {
       if (_prefs == null) {
-        throw UnimplementedError("SharedPreferences is not yet initialized");
+        throw Exception(S.current.sharedPreferencesNotInitialized);
       }
       await _prefs.clear();
       await _secureStorage.deleteAll();
@@ -167,19 +170,19 @@ class StorageService {
   Future<void> setPinHash(String pinHash) async {
     await _retryOnException(() async {
       await _secureStorage.write(key: 'pinHash', value: pinHash);
-    }, 'Error storing pin hash');
+    }, S.current.errorReadingPinHash);
   }
 
   Future<String?> getPinHash() async {
     return await _retryOnException(() async {
       return await _secureStorage.read(key: 'pinHash');
-    }, 'Error reading pin hash', returnOnError: null);
+    }, S.current.errorReadingPinHash, returnOnError: null);
   }
 
   Future<void> clearPin() async {
     await _retryOnException(() async {
       await _secureStorage.delete(key: 'pinHash');
-    }, 'Error clearing pin hash');
+    }, S.current.errorReadingPinHash);
   }
 
   Future<bool> accountExists() async {
@@ -235,20 +238,15 @@ class StorageService {
     return _prefs?.getBool('showFrozenAssets');
   }
 
-  Future<void> initialize() async {
-    await SharedPreferences.getInstance();
-    await const FlutterSecureStorage().readAll();
+  Future<void> setTransactionLastViewedTime(String accountId, int time) async {
+    await _prefs?.setInt('lastViewedTime_$accountId', time);
+    final readableTime = DateTime.fromMillisecondsSinceEpoch(time).toLocal();
+    debugPrint('Transaction last viewed time set to: $readableTime');
   }
 
-  Future<void> setTransactionLastFetchTime(
-      String accountId, int lastFetchTime) async {
-    await _prefs?.setInt('lastTransactionFetchTime$accountId', lastFetchTime);
-  }
-
-  Future<int> getTransactionLastFetchTime(String accountId) async {
-    final lastFetchTime =
-        _prefs?.getInt('lastTransactionFetchTime$accountId') ?? 0;
-    return lastFetchTime;
+  Future<int> getTransactionLastViewedTime(String accountId) async {
+    final timestamp = _prefs?.getInt('lastViewedTime_$accountId') ?? 0;
+    return timestamp;
   }
 
   Future<void> setApplicationId(String accountId, String applicationId) async {
@@ -264,14 +262,14 @@ class StorageService {
         sessions.map((session) => jsonEncode(session)).toList();
     await _retryOnException(
       () async => _prefs?.setStringList(_sessionsKey, sessionsJson),
-      'Failed to save sessions',
+      S.current.failedToSaveSessions,
     );
   }
 
   Future<List<Map<String, dynamic>>> getSessions() async {
     final sessionsJson = await _retryOnException(
       () async => _prefs?.getStringList(_sessionsKey),
-      'Failed to retrieve sessions',
+      S.current.failedToRetrieveSessions,
     );
     if (sessionsJson == null) {
       return [];
@@ -283,10 +281,8 @@ class StorageService {
   }
 
   Future<void> removeSessions() async {
-    await _retryOnException(
-      () async => _prefs?.remove(_sessionsKey),
-      'Failed to remove sessions',
-    );
+    await _retryOnException(() async => _prefs?.remove(_sessionsKey),
+        S.current.failedToRemoveSessions);
   }
 
   Future<void> removeSessionByTopic(String topic) async {
@@ -295,23 +291,26 @@ class StorageService {
     await saveSessions(sessions);
   }
 
-  Future<void> setNFTsForAccount(String accountId, List<NFT> nfts) async {
+  Future<void> setNFTsForAccount(
+      String accountId, String network, List<NFT> nfts) async {
+    final key = 'nfts_${accountId}_$network';
     final encodedNfts = jsonEncode(nfts.map((nft) => nft.toJson()).toList());
-    await _prefs?.setString('nfts_$accountId', encodedNfts);
+    await _prefs?.setString(key, encodedNfts);
   }
 
-  Future<List<NFT>> getNFTsForAccount(String accountId) async {
-    final cachedNftsJson = _prefs?.getString('nfts_$accountId');
+  Future<List<NFT>> getNFTsForAccount(String accountId, String network) async {
+    final key = 'nfts_${accountId}_$network';
+    final cachedNftsJson = _prefs?.getString(key);
     if (cachedNftsJson == null) {
       return [];
     }
-
     final List<dynamic> cachedNfts = json.decode(cachedNftsJson);
     return cachedNfts.map<NFT>((json) => NFT.fromJson(json)).toList();
   }
 
-  Future<void> clearNFTsForAccount(String accountId) async {
-    await _prefs?.remove('nfts_$accountId');
+  Future<void> clearNFTsForAccount(String accountId, String network) async {
+    final key = 'nfts_${accountId}_$network';
+    await _prefs?.remove(key);
   }
 
   static const String _contactsKey = 'contacts';
@@ -346,7 +345,7 @@ class StorageService {
 
   Future<void> setShowTestNetworks(bool show) async {
     if (_prefs == null) {
-      throw Exception("SharedPreferences is not initialized");
+      throw Exception(S.current.sharedPreferencesNotInitialized);
     }
     await _prefs.setBool(_showTestNetworksKey, show);
   }
@@ -355,29 +354,79 @@ class StorageService {
     return _prefs?.getBool(_showTestNetworksKey) ?? false;
   }
 
-  Future<void> followArc200Asset(String accountId, int assetId) async {
+  Future<void> followArc200Asset(
+      String accountId, Arc200AssetData assetData) async {
     final followedAssets = await getFollowedArc200Assets(accountId);
-    if (!followedAssets.contains(assetId)) {
-      followedAssets.add(assetId);
+
+    if (!followedAssets
+        .any((asset) => asset.contractId == assetData.contractId)) {
+      followedAssets.add(assetData);
+
       await _prefs?.setStringList(
         '${_arc200FollowedAssetsKey}_$accountId',
-        followedAssets.map((id) => id.toString()).toList(),
+        followedAssets.map((asset) => jsonEncode(asset.toJson())).toList(),
       );
+
+      debugPrint('Added new ARC200 asset: ${assetData.contractId}');
+    } else {
+      debugPrint('ARC200 asset already followed: ${assetData.contractId}');
     }
   }
 
-  Future<void> unfollowArc200Asset(String accountId, int assetId) async {
+  Future<void> unfollowArc200Asset(String accountId, int contractId) async {
     final followedAssets = await getFollowedArc200Assets(accountId);
-    followedAssets.remove(assetId);
-    await _prefs?.setStringList(
-      '${_arc200FollowedAssetsKey}_$accountId',
-      followedAssets.map((id) => id.toString()).toList(),
-    );
+
+    final initialCount = followedAssets.length;
+    followedAssets.removeWhere((asset) => asset.contractId == contractId);
+
+    if (followedAssets.length < initialCount) {
+      await _prefs?.setStringList(
+        '${_arc200FollowedAssetsKey}_$accountId',
+        followedAssets.map((asset) => jsonEncode(asset.toJson())).toList(),
+      );
+      debugPrint('Unfollowed ARC200 asset: $contractId');
+    } else {
+      debugPrint('ARC200 asset not found: $contractId');
+    }
   }
 
-  Future<List<int>> getFollowedArc200Assets(String accountId) async {
-    final followedAssets =
-        _prefs?.getStringList('${_arc200FollowedAssetsKey}_$accountId') ?? [];
-    return followedAssets.map((id) => int.parse(id)).toList();
+  Future<List<Arc200AssetData>> getFollowedArc200Assets(
+      String accountId) async {
+    final storageKey = '${_arc200FollowedAssetsKey}_$accountId';
+    final rawAssets = _prefs?.getStringList(storageKey) ?? [];
+
+    final followedAssets = rawAssets
+        .map((asset) => Arc200AssetData.fromJson(jsonDecode(asset)))
+        .toList();
+    return followedAssets;
+  }
+
+  Future<void> clearAllArc200Assets(String accountId) async {
+    final storageKey = '${_arc200FollowedAssetsKey}_$accountId';
+
+    if (_prefs?.containsKey(storageKey) ?? false) {
+      await _prefs?.remove(storageKey);
+    } else {
+      debugPrint('No ARC-0200 assets to clear for account: $accountId');
+    }
+  }
+
+  static const String _preferredLanguageKey = 'preferredLanguage';
+
+  Future<void> setPreferredLanguage(String languageCode) async {
+    await _prefs?.setString(_preferredLanguageKey, languageCode);
+  }
+
+  String? getPreferredLanguage() {
+    return _prefs?.getString(_preferredLanguageKey);
+  }
+
+  Future<void> setFabPosition(FabPosition position) async {
+    await _prefs?.setString('fabPosition', position.name);
+  }
+
+  FabPosition? getFabPosition() {
+    final position = _prefs?.getString('fabPosition');
+    return position == 'left' ? FabPosition.left : FabPosition.right;
   }
 }

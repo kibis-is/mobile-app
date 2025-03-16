@@ -1,0 +1,14 @@
+1.1.0-beta.2 (2024-11-18)
+
+
+Bug Fixes
+
+* add intl as a dependency override to fix package incompaitibility issues (75c55c0)
+
+
+Features
+
+* spanish lanugage now added (62aa4a4)
+
+
+

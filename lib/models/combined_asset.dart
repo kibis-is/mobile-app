@@ -1,5 +1,6 @@
 import 'package:algorand_dart/algorand_dart.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 
 class CombinedAsset {
   final int index;
@@ -21,6 +22,28 @@ class CombinedAsset {
     required this.amount,
     required this.isFrozen,
   });
+
+  CombinedAsset copyWith({
+    int? index,
+    CombinedAssetParameters? params,
+    int? createdAtRound,
+    bool? deleted,
+    int? destroyedAtRound,
+    AssetType? assetType,
+    int? amount,
+    bool? isFrozen,
+  }) {
+    return CombinedAsset(
+      index: index ?? this.index,
+      params: params ?? this.params,
+      createdAtRound: createdAtRound ?? this.createdAtRound,
+      deleted: deleted ?? this.deleted,
+      destroyedAtRound: destroyedAtRound ?? this.destroyedAtRound,
+      assetType: assetType ?? this.assetType,
+      amount: amount ?? this.amount,
+      isFrozen: isFrozen ?? this.isFrozen,
+    );
+  }
 }
 
 class CombinedAssetParameters {
@@ -74,9 +97,9 @@ class CombinedAssetParameters {
     return CombinedAssetParameters(
       total: int.parse(tokenDetails['totalSupply'] ?? '0'),
       decimals: tokenDetails['decimals'] ?? 0,
-      creator: tokenDetails['creator'] ?? 'Unknown',
+      creator: tokenDetails['creator'] ?? S.current.unknown,
       name: tokenDetails['name'] ?? 'Unknown',
-      unitName: tokenDetails['symbol'] ?? 'Unknown',
+      unitName: tokenDetails['symbol'] ?? S.current.unknown,
       clawback: '0',
       defaultFrozen: false,
       freeze: null,
@@ -84,6 +107,36 @@ class CombinedAssetParameters {
       reserve: null,
       url: null,
       metadataHash: null,
+    );
+  }
+
+  CombinedAssetParameters copyWith({
+    int? total,
+    int? decimals,
+    String? creator,
+    String? clawback,
+    bool? defaultFrozen,
+    String? freeze,
+    String? manager,
+    String? name,
+    String? reserve,
+    String? unitName,
+    String? url,
+    String? metadataHash,
+  }) {
+    return CombinedAssetParameters(
+      total: total ?? this.total,
+      decimals: decimals ?? this.decimals,
+      creator: creator ?? this.creator,
+      clawback: clawback ?? this.clawback,
+      defaultFrozen: defaultFrozen ?? this.defaultFrozen,
+      freeze: freeze ?? this.freeze,
+      manager: manager ?? this.manager,
+      name: name ?? this.name,
+      reserve: reserve ?? this.reserve,
+      unitName: unitName ?? this.unitName,
+      url: url ?? this.url,
+      metadataHash: metadataHash ?? this.metadataHash,
     );
   }
 }

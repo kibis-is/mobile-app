@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/providers/allow_test_networks_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 
 class AdvancedScreen extends ConsumerStatefulWidget {
-  static const String title = 'Advanced';
+  static String title = S.current.advanced;
   const AdvancedScreen({super.key});
 
   @override
@@ -22,7 +23,7 @@ class _AdvancedScreenState extends ConsumerState<AdvancedScreen> {
         showCustomSnackBar(
           context: context,
           snackType: SnackType.success,
-          message: 'Network switched to ${newNetwork.name}',
+          message: S.of(context).networkSwitched(newNetwork.name),
         );
       }
     });
@@ -31,7 +32,7 @@ class _AdvancedScreenState extends ConsumerState<AdvancedScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AdvancedScreen.title),
+        title: Text(S.of(context).advanced),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
@@ -39,9 +40,8 @@ class _AdvancedScreenState extends ConsumerState<AdvancedScreen> {
           children: [
             const SizedBox(height: kScreenPadding),
             SwitchListTile(
-              title: const Text('Allow Test Networks'),
-              subtitle: const Text(
-                  'Toggle to include test networks in the network list.'),
+              title: Text(S.of(context).allowTestNetworks),
+              subtitle: Text(S.of(context).toggleTestNetworksDescription),
               value: showTestNetworks,
               onChanged: (newValue) {
                 ref

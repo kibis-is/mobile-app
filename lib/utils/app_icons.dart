@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kibisis/generated/l10n.dart';
 
 class AppIcons {
   static const double small = 16.0;
   static const double medium = 24.0;
   static const double large = 32.0;
   static const double xlarge = 48.0;
+  static const double xxlarge = 80.0;
 
   static const IconData arrowRight = Icons.arrow_forward_ios_rounded;
   static const IconData freeze = Icons.ac_unit_rounded;
@@ -18,7 +20,7 @@ class AppIcons {
   static const IconData refresh = Icons.refresh_rounded;
   static const IconData backspace = Icons.backspace_rounded;
   static const IconData edit = Icons.edit_rounded;
-  static const IconData info = Icons.info_rounded;
+  static const IconData info = Icons.info_outline_rounded;
   static const IconData settings = Icons.settings_rounded;
   static const IconData wallet = Icons.account_balance_wallet_rounded;
   static const IconData add = Icons.add_rounded;
@@ -65,6 +67,9 @@ class AppIcons {
   static const IconData incoming = Icons.arrow_circle_left_outlined;
   static const IconData outgoing = Icons.arrow_circle_right_outlined;
   static const IconData sendToSelf = Icons.change_circle_outlined;
+  static const IconData text = Icons.short_text_rounded;
+  static const IconData money = Icons.monetization_on_outlined;
+  static const IconData menuArrow = Icons.menu_open_rounded;
 
   static const String svgBasePath = 'assets/images/';
 
@@ -106,8 +111,7 @@ class AppIcons {
         return Icon(Icons.error, size: size, color: effectiveColor);
       }
     } else {
-      throw ArgumentError(
-          'Icon must be either IconData or a String path to SVG.');
+      throw ArgumentError(S.current.invalidIconType);
     }
   }
 }

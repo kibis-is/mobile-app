@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:kibisis/common_widgets/confirmation_dialog.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
+import 'package:kibisis/providers/fab_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -15,7 +17,7 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SessionsScreen extends ConsumerStatefulWidget {
-  static String title = 'Sessions';
+  static String title = S.current.sessions;
   const SessionsScreen({super.key});
 
   @override
@@ -58,13 +60,16 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
       success = true;
     } catch (e) {
       debugPrint('Failed to disconnect session $topic: $e');
-      _showSnackBar('Failed to disconnect $sessionName. Please try again.',
-          SnackType.error);
+      if (!mounted) return;
+      _showSnackBar(
+          S.of(context).failedToDisconnect(sessionName), SnackType.error);
     }
 
     if (success) {
-      _showSnackBar(
-          '$sessionName disconnected successfully.', SnackType.success);
+      if (mounted) {
+        _showSnackBar(
+            S.of(context).sessionDisconnected(sessionName), SnackType.success);
+      }
       _loadSessions();
     }
 
@@ -84,7 +89,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
   void _disconnectAllSessions() async {
     await _disconnectSessionHandler(
       topic: 'all',
-      sessionName: 'All sessions',
+      sessionName: S.of(context).allSessions,
       disconnectFunc: _walletConnectManager.disconnectAllSessions,
     );
   }
@@ -92,7 +97,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
   Future<void> _disconnectSessionsForAccount(String publicKey) async {
     await _disconnectSessionHandler(
       topic: publicKey,
-      sessionName: 'All sessions for $publicKey',
+      sessionName: S.of(context).allSessionsFor(publicKey),
       disconnectFunc: () =>
           _walletConnectManager.disconnectAllSessionsForAccount(publicKey),
     );
@@ -104,8 +109,8 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
           context: context,
           builder: (BuildContext context) {
             return ConfirmationDialog(
-              yesText: 'Disconnect',
-              noText: 'Cancel',
+              yesText: S.of(context).disconnect,
+              noText: S.of(context).cancel,
               content: message,
             );
           },
@@ -164,7 +169,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
   @override
   Widget build(BuildContext context) {
     final accountsState = ref.watch(accountsListProvider);
-
+    final fabPosition = ref.watch(fabPositionProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(SessionsScreen.title),
@@ -191,11 +196,11 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
                   : IconButton(
                       icon: const Icon(AppIcons.disconnect),
                       onPressed: () => _confirmDisconnect(
-                        'Disconnect all sessions?',
+                        S.of(context).disconnectAllSessionsPrompt,
                         _disconnectAllSessions,
                       ),
                       color: context.colorScheme.error,
-                      tooltip: 'Disconnect All Sessions?',
+                      tooltip: S.of(context).disconnectAllSessions,
                     );
             },
           ),
@@ -210,7 +215,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             debugPrint('No active sessions found.');
-            return const Center(child: Text('No active sessions.'));
+            return Center(child: Text(S.of(context).noActiveSessions));
           }
 
           final sessions = snapshot.data!;
@@ -227,7 +232,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
 
           if (activeAccounts.isEmpty) {
             debugPrint('No active sessions for any accounts.');
-            return const Center(child: Text('No active sessions.'));
+            return Center(child: Text(S.of(context).noActiveSessions));
           }
 
           return _buildSessionsList(activeAccounts, accountSessions);
@@ -241,6 +246,9 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
         foregroundColor: Colors.white,
         child: const Icon(AppIcons.scan),
       ),
+      floatingActionButtonLocation: fabPosition == FabPosition.left
+          ? FloatingActionButtonLocation.startFloat
+          : FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -270,8 +278,10 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
             itemCount: activeAccounts.length,
             itemBuilder: (context, index) {
               final account = activeAccounts[index];
-              final accountName = account['accountName'] ?? 'Unnamed Account';
-              final publicKey = account['publicKey'] ?? 'No Public Key';
+              final accountName =
+                  account['accountName'] ?? S.of(context).unnamedAccount;
+              final publicKey =
+                  account['publicKey'] ?? S.of(context).noPublicKey;
               final sessionsForAccount = accountSessions[publicKey]!;
 
               return _buildAccountSessionTile(
@@ -327,7 +337,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
           onPressed: _isClearingAccountSessions
               ? null
               : () => _confirmDisconnect(
-                    'Disconnect all sessions for this account?',
+                    S.of(context).disconnectAllSessionsForAccountPrompt,
                     () => _disconnectSessionsForAccount(publicKey),
                   ),
           child: Row(
@@ -338,7 +348,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
                 color: context.colorScheme.error,
               ),
               const SizedBox(width: kScreenPadding),
-              Text('Disconnect All',
+              Text(S.of(context).disconnectAll,
                   style: context.textTheme.titleSmall
                       ?.copyWith(color: context.colorScheme.error)),
             ],
@@ -366,7 +376,7 @@ class SessionsScreenState extends ConsumerState<SessionsScreen> {
           EllipsizedText(session.peer.metadata.url,
               style: context.textTheme.bodyMedium),
           Text(
-            'Expires: ${DateFormat.yMMMd().add_Hms().format(DateTime.fromMillisecondsSinceEpoch(session.expiry * 1000))}',
+            '${S.of(context).expires} ${DateFormat.yMMMd().add_Hms().format(DateTime.fromMillisecondsSinceEpoch(session.expiry * 1000))}',
             style: context.textTheme.labelMedium?.copyWith(
               color: context.colorScheme.onSurfaceVariant,
             ),

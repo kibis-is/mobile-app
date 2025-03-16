@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/theme/color_palette.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
@@ -21,7 +22,7 @@ final selectedAccountProvider = StateProvider<String?>((ref) {
 final currentPageProvider = StateProvider<int>((ref) => 0);
 
 class ExportAccountsScreen extends ConsumerStatefulWidget {
-  static const String title = 'Export Accounts';
+  static String title = S.current.exportAccounts;
 
   const ExportAccountsScreen({super.key});
 
@@ -71,7 +72,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(ExportAccountsScreen.title),
+        title: Text(ExportAccountsScreen.title),
         actions: [
           IconButton(
             icon: AppIcons.icon(icon: AppIcons.copy),
@@ -84,7 +85,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
                             ?.join('\n') ??
                         '')
                 : null,
-            tooltip: 'Copy URI',
+            tooltip: S.of(context).copyUri,
           ),
         ],
       ),
@@ -98,7 +99,8 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
             qrDataAsyncValue,
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('Error: $error')),
+          error: (error, stack) =>
+              Center(child: Text('${S.of(context).error}: $error')),
         ),
       ),
     );
@@ -113,7 +115,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     if (exportableAccounts.isEmpty) {
       return Center(
         child: Text(
-          'No accounts available for export.',
+          S.of(context).noAccountsForExport,
           style: context.textTheme.bodyLarge,
         ),
       );
@@ -137,9 +139,10 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     String selectedAccountId,
   ) {
     final dropdownItems = [
-      SelectItem(name: 'All Accounts', value: 'all', icon: AppIcons.wallet),
+      SelectItem(
+          name: S.of(context).allAccounts, value: 'all', icon: AppIcons.wallet),
       ...accounts.map((account) => SelectItem(
-            name: account['accountName'] ?? 'Unnamed Account',
+            name: account['accountName'] ?? S.of(context).unnamedAccount,
             value: account['accountId'] ?? '0',
             icon: AppIcons.wallet,
           )),
@@ -153,7 +156,7 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
     );
 
     return CustomDropDown(
-      label: 'Account',
+      label: S.of(context).account,
       items: dropdownItems,
       selectedValue: selectedValue,
       onChanged: (SelectItem? newValue) {
@@ -204,9 +207,9 @@ class ExportAccountsScreenState extends ConsumerState<ExportAccountsScreen> {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, stack) => const Center(
+          error: (e, stack) => Center(
             child: Text(
-              'This account cannot be exported, as it has no private key.',
+              S.of(context).accountCannotBeExported,
               textAlign: TextAlign.center,
             ),
           ),

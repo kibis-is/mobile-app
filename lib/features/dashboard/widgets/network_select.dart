@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/network_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -41,7 +42,7 @@ class _NetworkDisplayRow extends StatelessWidget {
             color: context.colorScheme.onBackground),
         const SizedBox(width: kScreenPadding / 2),
         Text(
-          currentNetwork?.name ?? 'No Network',
+          currentNetwork?.name ?? S.of(context).noNetwork,
           style: context.textTheme.bodySmall?.copyWith(
               color: context.colorScheme.onBackground,
               fontWeight: FontWeight.bold),

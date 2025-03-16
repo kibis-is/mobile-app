@@ -1,0 +1,31 @@
+1.1.0-beta.1 (2024-11-17)
+
+
+Bug Fixes
+
+* adjust app icons to remove alpha for compatibility with apple store (8d3c75d)
+* Apply number shortener to amount in transaction list items (8bc5b8c)
+* correctly copying public key from transaction screen even when contact name is showing (3886753)
+* correctly showing appropriate network icon after the balance (5100cae)
+* dispose the private key textfield when leaving the screen for additional security (a81327b)
+* fixed bug where sometimes transactions are being fetched twice and showing duplicates. Refactored. (b01f415)
+* Fixed bug where the FAB would stay open after navigating to a subscreen and back. (ef514c8)
+* Multi line text fields now show 7 lines. Up from 3. (81edb9c)
+* Now correctly importing Base64 privateKeys (7317204)
+* reduced spacing around icon in the appIcon to make it more visible and bring into alignment with the kibisis extension icon (11f93b9)
+* Remove the back button from the Select Account Screen. (3cbe574)
+
+
+Features
+
+* Add language picker to the welcome screen. (572bf3b)
+* Added Vietnamese and Turkish languages (a0b2ed0)
+* Can now open transactions for more details (8ce76ca)
+* Can now opt out of arc200s that are being tracked locally. (a8799a2)
+* Can now toggle between languages. English and Thai implemented (9ed1a3a)
+* Now formatting long displays of voi with comma separation for clarity (d3b16c9)
+* Now highlighting new transactions since last time updated (6493031)
+* track arc200 assets locally and poll balance for indexed arc200s (26dd8c8)
+
+
+

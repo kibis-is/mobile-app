@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_text_field.dart';
 import 'package:kibisis/common_widgets/top_snack_bar.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/account_provider.dart';
 import 'package:kibisis/providers/active_asset_provider.dart';
@@ -29,11 +30,13 @@ import 'package:kibisis/utils/theme_extensions.dart';
 class ViewAssetBody extends ConsumerStatefulWidget {
   final CombinedAsset asset;
   final AssetScreenMode mode;
+  final List<Widget>? actions;
 
   const ViewAssetBody({
     super.key,
     required this.asset,
     this.mode = AssetScreenMode.view,
+    this.actions,
   });
 
   @override
@@ -97,185 +100,214 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
 
   @override
   Widget build(BuildContext context) {
-    final userBalance = widget.asset.amount;
+    final userBalance = Algo.fromMicroAlgos(widget.asset.amount);
     final totalSupply = double.parse(widget.asset.params.total.toString());
     final mediaQueryHelper = MediaQueryHelper(context);
     final network = ref.watch(networkProvider)?.value;
     final networkIcon = network?.startsWith('network-voi') ?? false
         ? AppIcons.voiCircleIcon
         : AppIcons.algorandCircleIcon;
+    final currentNetwork = ref.watch(networkProvider);
 
     final publicAddress = ref.watch(accountProvider).account?.address ?? '';
     final assetsState = ref.watch(assetsProvider(publicAddress));
 
-    bool isOwned = false;
+    bool isOwned = assetsState.maybeWhen(
+      data: (assets) =>
+          assets.any((asset) => asset.index == widget.asset.index),
+      orElse: () => false,
+    );
 
-    if (assetsState is AsyncData<List<CombinedAsset>> && assetsState.hasValue) {
-      isOwned =
-          assetsState.value.any((asset) => asset.index == widget.asset.index);
-    }
-
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: kScreenPadding / 2, vertical: kScreenPadding),
-        child: Column(
-          children: [
-            Column(
-              children: [
-                _buildHeroOrChild(
-                  condition: !mediaQueryHelper.isWideScreen(),
-                  tag: '${widget.asset.index}-icon',
-                  child: CircleAvatar(
-                    radius: 50.0,
-                    backgroundColor: context.colorScheme.primary,
-                    child: SvgPicture.asset(
-                      '${AppIcons.svgBasePath}$networkIcon.svg',
-                      width: 80,
-                      height: 80,
-                      semanticsLabel: 'Asset Icon',
-                      colorFilter: const ColorFilter.mode(
-                          Colors.white, BlendMode.srcATop),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: kScreenPadding),
-                _buildHeroOrChild(
-                  condition: !mediaQueryHelper.isWideScreen(),
-                  tag: '${widget.asset.index}-name',
-                  child: Text(
-                    widget.asset.params.name ?? 'Unnamed Asset',
-                    textAlign: TextAlign.center,
-                    style: context.textTheme.displayMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: kScreenPadding / 2),
-                _buildHeroOrChild(
-                  condition: !mediaQueryHelper.isWideScreen(),
-                  tag: '${widget.asset.index}-amount',
-                  child: Text(
-                    NumberShortener.shortenNumber(userBalance.toDouble()),
-                    style: context.textTheme.displayMedium?.copyWith(
-                      color: context.colorScheme.secondary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+    return Column(
+      children: [
+        if (widget.actions != null && mediaQueryHelper.isWideScreen())
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kScreenPadding / 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: widget.actions!,
             ),
-            const SizedBox(height: kScreenPadding),
-            EllipsizedText(
-              type: EllipsisType.middle,
-              publicAddress,
-              style: context.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: kScreenPadding),
-            _buildAnimatedItem(
-              0,
-              CustomTextField(
-                leadingIcon: AppIcons.unitName,
-                controller: TextEditingController(
-                  text: widget.asset.params.unitName ?? 'Not available',
-                ),
-                labelText: 'Unit Name',
-                isEnabled: false,
-              ),
-            ),
-            const SizedBox(height: kScreenPadding / 2),
-            _buildAnimatedItem(
-              1,
-              Row(
+          ),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+                horizontal: kScreenPadding / 2, vertical: kScreenPadding),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kScreenPadding / 2, vertical: kScreenPadding),
+              child: Column(
                 children: [
-                  Expanded(
-                    child: CustomTextField(
-                      leadingIcon: AppIcons.applicationId,
-                      controller: TextEditingController(
-                        text: widget.asset.index.toString(),
+                  Column(
+                    children: [
+                      _buildHeroOrChild(
+                        condition: !mediaQueryHelper.isWideScreen(),
+                        tag: '${widget.asset.index}-icon',
+                        child: CircleAvatar(
+                          radius: 50.0,
+                          backgroundColor: context.colorScheme.primary,
+                          child: SvgPicture.asset(
+                            '${AppIcons.svgBasePath}$networkIcon.svg',
+                            width: 80,
+                            height: 80,
+                            colorFilter: const ColorFilter.mode(
+                                Colors.white, BlendMode.srcATop),
+                          ),
+                        ),
                       ),
-                      labelText: 'Application ID',
+                      const SizedBox(height: kScreenPadding),
+                      _buildHeroOrChild(
+                        condition: !mediaQueryHelper.isWideScreen(),
+                        tag: '${widget.asset.index}-name',
+                        child: Text(
+                          widget.asset.params.name ?? S.of(context).unknown,
+                          textAlign: TextAlign.center,
+                          style: context.textTheme.displayMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(height: kScreenPadding / 2),
+                      _buildHeroOrChild(
+                        condition: !mediaQueryHelper.isWideScreen(),
+                        tag: '${widget.asset.index}-amount',
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            EllipsizedText(
+                              NumberFormatter.formatWithCommas(
+                                  userBalance.toDouble()),
+                              style: context.textTheme.displayMedium?.copyWith(
+                                color: context.colorScheme.secondary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            AppIcons.icon(
+                              icon: currentNetwork?.icon,
+                              size: AppIcons.medium,
+                              color: context.colorScheme.secondary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: kScreenPadding),
+                  EllipsizedText(
+                    type: EllipsisType.middle,
+                    publicAddress,
+                    style: context.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: kScreenPadding),
+                  _buildAnimatedItem(
+                    0,
+                    CustomTextField(
+                      leadingIcon: AppIcons.unitName,
+                      controller: TextEditingController(
+                        text: widget.asset.params.unitName ??
+                            S.of(context).unitName,
+                      ),
+                      labelText: S.current.unitName,
                       isEnabled: false,
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(AppIcons.copy),
-                    onPressed: () {
-                      copyToClipboard(context, widget.asset.index.toString());
-                    },
+                  const SizedBox(height: kScreenPadding / 2),
+                  _buildAnimatedItem(
+                    1,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            leadingIcon: AppIcons.applicationId,
+                            controller: TextEditingController(
+                              text: widget.asset.index.toString(),
+                            ),
+                            labelText: S.current.applicationId,
+                            isEnabled: false,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(AppIcons.copy),
+                          onPressed: () {
+                            copyToClipboard(
+                                context, widget.asset.index.toString());
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: kScreenPadding / 2),
+                  _buildAnimatedItem(
+                    2,
+                    CustomTextField(
+                      leadingIcon: AppIcons.assetType,
+                      controller: TextEditingController(
+                        text: widget.asset.assetType == AssetType.arc200
+                            ? 'ARC-0200'
+                            : S.current.algorandStandardAsset,
+                      ),
+                      labelText: S.current.type,
+                      isEnabled: false,
+                    ),
+                  ),
+                  const SizedBox(height: kScreenPadding / 2),
+                  _buildAnimatedItem(
+                    3,
+                    CustomTextField(
+                      leadingIcon: AppIcons.decimals,
+                      controller: TextEditingController(
+                        text: widget.asset.params.decimals.toString(),
+                      ),
+                      labelText: S.current.decimals,
+                      isEnabled: false,
+                    ),
+                  ),
+                  const SizedBox(height: kScreenPadding / 2),
+                  _buildAnimatedItem(
+                    4,
+                    CustomTextField(
+                      leadingIcon: AppIcons.totalSupply,
+                      controller: TextEditingController(
+                        text: NumberFormatter.shortenNumber(totalSupply),
+                      ),
+                      labelText: S.current.totalSupply,
+                      isEnabled: false,
+                    ),
+                  ),
+                  const SizedBox(height: kScreenPadding),
+                  _buildAnimatedItem(
+                    5,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: CustomButton(
+                        text:
+                            isOwned ? S.current.sendAsset : S.current.addAsset,
+                        isFullWidth: !mediaQueryHelper.isWideScreen(),
+                        buttonType: ButtonType.secondary,
+                        onPressed: () async {
+                          if (isOwned) {
+                            ref
+                                .read(activeAssetProvider.notifier)
+                                .setActiveAsset(widget.asset);
+                            context.pushNamed(sendTransactionRouteName,
+                                pathParameters: {'mode': 'asset'});
+                          } else {
+                            await _optInAsset();
+                          }
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: kScreenPadding / 2),
-            _buildAnimatedItem(
-              2,
-              CustomTextField(
-                leadingIcon: AppIcons.assetType,
-                controller: TextEditingController(
-                  text: widget.asset.assetType == AssetType.arc200
-                      ? 'ARC-0200'
-                      : 'Algorand Standard Asset',
-                ),
-                labelText: 'Type',
-                isEnabled: false,
-              ),
-            ),
-            const SizedBox(height: kScreenPadding / 2),
-            _buildAnimatedItem(
-              3,
-              CustomTextField(
-                leadingIcon: AppIcons.decimals,
-                controller: TextEditingController(
-                  text: widget.asset.params.decimals.toString(),
-                ),
-                labelText: 'Decimals',
-                isEnabled: false,
-              ),
-            ),
-            const SizedBox(height: kScreenPadding / 2),
-            _buildAnimatedItem(
-              4,
-              CustomTextField(
-                leadingIcon: AppIcons.totalSupply,
-                controller: TextEditingController(
-                  text: NumberShortener.shortenNumber(totalSupply),
-                ),
-                labelText: 'Total Supply',
-                isEnabled: false,
-              ),
-            ),
-            const SizedBox(height: kScreenPadding),
-            _buildAnimatedItem(
-              5,
-              Align(
-                alignment: Alignment.centerLeft,
-                child: CustomButton(
-                  text: isOwned ? 'Send Asset' : 'Add Asset',
-                  isFullWidth: !mediaQueryHelper.isWideScreen(),
-                  buttonType: ButtonType.secondary,
-                  onPressed: () async {
-                    if (isOwned) {
-                      ref
-                          .read(activeAssetProvider.notifier)
-                          .setActiveAsset(widget.asset);
-                      context.pushNamed(sendTransactionRouteName,
-                          pathParameters: {'mode': 'asset'});
-                    } else {
-                      await _optInAsset();
-                    }
-                  },
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
   Future<void> _optInAsset() async {
     final loadingNotifier = ref.read(loadingProvider.notifier);
-    loadingNotifier.startLoading(message: 'Opting in...');
+    loadingNotifier.startLoading(message: S.current.optingInMessage);
 
     final algorandService = ref.read(algorandServiceProvider);
     final activeAsset = ref.read(activeAssetProvider);
@@ -301,7 +333,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
       CombinedAsset? activeAsset, AsyncValue<double> balanceState) async {
     if (activeAsset == null) {
       ref.read(loadingProvider.notifier).stopLoading();
-      throw Exception('Active asset is null');
+      throw Exception(S.current.activeAssetNullError);
     }
 
     final balance = balanceState.maybeWhen(
@@ -314,7 +346,7 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
       showCustomSnackBar(
         context: context,
         snackType: SnackType.error,
-        message: 'Please fund your account to proceed.',
+        message: S.current.fundAccountError,
       );
       return null;
     }
@@ -326,45 +358,33 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
     final privateKey = await ref.read(accountProvider.notifier).getPrivateKey();
     if (privateKey.isEmpty) {
       ref.read(loadingProvider.notifier).stopLoading();
-      throw Exception('Private key not found');
+      throw Exception(S.current.privateKeyNotFoundError);
     }
     return privateKey;
   }
 
   Future<void> _performOptIn(String privateKey, CombinedAsset activeAsset,
       AlgorandService algorandService) async {
-    final accountId = await ref.read(accountProvider.notifier).getAccountId();
-    final publicAddress =
-        await ref.read(accountProvider.notifier).getPublicAddress();
+    final accountNotifier = ref.read(accountProvider.notifier);
+    final accountId = await accountNotifier.getAccountId();
+    final publicAddress = await accountNotifier.getPublicAddress();
     final storageService = ref.read(storageProvider);
 
     if (accountId == null || publicAddress.isEmpty) {
-      throw Exception('Account ID or Public Address is not available');
+      throw Exception(S.current.accountIdOrAddressNotAvailable);
     }
 
-    switch (activeAsset.assetType) {
-      case AssetType.standard:
-        await algorandService.optInAsset(
-          assetId: activeAsset.index,
-          assetType: AssetType.standard,
-          privateKey: privateKey,
-          accountId: accountId,
-        );
-        break;
-
-      case AssetType.arc200:
-        await algorandService.optInAsset(
-          assetId: activeAsset.index,
-          assetType: AssetType.arc200,
-          privateKey: privateKey,
-          publicAddress: publicAddress,
-          storageService: storageService,
-          accountId: accountId,
-        );
-        break;
-
-      default:
-        throw Exception('Unsupported asset type');
+    try {
+      await algorandService.optInAsset(
+        asset: activeAsset,
+        privateKey: privateKey,
+        accountId: accountId,
+        publicAddress: publicAddress,
+        storageService: storageService,
+      );
+    } catch (e) {
+      debugPrint('Error during opt-in: $e');
+      throw Exception(S.current.failedToOptInError);
     }
   }
 
@@ -376,8 +396,8 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
       showCustomSnackBar(
         context: context,
         snackType: SnackType.success,
-        showConfetti: true,
-        message: 'Asset successfully opted in',
+        showConfetti: false,
+        message: S.current.assetOptInSuccess,
       );
     }
   }
@@ -391,10 +411,10 @@ class ViewAssetBodyState extends ConsumerState<ViewAssetBody>
   }
 
   void _handleAlgorandException(AlgorandException e, BuildContext context) {
-    String userFriendlyMessage = 'An error occurred with Algorand service';
+    String userFriendlyMessage = S.current.algorandServiceError;
 
     if (e.message.contains('overspend')) {
-      userFriendlyMessage = 'Insufficient balance.';
+      userFriendlyMessage = S.current.insufficientBalance;
     }
 
     debugPrint(e.message);

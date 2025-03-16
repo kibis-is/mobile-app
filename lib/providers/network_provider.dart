@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/features/settings/providers/allow_test_networks_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/select_item.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/utils/app_icons.dart';
@@ -87,7 +88,8 @@ class NetworkNotifier extends StateNotifier<SelectItem?> {
       if (state != network) {
         state = network;
         await storage.setDefaultNetwork(network.value);
-        onNetworkChanged('Network changed to ${network.name}');
+        onNetworkChanged(S.current.networkChangedTo(network.name));
+
         return true;
       }
       return false;

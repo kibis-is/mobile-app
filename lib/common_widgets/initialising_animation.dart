@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class AnimatedDots extends StatefulWidget {
@@ -37,7 +38,7 @@ class AnimatedDotsState extends State<AnimatedDots>
       builder: (context, child) {
         String dots = '.' * _dotCount.value;
         return Text(
-          'Init$dots',
+          '${S.of(context).initializing}$dots',
           style: context.textTheme.bodySmall
               ?.copyWith(color: context.colorScheme.onBackground),
         );

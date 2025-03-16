@@ -10,6 +10,7 @@ import 'package:kibisis/providers/lock_timeout_provider.dart';
 import 'package:kibisis/providers/pin_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
+import 'package:kibisis/utils/biomentric_service.dart';
 import 'package:kibisis/utils/wallet_connect_manageer.dart';
 
 class AppLifecycleHandler with WidgetsBindingObserver {
@@ -54,6 +55,7 @@ class AppLifecycleHandler with WidgetsBindingObserver {
 
       if (isPasswordLockEnabled && duration.inSeconds > lockoutTime) {
         handleTimeout();
+        await _triggerBiometricAuthentication();
       }
 
       await walletConnectManager.initialize();
@@ -61,6 +63,19 @@ class AppLifecycleHandler with WidgetsBindingObserver {
 
       if (Platform.isAndroid || Platform.isIOS) {
         ref.read(isSplashScreenVisibleProvider.notifier).state = false;
+      }
+    }
+  }
+
+  Future<void> _triggerBiometricAuthentication() async {
+    final biometricService = BiometricService();
+    final canAuthenticate = await biometricService.canCheckFingerprint();
+    if (canAuthenticate) {
+      final success = await biometricService.authenticateWithFingerprint();
+      if (success) {
+        ref.read(isAuthenticatedProvider.notifier).state = true;
+      } else {
+        debugPrint('Biometric authentication failed on app resume.');
       }
     }
   }

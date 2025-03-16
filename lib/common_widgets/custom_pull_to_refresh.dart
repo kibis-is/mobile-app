@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class CustomPullToRefresh extends StatelessWidget {
@@ -23,13 +24,13 @@ class CustomPullToRefresh extends StatelessWidget {
         builder: (BuildContext context, RefreshStatus? mode) {
           Widget text;
           if (mode == RefreshStatus.idle) {
-            text = const Text("Pull down to refresh");
+            text = Text(S.of(context).pullToRefresh);
           } else if (mode == RefreshStatus.canRefresh) {
-            text = const Text("Release to refresh");
+            text = Text(S.of(context).releaseToRefresh);
           } else if (mode == RefreshStatus.refreshing) {
-            text = const Text("Refreshing...");
+            text = Text(S.of(context).refreshing);
           } else {
-            text = const Text("Pull down to refresh");
+            text = Text(S.of(context).pullToRefresh);
           }
           return SizedBox(
             height: 60.0,

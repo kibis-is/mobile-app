@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/utils/app_icons.dart';
 
 class SettingsMenu {
@@ -8,36 +9,38 @@ class SettingsMenu {
 
   SettingsMenu({required this.name, required this.icon, required this.path});
 
-  static List<SettingsMenu> menuList = [
-    SettingsMenu(
-      name: 'General',
-      icon: AppIcons.settings,
-      path: '/general',
-    ),
-    SettingsMenu(
-      name: 'Security',
-      icon: AppIcons.security,
-      path: '/security',
-    ),
-    SettingsMenu(
-      name: 'Appearance',
-      icon: AppIcons.appearance,
-      path: '/appearance',
-    ),
-    SettingsMenu(
-      name: 'Sessions',
-      icon: AppIcons.sessions,
-      path: '/sessions',
-    ),
-    SettingsMenu(
-      name: 'Advanced',
-      icon: AppIcons.advanced,
-      path: '/advanced',
-    ),
-    SettingsMenu(
-      name: 'About',
-      icon: AppIcons.about,
-      path: '/about',
-    ),
-  ];
+  static List<SettingsMenu> generateMenuList() {
+    return [
+      SettingsMenu(
+        name: S.current.general,
+        icon: AppIcons.settings,
+        path: '/general',
+      ),
+      SettingsMenu(
+        name: S.current.security,
+        icon: AppIcons.security,
+        path: '/security',
+      ),
+      SettingsMenu(
+        name: S.current.appearance,
+        icon: AppIcons.appearance,
+        path: '/appearance',
+      ),
+      SettingsMenu(
+        name: S.current.sessions,
+        icon: AppIcons.sessions,
+        path: '/sessions',
+      ),
+      SettingsMenu(
+        name: S.current.advanced,
+        icon: AppIcons.advanced,
+        path: '/advanced',
+      ),
+      SettingsMenu(
+        name: S.current.about,
+        icon: AppIcons.about,
+        path: '/about',
+      ),
+    ];
+  }
 }

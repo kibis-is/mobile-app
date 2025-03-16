@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/view_nft/providers/show_nft_info_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/nft_provider.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 import 'package:shimmer/shimmer.dart';
@@ -47,7 +48,7 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
         if (nfts.isEmpty) {
           return Scaffold(
             appBar: AppBar(title: const Text('NFT Viewer')),
-            body: const Center(child: Text('No NFTs found')),
+            body: Center(child: Text(S.current.noNftsFound)),
           );
         }
 
@@ -56,7 +57,7 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text('NFT Viewer'),
+            title: Text(S.current.nftViewerTitle),
           ),
           body: Stack(
             children: [
@@ -174,7 +175,7 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('NFT Viewer'),
+          title: Text(S.current.nftViewerTitle),
         ),
         body: Center(
           child: Shimmer.fromColors(
@@ -192,8 +193,8 @@ class _ViewNftScreenState extends ConsumerState<ViewNftScreen> {
         ),
       ),
       error: (error, stack) => Scaffold(
-        appBar: AppBar(title: const Text('NFT Viewer')),
-        body: Center(child: Text('Error: $error')),
+        appBar: AppBar(title: Text(S.current.nftViewerTitle)),
+        body: Center(child: Text('${S.of(context).error}: $error')),
       ),
     );
   }

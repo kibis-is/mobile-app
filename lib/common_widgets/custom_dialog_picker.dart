@@ -1,6 +1,7 @@
 import 'package:ellipsized_text/ellipsized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart'; // Import localization
 import 'package:kibisis/utils/app_icons.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
@@ -111,18 +112,18 @@ class CustomAlertDialog extends StatelessWidget {
                                             fontWeight: FontWeight.bold),
                                   ),
                                   leading: Container(
-                                      padding: const EdgeInsets.all(
-                                          kScreenPadding / 2),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                      child: Icon(
-                                        AppIcons.wallet,
-                                        color: context.colorScheme.onPrimary,
-                                      )),
+                                    padding: const EdgeInsets.all(
+                                        kScreenPadding / 2),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                    child: Icon(
+                                      AppIcons.wallet,
+                                      color: context.colorScheme.onPrimary,
+                                    ),
+                                  ),
                                   trailing: const Icon(AppIcons.arrowRight),
                                   onTap: () => Navigator.pop(context, item),
                                   contentPadding:
@@ -143,11 +144,12 @@ class CustomAlertDialog extends StatelessWidget {
                     ),
                     const SizedBox(height: kScreenPadding),
                     TextButton(
-                        onPressed: onCancel ?? () => Navigator.pop(context),
-                        child: Text(
-                          'Cancel',
-                          style: context.textTheme.bodyMedium,
-                        )),
+                      onPressed: onCancel ?? () => Navigator.pop(context),
+                      child: Text(
+                        S.of(context).cancel,
+                        style: context.textTheme.bodyMedium,
+                      ),
+                    ),
                   ],
                 ),
               ),

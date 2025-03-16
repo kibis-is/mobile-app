@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kibisis/common_widgets/custom_loading_overlay.dart';
@@ -7,8 +8,10 @@ import 'package:kibisis/common_widgets/loading_overlay.dart';
 import 'package:kibisis/common_widgets/splash_screen.dart';
 import 'package:kibisis/constants/constants.dart';
 import 'package:kibisis/features/settings/appearance/providers/dark_mode_provider.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/connectivity_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/locale_provider.dart';
 import 'package:kibisis/providers/splash_screen_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/go_router_provider.dart';
@@ -92,9 +95,11 @@ class _KibisisState extends ConsumerState<Kibisis> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, _) {
+        final locale = ref.watch(localeProvider);
         final sharedPreferences = ref.watch(sharedPreferencesProvider);
         final isSplashScreenVisible = ref.watch(isSplashScreenVisibleProvider);
         final isConnected = ref.watch(connectivityProvider);
+
         return sharedPreferences.when(
           data: (_) {
             final isDarkTheme = ref.watch(isDarkModeStateAdapter);
@@ -109,52 +114,75 @@ class _KibisisState extends ConsumerState<Kibisis> {
               systemNavigationBarIconBrightness: Brightness.light,
             ));
 
-            return MaterialApp.router(
-              scaffoldMessengerKey: rootScaffoldMessengerKey,
-              routerConfig: router,
-              title: 'Kibisis',
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-              builder: (context, widget) {
-                return ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: LoadingOverlay(
-                    progressIndicator: CustomLoadingOverlay(
-                      text: loadingState.message,
-                      percent: loadingState.progress,
-                    ),
-                    isLoading: loadingState.isLoading,
-                    color: context.colorScheme.surface,
-                    opacity: 1.0,
-                    child: DefaultColorInitializer(
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Expanded(child: widget ?? const SizedBox.shrink()),
-                            Visibility(
-                              visible: isSplashScreenVisible,
-                              child: const SplashScreen(),
-                            ),
-                            Visibility(
-                              visible: !isConnected,
-                              child: _buildConnectionWarning(context),
-                            ),
-                          ],
+            // Rebuild the MaterialApp.router with locale change
+            return Builder(
+              builder: (context) => MaterialApp.router(
+                locale: locale,
+                supportedLocales: S.delegate.supportedLocales,
+                localizationsDelegates: const [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                localeResolutionCallback: (locale, supportedLocales) {
+                  for (var supportedLocale in supportedLocales) {
+                    if (supportedLocale.languageCode == locale?.languageCode) {
+                      return supportedLocale;
+                    }
+                  }
+                  return const Locale('en');
+                },
+                scaffoldMessengerKey: rootScaffoldMessengerKey,
+                routerConfig: router,
+                title: 'Kibisis',
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+                builder: (context, widget) {
+                  return ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: LoadingOverlay(
+                      progressIndicator: CustomLoadingOverlay(
+                        text: loadingState.message,
+                        percent: loadingState.progress,
+                      ),
+                      isLoading: loadingState.isLoading,
+                      color: context.colorScheme.surface,
+                      opacity: 1.0,
+                      child: DefaultColorInitializer(
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  child: widget ?? const SizedBox.shrink()),
+                              Visibility(
+                                visible: isSplashScreenVisible,
+                                child: const SplashScreen(),
+                              ),
+                              Visibility(
+                                visible: !isConnected,
+                                child: _buildConnectionWarning(context),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           },
           loading: () => const Material(
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (error, stack) => const Material(
+          error: (error, stack) => Material(
             child: Center(
-                child: Text('Initialization error, please restart the app.')),
+              child: Text(
+                S.current.initializationError,
+              ),
+            ),
           ),
         );
       },
@@ -171,7 +199,7 @@ class _KibisisState extends ConsumerState<Kibisis> {
           Icon(Icons.warning, color: context.colorScheme.onError),
           const SizedBox(width: kScreenPadding / 2),
           Text(
-            'No Internet Connection',
+            S.of(context).noInternetConnection,
             style: context.textTheme.displaySmall
                 ?.copyWith(color: context.colorScheme.onError),
           ),
@@ -188,7 +216,6 @@ class DefaultColorInitializer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the default color after the theme has been applied
     AppIcons.initializeDefaultColor(context);
     return child;
   }

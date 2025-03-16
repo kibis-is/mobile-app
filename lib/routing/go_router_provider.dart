@@ -27,22 +27,25 @@ import 'package:kibisis/features/setup_account/welcome/welcome_screen.dart';
 import 'package:kibisis/features/send_transaction/send_transaction_screen.dart';
 import 'package:kibisis/features/setup_account/import_via_seed/import_account_via_seed_screen.dart';
 import 'package:kibisis/features/view_asset/view_asset_screen.dart';
+import 'package:kibisis/features/view_transaction/view_transaction_screen.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/authentication_provider.dart';
 import 'package:kibisis/providers/loading_provider.dart';
+import 'package:kibisis/providers/locale_provider.dart';
 import 'package:kibisis/providers/setup_complete_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 import 'package:kibisis/routing/named_routes.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
-  final router = RouterNotifier(ref);
+  final routerNotifier = RouterNotifier(ref);
   return GoRouter(
-    refreshListenable: router,
-    routes: router._routes,
-    redirect: router._redirectLogic,
+    refreshListenable: routerNotifier,
+    routes: routerNotifier._routes,
+    redirect: routerNotifier._redirectLogic,
     initialLocation: '/$welcomeRouteName',
     errorPageBuilder: (context, state) {
       final errorMessage =
-          state.error?.toString() ?? 'No specific error message provided.';
+          state.error?.toString() ?? S.of(context).somethingWentWrong;
       return MaterialPage(
         key: state.pageKey,
         child: ErrorScreen(errorMessage: errorMessage),
@@ -82,6 +85,13 @@ class RouterNotifier extends ChangeNotifier {
           _previousIsAuthenticated = next;
           notifyListeners();
         }
+      },
+    );
+
+    ref.listen<Locale?>(
+      localeProvider,
+      (_, __) {
+        notifyListeners();
       },
     );
   }
@@ -363,6 +373,14 @@ class RouterNotifier extends ChangeNotifier {
               },
             ),
             GoRoute(
+              name: viewTransactionRouteName,
+              path: viewTransactionRouteName,
+              pageBuilder: (context, state) {
+                return defaultTransitionPage(
+                    const ViewTransactionScreen(), state);
+              },
+            ),
+            GoRoute(
               name: sendTransactionRouteName,
               path: '$sendTransactionRouteName/:mode',
               pageBuilder: (context, state) {
@@ -442,6 +460,16 @@ class RouterNotifier extends ChangeNotifier {
                           const PinPadScreen(
                             mode: PinPadMode.changePin,
                           ),
+                          state,
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      name: viewSeedPhraseRouteName,
+                      path: viewSeedPhraseRouteName,
+                      pageBuilder: (context, state) {
+                        return defaultTransitionPage(
+                          const CopySeedScreen(accountFlow: AccountFlow.view),
                           state,
                         );
                       },

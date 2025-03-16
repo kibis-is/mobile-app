@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 
 final multipartScanProvider =
     StateNotifierProvider<MultipartScanNotifier, MultipartScanState>(
@@ -46,8 +47,7 @@ class MultipartScanNotifier extends StateNotifier<MultipartScanState> {
   void addPart(
       String page, List<MapEntry<String, String>> params, String checksum) {
     if (state.checksum != null && state.checksum != checksum) {
-      throw Exception(
-          'Checksum does not match. The scanned QR codes are not from the same set.');
+      throw Exception(S.current.checksumMismatch);
     }
 
     final newParts =

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kibisis/common_widgets/custom_button.dart';
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/utils/theme_extensions.dart';
 
 class ErrorScreen extends StatelessWidget {
@@ -25,8 +26,7 @@ class ErrorScreen extends StatelessWidget {
               height: kScreenPadding,
             ),
             Text(
-              errorMessage ??
-                  'There was an error. No further details provided.',
+              errorMessage ?? S.of(context).defaultErrorMessage,
               style: context.textTheme.bodySmall,
             ),
             const Expanded(
@@ -35,7 +35,7 @@ class ErrorScreen extends StatelessWidget {
               ),
             ),
             CustomButton(
-              text: 'Back',
+              text: S.of(context).back,
               isFullWidth: true,
               onPressed: () {
                 GoRouter.of(context).go('/');

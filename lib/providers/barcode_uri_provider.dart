@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/providers/accounts_list_provider.dart';
 import 'package:kibisis/providers/storage_provider.dart';
 
@@ -30,7 +31,7 @@ Future<List<String>> generateAllAccountURIs(Ref ref) async {
   for (int i = 0; i < accounts.length; i++) {
     final account = accounts[i];
     final accountId = account['accountId'];
-    final accountName = account['accountName'] ?? 'Unnamed Account';
+    final accountName = account['accountName'] ?? S.current.unnamedAccount;
     final privateKey =
         await storageService.getAccountData(accountId ?? '', 'privateKey');
     if (privateKey == null || privateKey.isEmpty) {
@@ -59,7 +60,7 @@ Future<List<String>> generateAllAccountURIs(Ref ref) async {
     final List<String> params = [];
 
     for (var account in chunk) {
-      final accountName = account['accountName'] ?? 'Unnamed Account';
+      final accountName = account['accountName'] ?? S.current.unnamedAccount;
       final privateKey = account['privateKey'];
 
       params.add(buildURIParams(accountName, privateKey));
@@ -86,12 +87,12 @@ Future<String> generateSingleAccountURI(Ref ref, String accountId) async {
   final storageService = ref.read(storageProvider);
   final accountName =
       await storageService.getAccountData(accountId, 'accountName') ??
-          'Unnamed Account';
+          S.current.unnamedAccount;
   final privateKey =
       await storageService.getAccountData(accountId, 'privateKey');
 
   if (privateKey == null || privateKey.isEmpty) {
-    throw Exception('Private key not found for account ID: $accountId');
+    throw Exception(S.current.privateKeyNotFoundForAccount(accountId));
   }
 
   return buildURI(name: accountName, privateKey: privateKey);
@@ -113,8 +114,10 @@ String buildURIParams(String name, String hexPrivateKey) {
 
   final String base64PrivateKey = base64UrlEncode(bytes);
 
-  assert(base64PrivateKey.length == 44,
-      'The encoded key should be 44 characters long');
+  assert(
+    base64PrivateKey.length == 44,
+    S.current.invalidEncodedKeyLength,
+  );
 
   return 'name=${Uri.encodeComponent(name)}&privatekey=$base64PrivateKey';
 }

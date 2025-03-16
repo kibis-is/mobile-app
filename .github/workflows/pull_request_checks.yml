@@ -44,7 +44,7 @@ jobs:
             });
             return data.title;
       - name: "✅ Validate"
-        run: echo ${{ steps.get_pr_title.outputs.result }} | dart run commitlint_cli
+        run: echo "${{ steps.get_pr_title.outputs.result }}" | dart run commitlint_cli
 
   ##
   # build

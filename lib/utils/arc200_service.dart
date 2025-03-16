@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:kibisis/constants/constants.dart';
+import 'package:kibisis/generated/l10n.dart';
 import 'package:kibisis/models/combined_asset.dart';
 import 'package:kibisis/providers/network_provider.dart';
 
@@ -29,6 +30,7 @@ class Arc200Service {
         break;
     }
   }
+
   Future<List<CombinedAsset>> fetchArc200Assets(String publicAddress) async {
     if (baseUrl.isEmpty) {
       debugPrint('No ARC200 assets available for the selected network.');
@@ -40,8 +42,7 @@ class Arc200Service {
       final balancesResponse = await http.get(Uri.parse(balancesUrl));
 
       if (balancesResponse.statusCode != 200) {
-        debugPrint('Failed to load ARC200 balances');
-        throw Exception('Failed to load ARC200 balances');
+        throw Exception(S.current.failedToLoadArc200Balances);
       }
 
       final balancesJson = json.decode(balancesResponse.body);
@@ -73,19 +74,23 @@ class Arc200Service {
 
   Future<Map<String, dynamic>> fetchArc200TokenDetails(int contractId) async {
     if (baseUrl.isEmpty) {
-      throw Exception(
-          'No ARC200 token details available for the selected network.');
+      throw Exception(S.current.noArc200TokenDetailsForNetwork);
     }
 
     final tokenUrl = '$baseUrl/tokens?contractId=$contractId';
     final tokenResponse = await http.get(Uri.parse(tokenUrl));
 
     if (tokenResponse.statusCode != 200) {
-      throw Exception('Failed to load ARC200 token details');
+      throw Exception(S.current.failedToLoadArc200TokenDetails);
     }
 
     final tokenJson = json.decode(tokenResponse.body);
-    final token = tokenJson['tokens'][0];
+    final token = tokenJson['tokens']?[0];
+
+    if (token == null) {
+      throw Exception(S.current.tokenDetailsNotFound(contractId.toString()));
+    }
+
     return token;
   }
 
@@ -102,7 +107,7 @@ class Arc200Service {
       final response = await http.get(Uri.parse(searchUrl));
 
       if (response.statusCode != 200) {
-        throw Exception('Failed to search ARC200 assets');
+        throw Exception(S.current.failedToSearchArc200Assets);
       }
 
       final jsonResponse = json.decode(response.body);
@@ -130,6 +135,40 @@ class Arc200Service {
     } catch (e) {
       debugPrint('Error searching ARC-0200 assets: $e');
       return [];
+    }
+  }
+
+  Future<BigInt> getArc200Balance({
+    required int contractId,
+    required String publicAddress,
+  }) async {
+    if (baseUrl.isEmpty) {
+      throw Exception(S.current.networkNotConfiguredForArc200);
+    }
+
+    try {
+      final balanceUrl =
+          '$baseUrl/balances?accountId=$publicAddress&contractId=$contractId';
+
+      final response = await http.get(Uri.parse(balanceUrl));
+      if (response.statusCode != 200) {
+        throw Exception(
+            S.current.failedToFetchArc200Balance(contractId.toString()));
+      }
+
+      final balanceJson = json.decode(response.body);
+      final balanceList = balanceJson['balances'];
+
+      if (balanceList == null || balanceList.isEmpty) {
+        throw Exception(
+            S.current.assetNotFoundForContract(contractId.toString()));
+      }
+
+      return BigInt.parse(balanceList[0]['balance']);
+    } catch (e) {
+      debugPrint('Error fetching ARC200 balance for contract $contractId: $e');
+      throw Exception(
+          S.current.failedToFetchArc200Balance(contractId.toString()));
     }
   }
 }
